@@ -815,6 +815,165 @@ def cassini_2pn_tracking_proxy_theorem(
     }
 
 
+def q2pn_observational_table(
+    q_rg=sp.Integer(10),
+    b_over_r_sun_values=(1.0, 1.5, 1.6, 2.0, 5.0, 10.0),
+):
+    """
+    Table-ready q_2PN observables.
+
+    This is the numerical payload for the article table/figure.  It keeps the
+    result distinct from a Cassini raw likelihood: each row is a direct
+    observable scale at a chosen impact parameter.
+    """
+    q_gr = sp.Rational(7, 4)
+    q_rg_value = sp.sympify(q_rg)
+    delta_q = float(q_rg_value - q_gr)
+
+    rg_sun_m = 1.4766250385e3
+    r_sun_m = 6.957e8
+    c_m_s = 299_792_458.0
+    rad_to_microarcsec = 180.0 / math.pi * 3_600.0 * 1_000_000.0
+
+    rows = []
+    for b_over_r_sun in b_over_r_sun_values:
+        b_scale = float(b_over_r_sun)
+        u = rg_sun_m / (r_sun_m * b_scale)
+        one_way_delay_s = delta_q * math.pi * rg_sun_m**2 / (
+            c_m_s * r_sun_m * b_scale
+        )
+        delta_bending_rad = delta_q * math.pi * u**2
+        rows.append(
+            {
+                "b_over_R_sun": b_scale,
+                "u": u,
+                "Delta_gamma_eff_proxy": delta_q * u,
+                "one_way_extra_delay_s": one_way_delay_s,
+                "one_way_extra_path_m": c_m_s * one_way_delay_s,
+                "two_way_extra_path_m": 2.0 * c_m_s * one_way_delay_s,
+                "Delta_light_bending_microarcsec": (
+                    delta_bending_rad * rad_to_microarcsec
+                ),
+            }
+        )
+
+    return {
+        "status": "PASS_Q2PN_OBSERVATIONAL_TABLE",
+        "q_RG": q_rg_value,
+        "q_GR": q_gr,
+        "Delta_q": sp.simplify(q_rg_value - q_gr),
+        "rows": rows,
+        "scope": (
+            "direct q_2PN observable scales for article table/figure; not a "
+            "replacement for raw Cassini Doppler or astrometric likelihood"
+        ),
+    }
+
+
+def cassini_2pn_raw_likelihood_gate():
+    """
+    Exact form of the missing raw Cassini likelihood.
+
+    The repository does not contain Cassini Doppler time series, spacecraft
+    ephemerides, plasma calibration, covariance, or the original nuisance
+    model.  This function therefore does not invent a likelihood value.  It
+    records the model vector that must be fitted when those data are supplied.
+    """
+    q, q_gr, r_g, c, b = sp.symbols("q q_GR r_g c b", positive=True)
+    r1, r2, z1, z2 = sp.symbols("r_1 r_2 z_1 z_2", positive=True)
+    delta_q = q - q_gr
+    endpoint_angle = sp.acos(b / r1) + sp.acos(b / r2)
+    one_way_delta_t = sp.simplify(delta_q * r_g**2 * endpoint_angle / (c * b))
+    two_way_delta_t = sp.simplify(2 * one_way_delta_t)
+    doppler_template = sp.Symbol("d_dt") * two_way_delta_t
+
+    proxy = cassini_2pn_tracking_proxy_theorem()
+    table = q2pn_observational_table()
+
+    return {
+        "status": "FORMULATED_REQUIRES_RAW_CASSINI_DOPPLER_DATA",
+        "model_vector": {
+            "one_way_delta_t_2PN": one_way_delta_t,
+            "two_way_delta_t_2PN": two_way_delta_t,
+            "doppler_template": doppler_template,
+        },
+        "finite_endpoint_definitions": {
+            "z_1": sp.Eq(z1, sp.sqrt(r1**2 - b**2)),
+            "z_2": sp.Eq(z2, sp.sqrt(r2**2 - b**2)),
+            "endpoint_angle": endpoint_angle,
+        },
+        "likelihood_form": (
+            "chi2=(d-M(theta,q_2PN))^T C^-1 (d-M(theta,q_2PN)); "
+            "theta must include orbit, plasma, clock, solar-corona and gamma "
+            "nuisance parameters"
+        ),
+        "available_compressed_proxy": proxy["status"],
+        "default_proxy_sigma_distance": proxy["sigma_distance_from_central"],
+        "default_proxy_q_passes_1sigma": proxy["q_passes_1sigma_proxy"],
+        "default_proxy_q_passes_conservative": (
+            proxy["q_passes_conservative_proxy"]
+        ),
+        "table_payload_status": table["status"],
+        "missing_inputs": [
+            "Cassini Doppler residual time series",
+            "spacecraft and Earth ephemerides during solar conjunction",
+            "solar-plasma calibration and covariance",
+            "clock/noise covariance matrix",
+            "nuisance-parameter priors used in the radio-science fit",
+        ],
+        "article_rule": (
+            "report q_2PN=10 as not excluded by the compressed proxy, but do "
+            "not claim a final Cassini likelihood pass until the raw-data fit "
+            "is run"
+        ),
+    }
+
+
+def standard_ppn_alpha_i_export_table():
+    """
+    Article-ready preferred-frame PPN table.
+
+    The symbolic matcher fixes alpha_i=0 after the RG moving-source vector
+    source has vanished on the Solar 1PN branch.  This function packages the
+    result with the observational bounds used in the text.
+    """
+    matcher = standard_ppn_alpha_i_matcher()
+    chain = preferred_frame_alpha_i_closure_chain()
+    limits = preferred_frame_velocity_risk_estimate()[
+        "preferred_frame_limits_used"
+    ]
+    rows = []
+    for key, bound in limits.items():
+        value = matcher["alpha_i_values"][key]
+        rows.append(
+            {
+                "parameter": key,
+                "RG_minimal_value": value,
+                "observational_bound_order": bound,
+                "passes_bound": value == 0,
+            }
+        )
+
+    status = (
+        "PASS_STANDARD_PPN_ALPHA_I_EXPORT_TABLE"
+        if chain["status"] == "PASS_MINIMAL_MOVING_SOURCE_ALPHA_I_CHAIN"
+        and matcher["status"] == "PASS_STANDARD_PPN_MATCH_FORCES_ALPHA_I_ZERO"
+        and all(row["passes_bound"] for row in rows)
+        else "CHECK_STANDARD_PPN_ALPHA_I_EXPORT_TABLE"
+    )
+
+    return {
+        "status": status,
+        "rows": rows,
+        "matcher_status": matcher["status"],
+        "closure_chain_status": chain["status"],
+        "scope": (
+            "standard PPN alpha_i export after the minimal moving-source RG "
+            "vector-source check; full solar-system likelihood remains separate"
+        ),
+    }
+
+
 def preferred_frame_velocity_risk_estimate():
     """
     Preferred-frame risk scale from the Solar System velocity relative to CMB.
@@ -1879,11 +2038,14 @@ def article_solar_theorem():
     q2pn_scale = q2pn_cassini_scale_estimate()
     q2pn_optical_observables = derive_general_q2pn_optical_observables()
     cassini_2pn_proxy = cassini_2pn_tracking_proxy_theorem()
+    q2pn_table = q2pn_observational_table()
+    cassini_raw_likelihood = cassini_2pn_raw_likelihood_gate()
     preferred_frame_scale = preferred_frame_velocity_risk_estimate()
     preferred_frame_background = preferred_frame_background_stress_theorem()
     alpha_i_matcher = standard_ppn_alpha_i_matcher()
     rg_vector_source = moving_source_rg_vector_source_theorem()
     alpha_i_chain = preferred_frame_alpha_i_closure_chain()
+    alpha_i_export = standard_ppn_alpha_i_export_table()
     frame_dragging_chain = frame_dragging_minimal_1p5pn_chain()
     shapiro_2pn = calculate_shapiro_2pn_discriminator()
     bending_2pn = calculate_light_deflection_2pn_discriminator()
@@ -1921,6 +2083,7 @@ def article_solar_theorem():
         "standard_ppn_alpha_i_matcher": alpha_i_matcher,
         "moving_source_rg_vector_source": rg_vector_source,
         "preferred_frame_alpha_i_closure_chain": alpha_i_chain,
+        "standard_ppn_alpha_i_export_table": alpha_i_export,
         "frame_dragging_minimal_1p5pn_chain": frame_dragging_chain,
         "two_pn_discriminator": {
             "status": "OPEN_DISCRIMINATOR",
@@ -1952,6 +2115,8 @@ def article_solar_theorem():
             "q2pn_observational_scale": q2pn_scale,
             "q2pn_general_optical_observables": q2pn_optical_observables,
             "cassini_2pn_tracking_proxy": cassini_2pn_proxy,
+            "q2pn_observational_table": q2pn_table,
+            "cassini_2pn_raw_likelihood_gate": cassini_raw_likelihood,
             "reading": (
                 "Exact GR-like 2PN stress-free closure sends c_Y2=c_YI1=0 "
                 "on the nontrivial 1PN branch; the nonzero O(U^2) residual is "
@@ -1999,6 +2164,8 @@ def article_solar_theorem():
             "two_pn_observational_scale": q2pn_scale["status"],
             "general_q2pn_optical_observables": q2pn_optical_observables["status"],
             "cassini_2pn_tracking_proxy": cassini_2pn_proxy["status"],
+            "q2pn_observational_table": q2pn_table["status"],
+            "cassini_2pn_raw_likelihood_gate": cassini_raw_likelihood["status"],
             "isotropic_2pn_closure": isotropic_closure["status"],
             "two_pn_observable_candidates": (
                 "CONDITIONAL_CANDIDATES_NOT_FINAL_PREDICTIONS"
@@ -2008,6 +2175,7 @@ def article_solar_theorem():
             "standard_ppn_alpha_i_matcher": alpha_i_matcher["status"],
             "moving_source_rg_vector_source": rg_vector_source["status"],
             "preferred_frame_alpha_i_closure_chain": alpha_i_chain["status"],
+            "standard_ppn_alpha_i_export_table": alpha_i_export["status"],
             "rotating_sources": frame_dragging_chain["status"],
         },
     }

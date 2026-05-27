@@ -1083,6 +1083,102 @@ def s_completion_same_input_boltzmann_source_theorem() -> dict[str, object]:
     }
 
 
+def active_s_completion_linear_source_order_theorem() -> dict[str, object]:
+    """
+    Active S/Z completion source order around the exact S=6 background.
+
+    The completion has a healthy scalar-longitudinal quadratic action, but the
+    background sits at the minimum S=6 and Z=0.  Therefore an active
+    perturbation supplies no linear Einstein-Boltzmann density, momentum, or
+    shear source unless a nonzero background displacement, direct coupling, or
+    different effective fluid branch is supplied.
+    """
+    eps, s1, z2, rho0 = sp.symbols("eps s_1 z_2 rho_0", real=True)
+    lambda_S, c_Z = sp.symbols("lambda_S c_Z", positive=True)
+
+    S_minus_6 = eps * s1
+    Z_active = eps**2 * z2
+    L_completion = lambda_S * S_minus_6**2 + c_Z * Z_active - rho0
+    linear_lagrangian_source = sp.diff(L_completion, eps).subs(eps, 0)
+    quadratic_coefficient = sp.simplify(
+        sp.diff(L_completion, eps, 2).subs(eps, 0) / 2
+    )
+
+    perturbations = s_completion_same_input_boltzmann_source_theorem()
+    determinant = perturbations["active_completion_modes"]["determinant_in_s"]
+    expected_det = (
+        4
+        * sp.Symbol("c_Z", positive=True)
+        * sp.Symbol("lambda_S", positive=True)
+        * (sp.Symbol("s", real=True) - 1) ** 2
+    )
+
+    status = (
+        "PASS_ACTIVE_S_COMPLETION_LINEAR_SOURCE_ZERO_ORDER"
+        if simplify(linear_lagrangian_source) == 0
+        and simplify(determinant - expected_det) == 0
+        else "CHECK_ACTIVE_S_COMPLETION_LINEAR_SOURCE_ORDER"
+    )
+
+    return {
+        "status": status,
+        "active_expansion": {
+            "S_minus_6": S_minus_6,
+            "Z_active_order": Z_active,
+            "L_completion": L_completion,
+            "linear_source_coefficient": linear_lagrangian_source,
+            "quadratic_source_coefficient": quadratic_coefficient,
+        },
+        "active_mode_principal_symbol": determinant,
+        "source_order_result": (
+            "active S/Z perturbations propagate in the local quadratic action, "
+            "but around S=6,Z=0 they do not supply a linear "
+            "Einstein-Boltzmann source"
+        ),
+        "no_particle_dm_implication": (
+            "zero-background S/Z completion cannot replace particle-CDM "
+            "linear gravitational wells by itself"
+        ),
+    }
+
+
+def no_particle_dm_cmb_decision_gate() -> dict[str, object]:
+    """
+    Decision gate for the review's no-particle-DM CMB request.
+
+    Same-input CMB is an analytic safety identity.  A no-particle-DM CMB claim
+    needs an active linear source branch before a Planck likelihood can be a
+    meaningful pass/fail test.
+    """
+    active_order = active_s_completion_linear_source_order_theorem()
+    readiness = full_fit_readiness()
+    open_register = no_particle_dm_cmb_open_register()
+
+    status = (
+        "NO_PARTICLE_DM_REQUIRES_NONZERO_ACTIVE_SOURCE_BRANCH"
+        if active_order["status"]
+        == "PASS_ACTIVE_S_COMPLETION_LINEAR_SOURCE_ZERO_ORDER"
+        else "CHECK_NO_PARTICLE_DM_CMB_SOURCE_BRANCH"
+    )
+
+    return {
+        "status": status,
+        "active_source_order": active_order["status"],
+        "full_fit_readiness": readiness.status,
+        "full_fit_reason": readiness.reason,
+        "required_next_branch": [
+            "nonzero S-background displacement with controlled stability",
+            "direct matter/medium coupling that sources metric potentials linearly",
+            "RG effective fluid with density contrast, Euler equation, and shear closure",
+        ],
+        "open_register": open_register,
+        "article_rule": (
+            "same-input CMB is closed as a safety identity; no-particle-DM CMB "
+            "is not claimed from the zero-background S=6 completion"
+        ),
+    }
+
+
 def article_cmb_theorem() -> dict[str, object]:
     """
     Article-facing CMB ledger.
@@ -1099,6 +1195,8 @@ def article_cmb_theorem() -> dict[str, object]:
     same_input_identity = same_input_cmb_identity_theorem()
     exact_lcdm_sources = exact_lcdm_branch_boltzmann_source_theorem()
     s_completion_sources = s_completion_same_input_boltzmann_source_theorem()
+    active_s_completion_order = active_s_completion_linear_source_order_theorem()
+    no_particle_dm_gate = no_particle_dm_cmb_decision_gate()
     calibration = cmb_comoving_time_calibration()
 
     return {
@@ -1131,6 +1229,8 @@ def article_cmb_theorem() -> dict[str, object]:
         "einstein_boltzmann_hierarchy": hierarchy,
         "exact_lcdm_branch_boltzmann_sources": exact_lcdm_sources,
         "s_completion_same_input_boltzmann_sources": s_completion_sources,
+        "active_s_completion_linear_source_order": active_s_completion_order,
+        "no_particle_dm_cmb_decision_gate": no_particle_dm_gate,
         "lensing_isw": lensing,
         "age_calibration": {
             "status": calibration["status"],
@@ -1141,7 +1241,11 @@ def article_cmb_theorem() -> dict[str, object]:
         "article_status": {
             "linear_same_input_CMB": "EXACT_LCDM_BRANCH_LINEAR_SOURCES_CLOSED",
             "s_completion_same_input_CMB": s_completion_sources["status"],
+            "active_s_completion_linear_source_order": (
+                active_s_completion_order["status"]
+            ),
             "no_particle_dark_matter_CMB": "BOLTZMANN_LIKELIHOOD_REQUIRED",
+            "no_particle_dm_decision_gate": no_particle_dm_gate["status"],
             "Planck_BAO_fit": "NUMERICAL_LIKELIHOOD_REQUIRED",
         },
     }

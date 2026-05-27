@@ -1851,6 +1851,85 @@ def compact_central_claim_gate():
     }
 
 
+def solar_2pn_screening_minimum_gate(q_rg=sp.Integer(10)):
+    """
+    Minimal screening requirement implied by the compressed Solar 2PN proxy.
+
+    This is not a strong-field proof.  It answers the review's immediate
+    question: does the present compressed Cassini scale already force a
+    screening factor on the q_2PN=10 branch?
+    """
+    q_gr = sp.Rational(7, 4)
+    delta_q = float(sp.sympify(q_rg) - q_gr)
+    rg_sun_m = 1.4766250385e3
+    r_sun_m = 6.957e8
+    signal = delta_q * rg_sun_m / r_sun_m
+    cassini_central = 2.1e-5
+    cassini_sigma = 2.3e-5
+    conservative = abs(cassini_central) + cassini_sigma
+
+    max_unscreened_amplitude_1sigma = cassini_sigma / signal
+    max_unscreened_amplitude_conservative = conservative / signal
+    current_proxy_forces_screening = max_unscreened_amplitude_conservative < 1.0
+
+    return {
+        "status": (
+            "NO_COMPRESSED_CASSINI_SCREENING_FORCED_BY_DEFAULT_PROXY"
+            if not current_proxy_forces_screening
+            else "SCREENING_REQUIRED_BY_COMPRESSED_CASSINI_PROXY"
+        ),
+        "q_RG": sp.sympify(q_rg),
+        "q_GR": q_gr,
+        "Delta_q": sp.simplify(sp.sympify(q_rg) - q_gr),
+        "solar_limb_equivalent_gamma_signal": signal,
+        "cassini_sigma": cassini_sigma,
+        "cassini_conservative_bound": conservative,
+        "max_unscreened_amplitude_1sigma": max_unscreened_amplitude_1sigma,
+        "max_unscreened_amplitude_conservative": (
+            max_unscreened_amplitude_conservative
+        ),
+        "interpretation": (
+            "the compressed proxy does not by itself force screening today; "
+            "a raw 2PN likelihood or tighter future light-bending bound can"
+            " still require it"
+        ),
+    }
+
+
+def article_strong_field_gate():
+    """
+    Article-facing strong-field and screening gate.
+
+    The first article may use this as a scope boundary: the static compact
+    ledger contains useful benchmark algebra, but full strong-field viability
+    needs source closure, rotating solutions, QNM/echo stability, and EHT/NS
+    likelihoods.
+    """
+    boundary = analyze_horizon_throat_and_boundary()
+    compact_gate = compact_central_claim_gate()
+    screening = solar_2pn_screening_minimum_gate()
+
+    return {
+        "article_use": "strong-field/screening scope boundary",
+        "status": "STRONG_FIELD_PROGRAM_REGISTERED_NOT_PROMOTED",
+        "static_exterior_boundary": {
+            "exterior_result": boundary["exterior_result"],
+            "finite_r_horizon_test": boundary["finite_r_horizon_test"],
+            "geodesic_status": boundary["geodesic_status"],
+        },
+        "compact_export_gate": compact_gate["file_export_status"],
+        "black_hole_replacement_status": compact_gate[
+            "black_hole_breaker_status"
+        ],
+        "screening_minimum": screening,
+        "required_before_claim": compact_gate["observational_blockers"],
+        "article_rule": (
+            "do not claim strong-field viability in the first article; state "
+            "the exact gates and keep q_2PN screening tied to the 2PN likelihood"
+        ),
+    }
+
+
 if __name__ == "__main__":
     print("=" * 72)
     print("STAGE A3: OLD compact/interior/verification integration ledger")
