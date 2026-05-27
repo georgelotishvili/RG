@@ -603,6 +603,103 @@ def global_lcdm_solar_completion_theorem():
     }
 
 
+def completion_branch_local_perturbation_theorem():
+    """
+    Local perturbation theorem for the S/Z completion branch.
+
+    Work around the normalized local background Phi=t, phi^A=x^A.  Use the
+    Stückelberg convention phi^A=x^A-pi^A.  To first order,
+
+        delta S = 2 (dot chi - div pi),
+
+    while the Z invariant starts at quadratic order,
+
+        Z = (dot pi_i - partial_i chi)^2.
+
+    Thus the scalar-longitudinal principal symbol is fixed exactly by the two
+    positive coefficients lambda_S and c_Z.
+    """
+    omega, k = sp.symbols("omega k", real=True)
+    lambda_S, c_Z = sp.symbols("lambda_S c_Z", positive=True)
+    chi_dot, theta = sp.symbols("chi_dot theta", real=True)
+    pi_dot_L, grad_chi = sp.symbols("pi_dot_L grad_chi", real=True)
+    pi_dot_T1, pi_dot_T2 = sp.symbols("pi_dot_T1 pi_dot_T2", real=True)
+
+    delta_S_linear = 2 * (chi_dot - theta)
+    Z_quadratic = (
+        (pi_dot_L - grad_chi) ** 2
+        + pi_dot_T1**2
+        + pi_dot_T2**2
+    )
+    L2 = sp.expand(lambda_S * delta_S_linear**2 + c_Z * Z_quadratic)
+    kinetic_variables = [chi_dot, pi_dot_L, pi_dot_T1, pi_dot_T2]
+    kinetic_matrix = sp.Matrix(
+        [
+            [
+                sp.simplify(sp.diff(L2, left, right) / 2)
+                for right in kinetic_variables
+            ]
+            for left in kinetic_variables
+        ]
+    )
+    kinetic_eigenvalues = [sp.simplify(value) for value in kinetic_matrix.diagonal()]
+
+    chi, pi_L = sp.symbols("chi pi_L", real=True)
+    scalar_longitudinal_symbol_L2 = sp.expand(
+        4 * lambda_S * (omega * chi - k * pi_L) ** 2
+        + c_Z * (omega * pi_L - k * chi) ** 2
+    )
+    principal_matrix = sp.Matrix(
+        [
+            [
+                sp.simplify(
+                    sp.diff(scalar_longitudinal_symbol_L2, left, right) / 2
+                )
+                for right in (chi, pi_L)
+            ]
+            for left in (chi, pi_L)
+        ]
+    )
+    determinant = sp.factor(principal_matrix.det())
+    s = sp.Symbol("s", real=True)
+    determinant_in_s = sp.factor(
+        sp.expand(determinant).subs(omega**2, s * k**2) / k**4
+    )
+    expected_determinant = 4 * c_Z * lambda_S * (omega**2 - k**2) ** 2
+    transverse_symbol = c_Z * omega**2
+
+    status = (
+        "PASS_COMPLETION_LOCAL_PERTURBATION_SYMBOL"
+        if sp.simplify(determinant - expected_determinant) == 0
+        and kinetic_eigenvalues == [4 * lambda_S, c_Z, c_Z, c_Z]
+        and sp.factor(determinant_in_s) == 4 * c_Z * lambda_S * (s - 1) ** 2
+        else "CHECK_COMPLETION_LOCAL_PERTURBATION_SYMBOL"
+    )
+
+    return {
+        "status": status,
+        "delta_S_linear": delta_S_linear,
+        "Z_quadratic": Z_quadratic,
+        "quadratic_lagrangian": L2,
+        "kinetic_variables": kinetic_variables,
+        "kinetic_matrix": kinetic_matrix,
+        "kinetic_eigenvalues": kinetic_eigenvalues,
+        "no_ghost_conditions": [sp.Gt(lambda_S, 0), sp.Gt(c_Z, 0)],
+        "scalar_longitudinal_principal_matrix": principal_matrix,
+        "scalar_longitudinal_determinant": determinant,
+        "scalar_longitudinal_determinant_in_s": determinant_in_s,
+        "scalar_longitudinal_roots": [sp.Eq(s, 1)],
+        "transverse_symbol": transverse_symbol,
+        "transverse_status": (
+            "POSITIVE_KINETIC_ZERO_LEADING_GRADIENT_IN_SCALAR_COMPLETION"
+        ),
+        "article_use": (
+            "local no-ghost and scalar-longitudinal principal-symbol check for "
+            "the S/Z global completion branch"
+        ),
+    }
+
+
 def early_scaling_after_zero_current():
     """
     Show that substituting the dynamic branch reshuffles early powers.
@@ -710,6 +807,7 @@ def article_dynamic_phase_clock_theorem():
     exact_lcdm = exact_lcdm_zero_current_background_theorem()
     lcdm_residuals = compressed_lcdm_background_residual_check()
     global_completion = global_lcdm_solar_completion_theorem()
+    completion_perturbations = completion_branch_local_perturbation_theorem()
     early = early_scaling_after_zero_current()
 
     return {
@@ -740,6 +838,7 @@ def article_dynamic_phase_clock_theorem():
         "exact_lcdm_background_branch": exact_lcdm,
         "compressed_lcdm_background_residual_check": lcdm_residuals,
         "global_lcdm_solar_completion": global_completion,
+        "completion_branch_local_perturbations": completion_perturbations,
         "background_observables": {
             "status": observables["status"],
             "rho_RG": observables["rho_RG"],
@@ -762,6 +861,7 @@ def article_dynamic_phase_clock_theorem():
             "background_lcdm_closure": exact_lcdm["status"],
             "compressed_background_residuals": lcdm_residuals["status"],
             "global_lcdm_solar_completion": global_completion["status"],
+            "completion_local_perturbations": completion_perturbations["status"],
             "observational_fit": (
                 "GLOBAL_BACKGROUND_1PN_COMPLETION_CLOSED__LIKELIHOOD_REQUIRED"
             ),

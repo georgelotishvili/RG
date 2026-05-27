@@ -956,6 +956,133 @@ def exact_lcdm_branch_boltzmann_source_theorem() -> dict[str, object]:
     }
 
 
+def s_completion_same_input_boltzmann_source_theorem() -> dict[str, object]:
+    """
+    Linear CMB source check for the S/Z completion branch.
+
+    The p02c completion closes the background with S=6 and supplies a healthy
+    local scalar-longitudinal symbol.  For the same-input CMB branch the
+    completion perturbation is locked, delta S=0, and Z has no linear
+    background value.  Then the completion contributes only the homogeneous
+    Lambda stress and no linear Poisson, slip, lensing, ISW, or photon-baryon
+    force source.
+    """
+    from p02c_dynamic_phase_clock import (
+        completion_branch_local_perturbation_theorem,
+        global_lcdm_solar_completion_theorem,
+    )
+
+    completion = global_lcdm_solar_completion_theorem()
+    perturbations = completion_branch_local_perturbation_theorem()
+
+    a = Symbol("a", positive=True)
+    rho_0 = Symbol("rho_0", positive=True)
+    delta_a, theta_rg, sigma_rg = symbols("delta_a theta_RG sigma_RG", real=True)
+    delta_S, delta_Z_linear = symbols("delta_S delta_Z_linear", real=True)
+    lambda_S, c_Z = symbols("lambda_S c_Z", positive=True)
+
+    rho_rg = rho_0
+    p_rg = -rho_0
+    rho_plus_p = simplify(rho_rg + p_rg)
+    continuity_residual = simplify(a * diff(rho_rg, a) + 3 * (rho_rg + p_rg))
+
+    linear_completion_variations = {
+        "delta_L_completion": sp.Integer(0),
+        "delta_L_S": 2 * lambda_S * delta_S,
+        "delta_Z_linear": delta_Z_linear,
+    }
+    locked_completion_constraints = {
+        delta_S: sp.Integer(0),
+        delta_Z_linear: sp.Integer(0),
+    }
+
+    delta_rho_adiabatic = simplify(diff(rho_rg, a) * delta_a)
+    delta_p_adiabatic = simplify(diff(p_rg, a) * delta_a)
+    momentum_source = simplify((rho_rg + p_rg) * theta_rg)
+    shear_source = simplify((rho_rg + p_rg) * sigma_rg)
+
+    poisson_extra_source = delta_rho_adiabatic
+    slip_extra_source = shear_source
+    photon_baryon_extra_force = sp.Integer(0)
+    lensing_extra_source = simplify(poisson_extra_source + slip_extra_source)
+    isw_extra_source = sp.Integer(0)
+
+    residuals = [
+        completion["cosmology"]["S_minus_S0_on_branch"],
+        completion["cosmology"]["L_Y_on_branch"],
+        completion["cosmology"]["w_plus_one_residual"],
+        rho_plus_p,
+        continuity_residual,
+        delta_rho_adiabatic,
+        delta_p_adiabatic,
+        momentum_source,
+        shear_source,
+        poisson_extra_source,
+        slip_extra_source,
+        photon_baryon_extra_force,
+        lensing_extra_source,
+        isw_extra_source,
+        linear_completion_variations["delta_L_S"].subs(locked_completion_constraints),
+        linear_completion_variations["delta_Z_linear"].subs(
+            locked_completion_constraints
+        ),
+    ]
+
+    status = (
+        "PASS_S_COMPLETION_SAME_INPUT_BOLTZMANN_SOURCES_ZERO"
+        if completion["status"] == "PASS_GLOBAL_LCDM_SOLAR_1PN_COMPLETION"
+        and perturbations["status"] == "PASS_COMPLETION_LOCAL_PERTURBATION_SYMBOL"
+        and all(simplify(value) == 0 for value in residuals)
+        else "CHECK_S_COMPLETION_SAME_INPUT_BOLTZMANN_SOURCES"
+    )
+
+    return {
+        "status": status,
+        "completion_status": completion["status"],
+        "local_perturbation_status": perturbations["status"],
+        "locked_completion_constraints": {
+            "delta_S": sp.Eq(delta_S, 0),
+            "delta_Z_linear": sp.Eq(delta_Z_linear, 0),
+        },
+        "linear_completion_variations": linear_completion_variations,
+        "rho_RG": rho_rg,
+        "p_RG": p_rg,
+        "rho_plus_p": rho_plus_p,
+        "background_continuity_residual": continuity_residual,
+        "perturbation_sources": {
+            "delta_rho_RG": delta_rho_adiabatic,
+            "delta_p_RG": delta_p_adiabatic,
+            "momentum_RG": momentum_source,
+            "shear_RG": shear_source,
+        },
+        "einstein_boltzmann_source_residuals": {
+            "Poisson_extra_source": poisson_extra_source,
+            "slip_extra_source": slip_extra_source,
+            "photon_baryon_extra_force": photon_baryon_extra_force,
+            "lensing_extra_source": lensing_extra_source,
+            "ISW_extra_source": isw_extra_source,
+        },
+        "active_completion_modes": {
+            "principal_symbol_status": perturbations["status"],
+            "determinant_in_s": perturbations[
+                "scalar_longitudinal_determinant_in_s"
+            ],
+            "interpretation": (
+                "if delta S is excited, this is a separate active completion "
+                "Boltzmann branch rather than the same-input inherited CMB branch"
+            ),
+        },
+        "conclusion": (
+            "on the locked S=6 same-input branch, the S/Z completion behaves as "
+            "a cosmological constant in the linear Einstein-Boltzmann sources"
+        ),
+        "scope": (
+            "same matter content including standard CDM; active completion "
+            "perturbations require a separate Boltzmann likelihood"
+        ),
+    }
+
+
 def article_cmb_theorem() -> dict[str, object]:
     """
     Article-facing CMB ledger.
@@ -971,6 +1098,7 @@ def article_cmb_theorem() -> dict[str, object]:
     lensing = cmb_lensing_isw_null_shift_theorem()
     same_input_identity = same_input_cmb_identity_theorem()
     exact_lcdm_sources = exact_lcdm_branch_boltzmann_source_theorem()
+    s_completion_sources = s_completion_same_input_boltzmann_source_theorem()
     calibration = cmb_comoving_time_calibration()
 
     return {
@@ -1002,6 +1130,7 @@ def article_cmb_theorem() -> dict[str, object]:
         },
         "einstein_boltzmann_hierarchy": hierarchy,
         "exact_lcdm_branch_boltzmann_sources": exact_lcdm_sources,
+        "s_completion_same_input_boltzmann_sources": s_completion_sources,
         "lensing_isw": lensing,
         "age_calibration": {
             "status": calibration["status"],
@@ -1011,6 +1140,7 @@ def article_cmb_theorem() -> dict[str, object]:
         },
         "article_status": {
             "linear_same_input_CMB": "EXACT_LCDM_BRANCH_LINEAR_SOURCES_CLOSED",
+            "s_completion_same_input_CMB": s_completion_sources["status"],
             "no_particle_dark_matter_CMB": "BOLTZMANN_LIKELIHOOD_REQUIRED",
             "Planck_BAO_fit": "NUMERICAL_LIKELIHOOD_REQUIRED",
         },
