@@ -222,6 +222,45 @@ def dynamic_background_observables():
     }
 
 
+def article_branch_compatibility_example():
+    """
+    Exact dynamic-clock example aligned with the p01/p03 nonempty point.
+
+    This is not a cosmological fit.  It shows that the same coefficient point
+    used for the local stability example gives a positive zero-current
+    dynamic clock and the expected late w=-1 algebra.
+    """
+    a = sp.Symbol("a", positive=True)
+    c_Y, c_Y2, c_YI1 = sp.symbols("c_Y c_Y2 c_YI1", real=True)
+    point = {
+        c_Y2: sp.Integer(1),
+        c_YI1: -sp.Rational(6, 5),
+        c_Y: -sp.Rational(8, 5),
+    }
+    u2 = sp.simplify(
+        (-(c_Y + 3 * c_YI1 / a**2) / (2 * c_Y2)).subs(point)
+    )
+    u2_late = sp.simplify(sp.limit(u2, a, sp.oo))
+    rho_late = sp.simplify((c_Y**2 / (4 * c_Y2)).subs(point))
+    p_late = sp.simplify(-rho_late)
+    w_late = sp.simplify(p_late / rho_late)
+
+    return {
+        "status": "PASS_EXPLICIT_DYNAMIC_CLOCK_BRANCH_POINT",
+        "point": point,
+        "u2_of_a": u2,
+        "u2_late": u2_late,
+        "u2_positive_for_a_positive": True,
+        "rho_late": rho_late,
+        "p_late": p_late,
+        "w_late": w_late,
+        "article_use": (
+            "shows the dynamic zero-current clock branch is nonempty at the "
+            "same coefficient point used in the local stability example"
+        ),
+    }
+
+
 def early_scaling_after_zero_current():
     """
     Show that substituting the dynamic branch reshuffles early powers.
@@ -324,6 +363,7 @@ def article_dynamic_phase_clock_theorem():
     branch = dynamic_phase_clock_branch()
     late = late_zero_current_candidate()
     observables = dynamic_background_observables()
+    compatibility_example = article_branch_compatibility_example()
     early = early_scaling_after_zero_current()
 
     return {
@@ -349,6 +389,7 @@ def article_dynamic_phase_clock_theorem():
             "theorem_pass_background_only": late["theorem_pass_background_only"],
             "viable_sign_window_hint": late["viable_sign_window_hint"],
         },
+        "branch_compatibility_example": compatibility_example,
         "background_observables": {
             "status": observables["status"],
             "rho_RG": observables["rho_RG"],

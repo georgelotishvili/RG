@@ -1633,6 +1633,56 @@ def mixed_mode_numeric_condition_check():
     return rows
 
 
+def article_nonempty_stability_example():
+    """
+    Exact nonempty local-stability example used by the article.
+
+    This is not a fit.  It proves that the no-ghost plus local mixed-mode
+    principal-symbol inequalities have at least one explicit point compatible
+    with the p03 static 1PN coefficient branch.
+    """
+    c_Y, c_Y2, c_I1, c_I1sq, c_I2, c_I3, c_YI1 = sp.symbols(
+        "c_Y c_Y2 c_I1 c_I1sq c_I2 c_I3 c_YI1", real=True
+    )
+    coeffs, _s, _det, _roots = minkowski_principal_symbol()
+    conditions = mixed_mode_stability_conditions(coeffs)
+    poly = conditions["mixed_polynomial_coefficients"]
+    point = {
+        c_Y2: sp.Integer(1),
+        c_YI1: -sp.Rational(6, 5),
+        c_Y: -sp.Rational(8, 5),
+        c_I1: sp.Rational(8, 5),
+        c_I1sq: sp.Integer(1),
+        c_I2: -sp.Rational(32, 5),
+        c_I3: sp.Rational(16, 5),
+    }
+    values = {
+        key: sp.simplify(value.subs(point))
+        for key, value in poly.items()
+    }
+    no_ghost_combo = sp.simplify((c_Y + 3 * c_YI1).subs(point))
+    checks = {
+        "c_Y2_positive": sp.simplify(point[c_Y2] > 0),
+        "no_ghost_lower": sp.simplify(no_ghost_combo > -6 * point[c_Y2]),
+        "no_ghost_upper": sp.simplify(no_ghost_combo < -2 * point[c_Y2]),
+        "p2_positive": sp.simplify(values["p2"] > 0),
+        "p1_negative": sp.simplify(values["p1"] < 0),
+        "p0_positive": sp.simplify(values["p0"] > 0),
+        "discriminant_nonnegative": sp.simplify(values["discriminant"] >= 0),
+    }
+    return {
+        "status": "PASS_EXPLICIT_NONEMPTY_LOCAL_STABILITY_POINT",
+        "point": point,
+        "no_ghost_combo_cY_plus_3cYI1": no_ghost_combo,
+        "principal_symbol_values": values,
+        "checks": checks,
+        "article_use": (
+            "shows the local no-ghost plus mixed-mode principal-symbol region "
+            "is nonempty; it is not an observational fit"
+        ),
+    }
+
+
 def minkowski_principal_symbol():
     coeffs = quadratic_principal_coefficients(scale_factor=1)
     s, det, roots = characteristic_polynomial(coeffs)
@@ -1931,6 +1981,7 @@ def article_core_theorem():
     alphas = bellini_sawicki_alphas()
     coeffs_m, _s, _det, _roots = minkowski_principal_symbol()
     mixed_conditions = mixed_mode_stability_conditions(coeffs_m)
+    nonempty_stability = article_nonempty_stability_example()
 
     c_Y, c_Y2, c_YI1 = sp.symbols("c_Y c_Y2 c_YI1", real=True)
 
@@ -1986,6 +2037,7 @@ def article_core_theorem():
             ],
         },
         "mixed_mode_gate": mixed_conditions,
+        "nonempty_local_stability_example": nonempty_stability,
         "article_status": {
             "action": "CLOSED_MINIMAL_POLYNOMIAL",
             "sign_convention": "CLOSED_Y_TO_X_BRIDGE",

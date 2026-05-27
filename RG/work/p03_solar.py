@@ -15,6 +15,8 @@ Status:
   PPN parameters alpha_1, alpha_2, alpha_3 are derived.
 """
 
+import math
+
 import sympy as sp
 from p01_core import get_polynomial_lagrangian
 
@@ -539,6 +541,101 @@ def cassini_gamma_gate(gamma_value=1.0):
         "conservative_bound": conservative_bound,
         "source": "Bertotti, Iess, Tortora, Nature 425, 374-376 (2003)",
         "not_claimed": "Cassini pass before gamma is derived from RG stress/exterior equations",
+    }
+
+
+def q2pn_cassini_scale_estimate(q_rg=sp.Integer(10), b_over_r_sun=1.0):
+    """
+    Numerical scale of the q_2PN=10 branch near the solar limb.
+
+    This is not a Cassini likelihood and not a formal exclusion.  It converts
+    the minimal isotropic 2PN branch into the size of the local optical-index
+    correction and the one-way 2PN Shapiro delay scale.
+    """
+    q_gr = sp.Rational(7, 4)
+    delta_q = sp.simplify(q_rg - q_gr)
+
+    rg_sun_m = 1.4766250385e3  # GM_sun/c^2
+    r_sun_m = 6.957e8
+    c_m_s = 299_792_458.0
+    u_limb = rg_sun_m / (r_sun_m * b_over_r_sun)
+
+    local_equiv_delta_gamma = float(delta_q) * u_limb
+    local_relative_to_1pn_index = local_equiv_delta_gamma / 2.0
+    extra_delay_s = float(delta_q) * math.pi * rg_sun_m**2 / (
+        c_m_s * r_sun_m * b_over_r_sun
+    )
+    extra_path_m = c_m_s * extra_delay_s
+
+    cassini_central = 2.1e-5
+    cassini_sigma = 2.3e-5
+    cassini_conservative = abs(cassini_central) + cassini_sigma
+
+    return {
+        "status": "NEAR_CASSINI_SENSITIVITY_REQUIRES_FULL_2PN_FIT",
+        "q_RG": q_rg,
+        "q_GR": q_gr,
+        "Delta_q": delta_q,
+        "solar_limb_u": u_limb,
+        "b_over_R_sun": b_over_r_sun,
+        "local_equivalent_gamma_minus_1_proxy": local_equiv_delta_gamma,
+        "local_relative_to_1PN_index": local_relative_to_1pn_index,
+        "one_way_extra_2PN_delay_seconds": extra_delay_s,
+        "one_way_extra_2PN_light_path_meters": extra_path_m,
+        "cassini_gamma_minus_1_central": cassini_central,
+        "cassini_gamma_sigma": cassini_sigma,
+        "cassini_conservative_gamma_bound": cassini_conservative,
+        "proxy_in_sigma_units": local_equiv_delta_gamma / cassini_sigma,
+        "proxy_fraction_of_conservative_bound": (
+            local_equiv_delta_gamma / cassini_conservative
+        ),
+        "proxy_verdict": (
+            "not a formal exclusion by itself; the signal is close enough to "
+            "Cassini sensitivity that a full 2PN Doppler/Shapiro fit is mandatory"
+        ),
+    }
+
+
+def preferred_frame_velocity_risk_estimate():
+    """
+    Preferred-frame risk scale from the Solar System velocity relative to CMB.
+
+    This does not derive alpha_i.  It quantifies why an O(1) preferred-frame
+    coefficient would be fatal and why alpha_i must be derived as zero or
+    screened/suppressed in the moving-source sector.
+    """
+    v_cmb_m_s = 369_000.0
+    c_m_s = 299_792_458.0
+    beta_cmb = v_cmb_m_s / c_m_s
+    limits = {
+        "alpha_1": 1.0e-4,
+        "alpha_2": 1.0e-7,
+        "alpha_3": 1.0e-20,
+    }
+    natural_signal_scale = {
+        key: beta_cmb * value
+        for key, value in {
+            "alpha_1_if_O1": 1.0,
+            "alpha_2_if_O1": 1.0,
+            "alpha_3_if_O1": 1.0,
+        }.items()
+    }
+    required_suppressions = {
+        key: limit for key, limit in limits.items()
+    }
+    return {
+        "status": "NOT_DERIVED_STATIC_BRANCH_INSUFFICIENT",
+        "solar_system_speed_relative_to_CMB_m_s": v_cmb_m_s,
+        "beta_CMB": beta_cmb,
+        "beta_CMB_squared": beta_cmb**2,
+        "preferred_frame_limits_used": limits,
+        "natural_O1_velocity_signal_scale": natural_signal_scale,
+        "required_alpha_i_suppression": required_suppressions,
+        "verdict": (
+            "the static spherical 1PN branch cannot determine alpha_i; a boosted "
+            "or moving-source calculation must derive alpha_1=alpha_2=alpha_3=0 "
+            "or an explicit suppression mechanism"
+        ),
     }
 
 if __name__ == "__main__":
@@ -1075,6 +1172,8 @@ def article_solar_theorem():
     one_pn_derivation = solar_1pn_branch_derivation_theorem()
     ppn_scope = ppn_scope_and_preferred_frame_gate()
     cassini = cassini_gamma_gate()
+    q2pn_scale = q2pn_cassini_scale_estimate()
+    preferred_frame_scale = preferred_frame_velocity_risk_estimate()
     shapiro_2pn = calculate_shapiro_2pn_discriminator()
     bending_2pn = calculate_light_deflection_2pn_discriminator()
     optical_bridge = isotropic_optical_index_2pn_bridge()
@@ -1106,6 +1205,7 @@ def article_solar_theorem():
             "bound_used": cassini["conservative_bound"],
         },
         "ppn_scope": ppn_scope,
+        "preferred_frame_velocity_risk": preferred_frame_scale,
         "two_pn_discriminator": {
             "status": "OPEN_DISCRIMINATOR",
             "O2_residual_on_1PN_branch": one_pn["O2_residual_on_this_branch"],
@@ -1133,6 +1233,7 @@ def article_solar_theorem():
                 ],
                 "article_reading": isotropic_closure["article_reading"],
             },
+            "q2pn_observational_scale": q2pn_scale,
             "reading": (
                 "Exact GR-like 2PN stress-free closure sends c_Y2=c_YI1=0 "
                 "on the nontrivial 1PN branch; the nonzero O(U^2) residual is "
@@ -1177,10 +1278,12 @@ def article_solar_theorem():
             "full_ppn": ppn_scope["status"],
             "cassini_if_gamma_derived": cassini["status"],
             "two_pn": "OPEN_DISCRIMINATOR",
+            "two_pn_observational_scale": q2pn_scale["status"],
             "isotropic_2pn_closure": isotropic_closure["status"],
             "two_pn_observable_candidates": (
                 "CONDITIONAL_CANDIDATES_NOT_FINAL_PREDICTIONS"
             ),
+            "preferred_frame_velocity_risk": preferred_frame_scale["status"],
             "rotating_sources": frame_dragging_gate()["status"],
         },
     }
@@ -1200,10 +1303,11 @@ def solar_system_claim_gate():
         ),
         "mercury": mercury_precession_gate()["status"],
         "cassini_shapiro_1PN": cassini_gamma_gate()["status"],
+        "q2pn_cassini_scale": q2pn_cassini_scale_estimate()["status"],
         "shapiro_2PN": calculate_shapiro_2pn_discriminator()["status"],
         "light_bending_2PN": calculate_light_deflection_2pn_discriminator()["status"],
         "frame_dragging": frame_dragging_gate()["status"],
-        "preferred_frame": "BLOCKED_UNTIL_ALPHA_I_ZERO_DERIVED",
+        "preferred_frame": preferred_frame_velocity_risk_estimate()["status"],
         "do_not_claim": [
             "do not claim full Solar-System pass",
             "do not claim exact GR-like 2PN stress-free exterior for nonzero coefficients",
