@@ -544,6 +544,62 @@ def cassini_gamma_gate(gamma_value=1.0):
     }
 
 
+def solar_ansatz_scope_table():
+    """
+    Reviewer-facing map of the Solar ansatzes used in the article.
+
+    The weak-field section uses three related but distinct metric/coordinate
+    ansatzes.  Keeping them in one table prevents the minimal truncation,
+    isotropic 2PN closure, and S=6 completion branch from being read as the
+    same exterior solution.
+    """
+    U, u, gamma, beta, b2 = sp.symbols("U u gamma beta b_2", real=True)
+    A_area = "Schwarzschild-like areal radial coefficient, expanded through 1PN"
+    B_area = "Schwarzschild-like time coefficient, expanded through 1PN"
+    A_iso = 1 - 2 * u + 2 * beta * u**2
+    B_iso = 1 + 2 * gamma * u + b2 * u**2
+    A_completion = 1 + 2 * U + 4 * U**2
+    B_completion = 1 - 2 * U
+
+    static_spherical_invariants = {
+        "B_AB_eigenvalues": [sp.Symbol("A") ** -1, 1, 1],
+        "I1": 2 + sp.Symbol("A") ** -1,
+        "I2": 1 + 2 * sp.Symbol("A") ** -1,
+        "I3": sp.Symbol("A") ** -1,
+        "Y": sp.Symbol("B") ** -1,
+    }
+
+    return {
+        "status": "PASS_SOLAR_ANSATZ_SCOPE_TABLE",
+        "static_spherical_invariant_derivation": static_spherical_invariants,
+        "rows": [
+            {
+                "ansatz": "areal-radius PN",
+                "A_r": A_area,
+                "B_t": B_area,
+                "scope": "minimal 7-coefficient truncation, 1PN stress closure",
+            },
+            {
+                "ansatz": "isotropic 2PN",
+                "A_r": A_iso,
+                "B_t": B_iso,
+                "scope": "minimal isotropic closure and b2/q_2PN derivation",
+            },
+            {
+                "ansatz": "S=6 completion 1PN",
+                "A_r": A_completion,
+                "B_t": B_completion,
+                "scope": "completion branch showing LCDM plus Solar 1PN closure",
+            },
+        ],
+        "article_rule": (
+            "q_2PN=10 belongs to the minimal isotropic closure; the S=6 "
+            "completion needs a separate isotropic 2PN exterior before q_2PN "
+            "can be assigned to it"
+        ),
+    }
+
+
 def q2pn_cassini_scale_estimate(q_rg=sp.Integer(10), b_over_r_sun=1.0):
     """
     Numerical scale of the q_2PN=10 branch near the solar limb.
@@ -970,6 +1026,72 @@ def standard_ppn_alpha_i_export_table():
         "scope": (
             "standard PPN alpha_i export after the minimal moving-source RG "
             "vector-source check; full solar-system likelihood remains separate"
+        ),
+    }
+
+
+def preferred_frame_alpha_i_appendix_payload():
+    """
+    Full article appendix payload for alpha_1=alpha_2=alpha_3=0.
+
+    This collects the four steps a reader needs to reproduce the preferred-
+    frame claim without hunting through the code: boosted background stress,
+    vector source, standard PPN matcher, and the final alpha table.
+    """
+    background = preferred_frame_background_stress_theorem()
+    vector_source = moving_source_rg_vector_source_theorem()
+    matcher = standard_ppn_alpha_i_matcher()
+    export_table = standard_ppn_alpha_i_export_table()
+    chain = preferred_frame_alpha_i_closure_chain()
+
+    status = (
+        "PASS_ALPHA_I_APPENDIX_PAYLOAD"
+        if background["status"] == "PASS_BACKGROUND_PREFERRED_FRAME_STRESS_ON_1PN_BRANCH"
+        and vector_source["status"] == "PASS_RG_VECTOR_SOURCE_ABSENT_ON_1PN_BRANCH"
+        and matcher["status"] == "PASS_STANDARD_PPN_MATCH_FORCES_ALPHA_I_ZERO"
+        and export_table["status"] == "PASS_STANDARD_PPN_ALPHA_I_EXPORT_TABLE"
+        and chain["status"] == "PASS_MINIMAL_MOVING_SOURCE_ALPHA_I_CHAIN"
+        else "CHECK_ALPHA_I_APPENDIX_PAYLOAD"
+    )
+
+    return {
+        "status": status,
+        "step_1_boosted_background": {
+            "status": background["status"],
+            "common_prefactor_K_pf": background["common_prefactor_K_pf"],
+            "branch_prefactor": background["solar_1PN_branch_prefactor"],
+            "T0i_residuals": background[
+                "solar_1PN_branch_T0i_linear_residuals"
+            ],
+            "anisotropy_residuals": background[
+                "solar_1PN_branch_spatial_anisotropy_residuals"
+            ],
+        },
+        "step_2_rg_vector_source": {
+            "status": vector_source["status"],
+            "h_matrix_on_branch": vector_source[
+                "h_linear_matrix_on_1PN_branch"
+            ],
+            "v_matrix_on_branch": vector_source[
+                "v_linear_matrix_on_1PN_branch"
+            ],
+        },
+        "step_3_standard_ppn_matcher": {
+            "status": matcher["status"],
+            "vector_coefficients": matcher["ppn_vector_coefficients"],
+            "preferred_frame_coefficients": matcher[
+                "ppn_g00_preferred_frame_coefficients"
+            ],
+            "solution": matcher["solution"],
+            "residuals_after_solution": matcher["residuals_after_solution"],
+            "remaining_non_alpha_condition": matcher[
+                "remaining_non_alpha_condition"
+            ],
+        },
+        "step_4_alpha_table": export_table["rows"],
+        "scope": (
+            "minimal one-metric moving-source alpha_i proof; raw solar-system "
+            "ephemeris likelihood remains outside this appendix"
         ),
     }
 
@@ -2034,6 +2156,7 @@ def article_solar_theorem():
     one_pn = solar_1pn_closure_branch()
     one_pn_derivation = solar_1pn_branch_derivation_theorem()
     ppn_scope = ppn_scope_and_preferred_frame_gate()
+    ansatz_scope = solar_ansatz_scope_table()
     cassini = cassini_gamma_gate()
     q2pn_scale = q2pn_cassini_scale_estimate()
     q2pn_optical_observables = derive_general_q2pn_optical_observables()
@@ -2046,6 +2169,7 @@ def article_solar_theorem():
     rg_vector_source = moving_source_rg_vector_source_theorem()
     alpha_i_chain = preferred_frame_alpha_i_closure_chain()
     alpha_i_export = standard_ppn_alpha_i_export_table()
+    alpha_i_appendix = preferred_frame_alpha_i_appendix_payload()
     frame_dragging_chain = frame_dragging_minimal_1p5pn_chain()
     shapiro_2pn = calculate_shapiro_2pn_discriminator()
     bending_2pn = calculate_light_deflection_2pn_discriminator()
@@ -2078,12 +2202,14 @@ def article_solar_theorem():
             "bound_used": cassini["conservative_bound"],
         },
         "ppn_scope": ppn_scope,
+        "solar_ansatz_scope_table": ansatz_scope,
         "preferred_frame_velocity_risk": preferred_frame_scale,
         "preferred_frame_background_stress": preferred_frame_background,
         "standard_ppn_alpha_i_matcher": alpha_i_matcher,
         "moving_source_rg_vector_source": rg_vector_source,
         "preferred_frame_alpha_i_closure_chain": alpha_i_chain,
         "standard_ppn_alpha_i_export_table": alpha_i_export,
+        "preferred_frame_alpha_i_appendix_payload": alpha_i_appendix,
         "frame_dragging_minimal_1p5pn_chain": frame_dragging_chain,
         "two_pn_discriminator": {
             "status": "OPEN_DISCRIMINATOR",
@@ -2160,6 +2286,7 @@ def article_solar_theorem():
             "one_pn": "CLOSED_COEFFICIENT_BRANCH",
             "full_ppn": ppn_scope["status"],
             "cassini_if_gamma_derived": cassini["status"],
+            "solar_ansatz_scope_table": ansatz_scope["status"],
             "two_pn": "OPEN_DISCRIMINATOR",
             "two_pn_observational_scale": q2pn_scale["status"],
             "general_q2pn_optical_observables": q2pn_optical_observables["status"],
@@ -2176,6 +2303,7 @@ def article_solar_theorem():
             "moving_source_rg_vector_source": rg_vector_source["status"],
             "preferred_frame_alpha_i_closure_chain": alpha_i_chain["status"],
             "standard_ppn_alpha_i_export_table": alpha_i_export["status"],
+            "preferred_frame_alpha_i_appendix_payload": alpha_i_appendix["status"],
             "rotating_sources": frame_dragging_chain["status"],
         },
     }

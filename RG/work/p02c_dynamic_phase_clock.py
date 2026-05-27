@@ -608,7 +608,9 @@ def completion_branch_local_perturbation_theorem():
     Local perturbation theorem for the S/Z completion branch.
 
     Work around the normalized local background Phi=t, phi^A=x^A.  Use the
-    Stückelberg convention phi^A=x^A-pi^A.  To first order,
+    article Stückelberg convention phi^A=x^A+pi^A; this pi is the opposite of
+    the common solid-displacement variable sometimes written in the literature.
+    To first order,
 
         delta S = 2 (dot chi - div pi),
 
@@ -689,6 +691,11 @@ def completion_branch_local_perturbation_theorem():
         "scalar_longitudinal_determinant": determinant,
         "scalar_longitudinal_determinant_in_s": determinant_in_s,
         "scalar_longitudinal_roots": [sp.Eq(s, 1)],
+        "degeneracy_interpretation": (
+            "the square in s=omega^2/k^2 represents the two luminal "
+            "characteristics omega=+k and omega=-k in the scalar-longitudinal "
+            "block; it is not a separate nonluminal speed"
+        ),
         "transverse_symbol": transverse_symbol,
         "transverse_status": (
             "POSITIVE_KINETIC_ZERO_LEADING_GRADIENT_IN_SCALAR_COMPLETION"
@@ -696,6 +703,148 @@ def completion_branch_local_perturbation_theorem():
         "article_use": (
             "local no-ghost and scalar-longitudinal principal-symbol check for "
             "the S/Z global completion branch"
+        ),
+    }
+
+
+def completion_z_sign_and_degeneracy_audit():
+    """
+    Explicit sign audit for the Z invariant and the degenerate characteristic.
+
+    The article convention is phi^A=x^A+pi^A.  A reviewer using the opposite
+    displacement phi^A=x^A-pi^A must replace pi -> -pi everywhere; otherwise
+    delta S and Z are mixed with inconsistent signs.  This function records
+    both the article convention and the opposite-displacement warning.
+    """
+    omega, k = sp.symbols("omega k", positive=True, real=True)
+    lambda_S, c_Z = sp.symbols("lambda_S c_Z", positive=True)
+    chi, pi_L = sp.symbols("chi pi_L", real=True)
+
+    u_partial_phi_linear = "dot(pi)^A - partial^A(chi)"
+    z_quadratic = "(dot(pi)_i - partial_i(chi))^2"
+    L2 = sp.expand(
+        4 * lambda_S * (omega * chi - k * pi_L) ** 2
+        + c_Z * (omega * pi_L - k * chi) ** 2
+    )
+    principal_matrix = sp.Matrix(
+        [
+            [sp.simplify(sp.diff(L2, left, right) / 2) for right in (chi, pi_L)]
+            for left in (chi, pi_L)
+        ]
+    )
+    determinant = sp.factor(principal_matrix.det())
+    determinant_expected = 4 * c_Z * lambda_S * (omega**2 - k**2) ** 2
+    nullspace_plus = principal_matrix.subs(omega, k).nullspace()
+    nullspace_minus = principal_matrix.subs(omega, -k).nullspace()
+
+    status = (
+        "PASS_Z_SIGN_AND_LUMINAL_DEGENERACY_AUDIT"
+        if sp.simplify(determinant - determinant_expected) == 0
+        and len(nullspace_plus) == 1
+        and len(nullspace_minus) == 1
+        else "CHECK_Z_SIGN_AND_LUMINAL_DEGENERACY_AUDIT"
+    )
+
+    return {
+        "status": status,
+        "u_partial_phi_linear": u_partial_phi_linear,
+        "Z_quadratic": z_quadratic,
+        "opposite_displacement_rule": "if phi^A=x^A-pi^A is used, replace pi -> -pi consistently in delta S and Z",
+        "scalar_longitudinal_L2": L2,
+        "principal_matrix": principal_matrix,
+        "determinant": determinant,
+        "nullspace_at_omega_plus_k": nullspace_plus,
+        "nullspace_at_omega_minus_k": nullspace_minus,
+        "interpretation": (
+            "each luminal direction has a one-dimensional scalar-longitudinal "
+            "nullspace; the repeated root in s is a compact way of writing the "
+            "two signs of the luminal characteristic"
+        ),
+    }
+
+
+def completion_phase_current_theorem():
+    """
+    Phase-current check for the S=6 completion branch.
+
+    The minimal dynamic-clock current and the completion current are different
+    objects.  For L=lambda_S(S-6)^2-rho0 on FLRW, the completion contribution
+    to the Phi current is proportional to S-6 and therefore vanishes exactly
+    on the S=6 branch.
+    """
+    a, u = sp.symbols("a u", positive=True)
+    lambda_S, rho_0 = sp.symbols("lambda_S rho_0", positive=True)
+    x = a ** -2
+    S_minus_6 = u**2 + 6 * x - x**3 - 6
+    L_completion = lambda_S * S_minus_6**2 - rho_0
+    canonical_current_density = sp.simplify(sp.diff(L_completion, u))
+    canonical_charge = sp.simplify(a**3 * canonical_current_density)
+    branch_u2 = sp.simplify(6 - 6 * x + x**3)
+    current_on_branch = sp.simplify(
+        canonical_charge.subs(u**2, branch_u2)
+    )
+
+    return {
+        "status": (
+            "PASS_COMPLETION_PHASE_CURRENT_VANISHES_ON_S6_BRANCH"
+            if current_on_branch == 0
+            else "CHECK_COMPLETION_PHASE_CURRENT"
+        ),
+        "S_minus_6_FLRW": S_minus_6,
+        "L_completion": L_completion,
+        "canonical_current_density": canonical_current_density,
+        "canonical_charge": canonical_charge,
+        "S6_branch_u2": sp.Eq(u**2, branch_u2),
+        "current_on_S6_branch": current_on_branch,
+        "interpretation": (
+            "the completion modifies the off-branch Phi equation, but the "
+            "exact S=6 background solves the completion-current contribution "
+            "with J_Phi=0"
+        ),
+    }
+
+
+def completion_q2pn_scope_gate():
+    """
+    Scope gate for q_2PN on the S=6 completion branch.
+
+    The q_2PN=10 number is derived in p03 from the minimal isotropic
+    stress-free closure.  The S=6 completion branch closes background LCDM and
+    Solar 1PN in a different ansatz; it does not by itself fix an isotropic
+    2PN optical coefficient.
+    """
+    U, u, b2 = sp.symbols("U u b2", real=True)
+
+    A_completion = 1 + 2 * U + 4 * U**2
+    B_completion = 1 - 2 * U
+    S_completion_series = sp.series(
+        1 / B_completion
+        + 2 * (2 + 1 / A_completion)
+        - 1 / A_completion
+        - 6,
+        U,
+        0,
+        4,
+    ).removeO().expand()
+
+    A_iso = 1 - 2 * u + 2 * u**2
+    B_iso = 1 + 2 * u + b2 * u**2
+    S_iso_series = sp.series(
+        1 / A_iso + 2 * (3 / B_iso) - 1 / B_iso**3 - 6,
+        u,
+        0,
+        3,
+    ).removeO().expand()
+
+    return {
+        "status": "COMPLETION_Q2PN_NOT_FIXED_BY_CURRENT_S6_1PN_BRANCH",
+        "completion_1PN_ansatz_S_minus_6_series": S_completion_series,
+        "isotropic_2PN_unitary_ansatz_S_minus_6_series": S_iso_series,
+        "minimal_truncation_q2PN_status": "q_2PN=10 belongs to p03 minimal isotropic stress-free closure",
+        "completion_status": (
+            "S=6 completion closes LCDM and Solar 1PN; a separate isotropic "
+            "2PN exterior solution is required before assigning q_2PN to this "
+            "completion branch"
         ),
     }
 
@@ -808,6 +957,9 @@ def article_dynamic_phase_clock_theorem():
     lcdm_residuals = compressed_lcdm_background_residual_check()
     global_completion = global_lcdm_solar_completion_theorem()
     completion_perturbations = completion_branch_local_perturbation_theorem()
+    z_sign_audit = completion_z_sign_and_degeneracy_audit()
+    completion_current = completion_phase_current_theorem()
+    completion_q2pn_scope = completion_q2pn_scope_gate()
     early = early_scaling_after_zero_current()
 
     return {
@@ -839,6 +991,9 @@ def article_dynamic_phase_clock_theorem():
         "compressed_lcdm_background_residual_check": lcdm_residuals,
         "global_lcdm_solar_completion": global_completion,
         "completion_branch_local_perturbations": completion_perturbations,
+        "completion_z_sign_and_degeneracy_audit": z_sign_audit,
+        "completion_phase_current": completion_current,
+        "completion_q2pn_scope": completion_q2pn_scope,
         "background_observables": {
             "status": observables["status"],
             "rho_RG": observables["rho_RG"],
@@ -862,6 +1017,9 @@ def article_dynamic_phase_clock_theorem():
             "compressed_background_residuals": lcdm_residuals["status"],
             "global_lcdm_solar_completion": global_completion["status"],
             "completion_local_perturbations": completion_perturbations["status"],
+            "completion_z_sign_and_degeneracy": z_sign_audit["status"],
+            "completion_phase_current": completion_current["status"],
+            "completion_q2pn_scope": completion_q2pn_scope["status"],
             "observational_fit": (
                 "GLOBAL_BACKGROUND_1PN_COMPLETION_CLOSED__LIKELIHOOD_REQUIRED"
             ),
