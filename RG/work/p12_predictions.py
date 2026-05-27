@@ -6,21 +6,21 @@
 
 """
 ================================================================================
-PHASE 36: RFG-სპეციფიკური უნიკალური ფალსიფიცირებადი პროგნოზები
+PHASE 36: RG-სპეციფიკური უნიკალური ფალსიფიცირებადი პროგნოზები
 ================================================================================
 
 სტატუსი:
 Strategy 3 / X3-ის შესრულება. ეს ფაილი არჩევს მხოლოდ იმ ტესტებს, რომლებიც
-შეიძლება RFG-ს გამოარჩევდეს GR/MOND/AQUAL/TeVeS/RMOND/AeST-გან.
+შეიძლება RG-ს გამოარჩევდეს GR/MOND/AQUAL/TeVeS/RMOND/AeST-გან.
 ეს არის prediction ledger და claim gate, არა დასრულებული prediction paper.
 
 მკაცრი კლასიფიკაცია:
-    C1. N=4 lepton-like resonance: RFG-specific მხოლოდ მაშინ, თუ phase35
+    C1. N=4 lepton-like resonance: RG-specific მხოლოდ მაშინ, თუ phase35
         N-ladder-ს ფესვიდან გამოიყვანს. ამ ეტაპზე პირობითია.
     C2. a_0(z): shared/phenomenological; MOND-family-სგან ბოლომდე არ გამოარჩევს.
     C3. photon ring: shared with many regular-BH models.
     C4. scalar breathing: shared with scalar-tensor theories.
-    C5. framed vortex in dipolar supersolid: best near-term RFG candidate,
+    C5. framed vortex in dipolar supersolid: best near-term RG candidate,
         but not proven unique until the framing observable is derived.
 
 ამიტომ phase36-ის მკაცრი deliverable არის:
@@ -73,13 +73,13 @@ def n4_fixed_prediction():
         "band_keV": ((center_mev - band_mev) * 1000, (center_mev + band_mev) * 1000),
         "active_prediction": False,
         "model_band_not_experimental_sigma": True,
-        "rfg_uniqueness": "conditional: unique only if phase35 derives N-ladder",
+        "rg_uniqueness": "conditional: unique only if phase35 derives N-ladder",
         "particle_update": "legacy/suspended under C3 charged-lepton route",
         "operational_falsifier": False,
         "falsification": "blocked until coupling, decay channel, lifetime, spin/charge, and search topology are specified",
         "required_gates": [
             "derive radial N-ladder independently of lepton masses",
-            "derive the q-correction from the RFG oscillon operator",
+            "derive the q-correction from the RG oscillon operator",
             "specify coupling, production rate, decay width, and lifetime",
             "map existing exclusion bounds for the chosen channel",
         ],
@@ -106,7 +106,7 @@ def x17_atomki_consistency():
         "harmonic_mass_MeV": harmonic_mev,
         "fractional_error": fractional_error,
         "verdict": "weak/conditional bridge; do not identify X17 with N=4",
-        "needed": "derive an RFG transition/coupling rule before claiming an X17 explanation",
+        "needed": "derive an RG transition/coupling rule before claiming an X17 explanation",
         "post_hoc_integer": nearest_integer,
         "operational_claim": False,
     }
@@ -114,10 +114,10 @@ def x17_atomki_consistency():
 
 def framed_vortex_protocol():
     """
-    Best near-term RFG laboratory candidate.
+    Best near-term RG laboratory candidate.
 
     The strong claim is gated: Tw alone is not generally topologically
-    frozen because Lk = Wr + Tw. RFG must define the physical framing
+    frozen because Lk = Wr + Tw. RG must define the physical framing
     vector, show why half-integer classes are protected, and distinguish
     the signal from conventional half-quantum/director vortices.
     """
@@ -144,12 +144,12 @@ def framed_vortex_protocol():
         "name": "C5_Dy_Er_framed_vortex",
         "legacy_name": "C5_Eu_Dy_framed_vortex",
         "observable": "candidate twist/framing class Tw of vortex core",
-        "conditional_prediction": "Tw in half-integer classes if RFG framing vector is physically realized",
+        "conditional_prediction": "Tw in half-integer classes if RG framing vector is physically realized",
         "null_result": "validated measurement map finds continuous unprotected framing distribution",
-        "positive_result": "robust half-integer class with RFG-specific discriminator survives systematics",
-        "rfg_specific_status": "best candidate, not proven unique",
+        "positive_result": "robust half-integer class with RG-specific discriminator survives systematics",
+        "rg_specific_status": "best candidate, not proven unique",
         "required_gates": [
-            "derive physical framing vector from RFG medium variables",
+            "derive physical framing vector from RG medium variables",
             "prove half-integer class protection despite Wr/Tw exchange",
             "define image/phase reconstruction protocol for Tw",
             "quantify finite-temperature, trap, density, and reconnection systematics",
@@ -160,7 +160,7 @@ def framed_vortex_protocol():
 
 
 def shared_prediction_audit():
-    """Candidate-ები, რომლებიც სასარგებლოა, მაგრამ RFG-ს უნიკალურად არ არჩევს."""
+    """Candidate-ები, რომლებიც სასარგებლოა, მაგრამ RG-ს უნიკალურად არ არჩევს."""
     return [
         {
             "name": "C2_a0_redshift",
@@ -189,14 +189,14 @@ def unique_scorecard():
     return [
         {
             "candidate": "C1 N=4 329 keV",
-            "rfg_specific": "legacy conditional",
+            "rg_specific": "legacy conditional",
             "time_window": "now, if coupling/search channel specified",
             "falsifiable_number": f"{c1['legacy_center_keV']:.0f} keV model band; not active prediction",
             "operational_ready": c1["operational_falsifier"],
         },
         {
             "candidate": "C5 framed vortex",
-            "rfg_specific": c5["rfg_specific_status"],
+            "rg_specific": c5["rg_specific_status"],
             "time_window": "near-term cold atom labs after measurement protocol",
             "falsifiable_number": "conditional Tw = n/2 classes",
             "operational_ready": False,
@@ -206,9 +206,9 @@ def unique_scorecard():
 
 def status_assessment():
     return {
-        "closed_now": "No observationally ready unique RFG prediction is closed in this file.",
+        "closed_now": "No observationally ready unique RG prediction is closed in this file.",
         "c1_status": "legacy conditional after phase37-44; not a main prediction unless radial N-ladder is revived and couplings are specified.",
-        "c5_status": "best near-term candidate, but still needs framing observable and non-RFG background rejection.",
+        "c5_status": "best near-term candidate, but still needs framing observable and non-RG background rejection.",
         "dependency": "particle-sector main route is now phase37-44 C3/order-9 candidate, not N-ladder.",
     }
 
@@ -229,7 +229,7 @@ def external_observational_bounds():
         {
             "sector": "dipolar supersolid vortices",
             "anchor": "Vortices have been observed in dipolar supersolids, making a vortex protocol experimentally plausible.",
-            "impact": "C5 platform plausible; RFG-specific framing signal still not derived.",
+            "impact": "C5 platform plausible; RG-specific framing signal still not derived.",
             "source": "Nature 2024 Observation of vortices in a dipolar supersolid",
         },
         {
@@ -256,37 +256,37 @@ def external_observational_bounds():
 def old_ispg_prediction_constants():
     """Numerical constants recovered from the old ISPG prediction package."""
     phi = (1.0 + math.sqrt(5.0)) / 2.0
-    isco_rfg_over_rs = phi**2
+    isco_rg_over_rs = phi**2
     isco_gr_iso_over_rs = (5.0 + 2.0 * math.sqrt(6.0)) / 4.0
     shadow_ratio = 2.0 * math.e / (3.0 * math.sqrt(3.0))
     shapiro_delta_b = math.pi / 4.0
     bending_ratio = 16.0 / 15.0
 
-    # Phase18 expression: Omega_RFG^2/Omega_GR^2 at their respective ISCO radii.
-    omega_rfg_sq_over_gr_sq = (
+    # Phase18 expression: Omega_RG^2/Omega_GR^2 at their respective ISCO radii.
+    omega_rg_sq_over_gr_sq = (
         108.0
         * math.exp(-4.0 / (math.sqrt(5.0) + 3.0))
         / (29.0 + 13.0 * math.sqrt(5.0))
     )
-    frequency_ratio = math.sqrt(omega_rfg_sq_over_gr_sq)
+    frequency_ratio = math.sqrt(omega_rg_sq_over_gr_sq)
 
     return {
         "golden_ratio_phi": phi,
-        "r_ISCO_over_r_s": isco_rfg_over_rs,
+        "r_ISCO_over_r_s": isco_rg_over_rs,
         "GR_isotropic_ISCO_over_r_s": isco_gr_iso_over_rs,
-        "ISCO_radius_ratio_RFG_over_GR_iso": isco_rfg_over_rs / isco_gr_iso_over_rs,
-        "ISCO_frequency_ratio_RFG_over_GR": frequency_ratio,
-        "shadow_ratio_RFG_over_GR": shadow_ratio,
+        "ISCO_radius_ratio_RG_over_GR_iso": isco_rg_over_rs / isco_gr_iso_over_rs,
+        "ISCO_frequency_ratio_RG_over_GR": frequency_ratio,
+        "shadow_ratio_RG_over_GR": shadow_ratio,
         "shadow_shift_percent": (shadow_ratio - 1.0) * 100.0,
         "Shapiro_Delta_B": shapiro_delta_b,
-        "bending_2PN_ratio_RFG_over_GR": bending_ratio,
+        "bending_2PN_ratio_RG_over_GR": bending_ratio,
         "bending_2PN_enhancement_percent": (bending_ratio - 1.0) * 100.0,
     }
 
 
-def old_to_rfg_prediction_map():
+def old_to_rg_prediction_map():
     """
-    Inventory of old-theory predictions and where the current RFG work
+    Inventory of old-theory predictions and where the current RG work
     now stores them. Status words are gate-aware: this is not an empirical
     pass table.
     """
@@ -294,7 +294,7 @@ def old_to_rfg_prediction_map():
         {
             "sector": "weak field",
             "old_prediction": "gamma=beta=1; 1PN solar-system tests match GR",
-            "rfg_status": "branch consistency benchmark",
+            "rg_status": "branch consistency benchmark",
             "claim_class": "branch_benchmark",
             "claim_gate": "p03 solar residual and preferred-frame gates",
             "current_file": "p03_solar.py",
@@ -302,8 +302,8 @@ def old_to_rfg_prediction_map():
         },
         {
             "sector": "2PN light propagation",
-            "old_prediction": "2PN Shapiro RFG-GR differential Delta_B=pi/4",
-            "rfg_status": "branch consistency benchmark",
+            "old_prediction": "2PN Shapiro RG-GR differential Delta_B=pi/4",
+            "rg_status": "branch consistency benchmark",
             "claim_class": "branch_benchmark",
             "claim_gate": "p03 Cassini/2PN observable gate",
             "current_file": "p03_solar.py",
@@ -312,16 +312,16 @@ def old_to_rfg_prediction_map():
         {
             "sector": "2PN light propagation",
             "old_prediction": "2PN bending term enhanced by 16/15 over GR",
-            "rfg_status": "branch consistency benchmark",
+            "rg_status": "branch consistency benchmark",
             "claim_class": "branch_benchmark",
             "claim_gate": "p03 high-precision astrometry gate",
             "current_file": "p03_solar.py",
-            "formula": "theta_RFG=2r_s/b+pi*r_s^2/b^2",
+            "formula": "theta_RG=2r_s/b+pi*r_s^2/b^2",
         },
         {
             "sector": "compact objects",
             "old_prediction": "curvature invariants vanish at r->0; no finite-radius horizon",
-            "rfg_status": "conditional compact-object construction",
+            "rg_status": "conditional compact-object construction",
             "claim_class": "conditional_ledger",
             "claim_gate": "p05 global solution, collapse, and stability gates",
             "current_file": "p05_compact.py",
@@ -330,7 +330,7 @@ def old_to_rfg_prediction_map():
         {
             "sector": "compact objects",
             "old_prediction": "golden-ratio ISCO",
-            "rfg_status": "conditional compact benchmark",
+            "rg_status": "conditional compact benchmark",
             "claim_class": "conditional_ledger",
             "claim_gate": "p05 ray-tracing and accretion-model gate",
             "current_file": "p05_compact.py",
@@ -339,16 +339,16 @@ def old_to_rfg_prediction_map():
         {
             "sector": "compact objects",
             "old_prediction": "photon sphere r_s and shadow b_c=e*r_s",
-            "rfg_status": "static benchmark only",
+            "rg_status": "static benchmark only",
             "claim_class": "conditional_ledger",
             "claim_gate": "EHT plasma/spin/inclination/ray-tracing likelihood gate",
             "current_file": "p05_compact.py",
-            "formula": "RFG shadow diameter is +4.63% vs GR",
+            "formula": "RG shadow diameter is +4.63% vs GR",
         },
         {
             "sector": "gravitational waves",
             "old_prediction": "c_g=c exactly; breathing mode suppressed",
-            "rfg_status": "conditional consistency with open polarization gate",
+            "rg_status": "conditional consistency with open polarization gate",
             "claim_class": "conditional_ledger",
             "claim_gate": "p04 LVK speed/polarization posterior gate",
             "current_file": "p04_gw.py",
@@ -357,7 +357,7 @@ def old_to_rfg_prediction_map():
         {
             "sector": "MOND/galaxies",
             "old_prediction": "a0=cH/(2*pi), mu=x/(1+x), BTFR, EFE",
-            "rfg_status": "candidate data benchmark",
+            "rg_status": "candidate data benchmark",
             "claim_class": "conditional_ledger",
             "claim_gate": "p07 SPARC/RAR/EFE likelihood gate",
             "current_file": "p07_mond.py",
@@ -366,7 +366,7 @@ def old_to_rfg_prediction_map():
         {
             "sector": "MOND/formation memory",
             "old_prediction": "age/redshift-dependent a0 and BTFR residuals",
-            "rfg_status": "seeded programme",
+            "rg_status": "seeded programme",
             "claim_class": "seeded",
             "claim_gate": "redshift galaxy sample and selection-function gate",
             "current_file": "p07_mond.py",
@@ -375,7 +375,7 @@ def old_to_rfg_prediction_map():
         {
             "sector": "cluster mergers",
             "old_prediction": "Bullet Cluster lensing peaks lock to galaxies via frozen hysteresis",
-            "rfg_status": "candidate merger benchmark",
+            "rg_status": "candidate merger benchmark",
             "claim_class": "conditional_ledger",
             "claim_gate": "p09 lensing map, gas model, and merger simulation gate",
             "current_file": "p09_bullet.py",
@@ -384,16 +384,16 @@ def old_to_rfg_prediction_map():
         {
             "sector": "CMB/cosmology",
             "old_prediction": "linear CMB sector matches LCDM in same-matter metric limit",
-            "rfg_status": "same-matter compatibility branch",
+            "rg_status": "same-matter compatibility branch",
             "claim_class": "branch_benchmark",
             "claim_gate": "p08 Boltzmann/Planck/BAO/BBN likelihood gate",
             "current_file": "p08_cmb.py",
-            "formula": "Phi_0=X_0=0 -> alpha_K=alpha_B=alpha_M=alpha_T=0 -> C_l^RFG=C_l^LCDM in same-matter limit",
+            "formula": "Phi_0=X_0=0 -> alpha_K=alpha_B=alpha_M=alpha_T=0 -> C_l^RG=C_l^LCDM in same-matter limit",
         },
         {
             "sector": "frame dragging",
             "old_prediction": "1.5PN Lense-Thirring matches GR; MOND rotation slot inert in Solar System",
-            "rfg_status": "conditional preferred-frame benchmark",
+            "rg_status": "conditional preferred-frame benchmark",
             "claim_class": "conditional_ledger",
             "claim_gate": "p03 g_0i/preferred-frame gate",
             "current_file": "p03_solar.py",
@@ -402,7 +402,7 @@ def old_to_rfg_prediction_map():
         {
             "sector": "quantum tests",
             "old_prediction": "gravitational dephasing, tunneling profile effects, birefringence",
-            "rfg_status": "open",
+            "rg_status": "open",
             "claim_class": "open",
             "claim_gate": "p10/p11 finite-energy oscillon and EM/gauge completion gates",
             "current_file": "future particle/quantum phase, phase37 particle-sector extension",
@@ -412,7 +412,7 @@ def old_to_rfg_prediction_map():
 
 
 def migrated_prediction_scorecard():
-    rows = old_to_rfg_prediction_map()
+    rows = old_to_rg_prediction_map()
     counts = {
         "active_unique_ready": 0,
         "branch_benchmark": 0,
@@ -463,7 +463,7 @@ def stage_d5_old_quantum_prediction_ledger():
         },
         "framed_vortex_lab": {
             "observable": "half-integer vortex framing/twist classes Tw=n/2 in dipolar supersolids",
-            "status": "best near-term candidate; RFG-specificity and measurement map still open",
+            "status": "best near-term candidate; RG-specificity and measurement map still open",
             "candidate_platforms": ["Dy/Er dipolar supersolids", "BEC vortex interferometry"],
         },
         "particle_legacy": {
@@ -502,11 +502,11 @@ def stage_d5_prediction_priority_order():
 def p12_do_not_claim():
     """Prediction-sector overclaim blacklist."""
     return [
-        "p12 contains an observationally confirmed unique RFG prediction.",
+        "p12 contains an observationally confirmed unique RG prediction.",
         "N=4 329 keV is an active main particle prediction.",
         "The 2 keV N4 band is an experimental sigma.",
         "X17 is explained or identified with the N4 branch.",
-        "C5 framed vortex is already proven RFG-specific.",
+        "C5 framed vortex is already proven RG-specific.",
         "Old ISPG predictions are recovered as observational passes.",
         "Planck/BAO/LSS/CMB likelihoods have been passed.",
         "EHT supports the static +4.63% shadow benchmark.",
@@ -527,11 +527,11 @@ def p12_prediction_claim_gate():
         "best_near_term_candidate": c5["name"],
         "c1_active_prediction": c1["active_prediction"],
         "c1_operational_falsifier": c1["operational_falsifier"],
-        "c5_rfg_specific_status": c5["rfg_specific_status"],
+        "c5_rg_specific_status": c5["rg_specific_status"],
         "migration_scorecard": score,
         "external_bounds": external_observational_bounds(),
         "hard_gates": [
-            "C5: derive measurable RFG framing vector and distinguish from conventional half-quantum/director vortices",
+            "C5: derive measurable RG framing vector and distinguish from conventional half-quantum/director vortices",
             "C1: derive N-ladder, q-correction, coupling, width, lifetime, and exclusion map",
             "X17: derive transition/coupling rule or keep as weak harmonic audit",
             "Classical predictions: import each p03-p09 claim gate, not free recovered labels",
@@ -545,7 +545,7 @@ def p12_prediction_claim_gate():
 
 if __name__ == "__main__":
     print("=" * 72)
-    print("PHASE 36: უნიკალური RFG ფალსიფიკატორები")
+    print("PHASE 36: უნიკალური RG ფალსიფიკატორები")
     print("=" * 72)
 
     print("\n1. C1 fixed N=4 prediction")
@@ -578,7 +578,7 @@ if __name__ == "__main__":
     print("\n5. Unique scorecard")
     for item in unique_scorecard():
         print(
-            f"  {item['candidate']:20s} | specific={item['rfg_specific']:11s} "
+            f"  {item['candidate']:20s} | specific={item['rg_specific']:11s} "
             f"| ready={item['operational_ready']} "
             f"| number={item['falsifiable_number']} | window={item['time_window']}"
         )
@@ -595,10 +595,10 @@ if __name__ == "__main__":
     for key, value in old_ispg_prediction_constants().items():
         print(f"  {key:38s}: {value:.8g}")
 
-    print("\n9. Old-to-RFG prediction migration map")
-    for item in old_to_rfg_prediction_map():
+    print("\n9. Old-to-RG prediction migration map")
+    for item in old_to_rg_prediction_map():
         print(
-            f"  {item['sector']:24s} | {item['rfg_status']:24s} "
+            f"  {item['sector']:24s} | {item['rg_status']:24s} "
             f"| gate={item['claim_gate']} | {item['current_file']}"
         )
 

@@ -13,13 +13,13 @@ p02: FLRW კოსმოლოგიური ფონი.
 - GR-ფორმის Friedmann bookkeeping იგივე-მატერიის ფონზე;
 - Phi(t)-ის Noether/conservation იდენტობა.
 
-ეს ფაილი არ ამტკიცებს სრულ RFG გრავიტაციულ ფონის დინამიკას. Friedmann-ის
+ეს ფაილი არ ამტკიცებს სრულ RG გრავიტაციულ ფონის დინამიკას. Friedmann-ის
 განტოლებები აქ არის სამუშაო bookkeeping branch, რომელიც შემდეგ უნდა შეიკრას
 სრული გრავიტაციული სექტორით და დაკვირვებითი ფიტით.
 
 Process-time ledger გატანილია p02b_process_time_ledger.py-ში.
 Dynamic phase-clock ledger გატანილია p02c_dynamic_phase_clock.py-ში.
-ფაილი არის სამუშაო ledger და არა RFG_Theory.md-ში პირდაპირ გადასატანი claim.
+ფაილი არის სამუშაო ledger და არა RG_Theory.md-ში პირდაპირ გადასატანი claim.
 """
 
 import sympy as sp
@@ -175,7 +175,7 @@ def get_friedmann_equations():
     """
     GR-ფორმის FLRW bookkeeping იგივე-მატერიის ფონზე.
 
-    ეს არ არის RFG გრავიტაციული სექტორის სრული გამოყვანა. Phi რჩება Phi(t)-ად;
+    ეს არ არის RG გრავიტაციული სექტორის სრული გამოყვანა. Phi რჩება Phi(t)-ად;
     strict Phi=t გამოიყენება მხოლოდ ცალკე diagnostic-ში.
     """
     rho_solid, p_iso_solid, a, _ = get_flrw_pressures()
@@ -203,7 +203,7 @@ def flrw_pressure_relaxation_interpretation():
     Interpretive bridge from Intuitive_Theory §6.3 to the p02 FLRW ledger.
 
     This does not replace FLRW expansion or redshift. It records the internal
-    RFG reading: the same background history can be read as substrate pressure
+    RG reading: the same background history can be read as substrate pressure
     relaxation while the metric branch remains the observational FLRW language.
     """
     a = sp.Symbol("a", positive=True)
@@ -219,7 +219,7 @@ def flrw_pressure_relaxation_interpretation():
             "a(t) grows; cosmological distances/redshift are described in the "
             "standard metric FLRW branch"
         ),
-        "internal_RFG_language": (
+        "internal_RG_language": (
             "substrate pressure relaxes; operational matter standards and "
             "clock readings are part of the changing medium"
         ),
@@ -368,7 +368,7 @@ def strict_clock_lambda_like_branch_theorem():
     """
     Conditional diagnostic: if the strict-clock closure holds, w=-1.
 
-    This is not the primary cosmological clock mechanism of RFG.  The dynamic
+    This is not the primary cosmological clock mechanism of RG.  The dynamic
     Phi_dot(a) branch in p02c keeps c_YI1 active and is the correct place for
     cosmological time-slowing physics.
     """
@@ -540,7 +540,7 @@ def early_component_status():
         "parametric_bounds": bounds,
         "pressure_relaxation_reading": (
             "these are substrate pressure/tension-memory components in the "
-            "internal RFG language, but observationally they remain constrained "
+            "internal RG language, but observationally they remain constrained "
             "as curvature-like, radiation-like, and stiff FLRW terms"
         ),
         "status": (
@@ -569,7 +569,7 @@ def cosmology_claim_gate():
     scaling_theorem = early_scaling_theorem()
 
     return {
-        "file_export_status": "LEDGER_ONLY_NOT_READY_FOR_RFG_THEORY_EXPORT",
+        "file_export_status": "LEDGER_ONLY_NOT_READY_FOR_RG_THEORY_EXPORT",
         "stress_theorem": stress_theorem["status"],
         "stress_algebra": "PASS" if (
             stress_check["rho_full_match"] and stress_check["p_iso_full_match"]
@@ -688,7 +688,7 @@ def module_status():
 
     return {
         "scope": "FLRW stress/Friedmann-bookkeeping/conservation ledger only",
-        "export_status": "LEDGER_ONLY_NOT_READY_FOR_RFG_THEORY_EXPORT",
+        "export_status": "LEDGER_ONLY_NOT_READY_FOR_RG_THEORY_EXPORT",
         "stress_check": stress_check,
         "stress_theorem": flrw_stress_theorem(),
         "bianchi_ok": bianchi_ok,
@@ -707,7 +707,7 @@ def module_status():
         "phi_clock_closure": phi_clock_closure_conditions(),
         "claim_gate": cosmology_claim_gate(),
         "process_time_ledger": "moved to p02b_process_time_ledger.py",
-        "friedmann_status": "GR-ფორმის bookkeeping; სრული RFG გრავიტაციული გამოყვანა ღიაა",
+        "friedmann_status": "GR-ფორმის bookkeeping; სრული RG გრავიტაციული გამოყვანა ღიაა",
     }
 
 
@@ -715,7 +715,7 @@ if __name__ == "__main__":
     print("=" * 72)
     print("p02: FLRW კოსმოლოგიური ფონი")
     print("=" * 72)
-    print("ფაილის სტატუსი: LEDGER_ONLY_NOT_READY_FOR_RFG_THEORY_EXPORT")
+    print("ფაილის სტატუსი: LEDGER_ONLY_NOT_READY_FOR_RG_THEORY_EXPORT")
 
     f1, f2, a, t, rho_solid, p_iso_solid = get_friedmann_equations()
     rho, p_iso, _, result = get_flrw_pressures()
@@ -723,7 +723,7 @@ if __name__ == "__main__":
     print("\n1. GR-ფორმის Friedmann bookkeeping")
     print("პირველი განტოლება:", f1)
     print("მეორე განტოლება:", f2)
-    print("სტატუსი: ეს არის bookkeeping branch, არა სრული RFG გრავიტაციული გამოყვანა.")
+    print("სტატუსი: ეს არის bookkeeping branch, არა სრული RG გრავიტაციული გამოყვანა.")
 
     print("\n2. FLRW სტრესი")
     print("rho =", sp.expand(rho))
@@ -752,7 +752,7 @@ if __name__ == "__main__":
     relaxation = flrw_pressure_relaxation_interpretation()
     print("სტატუსი:", relaxation["status"])
     print("გარე FLRW ენა:", relaxation["external_FLRW_language"])
-    print("შიდა RFG ენა:", relaxation["internal_RFG_language"])
+    print("შიდა RG ენა:", relaxation["internal_RG_language"])
     print("guardrail:", relaxation["not_a_replacement"])
 
     print("\n4. Bianchi/Noether residual")

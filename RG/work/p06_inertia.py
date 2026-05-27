@@ -4,7 +4,7 @@
 # Horndeski/EFT bridge only: X = -1/2 g^mn d_m Phi d_n Phi, so Y = -2X.
 
 """
-PHASE 19: Inertia from oscillon collective coordinates and RFG dressing.
+PHASE 19: Inertia from oscillon collective coordinates and RG dressing.
 
 Old ISPG Appendix 17 used the correct physical intuition:
     acceleration -> retarded self-field -> fore/aft asymmetry -> reaction.
@@ -15,7 +15,7 @@ But the old self-force route had two technical hazards:
     2. the spatial metric sector was asserted to supply the second half of
        the force, but the full Noether momentum integral was not displayed.
 
-This RFG phase keeps that intuition as the dynamical dressing picture, but
+This RG phase keeps that intuition as the dynamical dressing picture, but
 closes the leading inertial law at the theorem-gate level by a stronger route:
 
     localized oscillon energy E0
@@ -38,7 +38,7 @@ mechanical explanation of how the medium reacts during acceleration; the
 collective-coordinate theorem is the clean derivation of the coefficient.
 
 Open before final theory export:
-    derive the localized dressed oscillon solution from the active RFG action,
+    derive the localized dressed oscillon solution from the active RG action,
     compute its full Noether stress-energy including boundary/dressing terms,
     and verify that the translation zero-mode norm equals the total dressed
     rest energy divided by c^2.
@@ -153,7 +153,7 @@ def lorentz_ward_zero_mode_norm_gate():
     """
     The missing integral reduced to one Ward-identity gate.
 
-    A direct RFG proof must compute the translation zero-mode norm from the
+    A direct RG proof must compute the translation zero-mode norm from the
     active stress tensor.  Lorentz/Noether symmetry tells us what the answer
     has to be if the localized dressed oscillon is a genuine relativistic
     soliton:
@@ -166,7 +166,7 @@ def lorentz_ward_zero_mode_norm_gate():
         G_RR = E0/c^2.
 
     This is the precise bridge between "Noether bookkeeping" and the actual
-    RFG zero-mode integral that still has to be evaluated for the full
+    RG zero-mode integral that still has to be evaluated for the full
     dressed solution.
     """
     E0, c, v, G_RR, a = sp.symbols(
@@ -199,11 +199,11 @@ def lorentz_ward_zero_mode_norm_gate():
         "zero_mode_norm_from_Ward_identity": sp.Eq(sp.Symbol('G_RR'), zero_mode_norm),
         "low_speed_momentum": sp.Eq(sp.Symbol('p_i'), p_low),
         "low_speed_force": sp.Eq(sp.Symbol('F_i'), force_low),
-        "RFG_specific_integral_still_needed": (
+        "RG_specific_integral_still_needed": (
             "compute G_RR directly from the p01/p10 dressed oscillon stress "
             "tensor and verify boundary terms vanish"
         ),
-        "gate_status": "WARD_IDENTITY_CLOSES_COEFFICIENT__DIRECT_RFG_ZERO_MODE_INTEGRAL_OPEN",
+        "gate_status": "WARD_IDENTITY_CLOSES_COEFFICIENT__DIRECT_RG_ZERO_MODE_INTEGRAL_OPEN",
     }
 
 
@@ -266,7 +266,7 @@ def laue_stress_condition_gate():
 
     Hence integral T^{ij} d^3x = 0.  This is the Laue condition.  It is the
     local stress-balance gate that lets the integrated energy-momentum behave
-    as a particle four-vector.  RFG still has to verify it for the concrete
+    as a particle four-vector.  RG still has to verify it for the concrete
     dressed oscillon profile, but the required test is now explicit.
     """
     S_kj, I_Tkj = sp.symbols('S_kj I_Tkj', real=True)
@@ -279,22 +279,22 @@ def laue_stress_condition_gate():
         "integrated_identity": divergence_identity,
         "Laue_condition": laue_with_boundary_zero,
         "physical_meaning": "internal stresses cannot contribute an extra inertial coefficient once the dressed oscillon is a localized static solution",
-        "RFG_test_needed": "evaluate the p01/p10 dressed oscillon stress tail and verify the boundary flux vanishes",
+        "RG_test_needed": "evaluate the p01/p10 dressed oscillon stress tail and verify the boundary flux vanishes",
         "gate_status": "LAUE_STRESS_BALANCE_REDUCES_DIRECT_INTEGRAL_TO_BOUNDARY_AND_LOCALIZATION_TEST",
     }
 
 
-def rfg_action_to_inertia_derivation_gate():
+def rg_action_to_inertia_derivation_gate():
     """
-    Checklist for turning the theorem gate into an RFG derivation.
+    Checklist for turning the theorem gate into an RG derivation.
 
     This makes the remaining weakness explicit: p06 can use the universal
-    Lorentz/Noether soliton theorem, but RFG still owes the concrete dressed
+    Lorentz/Noether soliton theorem, but RG still owes the concrete dressed
     oscillon integral.
     """
     return {
         "required_chain": [
-            "active RFG action L(Y,I1,I2,I3)",
+            "active RG action L(Y,I1,I2,I3)",
             "localized finite-energy dressed oscillon solution",
             "static stress balance partial_i T^{ij}=0",
             "Laue condition integral T^{ij} d^3x=0 from vanishing boundary flux",
@@ -318,7 +318,7 @@ def rfg_action_to_inertia_derivation_gate():
             "boundary/ADM terms for compact bodies",
             "full Lorentz/preferred-frame perturbation audit",
         ],
-        "export_status": "STRONG_THEOREM_GATE_NOT_FINAL_RFG_DERIVATION",
+        "export_status": "STRONG_THEOREM_GATE_NOT_FINAL_RG_DERIVATION",
     }
 
 
@@ -326,7 +326,7 @@ def gravitational_mass_from_zero_frequency_source():
     """
     The same energy E0 is the static gravitational source.
 
-    RFG phase5 closes:
+    RG phase5 closes:
         localized oscillon -> zero-frequency <T00> -> exterior 1/r field.
 
     In the weak field:
@@ -343,8 +343,8 @@ def gravitational_mass_from_zero_frequency_source():
         "theorem": "the inertial energy E0 is also the gravitational source",
         "M_source": sp.Eq(M, E0 / c**2),
         "schwarzschild_radius": sp.Eq(sp.Symbol('r_s'), r_s),
-        "RFG_potential": sp.Eq(sp.Symbol('phi'), phi),
-        "RFG_potential_from_energy": sp.Eq(sp.Symbol('phi(E0)'), phi_from_energy),
+        "RG_potential": sp.Eq(sp.Symbol('phi'), phi),
+        "RG_potential_from_energy": sp.Eq(sp.Symbol('phi(E0)'), phi_from_energy),
         "Newtonian_acceleration": sp.Eq(sp.Symbol('a_r'), acceleration),
         "meaning": "the far-zone 1/r coefficient is fixed by the same E0 that fixes inertial response.",
     }
@@ -400,7 +400,7 @@ def dressed_mass_no_double_counting():
     """
     The mass is not counted twice.
 
-    RFG has an oscillon core plus its static Bernoulli/metric dressing.  The
+    RG has an oscillon core plus its static Bernoulli/metric dressing.  The
     conserved energy E0 is the integral of the total localized zero-frequency
     stress-energy.  That single E0 defines both inertia and the far-zone
     gravitational charge.
@@ -442,7 +442,7 @@ def pressure_force_firewall_and_observation_gate():
     Prevent the inertia intuition from becoming a fifth-force claim.
 
     The pressure/retardation language explains the medium dressing response.
-    Matter must still move through minimal coupling/geodesics; otherwise RFG
+    Matter must still move through minimal coupling/geodesics; otherwise RG
     would generate composition-dependent pressure forces and fail Eotvos,
     atomic-clock, accelerator and Solar-System tests.
     """
@@ -531,7 +531,7 @@ def retarded_dressing_audit():
         "dipole_perturbation": sp.Eq(sp.Symbol('delta_phi'), delta_phi),
         "temporal_piece_old_result": "-m*a/2 after regularization",
         "spatial_piece_old_status": "the other -m*a/2 must come from the bi-conformal spatial momentum sector",
-        "RFG_upgrade": "collective-coordinate Noether theorem fixes the full leading coefficient M without relying on the self-force finite part",
+        "RG_upgrade": "collective-coordinate Noether theorem fixes the full leading coefficient M without relying on the self-force finite part",
         "radiation_reaction": "higher-derivative/radiative terms are corrections to F=Ma, not the origin of M",
     }
 
@@ -588,7 +588,7 @@ def old_vs_new_inertia_assessment():
 
 def stage_a5_old17_retarded_self_field_drain():
     """
-    Full OLD/17 drain into the new Noether-based RFG inertia file.
+    Full OLD/17 drain into the new Noether-based RG inertia file.
 
     The old derivation is not discarded.  It is reclassified:
     - retarded fore/aft asymmetry is the physical mechanism;
@@ -609,7 +609,7 @@ def stage_a5_old17_retarded_self_field_drain():
         "same_with_mass": sp.Eq(sp.Symbol('delta_phi_m'), delta_phi_m),
         "temporal_sector_old": "regularized g00/scalar-momentum bookkeeping gives -m*a/2",
         "spatial_sector_old": "bi-conformal gij sector supplies the matching -m*a/2 when gamma_PPN=1",
-        "new_RFG_role": (
+        "new_RG_role": (
             "this explains the medium's reaction under acceleration; the exact "
             "leading coefficient is fixed independently by the translational "
             "Noether/collective-coordinate theorem"
@@ -629,7 +629,7 @@ def stage_a5_mach_and_unified_rarefaction_ledger():
     return {
         "Mach_comparison": {
             "Mach": "inertia sourced by distant matter; mechanism unspecified",
-            "RFG": "inertia sourced by local dressed field/medium response; propagation at c",
+            "RG": "inertia sourced by local dressed field/medium response; propagation at c",
             "empty_universe_branch": sp.And(sp.Eq(phi, 0), sp.Eq(r_s, 0)),
             "scope": (
                 "working hypothesis: without a pressure contrast/dressed oscillon "
@@ -683,7 +683,7 @@ def stage_a5_inertia_status():
 def inertia_central_claim_gate():
     """One-place export gate for p06_inertia.py."""
     ward = lorentz_ward_zero_mode_norm_gate()
-    derivation = rfg_action_to_inertia_derivation_gate()
+    derivation = rg_action_to_inertia_derivation_gate()
     firewall = pressure_force_firewall_and_observation_gate()
     boost = integrated_noether_boost_closure()
     laue = laue_stress_condition_gate()
@@ -692,7 +692,7 @@ def inertia_central_claim_gate():
         "leading_inertia_status": ward["gate_status"],
         "integrated_boost_status": boost["closure_status"],
         "Laue_balance_status": laue["gate_status"],
-        "RFG_derivation_status": derivation["export_status"],
+        "RG_derivation_status": derivation["export_status"],
         "equivalence_status": "m_i=m_g=E0/c^2 in the leading dressed-oscillon branch",
         "medium_mechanism_status": "retarded fore/aft dressing explains response but does not set the F=Ma coefficient",
         "observation_firewall": firewall["gate_status"],
@@ -703,7 +703,7 @@ def inertia_central_claim_gate():
 
 def main() -> None:
     print("=" * 72)
-    print("PHASE 19: RFG inertia theorem")
+    print("PHASE 19: RG inertia theorem")
     print("=" * 72)
 
     sections = [
@@ -713,7 +713,7 @@ def main() -> None:
         ("4. Lorentz Ward zero-mode norm gate", lorentz_ward_zero_mode_norm_gate()),
         ("5. Integrated Noether boost closure", integrated_noether_boost_closure()),
         ("6. Laue stress-balance gate", laue_stress_condition_gate()),
-        ("7. RFG action-to-inertia derivation gate", rfg_action_to_inertia_derivation_gate()),
+        ("7. RG action-to-inertia derivation gate", rg_action_to_inertia_derivation_gate()),
         ("8. Same energy as gravitational source", gravitational_mass_from_zero_frequency_source()),
         ("9. Geodesic mass cancellation", geodesic_mass_cancellation()),
         ("10. Equivalence principle closure", equivalence_principle_closure()),
@@ -746,9 +746,9 @@ def main() -> None:
         print(f"  - {item}")
 
     print("\n--- დასკვნა ---")
-    print("  RFG-ში ინერცია ძველ self-force ტექსტზე ძლიერია:")
+    print("  RG-ში ინერცია ძველ self-force ტექსტზე ძლიერია:")
     print("  Integrated boost proof იძლევა p=gamma(E0/c^2)v-ს, თუ Laue stress balance სრულდება.")
-    print("  სრული RFG derivation ჯერ ითხოვს p01/p10 Laue-boundary და zero-mode ინტეგრალს.")
+    print("  სრული RG derivation ჯერ ითხოვს p01/p10 Laue-boundary და zero-mode ინტეგრალს.")
     print("  retarded asymmetry რჩება მექანიზმად, ხოლო pressure-gradient force matter-ზე აკრძალულია.")
 
 

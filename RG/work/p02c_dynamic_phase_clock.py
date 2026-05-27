@@ -165,7 +165,7 @@ def dynamic_background_observables():
         real=True,
     )
 
-    rho_rfg = sp.simplify(
+    rho_rg = sp.simplify(
         -3 * c_I1 / a**2
         - (9 * c_I1sq + 3 * c_I2) / a**4
         - c_I3 / a**6
@@ -173,7 +173,7 @@ def dynamic_background_observables():
         + 3 * c_Y2 * u**4
         + 3 * c_YI1 * u**2 / a**2
     )
-    p_rfg = sp.simplify(
+    p_rg = sp.simplify(
         c_I1 / a**2
         - (3 * c_I1sq + c_I2) / a**4
         - c_I3 / a**6
@@ -181,32 +181,32 @@ def dynamic_background_observables():
         + c_Y2 * u**4
         + c_YI1 * u**2 / a**2
     )
-    w_rfg = sp.simplify(p_rfg / rho_rfg)
-    omega_rfg = sp.simplify(rho_rfg / (3 * Mpl**2 * H0**2))
+    w_rg = sp.simplify(p_rg / rho_rg)
+    omega_rg = sp.simplify(rho_rg / (3 * Mpl**2 * H0**2))
     E2 = sp.simplify(
         Omega_m / a**3
         + Omega_r / a**4
         + Omega_Lambda_bare
-        + omega_rfg
+        + omega_rg
     )
 
     zero_current_u2 = sp.simplify(-(c_Y + 3 * c_YI1 / a**2) / (2 * c_Y2))
-    rho_zero_current = sp.simplify(rho_rfg.subs(u**2, zero_current_u2))
-    p_zero_current = sp.simplify(p_rfg.subs(u**2, zero_current_u2))
+    rho_zero_current = sp.simplify(rho_rg.subs(u**2, zero_current_u2))
+    p_zero_current = sp.simplify(p_rg.subs(u**2, zero_current_u2))
     w_zero_current = sp.simplify(p_zero_current / rho_zero_current)
 
     return {
         "status": "BACKGROUND_OBSERVABLES_READY_FOR_NUMERICAL_FIT",
-        "rho_RFG": rho_rfg,
-        "p_RFG": p_rfg,
-        "w_RFG": w_rfg,
-        "Omega_RFG": omega_rfg,
+        "rho_RG": rho_rg,
+        "p_RG": p_rg,
+        "w_RG": w_rg,
+        "Omega_RG": omega_rg,
         "E2": sp.Eq((H / H0) ** 2, E2),
         "zero_current_branch": {
             "u2": sp.Eq(u**2, zero_current_u2),
-            "rho_RFG": rho_zero_current,
-            "p_RFG": p_zero_current,
-            "w_RFG": w_zero_current,
+            "rho_RG": rho_zero_current,
+            "p_RG": p_zero_current,
+            "w_RG": w_zero_current,
         },
         "fit_parameters": [
             c_Y,
@@ -307,7 +307,7 @@ def module_status():
         "late_zero_current_candidate": late_zero_current_candidate(),
         "early_scaling_after_zero_current": early_scaling_after_zero_current(),
         "process_time_match_gate": process_time_match_gate(),
-        "export_status": "NOT_READY_FOR_RFG_THEORY_EXPORT",
+        "export_status": "NOT_READY_FOR_RG_THEORY_EXPORT",
     }
 
 
@@ -351,9 +351,9 @@ def article_dynamic_phase_clock_theorem():
         },
         "background_observables": {
             "status": observables["status"],
-            "rho_RFG": observables["rho_RFG"],
-            "p_RFG": observables["p_RFG"],
-            "w_RFG": observables["w_RFG"],
+            "rho_RG": observables["rho_RG"],
+            "p_RG": observables["p_RG"],
+            "w_RG": observables["w_RG"],
             "E2": observables["E2"],
             "zero_current_branch": observables["zero_current_branch"],
         },

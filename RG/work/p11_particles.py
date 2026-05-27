@@ -38,9 +38,9 @@ Important:
     p11_particles.py gives support for h=2 from the
     difference between projective/nematic and oriented framed closure.
     p11_particles.py shows that the C3 strain lock is
-    already present in the RFG action through I3 = det(B), because
+    already present in the RG action through I3 = det(B), because
     E^3 + Ebar^3 = 27 det(Q).
-    A full theorem still requires deriving that closure from the RFG action.
+    A full theorem still requires deriving that closure from the RG action.
 """
 
 import cmath
@@ -338,7 +338,7 @@ def normal_form_target():
         "phase_locking_term": "conditional normal form after cyclic lift and h=2 selection",
         "stationary_condition": "theta = 2/9 only after the missing lift/selection gates pass",
         "theta": THETA_TOPOLOGICAL,
-        "status": "Candidate derivation; full RFG-action and cyclic-lift theorem still open.",
+        "status": "Candidate derivation; full RG-action and cyclic-lift theorem still open.",
     }
 
 
@@ -520,14 +520,14 @@ def calculate_mass_ladder():
         b_e, b_mu, b_tau = N_e**2, N_mu**2, N_tau**2
         
     # მასა პროპორციულია Mathieu-ს საკუთრივი მნიშვნელობის (b_N)
-    m_e_rfg = m_e_pdg # ელექტრონზე ვანკერებთ (anchored)
-    m_mu_rfg = m_e_pdg * (b_mu / b_e)
-    m_tau_rfg = m_e_pdg * (b_tau / b_e)
+    m_e_rg = m_e_pdg # ელექტრონზე ვანკერებთ (anchored)
+    m_mu_rg = m_e_pdg * (b_mu / b_e)
+    m_tau_rg = m_e_pdg * (b_tau / b_e)
     
-    err_mu = abs(m_mu_rfg - m_mu_pdg) / m_mu_pdg * 100
-    err_tau = abs(m_tau_rfg - m_tau_pdg) / m_tau_pdg * 100
+    err_mu = abs(m_mu_rg - m_mu_pdg) / m_mu_pdg * 100
+    err_tau = abs(m_tau_rg - m_tau_pdg) / m_tau_pdg * 100
     
-    return (N_e, b_e, m_e_rfg, m_e_pdg, 0.0), (N_mu, b_mu, m_mu_rfg, m_mu_pdg, err_mu), (N_tau, b_tau, m_tau_rfg, m_tau_pdg, err_tau), q_val
+    return (N_e, b_e, m_e_rg, m_e_pdg, 0.0), (N_mu, b_mu, m_mu_rg, m_mu_pdg, err_mu), (N_tau, b_tau, m_tau_rg, m_tau_pdg, err_tau), q_val
 
 
 def mathieu_sign_stability_gate():
@@ -536,7 +536,7 @@ def mathieu_sign_stability_gate():
 
     In the time-sector toy reduction, positive Mathieu q requires c_Y2 < 0.
     That sign is not automatically compatible with the stability windows of
-    the full RFG action. This legacy route must not be used as the main mass
+    the full RG action. This legacy route must not be used as the main mass
     proof until the p01/p08 sign and gradient gates are checked.
     """
     return {
@@ -555,14 +555,14 @@ def calculate_koide(b_e, b_mu, b_tau):
     
     K_exp = (m_e + m_mu + m_tau) / (math.sqrt(m_e) + math.sqrt(m_mu) + math.sqrt(m_tau))**2
     
-    # Koide RFG-ში რეალური eigenvalues-ით
-    K_rfg = (b_e + b_mu + b_tau) / (math.sqrt(b_e) + math.sqrt(b_mu) + math.sqrt(b_tau))**2
+    # Koide RG-ში რეალური eigenvalues-ით
+    K_rg = (b_e + b_mu + b_tau) / (math.sqrt(b_e) + math.sqrt(b_mu) + math.sqrt(b_tau))**2
     
     K_th = 2.0 / 3.0
     err_exp = abs(K_exp - K_th) / K_th * 100
-    err_rfg = abs(K_rfg - K_th) / K_th * 100
+    err_rg = abs(K_rg - K_th) / K_th * 100
     
-    return K_exp, err_exp, K_rfg, err_rfg
+    return K_exp, err_exp, K_rg, err_rg
 
 def calculate_c3_comparison():
     """Comparison with the phase37 C3 Koide operator."""
@@ -589,17 +589,17 @@ if __name__ == "__main__":
     res_e, res_mu, res_tau, q_val = calculate_mass_ladder()
     if SCIPY_AVAILABLE:
         print(f"გამოყენებულია scipy.special.mathieu_b რეალური საკუთრივი მნიშვნელობების გამოსათვლელად (q = {q_val}).")
-    print(f"{'N':<5} | {'სტატუსი':<12} | {'b_N':<12} | {'მასა(RFG) MeV':<15} | {'მასა(PDG) MeV':<15} | {'ცდომილება %':<10}")
+    print(f"{'N':<5} | {'სტატუსი':<12} | {'b_N':<12} | {'მასა(RG) MeV':<15} | {'მასა(PDG) MeV':<15} | {'ცდომილება %':<10}")
     print("-" * 80)
     print(f"{res_e[0]:<5} | Stable (e)   | {res_e[1]:<12.4f} | {res_e[2]:<15.6f} | {res_e[3]:<15.6f} | {res_e[4]:<10.4f}")
     print(f"{res_mu[0]:<5} | Unstable (μ) | {res_mu[1]:<12.4f} | {res_mu[2]:<15.6f} | {res_mu[3]:<15.6f} | {res_mu[4]:<10.4f}")
     print(f"{res_tau[0]:<5} | Unstable (τ) | {res_tau[1]:<12.4f} | {res_tau[2]:<15.6f} | {res_tau[3]:<15.6f} | {res_tau[4]:<10.4f}")
 
-    K_exp, err_exp, K_rfg, err_rfg = calculate_koide(res_e[1], res_mu[1], res_tau[1])
+    K_exp, err_exp, K_rg, err_rg = calculate_koide(res_e[1], res_mu[1], res_tau[1])
     print("\n--- Koide-ს 2/3 ფარდობა და ნეიტრინოს ჰიპოთეზური ტესტი ---")
     print(f"თეორიული სამიზნე (Koide limit): K = 2/3 ≈ 0.666667")
     print(f"PDG ექსპერიმენტული მასებით:   K_exp = {K_exp:.6f} (ცდომილება {err_exp:.4f}%)")
-    print(f"RFG სრული Mathieu-თი (q={q_val}):   K_rfg = {K_rfg:.6f} (ცდომილება {err_rfg:.4f}%)")
+    print(f"RG სრული Mathieu-თი (q={q_val}):   K_rg = {K_rg:.6f} (ცდომილება {err_rg:.4f}%)")
     print("\nნეიტრინოებისთვის ჰიპოთეზური ტესტი (3 თაობა):")
     print("ჰიპოთეზა: K_nu ≈ 2/3, შესამოწმებელია დამოუკიდებლად.")
 
@@ -619,7 +619,7 @@ if __name__ == "__main__":
                 f"rel_err={row['relative_mass_error']:.3e}"
             )
         print("შენიშვნა: ეს აღარ იყენებს N=5,72,295 ინდექსების ხელით არჩევას.")
-        print("theta=2/9-ის candidate route იხ. phase38; ღიაა მისი RFG-action-იდან გამოყვანა.")
+        print("theta=2/9-ის candidate route იხ. phase38; ღიაა მისი RG-action-იდან გამოყვანა.")
 
     print("\n--- აგენტთა საბჭოს შენიშვნები / შეზღუდვები ---")
     print("1. ფარული fit: N=72 და 295 შერჩეულია √m_i/m_e-ს მიხედვით. 0 DoF = 0 პრედიქცია. (დამოუკიდებელი ტოპოლოგიური წესი ღიაა).")
@@ -684,16 +684,16 @@ def calculate_koide_ratio():
     # Koide-ს ფარდობა ექსპერიმენტული მასებით
     K_exp = (m_e + m_mu + m_tau) / (math.sqrt(m_e) + math.sqrt(m_mu) + math.sqrt(m_tau))**2
     
-    # RFG Mathieu ინდექსების დაგენერირება
+    # RG Mathieu ინდექსების დაგენერირება
     N_e, N_mu, N_tau = get_empirical_indices()
     
-    # Koide-ს ფარდობა RFG ინდექსებით (m ~ N^2 მიახლოებაში, ანუ q=0 ლიმიტში)
-    K_rfg = (N_e**2 + N_mu**2 + N_tau**2) / (N_e + N_mu + N_tau)**2
+    # Koide-ს ფარდობა RG ინდექსებით (m ~ N^2 მიახლოებაში, ანუ q=0 ლიმიტში)
+    K_rg = (N_e**2 + N_mu**2 + N_tau**2) / (N_e + N_mu + N_tau)**2
     
     # თეორიული სამიზნე
     K_th = 2.0 / 3.0
     
-    return K_exp, K_rfg, K_th, (N_e, N_mu, N_tau)
+    return K_exp, K_rg, K_th, (N_e, N_mu, N_tau)
 
 def calculate_c3_operator_candidate():
     """New C3 operator candidate from phase37."""
@@ -708,16 +708,16 @@ def calculate_c3_operator_candidate():
     }
 
 if __name__ == "__main__":
-    K_exp, K_rfg, K_th, indices = calculate_koide_ratio()
+    K_exp, K_rg, K_th, indices = calculate_koide_ratio()
     print("--- Koide-ს ფარდობა: Numerical Candidate ---")
     print(f"თეორიული სამიზნე (Koide limit): K = 2/3 ≈ {K_th:.6f}")
     print(f"PDG ექსპერიმენტული მასებით:   K_exp = {K_exp:.6f} (ცდომილება {abs(K_exp-K_th)/K_th*100:.4f}%)")
-    print(f"Candidate/empirical ინდექსებით {indices}: K_rfg = {K_rfg:.6f} (ცდომილება {abs(K_rfg-K_th)/K_th*100:.4f}%)")
+    print(f"Candidate/empirical ინდექსებით {indices}: K_rg = {K_rg:.6f} (ცდომილება {abs(K_rg-K_th)/K_th*100:.4f}%)")
     
     print("\n--- აგენტთა საბჭოს შენიშვნები / შეზღუდვები ---")
     print("1. Cherry-picking: ინდექსები 5, 72, 295 შერჩეულია ხელით √m-ის პროპორციულად (0 DoF).")
     print("   ეს არ არის პრედიქცია. სრული მტკიცებისთვის ისინი ტოპოლოგიიდან უნდა გამოვიდეს.")
-    print("2. K_RFG ცდომილება ბევრად აღემატება PDG-precision მოთხოვნას; ეს legacy fit-ია.")
+    print("2. K_RG ცდომილება ბევრად აღემატება PDG-precision მოთხოვნას; ეს legacy fit-ია.")
     print("3. მათემატიკოსის შენიშვნა: m ∝ N^2 მიახლოება (q=0) არ ითვალისწინებს form-factor")
     print("   კორექციებს და რეალურ b_N eigenvalue-ებს (რაც phase15-ში ნაწილობრივ გასწორდა).")
     print("4. Mathieu q>0 ითხოვს c_Y2<0-ს toy-sector-ში; full stability gate ჯერ ღიაა.")
@@ -738,7 +738,7 @@ if __name__ == "__main__":
                 f"rel_err={row['relative_mass_error']:.3e}"
             )
         print("theta=2/9-ის candidate route იხ. p11_particles.py.")
-        print("ღია ამოცანა: order-9 cyclic lift უნდა გამოვიდეს უშუალოდ RFG action-იდან.")
+        print("ღია ამოცანა: order-9 cyclic lift უნდა გამოვიდეს უშუალოდ RG action-იდან.")
 
     print("\n--- Mathieu sign/stability gate ---")
     for key, value in mathieu_sign_stability_gate().items():
@@ -1357,7 +1357,7 @@ def phase35_status_assessment():
         "cavity_derivation_status": "OPEN. n=14-ის უნიკალურობა არ არის გამოყვანილი.",
         "new_candidate": "phase37 C3 Koide operator: e, mu, tau = ერთი C3 triplet.",
         "theta_candidate": "phase38 order-9 reduced holonomy candidate: theta=2/9.",
-        "next_requirement": "გამოვიყვანოთ cyclic lift და h=2 coupling უშუალოდ RFG action-იდან.",
+        "next_requirement": "გამოვიყვანოთ cyclic lift და h=2 coupling უშუალოდ RG action-იდან.",
     }
 
 
@@ -1484,7 +1484,7 @@ if __name__ == "__main__":
 PHASE 38: Order-9 reduced-holonomy candidate for theta = 2/9
 
 Status:
-    Candidate derivation, not yet a theorem from the full RFG action.
+    Candidate derivation, not yet a theorem from the full RG action.
     Important: C3 x C3 has nine elements but is not automatically the
     cyclic group Z9. A separate return-map/lift theorem is required before
     this may be called a true Z9 holonomy.
@@ -1550,7 +1550,7 @@ Interpretation:
 
     whose first oriented framed minimum is theta = 2/9. This potential is
     a diagnostic normal form unless the offset h=2 is derived from the
-    charged RFG coupling.
+    charged RG coupling.
 
 Why this matters:
     phase37 showed that theta = 2/9 gives the charged-lepton frequency
@@ -1725,7 +1725,7 @@ def falsification_targets():
         "If the charged sector does not require oriented framed closure, h=2 is not selected.",
         "If the elastic operator uses the full U(1) phase directly, theta should be 2*pi/9, which fails the masses.",
         "If h=1 is shown to be a valid oriented charged branch rather than projective/nematic only, the uniqueness of h=2 fails.",
-        "If the RFG action cannot generate the reduced-framing lock V ~ 1 - cos(pi(9 theta - 2)), this remains numerology.",
+        "If the RG action cannot generate the reduced-framing lock V ~ 1 - cos(pi(9 theta - 2)), this remains numerology.",
     ]
 
 
@@ -1791,7 +1791,7 @@ PHASE 39: Action-level route to the order-9 closure-slot lattice
 
 Status:
     Candidate derivation layer. This file does not yet prove the full
-    charged-lepton theorem from the RFG action, but it removes one
+    charged-lepton theorem from the RG action, but it removes one
     arbitrary-looking assumption from phase38:
 
         why two C3 factors?
@@ -1969,7 +1969,7 @@ def spinorial_selection_statement():
         "h1": "projective/nematic closure only, n -> -n; see phase40",
         "h2": "first non-trivial oriented framed closure, n -> n; see phase40",
         "higher_h": "on the small positive C3 branch, h>=3 crosses the zero-eigenfrequency edge",
-        "remaining_theorem": "derive the oriented-frame charged coupling directly from the RFG action",
+        "remaining_theorem": "derive the oriented-frame charged coupling directly from the RG action",
     }
 
 
@@ -2024,7 +2024,7 @@ PHASE 40: Why the first charged framed branch is h = 2
 Status:
     Candidate selection rule for the h index used in phase38. It becomes a
     theorem only after the charged oriented-frame coupling is derived from
-    the full RFG action.
+    the full RG action.
 
 Problem:
     phase38 uses h=2 in
@@ -2038,7 +2038,7 @@ Key distinction:
 
         n ~ -n.
 
-    But the charged RFG sector is framed and oriented: it uses the oriented
+    But the charged RG sector is framed and oriented: it uses the oriented
     material triad and the epsilon_ABC volume form/topological current.
     Therefore the lift must close as an oriented frame, not merely as a
     projective line.
@@ -2140,10 +2140,10 @@ def h2_selection_summary():
         "reason_h1_rejected": "projective/nematic closure only: n -> -n",
         "reason_h2_selected": "first non-trivial oriented framed closure: n -> n",
         "derived_from_action": False,
-        "selection_status": "candidate selection; not yet an RFG coupling theorem",
+        "selection_status": "candidate selection; not yet an RG coupling theorem",
         "theta": theta,
         "theta_formula": "theta = h / 9 = 2 / 9",
-        "remaining_open_point": "derive the oriented-frame requirement from the charged RFG coupling, not as a selection rule.",
+        "remaining_open_point": "derive the oriented-frame requirement from the charged RG coupling, not as a selection rule.",
     }
 
 
@@ -2186,7 +2186,7 @@ Status:
 
 Question:
     Is the C3 phase-locking term an extra hand-added ingredient, or does it
-    already exist in the RFG supersolid action P(Y, I1, I2, I3)?
+    already exist in the RG supersolid action P(Y, I1, I2, I3)?
 
 Answer:
     It already exists generically through the determinant invariant I3.
@@ -2313,7 +2313,7 @@ def normal_form_from_action():
     """
     Minimal effective potential inherited from the action.
 
-    The sign and size of lambda_3 depend on the microscopic RFG coefficients,
+    The sign and size of lambda_3 depend on the microscopic RG coefficients,
     but the existence of the cubic C3 anisotropy is generic once I3 is present.
     """
     rho, beta = sp.symbols("rho beta", real=True)
@@ -2521,7 +2521,7 @@ if __name__ == "__main__":
 # Horndeski/EFT bridge only: X = -1/2 g^mn d_m Phi d_n Phi, so Y = -2X.
 
 """
-PHASE 46: Quark-sector extension candidate from the same RFG holonomy
+PHASE 46: Quark-sector extension candidate from the same RG holonomy
 
 Status:
     Falsifiable extension sketch, not a fit.
@@ -2533,7 +2533,7 @@ Motivation:
     Therefore this file defines a strict candidate rule and a falsification
     protocol rather than claiming a quark-mass derivation.
 
-RFG rule:
+RG rule:
     There is only one primitive reduced holonomy:
 
         theta_L = 2/9.
@@ -2551,7 +2551,7 @@ Two minimal projection candidates:
         theta_D = 2 theta_L / 3 = 4/27.
 
 The second ordering matches a known Z3-Koide phenomenological suggestion,
-but RFG should decide between them from color/framing topology, not from a
+but RG should decide between them from color/framing topology, not from a
 quark-mass fit.
 """
 
@@ -2619,7 +2619,7 @@ def falsification_protocol():
         "Choose a precise quark-mass scheme and scale, e.g. MSbar at a specified mu.",
         "Run all six quark masses to that scale with standard QCD RG equations.",
         "Normalize each sector by its lightest member: (u,c,t) and (d,s,b).",
-        "Compare against the two zero-angle-fit RFG projection candidates.",
+        "Compare against the two zero-angle-fit RG projection candidates.",
         "Reject any candidate whose required theta_U/theta_D differs from its topological projection beyond uncertainties.",
         "Do not tune theta_U or theta_D after seeing the masses; that would erase the prediction.",
     ]
@@ -2627,7 +2627,7 @@ def falsification_protocol():
 
 def phase46_status_assessment():
     return {
-        "strength": "extends RFG particle sector beyond charged leptons without new continuous angles",
+        "strength": "extends RG particle sector beyond charged leptons without new continuous angles",
         "warning": "quark masses are scheme/scale dependent, so no pole-mass claim is made here",
         "needed_theorem": "derive whether color/framing topology chooses charge_projection or inverse_color projection",
         "relation_to_leptons": "theta_L=2/9 remains the only primitive phase",
@@ -2671,7 +2671,7 @@ PHASE 45: Radiative stability requirement for the C3 lepton sector
 
 Status:
     Strengthening audit. This file does not solve radiative protection; it
-    states the problem quantitatively and defines what RFG must prove.
+    states the problem quantitatively and defines what RG must prove.
 
 Why this matters:
     Koide-type relations are usually discussed for charged-lepton pole
@@ -2679,7 +2679,7 @@ Why this matters:
     because they contain log(m_i). Without a protection mechanism, a beautiful
     tree-level C3 relation may not survive to observed pole masses.
 
-RFG options:
+RG options:
     A. Pole-frequency theorem:
        The C3 operator acts on fully dressed oscillon normal modes, so the
        observed pole masses are the eigenvalues of the already-renormalized
@@ -2690,10 +2690,10 @@ RFG options:
        logarithms, preserving the C3 ratios.
 
     C. Running-scale theorem:
-       The C3 relation is exact at a special RFG matching scale, and its
+       The C3 relation is exact at a special RG matching scale, and its
        pole-mass accuracy is a consequence of controlled RG flow.
 
-The strongest route for RFG is A or B. This file quantifies the required
+The strongest route for RG is A or B. This file quantifies the required
 protection as a condition on fractional frequency shifts.
 """
 
@@ -2740,7 +2740,7 @@ def leading_qed_log_shifts(cutoff_mev):
 
     Since nu ~ sqrt(m), the frequency shift is half this value.
 
-    This is not used as a physical RFG prediction; it is a stress test.
+    This is not used as a physical RG prediction; it is a stress test.
     """
     prefactor_mass = 3.0 * ALPHA_EM / (4.0 * math.pi)
     shifts = []
@@ -2783,25 +2783,25 @@ def protection_condition_symbolic():
     }
 
 
-def rfg_radiative_options():
+def rg_radiative_options():
     return [
         {
             "option": "A. dressed pole-frequency theorem",
             "claim_needed": "C3 eigenvalues are already physical pole frequencies",
-            "strength": "best fit to RFG oscillon ontology",
+            "strength": "best fit to RG oscillon ontology",
             "open_task": "derive dressed normal-mode equation including EM/self-field backreaction",
         },
         {
             "option": "B. Ward/Sumino-like cancellation",
             "claim_needed": "phase-elastic loops cancel QED log(m_i) terms",
             "strength": "closest to known Koide-protection logic",
-            "open_task": "identify the RFG current and loop sign that cancels QED logs",
+            "open_task": "identify the RG current and loop sign that cancels QED logs",
         },
         {
             "option": "C. matching-scale theorem",
             "claim_needed": "C3 relation exact at a scale and RG flow preserves pole accuracy",
             "strength": "standard EFT language",
-            "open_task": "derive RG equations for the RFG lepton sector",
+            "open_task": "derive RG equations for the RG lepton sector",
         },
     ]
 
@@ -2824,8 +2824,8 @@ if __name__ == "__main__":
         print(f"    Koide drift raw      : {data['koide_drift_raw']:.3e}")
         print(f"    Koide drift gen.dep. : {data['koide_drift_gen_dep']:.3e}")
 
-    print("\n3. RFG protection options")
-    for row in rfg_radiative_options():
+    print("\n3. RG protection options")
+    for row in rg_radiative_options():
         print(f"  {row['option']}")
         print(f"    claim needed: {row['claim_needed']}")
         print(f"    strength    : {row['strength']}")
@@ -2851,7 +2851,7 @@ The chain:
     phase39: oriented elastic triad gives C3, strain phase gives C3 -> 9 slots.
     phase39 still does not prove a cyclic Z9 group.
     phase40: oriented framed closure makes h=2 the candidate branch, not yet
-    a result derived from the charged RFG coupling.
+    a result derived from the charged RG coupling.
     phase43: local normal-form Hessian gives h=2 stability conditions.
     phase38: theta = h/9 = 2/9 only conditionally.
     phase37: C3 Koide operator with theta=2/9 gives charged-lepton ratios.
@@ -2859,7 +2859,7 @@ The chain:
 Status:
     Strong candidate chain. The remaining open theorem is to derive the
     cyclic return map, charged oriented-framed defect sector, and reduced
-    holonomy directly as a stationary sector of the full RFG action.
+    holonomy directly as a stationary sector of the full RG action.
 """
 
 # merged import removed: from p11_particles import (
@@ -2930,7 +2930,7 @@ def audit_mass_predictions():
 def open_theorem_items():
     return [
         "Prove a cyclic order-9 lift from the C3 x C3 slot lattice, or stop using Z9 language.",
-        "Derive the charged oriented-frame requirement from the RFG coupling, not as a postulate.",
+        "Derive the charged oriented-frame requirement from the RG coupling, not as a postulate.",
         "Derive the reduced holonomy coordinate theta used by the C3 stiffness operator from the defect moduli space.",
         "Derive m proportional to nu^2 and the absolute electron scale from the oscillon energy functional.",
         "Replace the relative-error mass gate with PDG-uncertainty residuals and explain the muon residual.",
@@ -3014,10 +3014,10 @@ Purpose:
 
 Core point:
     Many models already use Koide, Z3, family symmetry, or the phase
-    delta_L ~= 2/9. RFG is not novel merely because it reproduces Koide or
+    delta_L ~= 2/9. RG is not novel merely because it reproduces Koide or
     notices 2/9.
 
-RFG's stronger claim is the specific action/topology chain:
+RG's stronger claim is the specific action/topology chain:
 
     I3 = det(B)
       -> det(Q) = Re(E^3)/27
@@ -3054,7 +3054,7 @@ def comparison_with_existing_approaches():
             "approach": "Koide original / scalar-potential family models",
             "has_koide": True,
             "has_delta_2_over_9": False,
-            "action_origin_c3": "family scalar potential, not RFG medium",
+            "action_origin_c3": "family scalar potential, not RG medium",
             "topological_h2": False,
             "main_gap": "mass relation protected/engineered, but not a vacuum-medium oscillon derivation",
         },
@@ -3083,7 +3083,7 @@ def comparison_with_existing_approaches():
             "main_gap": "symmetry is typically imposed in flavor space",
         },
         {
-            "approach": "RFG phase37-43 chain",
+            "approach": "RG phase37-43 chain",
             "has_koide": True,
             "has_delta_2_over_9": True,
             "action_origin_c3": "I3=det(B) -> Re(E^3) C3 lock",
@@ -3112,7 +3112,7 @@ def internal_consistency_cleanup():
         },
         {
             "item": "phase36 N=4 329 keV prediction",
-            "old_status": "conditional RFG-specific prediction if N-ladder is derived",
+            "old_status": "conditional RG-specific prediction if N-ladder is derived",
             "new_status": "conditional legacy prediction, suspended under C3 route",
             "reason": "C3 charged-lepton sector does not imply a radial N=4 companion",
         },
@@ -3125,7 +3125,7 @@ def internal_consistency_cleanup():
     ]
 
 
-def rfg_strength_scorecard():
+def rg_strength_scorecard():
     action_checks = audit_action_c3_lock()
     mass_checks = audit_mass_predictions()
     precision = pdg_precision_audit()
@@ -3168,7 +3168,7 @@ def rfg_strength_scorecard():
         {
             "criterion": "radiative stability",
             "status": "open",
-            "evidence": "needs RFG analogue of Koide/Sumino protection or pole-frequency argument",
+            "evidence": "needs RG analogue of Koide/Sumino protection or pole-frequency argument",
         },
         {
             "criterion": "absolute electron mass",
@@ -3185,7 +3185,7 @@ def rfg_strength_scorecard():
 
 def strongest_defensible_claim():
     return (
-        "RFG has a stronger-than-phenomenological charged-lepton candidate "
+        "RG has a stronger-than-phenomenological charged-lepton candidate "
         "because its C3 structure is traced to the supersolid invariant "
         "I3=det(B) and to an order-9 framed slot lattice. It is not yet a "
         "final particle theory until the cyclic lift, h=2 action derivation, "
@@ -3199,7 +3199,7 @@ if __name__ == "__main__":
     print("PHASE 44: Particle-sector strength and novelty audit")
     print("=" * 72)
 
-    print("\n1. Existing approaches vs RFG")
+    print("\n1. Existing approaches vs RG")
     for row in comparison_with_existing_approaches():
         print(f"  {row['approach']}")
         print(f"    Koide: {row['has_koide']}")
@@ -3215,8 +3215,8 @@ if __name__ == "__main__":
         print(f"    new: {row['new_status']}")
         print(f"    reason: {row['reason']}")
 
-    print("\n3. RFG strength scorecard")
-    for row in rfg_strength_scorecard():
+    print("\n3. RG strength scorecard")
+    for row in rg_strength_scorecard():
         print(
             f"  {row['criterion']:24s}: {row['status']} | {row['evidence']}"
         )
@@ -3265,7 +3265,7 @@ This makes the particle sector cleaner and easier to falsify.
 
 # merged import removed: from p11_particles import prediction_table
 # merged import removed: from p11_particles import stability_conditions
-# merged import removed: from p11_particles import rfg_radiative_options
+# merged import removed: from p11_particles import rg_radiative_options
 # merged import removed: from p11_particles import candidate_tables
 
 
@@ -3358,10 +3358,10 @@ def new_falsifiable_targets():
 def next_calculation_queue():
     return [
         "Prove or reject the cyclic order-9 lift from the C3 x C3 slot lattice.",
-        "Derive the h=2 oriented-frame coupling from the RFG action.",
+        "Derive the h=2 oriented-frame coupling from the RG action.",
         "Derive m proportional to nu^2 from the dressed oscillon energy functional.",
         "Build the full localized h=2 oscillon ansatz: Phi(t,r), Q(r,beta), framed triad U(x).",
-        "Linearize the RFG action around that ansatz and compute the fluctuation operator.",
+        "Linearize the RG action around that ansatz and compute the fluctuation operator.",
         "Check whether all non-gauge eigenvalues are non-negative.",
         "Add EM/self-field coupling and decide between phase45 options A or B.",
         "Choose one quark-mass scheme/scale and run phase46 as a real numerical falsification test.",
@@ -3407,7 +3407,7 @@ if __name__ == "__main__":
         print(f"  {key:26s}: {value}")
 
     print("\n5. Radiative protection options")
-    for row in rfg_radiative_options():
+    for row in rg_radiative_options():
         print(f"  {row['option']}: {row['claim_needed']}")
 
     print("\n6. Next calculation queue")
@@ -3466,17 +3466,17 @@ def stage_d3_em_charge_spin_program_status():
         "new_file": "p11_particles.py",
         "photon_EM": {
             "old_idea": "photon as helicoidal/Kelvin-like transverse medium wave",
-            "RFG_status": "future gauge-completion programme",
+            "RG_status": "future gauge-completion programme",
             "needed_theorem": "derive Maxwell equations, U(1) gauge redundancy, and Coulomb 1/r^2 from the medium variables",
         },
         "charge_quantization": {
             "old_idea": "charge tied to framed/winding topology and Calugareanu-Fuller Lk=Wr+Tw",
-            "RFG_status": "candidate topological current/operator programme",
+            "RG_status": "candidate topological current/operator programme",
             "fractional_charges": "Z3/color-orbifold route for 1/3 and 2/3 remains open",
         },
         "spin": {
             "old_idea": "spin-1/2 from Mobius/framed 720-degree closure",
-            "RFG_status": "partly absorbed into h=2 oriented-framed C3/order-9 lepton branch",
+            "RG_status": "partly absorbed into h=2 oriented-framed C3/order-9 lepton branch",
             "open": "derive full Dirac spinor dynamics, Pauli exclusion, and spin-statistics from the defect moduli space",
         },
         "g_factor": {
@@ -3511,9 +3511,9 @@ def stage_d4_sm_embedding_old_status():
             "W, Z, H can be hosted on the broad mass-ladder compatibility map",
         ],
         "Higgs_replacement_status": {
-            "negative_result": "fundamental RFG action has no SM-type Phi^4 Higgs potential",
+            "negative_result": "fundamental RG action has no SM-type Phi^4 Higgs potential",
             "candidate": "archion/interior localized broken-phase region for gauge-boson mass generation",
-            "open": "derive the W/Z mass matrix with a protected massless photon from the RFG medium, not by importing the Higgs sector",
+            "open": "derive the W/Z mass matrix with a protected massless photon from the RG medium, not by importing the Higgs sector",
         },
         "QCD_status": {
             "kept": "8 gluon count and D3/color route",
@@ -3525,7 +3525,7 @@ def stage_d4_sm_embedding_old_status():
         },
         "anomaly_status": (
             "SM anomaly cancellation is imported as a consistency check; "
-            "RFG has not yet derived the unique SM hypercharge assignment"
+            "RG has not yet derived the unique SM hypercharge assignment"
         ),
         "completion_requirements": [
             "EM U(1) derivation",
@@ -3557,9 +3557,9 @@ def stage_d4_particle_old_file_status():
 def p11_do_not_claim():
     """Particle-sector overclaim blacklist."""
     return [
-        "RFG has derived the full Standard Model.",
+        "RG has derived the full Standard Model.",
         "C3 x C3 is already a proven Z9 holonomy.",
-        "theta=2/9 is derived from the full RFG action.",
+        "theta=2/9 is derived from the full RG action.",
         "h=2 is derived rather than selected by a candidate normal-form rule.",
         "charged-lepton pole masses are predicted within PDG uncertainty.",
         "the absolute electron mass is derived.",

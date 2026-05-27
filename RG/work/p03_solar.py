@@ -7,9 +7,9 @@
 p03: solar-system / weak-field ledger.
 
 Status:
-- 1PN geometry check is conditional compatibility, not a full RFG exterior proof.
+- 1PN geometry check is conditional compatibility, not a full RG exterior proof.
 - Mercury and 1PN Shapiro are sanity checks once gamma=beta=1 is derived.
-- 2PN Shapiro/light-bending is a candidate discriminator until the active RFG
+- 2PN Shapiro/light-bending is a candidate discriminator until the active RG
   exterior optical index is derived.
 - Frame dragging is blocked until the rotating solution and preferred-frame
   PPN parameters alpha_1, alpha_2, alpha_3 are derived.
@@ -85,7 +85,7 @@ def ppn_geometry_gate():
     Geometry-only Schwarzschild-like PPN compatibility check.
 
     This shows what the vacuum Einstein-tensor part would require. It does not
-    close the RFG exterior solution until the RFG stress constraints vanish.
+    close the RG exterior solution until the RG stress constraints vanish.
     """
     res = analyze_ppn()
     U, gamma, beta, a2, G_tt_s, G_rr_s, G_thth_s, _, _, _ = res
@@ -116,15 +116,15 @@ def ppn_geometry_gate():
             sp.simplify(G_rr_s.subs(geometry_subs)),
             sp.simplify(G_thth_s.subs(geometry_subs)),
         ],
-        "not_claimed": "full RFG exterior solution; stress constraints remain open",
+        "not_claimed": "full RG exterior solution; stress constraints remain open",
     }
 
 
 def weak_field_stress_constraint_gate():
     """
-    RFG stress constraints through O(U^2) on the GR-like geometry branch.
+    RG stress constraints through O(U^2) on the GR-like geometry branch.
 
-    These are blockers: gamma=beta=1 is not an RFG exterior proof until these
+    These are blockers: gamma=beta=1 is not an RG exterior proof until these
     coefficients are either derived to vanish or shown to be suppressed.
     """
     res = analyze_ppn()
@@ -408,7 +408,7 @@ if __name__ == "__main__":
 
 """
 დაკვირვებითი sanity-check.
-ეს ბლოკი დამოუკიდებლად არ ამტკიცებს RFG მეტრიკას. ის ამოწმებს, რომ
+ეს ბლოკი დამოუკიდებლად არ ამტკიცებს RG მეტრიკას. ის ამოწმებს, რომ
 თუ gamma=1 და beta=1 უკვე გამოყვანილია, მერკურის GR/PPN წევრი სწორად ბრუნდება.
 """
 import math
@@ -428,7 +428,7 @@ def calculate_mercury_precession():
     T_mercury_days = T_mercury_sec / (24.0 * 3600.0)
     days_per_century = 36525.0
     
-    # პირობითი PPN პარამეტრები; მათი RFG-დან გამოყვანა stress gate-ს ელოდება.
+    # პირობითი PPN პარამეტრები; მათი RG-დან გამოყვანა stress gate-ს ელოდება.
     gamma_val = 1.0
     beta_val = 1.0
     
@@ -455,7 +455,7 @@ def mercury_precession_gate():
         "precession_arcsec_per_century": precession,
         "reference_value_arcsec_per_century": 42.98,
         "not_claimed": (
-            "independent RFG proof of gamma=beta=1; this is a conditional "
+            "independent RG proof of gamma=beta=1; this is a conditional "
             "solar-system sanity check"
         ),
     }
@@ -523,7 +523,7 @@ def cassini_gamma_gate(gamma_value=1.0):
     Cassini 1PN gamma gate.
 
     Bertotti, Iess, Tortora (Nature 2003): gamma - 1 = (2.1 +/- 2.3)e-5.
-    This gate is passed only after gamma is independently derived in the RFG
+    This gate is passed only after gamma is independently derived in the RG
     exterior branch.
     """
     central = 2.1e-5
@@ -538,7 +538,7 @@ def cassini_gamma_gate(gamma_value=1.0):
         "cassini_sigma": sigma,
         "conservative_bound": conservative_bound,
         "source": "Bertotti, Iess, Tortora, Nature 425, 374-376 (2003)",
-        "not_claimed": "Cassini pass before gamma is derived from RFG stress/exterior equations",
+        "not_claimed": "Cassini pass before gamma is derived from RG stress/exterior equations",
     }
 
 if __name__ == "__main__":
@@ -546,14 +546,14 @@ if __name__ == "__main__":
     print("--- Shapiro Time Delay (1PN) ---")
     print("ეფექტური რეფრაქციის დანამატი (Delta n):", delta_n)
     print("ზოგადი 1PN დაყოვნება:", dt_gen)
-    print("RFG/GR დაყოვნება (gamma = 1 პირობაში):", dt_gen.subs(gamma_sym, 1))
+    print("RG/GR დაყოვნება (gamma = 1 პირობაში):", dt_gen.subs(gamma_sym, 1))
     print("Cassini gate:", cassini_gamma_gate())
 
     print("\n--- აგენტთა საბჭოს შენიშვნები / მათემატიკური იდენტობა ---")
     print("1. საზღვრების (x1 და -x0) ჩასმისას ვიღებთ: ln(x1 + sqrt(x1^2+b^2)) - ln(-x0 + sqrt(x0^2+b^2))")
     print("2. მნიშვნელი გარდაიქმნება იდენტობით: (-x0 + sqrt(x0^2+b^2)) = b^2 / (x0 + sqrt(x0^2+b^2))")
     print("3. ეს გვაძლევს ფიზიკურად გამჭვირვალე ფორმას: ln[(x1+l1)(x0+l0)/b^2].")
-    print("4. gamma=1 პარამეტრი პირობითია; Cassini pass ძალაშია მხოლოდ RFG exterior proof-ის შემდეგ.")
+    print("4. gamma=1 პარამეტრი პირობითია; Cassini pass ძალაშია მხოლოდ RG exterior proof-ის შემდეგ.")
 
 
 # ===================== merged from p03_solar.py =====================
@@ -566,20 +566,20 @@ if __name__ == "__main__":
 """
 PHASE 14: 2PN Shapiro and light-bending discriminator.
 
-ძველი ISPG Appendix 5/6-ის კანდიდატი discriminator ახალ RFG ენაზე:
-1PN დონეზე RFG და GR ემთხვევა, რადგან gamma=beta=1.
-განსხვავება იწყება 2PN რიგში, თუ RFG-ის exterior optical index დაიხურა როგორც
+ძველი ISPG Appendix 5/6-ის კანდიდატი discriminator ახალ RG ენაზე:
+1PN დონეზე RG და GR ემთხვევა, რადგან gamma=beta=1.
+განსხვავება იწყება 2PN რიგში, თუ RG-ის exterior optical index დაიხურა როგორც
 
-    n_RFG = exp(2 r_g/r),
+    n_RG = exp(2 r_g/r),
 
 ხოლო GR-ის isotropic Schwarzschild optical index არის rational ფორმა:
 
     n_GR = (1+r_g/(2r))^3/(1-r_g/(2r)).
 
 ამ ansatz-ის closed differential შედეგებია:
-    Delta t_2PN^(RFG-GR) = (r_g^2/(c b)) * (pi/4),
-    Delta theta_RFG = 2 r_s/b + pi*r_s^2/b^2 + O(r_s^3/b^3),
-    Delta theta_2PN^RFG / Delta theta_2PN^GR = 16/15.
+    Delta t_2PN^(RG-GR) = (r_g^2/(c b)) * (pi/4),
+    Delta theta_RG = 2 r_s/b + pi*r_s^2/b^2 + O(r_s^3/b^3),
+    Delta theta_2PN^RG / Delta theta_2PN^GR = 16/15.
 """
 
 import sympy as sp
@@ -587,17 +587,17 @@ import sympy as sp
 
 def calculate_shapiro_2pn_discriminator():
     """
-    Candidate RFG-GR 2PN Shapiro difference.
+    Candidate RG-GR 2PN Shapiro difference.
 
     Straight reference path:
         r_0(z)^2 = b^2 + z^2.
 
     Expansions:
-        n_RFG = 1 + 2r_g/r + 2r_g^2/r^2 + ...
+        n_RG = 1 + 2r_g/r + 2r_g^2/r^2 + ...
         n_GR  = 1 + 2r_g/r + (7/4)r_g^2/r^2 + ...
 
-    Shared 1PN bending/path terms cancel in the RFG-GR difference, so the
-    differential coefficient is controlled by alpha_RFG-alpha_GR = 1/4.
+    Shared 1PN bending/path terms cancel in the RG-GR difference, so the
+    differential coefficient is controlled by alpha_RG-alpha_GR = 1/4.
     """
     z, b, r_g, c, z_1, z_2 = sp.symbols(
         'z b r_g c z_1 z_2',
@@ -607,16 +607,16 @@ def calculate_shapiro_2pn_discriminator():
     eps = sp.Symbol('eps', real=True, positive=True)
     r = sp.sqrt(b**2 + z**2)
 
-    n_rfg = sp.exp(2 * eps * r_g / r)
+    n_rg = sp.exp(2 * eps * r_g / r)
     n_gr = (1 + eps * r_g / (2 * r))**3 / (1 - eps * r_g / (2 * r))
 
-    alpha_rfg = sp.simplify(
-        sp.series(n_rfg, eps, 0, 3).coeff(eps, 2) * r**2 / r_g**2
+    alpha_rg = sp.simplify(
+        sp.series(n_rg, eps, 0, 3).coeff(eps, 2) * r**2 / r_g**2
     )
     alpha_gr = sp.simplify(
         sp.series(n_gr, eps, 0, 3).coeff(eps, 2) * r**2 / r_g**2
     )
-    delta_alpha = sp.simplify(alpha_rfg - alpha_gr)
+    delta_alpha = sp.simplify(alpha_rg - alpha_gr)
 
     master_integral_infinite = sp.integrate(1 / (b**2 + z**2), (z, -sp.oo, sp.oo))
     master_integral_finite = sp.integrate(1 / (b**2 + z**2), (z, -z_1, z_2))
@@ -626,18 +626,18 @@ def calculate_shapiro_2pn_discriminator():
 
     return {
         "status": "CANDIDATE_2PN_DISCRIMINATOR",
-        "input_status": "BLOCKED_UNTIL_RFG_EXTERIOR_OPTICAL_INDEX_DERIVED",
-        "n_RFG": sp.Eq(sp.Symbol('n_RFG'), n_rfg.subs(eps, 1)),
+        "input_status": "BLOCKED_UNTIL_RG_EXTERIOR_OPTICAL_INDEX_DERIVED",
+        "n_RG": sp.Eq(sp.Symbol('n_RG'), n_rg.subs(eps, 1)),
         "n_GR_isotropic": sp.Eq(sp.Symbol('n_GR'), n_gr.subs(eps, 1)),
-        "alpha_RFG": alpha_rfg,
+        "alpha_RG": alpha_rg,
         "alpha_GR": alpha_gr,
         "delta_alpha": delta_alpha,
         "master_integral_infinite": master_integral_infinite,
         "master_integral_finite": master_integral_finite,
-        "Delta_t_2PN_RFG_minus_GR": sp.Eq(sp.Symbol('Delta_t'), delta_t_infinite),
+        "Delta_t_2PN_RG_minus_GR": sp.Eq(sp.Symbol('Delta_t'), delta_t_infinite),
         "finite_endpoint_Delta_t": sp.Eq(sp.Symbol('Delta_t_finite'), delta_t_finite),
         "Delta_B": sp.Eq(sp.Symbol('Delta_B'), dimensionless_delta_b),
-        "candidate_result": "if n_RFG=exp(2*r_g/r), then Delta_B=pi/4",
+        "candidate_result": "if n_RG=exp(2*r_g/r), then Delta_B=pi/4",
         "coordinate_warning": (
             "this block is isotropic optical-index language; it must be bridged "
             "to the areal-radius PPN block before theory export"
@@ -649,7 +649,7 @@ def calculate_light_deflection_2pn_discriminator():
     """
     Old Appendix 5 candidate recovered under the exponential optical-index ansatz.
 
-    RFG:
+    RG:
         Delta theta = 2 r_s/b + pi r_s^2/b^2 + ...
     GR:
         Delta theta = 2 r_s/b + (15pi/16) r_s^2/b^2 + ...
@@ -657,24 +657,24 @@ def calculate_light_deflection_2pn_discriminator():
     b, r_s = sp.symbols('b r_s', real=True, positive=True)
 
     theta_1pn = 2 * r_s / b
-    theta_2pn_rfg = sp.pi * r_s**2 / b**2
+    theta_2pn_rg = sp.pi * r_s**2 / b**2
     theta_2pn_gr = sp.Rational(15, 16) * sp.pi * r_s**2 / b**2
-    ratio = sp.simplify(theta_2pn_rfg / theta_2pn_gr)
-    delta = sp.simplify(theta_2pn_rfg - theta_2pn_gr)
+    ratio = sp.simplify(theta_2pn_rg / theta_2pn_gr)
+    delta = sp.simplify(theta_2pn_rg - theta_2pn_gr)
 
     return {
         "status": "CANDIDATE_2PN_BENDING_DISCRIMINATOR",
-        "input_status": "HARD_CODED_UNTIL_RAY_EQUATION_DERIVED_FROM_RFG_METRIC",
+        "input_status": "HARD_CODED_UNTIL_RAY_EQUATION_DERIVED_FROM_RG_METRIC",
         "theta_1PN_shared": theta_1pn,
-        "theta_2PN_RFG": theta_2pn_rfg,
+        "theta_2PN_RG": theta_2pn_rg,
         "theta_2PN_GR": theta_2pn_gr,
-        "theta_total_RFG": theta_1pn + theta_2pn_rfg,
+        "theta_total_RG": theta_1pn + theta_2pn_rg,
         "theta_total_GR": theta_1pn + theta_2pn_gr,
-        "RFG_over_GR_2PN_ratio": ratio,
-        "RFG_2PN_enhancement_percent": sp.N((ratio - 1) * 100, 8),
-        "Delta_theta_2PN_RFG_minus_GR": delta,
+        "RG_over_GR_2PN_ratio": ratio,
+        "RG_2PN_enhancement_percent": sp.N((ratio - 1) * 100, 8),
+        "Delta_theta_2PN_RG_minus_GR": delta,
         "candidate_result": (
-            "if the exponential optical-index branch holds, RFG has a 16/15 "
+            "if the exponential optical-index branch holds, RG has a 16/15 "
             "enhancement of the GR 2PN bending term"
         ),
     }
@@ -728,7 +728,7 @@ def isotropic_optical_index_2pn_bridge():
             "required_b2_when_gamma_beta_1": b2_for_exp,
         },
         "reading": (
-            "the old n_RFG=exp(2u) candidate is equivalent, at 2PN in "
+            "the old n_RG=exp(2u) candidate is equivalent, at 2PN in "
             "isotropic gauge with gamma=beta=1, to requiring b2=2 rather "
             "than the GR value b2=3/2"
         ),
@@ -737,7 +737,7 @@ def isotropic_optical_index_2pn_bridge():
 
 def isotropic_2pn_stress_closure_theorem():
     """
-    Direct isotropic-gauge RFG stress closure through 2PN.
+    Direct isotropic-gauge RG stress closure through 2PN.
 
     This is stronger than the old optical ansatz.  In isotropic coordinates with
     gamma=beta=1, write
@@ -746,7 +746,7 @@ def isotropic_2pn_stress_closure_theorem():
         B = 1 + 2u + b2*u^2,
         Y=1/A, I1=3/B, I2=3/B^2, I3=1/B^3.
 
-    Requiring the RFG background stress T^t_t and T^i_i to vanish through
+    Requiring the RG background stress T^t_t and T^i_i to vanish through
     O(u^2) yields either the trivial sector or a nontrivial branch with b2=18.
     That b2 is not GR-like and not the old exponential optical candidate, so
     this is an obstruction for the minimal static isotropic closure.
@@ -839,7 +839,7 @@ def isotropic_2pn_stress_closure_theorem():
             "old b2=2 optical candidate is not derived by this closure."
         ),
         "article_reading": (
-            "the Solar 2PN sector is a hard gate: RFG must either derive a "
+            "the Solar 2PN sector is a hard gate: RG must either derive a "
             "different exterior map/screening mechanism, accept the large "
             "b2=18 deviation, or collapse to the trivial sector in this ansatz"
         ),
@@ -847,7 +847,7 @@ def isotropic_2pn_stress_closure_theorem():
 
 
 if __name__ == "__main__":
-    print("--- Shapiro Time Delay (2PN): RFG-GR candidate discriminator ---")
+    print("--- Shapiro Time Delay (2PN): RG-GR candidate discriminator ---")
     shapiro = calculate_shapiro_2pn_discriminator()
     for key, value in shapiro.items():
         print(f"{key:34s}: {value}")
@@ -858,11 +858,11 @@ if __name__ == "__main__":
         print(f"{key:34s}: {value}")
 
     print("\n--- აგენტთა საბჭოს შენიშვნები / ტექნიკური შეზღუდვები ---")
-    print("1. 1PN დონეზე RFG და GR ემთხვევა: gamma=beta=1.")
-    print("2. 2PN Shapiro-ში shared bent-ray/path terms ქრება RFG-GR სხვაობაში.")
+    print("1. 1PN დონეზე RG და GR ემთხვევა: gamma=beta=1.")
+    print("2. 2PN Shapiro-ში shared bent-ray/path terms ქრება RG-GR სხვაობაში.")
     print("3. candidate operational discriminator არის Delta_B=pi/4.")
     print("4. 2PN light bending-ში candidate კოეფიციენტი არის 16/15-ჯერ დიდი GR-ის 2PN წევრზე.")
-    print("5. theory export დაბლოკილია, სანამ optical index და null geodesics RFG metric-იდან არ გამოვა.")
+    print("5. theory export დაბლოკილია, სანამ optical index და null geodesics RG metric-იდან არ გამოვა.")
 
 
 # ===================== merged from p03_solar.py =====================
@@ -887,7 +887,7 @@ PHASE 30: Lense-Thirring frame dragging — Gravity Probe B
 GR Lense-Thirring formula:
 Ω_LT = (G/c²r³) · [3(S·r̂)r̂ - S]
 
-RFG-ის ცდა:
+RG-ის ცდა:
 - bi-conformal scalar — gravitomagnetic g_0i sector
 - phase8 PPN γ=1: geodetic + leading 1.5PN gravitomagnetic sector is conditional
 - preferred-frame/vector-PPN proof remains the tightening task
@@ -916,21 +916,21 @@ def gr_lense_thirring_formula():
     }
 
 
-def rfg_gravitomagnetic_open():
-    """RFG bi-conformal gravitomagnetic sector — tightening tasks."""
+def rg_gravitomagnetic_open():
+    """RG bi-conformal gravitomagnetic sector — tightening tasks."""
     return [
         "Leading 1.5PN Lense-Thirring is conditional on the one-metric minimal-coupling GR sector.",
         "Full stationary rotating bi-conformal solution should derive the same g_0i coefficient.",
         "BLOCKER: PPN preferred-frame parameters (α_1, α_2, α_3) must be derived as zero.",
         "MOND rotational bridge must remain inert in the Solar System: Z_rot≈a0/g << 1.",
-        "LARES/LARES-2/GINGER are observational context only, not RFG proof.",
+        "LARES/LARES-2/GINGER are observational context only, not RG proof.",
     ]
 
 
 def lageos_lares_comparison():
     """LAGEOS + LARES — improved frame-dragging measurements."""
     return {
-        "status": "OBSERVATIONAL_CONTEXT_NOT_USED_AS_RFG_PROOF",
+        "status": "OBSERVATIONAL_CONTEXT_NOT_USED_AS_RG_PROOF",
         "LAGEOS_I_II_2011": "reported Lense-Thirring tests; systematics debated",
         "LARES_2016": "reported improved frame-dragging tests; source-tag before export",
         "LARES-2": "targeted/reported high precision; do not use as proof here",
@@ -938,14 +938,14 @@ def lageos_lares_comparison():
     }
 
 
-def rfg_predictions():
-    """RFG-ის ცდა Lense-Thirring-ისთვის."""
+def rg_predictions():
+    """RG-ის ცდა Lense-Thirring-ისთვის."""
     return {
         "PPN_gamma_1PN": "γ=1 branch — geodetic precession matches GR only after stress gate closes",
-        "Lense_Thirring_RFG": "conditional leading 1.5PN: Ω_LT = GR under one-metric minimal coupling",
+        "Lense_Thirring_RG": "conditional leading 1.5PN: Ω_LT = GR under one-metric minimal coupling",
         "MOND_rotational_slot": "Z_rot≈a0/g, so Solar-System correction is <10^-8 to 10^-11",
         "preferred_frame_PPN": "BLOCKED_UNTIL_ALPHA_I_ZERO_DERIVED",
-        "current_status": "conditional checklist; rotating RFG solution remains open",
+        "current_status": "conditional checklist; rotating RG solution remains open",
     }
 
 
@@ -955,11 +955,11 @@ def frame_dragging_gate():
         "status": "BLOCKED_UNTIL_ROTATING_SOLUTION_AND_ALPHA_I_ZERO_DERIVED",
         "GP_B_reference": GP_B,
         "required_before_claim": [
-            "derive stationary rotating RFG exterior g_0i",
+            "derive stationary rotating RG exterior g_0i",
             "derive alpha_1=alpha_2=alpha_3=0",
             "show MOND/rotational bridge is inert at Solar-System accelerations",
         ],
-        "not_claimed": "RFG independent frame-dragging pass",
+        "not_claimed": "RG independent frame-dragging pass",
     }
 
 
@@ -978,21 +978,21 @@ if __name__ == "__main__":
     for key, val in gr.items():
         print(f"  {key:25s}: {val}")
 
-    print("\n3. RFG-ის გასამკაცრებელი ნაბიჯები")
-    for i, task in enumerate(rfg_gravitomagnetic_open(), 1):
+    print("\n3. RG-ის გასამკაცრებელი ნაბიჯები")
+    for i, task in enumerate(rg_gravitomagnetic_open(), 1):
         print(f"  {i}. {task}")
 
     print("\n4. LAGEOS/LARES გადახედვა")
     for key, val in lageos_lares_comparison().items():
         print(f"  {key:25s}: {val}")
 
-    print("\n5. RFG predictions")
-    for key, val in rfg_predictions().items():
+    print("\n5. RG predictions")
+    for key, val in rg_predictions().items():
         print(f"  {key:25s}: {val}")
 
     print("\n6. სტატუსი")
     print("  - GR L-T 39.2 mas/yr vs GP-B 37.2±7.2 — within 1σ")
-    print("  - RFG leading 1.5PN frame-dragging is conditional on one-metric minimal coupling.")
+    print("  - RG leading 1.5PN frame-dragging is conditional on one-metric minimal coupling.")
     print("  - preferred-frame α_1, α_2, α_3 derivation is a blocker.")
     print("  - gate:", frame_dragging_gate()["status"])
 
@@ -1007,17 +1007,17 @@ def stage_c1_old_solar_precision_status():
         "OLD_4_PPN": {
             "status": "migrated_as_conditional_geometry_check",
             "target": "p03_solar.py",
-            "core": "Schwarzschild-like weak-field geometry gives gamma=1, beta=1 if RFG stress constraints close",
+            "core": "Schwarzschild-like weak-field geometry gives gamma=1, beta=1 if RG stress constraints close",
         },
         "OLD_5_light_deflection": {
             "status": "migrated_as_candidate_discriminator",
             "target": "p03_solar.py PHASE 14",
-            "core": "1PN matches GR if gamma=beta=1; 2PN coefficient is candidate until RFG optical index is derived",
+            "core": "1PN matches GR if gamma=beta=1; 2PN coefficient is candidate until RG optical index is derived",
         },
         "OLD_6_shapiro": {
             "status": "migrated_as_candidate_discriminator",
             "target": "p03_solar.py PHASE 14",
-            "core": "finite RFG-GR 2PN differential discriminator Delta_B=pi/4 under exponential optical-index ansatz",
+            "core": "finite RG-GR 2PN differential discriminator Delta_B=pi/4 under exponential optical-index ansatz",
         },
         "OLD_7_perihelion": {
             "status": "migrated_as_conditional_sanity_check",
@@ -1052,8 +1052,8 @@ def stage_c1_solar_falsification_targets():
             "strong-field lensing/timing near Sgr A*, pulsar-BH systems, ngEHT/BHEX",
         ],
         "theory_tightening": [
-            "solve RFG weak-field stress constraints through O(U^2)",
-            "derive active RFG exterior optical index and coordinate bridge",
+            "solve RG weak-field stress constraints through O(U^2)",
+            "derive active RG exterior optical index and coordinate bridge",
             "full stationary rotating solution for g_0i",
             "preferred-frame PPN alpha_i proof",
             "nonperturbative null geodesics for compact-object imaging",
@@ -1145,11 +1145,11 @@ def article_solar_theorem():
             "shapiro": {
                 "status": shapiro_2pn["status"],
                 "input_status": shapiro_2pn["input_status"],
-                "n_RFG": shapiro_2pn["n_RFG"],
+                "n_RG": shapiro_2pn["n_RG"],
                 "n_GR_isotropic": shapiro_2pn["n_GR_isotropic"],
                 "delta_alpha": shapiro_2pn["delta_alpha"],
-                "Delta_t_2PN_RFG_minus_GR": shapiro_2pn[
-                    "Delta_t_2PN_RFG_minus_GR"
+                "Delta_t_2PN_RG_minus_GR": shapiro_2pn[
+                    "Delta_t_2PN_RG_minus_GR"
                 ],
                 "finite_endpoint_Delta_t": shapiro_2pn["finite_endpoint_Delta_t"],
                 "Delta_B": shapiro_2pn["Delta_B"],
@@ -1157,18 +1157,18 @@ def article_solar_theorem():
             "light_bending": {
                 "status": bending_2pn["status"],
                 "input_status": bending_2pn["input_status"],
-                "theta_2PN_RFG": bending_2pn["theta_2PN_RFG"],
+                "theta_2PN_RG": bending_2pn["theta_2PN_RG"],
                 "theta_2PN_GR": bending_2pn["theta_2PN_GR"],
-                "RFG_over_GR_2PN_ratio": bending_2pn[
-                    "RFG_over_GR_2PN_ratio"
+                "RG_over_GR_2PN_ratio": bending_2pn[
+                    "RG_over_GR_2PN_ratio"
                 ],
-                "Delta_theta_2PN_RFG_minus_GR": bending_2pn[
-                    "Delta_theta_2PN_RFG_minus_GR"
+                "Delta_theta_2PN_RG_minus_GR": bending_2pn[
+                    "Delta_theta_2PN_RG_minus_GR"
                 ],
             },
             "blocking_condition": (
-                "promote to final prediction only after n_RFG is derived from "
-                "the RFG exterior metric and the areal-radius branch is mapped "
+                "promote to final prediction only after n_RG is derived from "
+                "the RG exterior metric and the areal-radius branch is mapped "
                 "to isotropic PPN coordinates"
             ),
         },
@@ -1191,9 +1191,9 @@ def solar_system_claim_gate():
     stress_gate = weak_field_stress_constraint_gate()
     one_pn_branch = solar_1pn_closure_branch()
     return {
-        "file_export_status": "NOT_READY_FOR_RFG_THEORY_EXPORT",
+        "file_export_status": "NOT_READY_FOR_RG_THEORY_EXPORT",
         "ppn_geometry": ppn_geometry_gate()["status"],
-        "rfg_stress_constraints": stress_gate["status"],
+        "rg_stress_constraints": stress_gate["status"],
         "solar_1PN_closure_branch": one_pn_branch["status"],
         "strict_2PN_stress_free_branch": (
             "TRIVIAL_ONLY" if stress_gate["strict_O0_O1_O2_solution"] else "CHECK"

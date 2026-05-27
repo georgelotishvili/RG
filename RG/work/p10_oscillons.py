@@ -63,7 +63,7 @@ def oscillon_claim_gate() -> list[ClaimGate]:
             claim="substrate carrier frequency nu0",
             status="OPEN_MICROPHYSICAL_HYPOTHESIS",
             verified_here="nu0 is explicitly marked as a substrate rhythm hypothesis/TODO.",
-            open_requirement="derive the invariant substrate clock from the microscopic RFG vacuum, not from local oscillon composites.",
+            open_requirement="derive the invariant substrate clock from the microscopic RG vacuum, not from local oscillon composites.",
         ),
     ]
 
@@ -71,7 +71,7 @@ def oscillon_claim_gate() -> list[ClaimGate]:
 def oscillon_do_not_claim() -> list[str]:
     return [
         "Do not claim that p10 proves particles are finite-energy oscillons.",
-        "Do not claim Newton gravity is fully derived from the RFG action in this file.",
+        "Do not claim Newton gravity is fully derived from the RG action in this file.",
         "Do not claim the bi-conformal exterior metric is derived rather than selected as an ansatz/branch.",
         "Do not claim solar-system tests are fully passed; only leading weak-field checks are present.",
         "Do not claim G is microscopically normalized from oscillon parameters here.",
@@ -107,7 +107,7 @@ DEFAULT_MAIN_SECTIONS = {"oscillon", "spherical", "tov", "biconformal", "gates"}
 
 
 def _requested_main_sections() -> set[str]:
-    raw = os.environ.get("RFG_P10_SECTIONS", "")
+    raw = os.environ.get("RG_P10_SECTIONS", "")
     return {part.strip().lower() for part in raw.split(",") if part.strip()}
 
 
@@ -958,7 +958,7 @@ def step8_split_1911_1915():
         n_t = 1/√(g_tt) = e^(-φ/2) ≈ 1 + r_s/(2r)
         δ_t = r_s/b
 
-    GR 1915 / RFG full: დროითი + სივრცული (g_ii)
+    GR 1915 / RG full: დროითი + სივრცული (g_ii)
         n_s = √(g_ii) = e^(-φ/2) ≈ 1 + r_s/(2r)
         δ_s = r_s/b
 
@@ -1141,7 +1141,7 @@ def p10_status_audit():
         "conditional": [
             "bi-conformal metric branch",
             "source-to-G normalization",
-            "Newton recovery as an RFG first-principles theorem",
+            "Newton recovery as an RG first-principles theorem",
         ],
         "open": [
             "finite-energy nonlinear oscillon existence",
@@ -1355,7 +1355,7 @@ def stage_d1_old_quantum_oscillon_status():
     Deletion-gate marker for the oscillon/gravity parts of OLD/ISPG_Quantum.tex.
 
     This keeps the valuable old intuition, but classifies it in the stronger
-    new RFG form: Bernoulli gravity is a derivation chain, while the full
+    new RG form: Bernoulli gravity is a derivation chain, while the full
     finite-energy oscillon existence theorem remains a PDE task.
     """
     phi, m0, L0, omega0 = sp.symbols('phi m0 L0 omega0', real=True, positive=True)

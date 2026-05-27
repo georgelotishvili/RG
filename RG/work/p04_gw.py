@@ -4,7 +4,7 @@
 # Horndeski/EFT bridge only: X = -1/2 g^mn d_m Phi d_n Phi, so Y = -2X.
 
 """
-PHASE 9: gravitational waves - old ISPG predictions in RFG language.
+PHASE 9: gravitational waves - old ISPG predictions in RG language.
 
 Recovered old-theory predictions, with export gates:
 1. Tensor speed sector: alpha_T=0 and no solid h_dot^2/h_z^2 correction.
@@ -25,9 +25,9 @@ import sympy as sp
 
 def analyze_gw_full():
     """
-    Solid-sector TT check already used in earlier RFG phases.
+    Solid-sector TT check already used in earlier RG phases.
 
-    The RFG solid invariants do not generate h_dot^2 or h_z^2 corrections
+    The RG solid invariants do not generate h_dot^2 or h_z^2 corrections
     for a TT perturbation on FLRW.  Therefore the solid sector does not
     shift c_T.  A mass term constraint remains separate.
     """
@@ -165,10 +165,10 @@ def tensor_speed_scope_gate():
 
 def analyze_horndeski_luminal_speed():
     """
-    Old Appendix 10 result in RFG notation.
+    Old Appendix 10 result in RG notation.
 
     Horndeski tensor-speed excess alpha_T receives contributions from
-    G_{4,X} and G_5.  RFG's Einstein-Hilbert backbone has:
+    G_{4,X} and G_5.  RG's Einstein-Hilbert backbone has:
         G4 = const, G4_X = 0, G5 = 0.
     """
     c, c_g, alpha_T, G4_X, G5 = sp.symbols('c c_g alpha_T G4_X G5', real=True)
@@ -334,7 +334,7 @@ PHASE 18: LIGO-ის დიფერენციალური პასუხ
     ბი-კონფორმულ სტრუქტურასთან (აუცილებელი, მაგრამ არა საკმარისი პირობა, 
     რადგან იგივეს აკეთებს GR). 
 
-    RFG თეორიის GR-სგან გასარჩევად LIGO/Virgo-ს მონაცემებში საჭიროა 
+    RG თეორიის GR-სგან გასარჩევად LIGO/Virgo-ს მონაცემებში საჭიროა 
     სკალარული/გრძივი დამატებითი მოდების ძიება ან ულტრა-ზუსტი დისპერსიის 
     გაზომვა. GW170817-მა (c_T = c) უკვე დაადგინა მკაცრი კონსტრეინტი; 
     phase9 მხოლოდ აჩვენებს, რომ solid sector TT kinetic/gradient-ს არ ცვლის; 
@@ -487,7 +487,7 @@ def step4_ligo_differential_signal():
 
 def step4b_common_mode_vs_shear_response():
     """
-    RFG detector-response lemma.
+    RG detector-response lemma.
 
     Michelson-Morley-ის ოპერაციული გაკვეთილი:
         თუ მთელი მოწყობილობა იმავე ოპერაციული გეომეტრიის ნაწილია, absolute
@@ -571,7 +571,7 @@ def step4c_detector_response_claim_gate():
             "same operational lesson: an apparatus made from the medium cannot "
             "read the medium's absolute common-mode state; differential residuals remain observable"
         ),
-        "status": "RFG_DETECTOR_RESPONSE_LEDGER_READY_FOR_TECHNICAL_EXPORT",
+        "status": "RG_DETECTOR_RESPONSE_LEDGER_READY_FOR_TECHNICAL_EXPORT",
     }
 
 
@@ -688,7 +688,7 @@ def step8_epistemic_summary():
         LIGO სიგნალი თავსებადია ბი-კონფორმობასთან (აუცილებელი პირობა).
         თუმცა, იგივე სიგნალს პროგნოზირებს GR-იც.
         
-    RFG-სა და GR-ის ემპირიული გამიჯვნა GW დეტექტორებში მოითხოვს:
+    RG-სა და GR-ის ემპირიული გამიჯვნა GW დეტექტორებში მოითხოვს:
         - GW170817-ით დადგენილი c_T = c (მოითხოვს phase9 კონსტრეინტს).
         - სკალარული ან გრძივი მოდების პოვნას.
     """
@@ -785,7 +785,7 @@ if __name__ == "__main__":
     შედეგი: ბი-კონფორმული თეორიის (c_coord ∝ L_oper²) სტრუქტურა თავსებადია
             ამ დაკვირვებასთან (აუცილებელი პირობა დაცულია).
 
-    LIGO-ის სიგნალი წარმოადგენს *consistency bridge*-ს RFG-სთვის და არა მის
+    LIGO-ის სიგნალი წარმოადგენს *consistency bridge*-ს RG-სთვის და არა მის
     ექსკლუზიურ მტკიცებულებას (ვინაიდან GR-იც იგივე სიგნალს იძლევა).
     მთავარი ფილტრი — c_T = c (GW170817-დან) მოითხოვს phase9 კონსტრეინტის გათვალისწინებას; სრული ანალიზი ჯერ ღიაა.
     """)
@@ -803,17 +803,17 @@ if __name__ == "__main__":
 
 """
 ================================================================================
-PHASE 26: Inspiral-Merger-Ringdown waveform — RFG vs GR smoke-test
+PHASE 26: Inspiral-Merger-Ringdown waveform — RG vs GR smoke-test
 ================================================================================
 
 სტატუსი:
 Strategy 3 / M4-ის შესრულება. ეს ფაილი აღარ არის მხოლოდ PyCBC-ის ღია
-ჩანაწერი: იგი ქმნის lightweight TaylorF2 inspiral waveform-ს, ამატებს RFG
+ჩანაწერი: იგი ქმნის lightweight TaylorF2 inspiral waveform-ს, ამატებს RG
 ფაზურ correction-ებს და ითვლის overlap/mismatch-ს GR baseline-თან.
 
 რისი მტკიცება შეიძლება ამ ფაილით:
     - simplified 2.5PN GR TaylorF2 phase runnable არის.
-    - RFG correction თუ მცირეა, mismatch მცირეა; თუ დიდია, LIGO-template
+    - RG correction თუ მცირეა, mismatch მცირეა; თუ დიდია, LIGO-template
       consistency FAIL ხდება.
     - dipole/scalar/QNM ნაწილები პარამეტრიზებულია, მაგრამ მათი coupling ჯერ
       phase9/phase28/phase18 derivation-ზეა დამოკიდებული.
@@ -822,7 +822,7 @@ Strategy 3 / M4-ის შესრულება. ეს ფაილი ა�
     - full IMRPhenom/SEOBNR waveform;
     - რეალური PyCBC catalog fit;
     - LVK posterior-level polarization/dipole bound;
-    - RFG-specific 2PN/3PN coefficient-ის derived მნიშვნელობა.
+    - RG-specific 2PN/3PN coefficient-ის derived მნიშვნელობა.
 """
 
 import math
@@ -915,9 +915,9 @@ def taylorf2_phase_25pn(freq_hz, m1_msun, m2_msun, tc=0.0, phic=0.0):
     return phase
 
 
-def rfg_phase_correction(freq_hz, m1_msun, m2_msun, params):
+def rg_phase_correction(freq_hz, m1_msun, m2_msun, params):
     """
-    Parametric RFG phase corrections.
+    Parametric RG phase corrections.
 
     beta_dipole:
         -1PN dipole-like correction. Must be tiny unless phase28 strong-field
@@ -940,15 +940,15 @@ def rfg_phase_correction(freq_hz, m1_msun, m2_msun, params):
     return beta_dipole * v ** (-7.0) + beta_2pn * v ** (-1.0) + beta_3pn * v
 
 
-def waveform_frequency_domain(freq_hz, m1_msun, m2_msun, rfg_params=None):
+def waveform_frequency_domain(freq_hz, m1_msun, m2_msun, rg_params=None):
     """
     Restricted-amplitude TaylorF2 waveform h(f) = A f^(-7/6) exp(i psi).
     """
-    if rfg_params is None:
-        rfg_params = {}
+    if rg_params is None:
+        rg_params = {}
     amp = np.power(freq_hz, -7.0 / 6.0)
     phase = taylorf2_phase_25pn(freq_hz, m1_msun, m2_msun)
-    phase = phase + rfg_phase_correction(freq_hz, m1_msun, m2_msun, rfg_params)
+    phase = phase + rg_phase_correction(freq_hz, m1_msun, m2_msun, rg_params)
     return amp * np.exp(1j * phase)
 
 
@@ -976,11 +976,11 @@ def normalized_overlap(h1, h2, freq_hz):
     return norm_12 / math.sqrt(norm_11 * norm_22)
 
 
-def overlap_smoke_test(event, rfg_params, n_freq=4096):
+def overlap_smoke_test(event, rg_params, n_freq=4096):
     freqs = np.linspace(event["f_low_Hz"], event["f_high_Hz"], n_freq)
     h_gr = waveform_frequency_domain(freqs, event["m1_msun"], event["m2_msun"])
-    h_rfg = waveform_frequency_domain(freqs, event["m1_msun"], event["m2_msun"], rfg_params)
-    overlap = normalized_overlap(h_gr, h_rfg, freqs)
+    h_rg = waveform_frequency_domain(freqs, event["m1_msun"], event["m2_msun"], rg_params)
+    overlap = normalized_overlap(h_gr, h_rg, freqs)
     mismatch = 1.0 - overlap
     return {
         "overlap": overlap,
@@ -995,7 +995,7 @@ def qnm_ringdown_shift(final_mass_msun, epsilon_core=0.0):
     """
     Schwarzschild l=2 ringdown frequency smoke-test.
     GR: omega_220*M = 0.37367 - 0.08896 i.
-    epsilon_core is a phenomenological RFG regular-core fractional shift.
+    epsilon_core is a phenomenological RG regular-core fractional shift.
     """
     M_sec = final_mass_msun * MTSUN_SI
     omega_real_gr = 0.37367 / M_sec
@@ -1003,21 +1003,21 @@ def qnm_ringdown_shift(final_mass_msun, epsilon_core=0.0):
     f_gr_hz = omega_real_gr / (2.0 * np.pi)
     tau_gr_s = -1.0 / omega_imag_gr
 
-    f_rfg_hz = f_gr_hz * (1.0 + epsilon_core)
-    tau_rfg_s = tau_gr_s / max(1.0 + epsilon_core, 1.0e-12)
+    f_rg_hz = f_gr_hz * (1.0 + epsilon_core)
+    tau_rg_s = tau_gr_s / max(1.0 + epsilon_core, 1.0e-12)
 
     return {
         "f_220_GR_Hz": f_gr_hz,
         "tau_GR_s": tau_gr_s,
         "epsilon_core": epsilon_core,
-        "f_220_RFG_Hz": f_rfg_hz,
-        "tau_RFG_s": tau_rfg_s,
+        "f_220_RG_Hz": f_rg_hz,
+        "tau_RG_s": tau_rg_s,
         "ringdown_status": "TOY_PASS" if abs(epsilon_core) < 0.30 else "TOY_FAIL",
     }
 
 
-def scalar_breathing_channel(rfg_params):
-    amp = abs(rfg_params.get("scalar_breathing_amp", 0.0))
+def scalar_breathing_channel(rg_params):
+    amp = abs(rg_params.get("scalar_breathing_amp", 0.0))
     return {
         "A_breathing_over_A_TT": amp,
         "current_status": "parameterized only; phase9/phase28 strong-field source derivation needed",
@@ -1037,7 +1037,7 @@ def pycbc_interface_open():
     ]
 
 
-def benchmark_rfg_models():
+def benchmark_rg_models():
     return {
         "GR_limit": {
             "beta_dipole": 0.0,
@@ -1046,7 +1046,7 @@ def benchmark_rfg_models():
             "scalar_breathing_amp": 0.0,
             "epsilon_core": 0.0,
         },
-        "small_RFG_deviation": {
+        "small_RG_deviation": {
             "beta_dipole": 1.0e-6,
             "beta_2pn": 2.0e-3,
             "beta_3pn": 1.0e-3,
@@ -1065,8 +1065,8 @@ def benchmark_rfg_models():
 
 def status_assessment():
     return {
-        "toy_closed_now": "simplified TaylorF2 phase, parametric RFG corrections, overlap and QNM smoke-tests.",
-        "still_open": "real PyCBC/LVK catalog fit and RFG-derived beta coefficients.",
+        "toy_closed_now": "simplified TaylorF2 phase, parametric RG corrections, overlap and QNM smoke-tests.",
+        "still_open": "real PyCBC/LVK catalog fit and RG-derived beta coefficients.",
         "falsification": "large beta_dipole/beta_PN/scalar/QNM shifts fail waveform overlap or ringdown bounds.",
         "export_status": "TOY_LEDGER_ONLY__NOT_THEORY_EXPORT",
     }
@@ -1074,7 +1074,7 @@ def status_assessment():
 
 if __name__ == "__main__":
     print("=" * 72)
-    print("PHASE 26: IMR waveform — RFG vs GR smoke-test")
+    print("PHASE 26: IMR waveform — RG vs GR smoke-test")
     print("=" * 72)
 
     observations = gw_observations()
@@ -1087,9 +1087,9 @@ if __name__ == "__main__":
             f"band={event['f_low_Hz']:.0f}-{event['f_high_Hz']:.0f} Hz"
         )
 
-    print("\n2. TaylorF2 + RFG overlap smoke-test on GW150914-like BBH")
+    print("\n2. TaylorF2 + RG overlap smoke-test on GW150914-like BBH")
     event = observations["GW150914"]
-    for name, model in benchmark_rfg_models().items():
+    for name, model in benchmark_rg_models().items():
         ov = overlap_smoke_test(event, model)
         breath = scalar_breathing_channel(model)
         qnm = qnm_ringdown_shift(final_mass_msun=62.0, epsilon_core=model["epsilon_core"])
@@ -1098,7 +1098,7 @@ if __name__ == "__main__":
         print(f"    mismatch       : {ov['mismatch']:.6e} -> {ov['status']}")
         print(f"    breathing amp  : {breath['A_breathing_over_A_TT']:.3f} -> {breath['ligo_smoke_bound']}")
         print(f"    ringdown f_GR  : {qnm['f_220_GR_Hz']:.2f} Hz")
-        print(f"    ringdown f_RFG : {qnm['f_220_RFG_Hz']:.2f} Hz -> {qnm['ringdown_status']}")
+        print(f"    ringdown f_RG : {qnm['f_220_RG_Hz']:.2f} Hz -> {qnm['ringdown_status']}")
 
     print("\n3. GW170817 speed/dipole guard")
     bns = observations["GW170817"]
@@ -1134,23 +1134,23 @@ PHASE 27: Double Pulsar PSR J0737-3039A/B — PPK ცდები
 - GR ცდის ერთ-ერთი მკაცრი ფარგლი
 
 PPK პარამეტრები:
-1. ω̇ (periastron advance) — RFG: PPN γ, β-დან
+1. ω̇ (periastron advance) — RG: PPN γ, β-დან
 2. γ (Einstein delay) — gravitational redshift + time dilation
 3. P_b_dot (orbital period decay) — quadrupole + dipole radiation
 4. r (Shapiro range) — phase13 1PN-დან
 5. s (Shapiro shape) — sin(inclination)
 6. Ω̇ (geodetic precession) — phase30 Lense-Thirring related
 
-RFG-ის პროგნოზი:
+RG-ის პროგნოზი:
 - 1PN: GR-ის იდენტური (PPN γ=β=1)
 - 2.5PN orbital decay: tensor flux/source normalization still gated
 - Scalar dipole: STAGE A4 correction — s_universal=1/2, observable dipole
   depends on differential s_excess
 
-ცდის ფარგლი GR vs RFG:
+ცდის ფარგლი GR vs RG:
 - 1PN ემთხვევა
 - 2.5PN is not closed by c_T=c alone
-- Scalar dipole — RFG-ის ღია ცდა only through matter-body s_excess
+- Scalar dipole — RG-ის ღია ცდა only through matter-body s_excess
 """
 
 import math
@@ -1197,16 +1197,16 @@ def gr_predictions():
     }
 
 
-def rfg_predictions():
-    """RFG-ის PPK ledger — 1PN geometry closed, radiation sector gated."""
+def rg_predictions():
+    """RG-ის PPK ledger — 1PN geometry closed, radiation sector gated."""
     return {
-        "PPN_gamma": 1.0,  # phase8 (RFG bi-conformal)
+        "PPN_gamma": 1.0,  # phase8 (RG bi-conformal)
         "PPN_beta": 1.0,  # phase8 2PN
-        "omega_dot_RFG": "იდენტური GR-ის (γ=β=1)",
-        "Einstein_delay_RFG": "იდენტური GR-ის (Pound-Rebka + gravitational time dilation)",
+        "omega_dot_RG": "იდენტური GR-ის (γ=β=1)",
+        "Einstein_delay_RG": "იდენტური GR-ის (Pound-Rebka + gravitational time dilation)",
         "P_b_dot_quadrupole": "CONDITIONAL: GR-like only after tensor flux/source-coupling normalization",
         "P_b_dot_quadrupole_status": "BLOCKED_UNTIL_TENSOR_RADIATED_POWER_DERIVED",
-        "P_b_dot_dipole_RFG": "universal s=1/2 effaces leading dipole; only s_excess differences radiate",
+        "P_b_dot_dipole_RG": "universal s=1/2 effaces leading dipole; only s_excess differences radiate",
         "P_b_dot_dipole_status": "OPEN for matter-filled bodies; exact s_excess=0 for vacuum compact objects",
     }
 
@@ -1215,8 +1215,8 @@ def open_tests():
     """ცდის ღია ნაბიჯები."""
     return [
         "Matter-body s_excess derivation Damour-Esposito-Farèse სცენარით",
-        "P_b_dot_dipole_RFG რიცხობრივი ცდა |s_excess,NS-s_excess,WD| pulsar bounds ფარგლებში",
-        "Tensor quadrupole flux normalization: prove RFG radiated power equals GR, not only c_T=c",
+        "P_b_dot_dipole_RG რიცხობრივი ცდა |s_excess,NS-s_excess,WD| pulsar bounds ფარგლებში",
+        "Tensor quadrupole flux normalization: prove RG radiated power equals GR, not only c_T=c",
         "Geodetic precession Ω̇ — Lense-Thirring (phase30) გადახედვა",
         "ცდის ცხადი interface PTA კოლაბორაციით (NANOGrav, EPTA)",
     ]
@@ -1240,9 +1240,9 @@ if __name__ == "__main__":
         else:
             print(f"  {key:30s}: {val}")
 
-    print("\n3. RFG-ის პრედიქცია (phase8 + phase9)")
-    rfg = rfg_predictions()
-    for key, val in rfg.items():
+    print("\n3. RG-ის პრედიქცია (phase8 + phase9)")
+    rg = rg_predictions()
+    for key, val in rg.items():
         print(f"  {key:30s}: {val}")
 
     print("\n4. ღია ცდები")
@@ -1250,7 +1250,7 @@ if __name__ == "__main__":
         print(f"  {i}. {task}")
 
     print("\n5. სტატუსი")
-    print("  - 1PN: RFG=GR ფიქსირდება (phase8 γ=β=1)")
+    print("  - 1PN: RG=GR ფიქსირდება (phase8 γ=β=1)")
     print("  - 2.5PN orbital decay: not closed by c_T=c; tensor flux normalization is gated")
     print("  - Strong-field s_universal=1/2; matter-body s_excess — ღია")
     print("  - PSR J0737-3039 ცდის სრული χ² fit — ღია")
@@ -1275,23 +1275,23 @@ PHASE 28: PSR J1738+0333 — Scalar dipole radiation bound
 - highly asymmetric system (NS vs WD)
 - scalar dipole-radiation-ის ცდის მკაცრი ფარგლი
 - scalar-tensor literature often quotes α_0² < 2 × 10⁻⁵ (95% CL);
-  the |α_0| convention must be mapped before exporting an RFG number.
+  the |α_0| convention must be mapped before exporting an RG number.
 
 scalar-tensor theory predictions:
 - Brans-Dicke: dipole ∝ (α_NS - α_WD)²
 - Damour-Esposito-Farèse: strong-field "spontaneous scalarization"
-- RFG corrected: s_universal = 1/2, and the observable dipole depends on
+- RG corrected: s_universal = 1/2, and the observable dipole depends on
   s_excess,A - s_excess,B, not on the universal part.
 
-RFG-ის ცდა:
+RG-ის ცდა:
 1. dipole radiation: relative to tensor quadrupole it is -1PN, i.e.
    enhanced by v^(-2) unless the differential scalar charge is tiny
-2. RFG-ში s_A = -1/2 · ∂ln(M_Komar,A)/∂φ_infinity
+2. RG-ში s_A = -1/2 · ∂ln(M_Komar,A)/∂φ_infinity
 3. Bare/kinematic Komar response gives s_universal = 1/2
 4. Dipole source is the non-universal residue s_excess = s - 1/2
 5. Strong-field correction (Damour-Esposito-Farèse analogue): s_excess may depend on Ω/(mc²)
 6. PSR J1738 binding energy: Ω/(mc²) ~ 0.1 (NS) vs ~10^(-6)-10^(-4) (WD)
-7. ცდის ფარგლი: use α_0²-style bound until RFG normalization is mapped
+7. ცდის ფარგლი: use α_0²-style bound until RG normalization is mapped
 """
 
 import math
@@ -1326,7 +1326,7 @@ def scalar_dipole_prediction():
     Schematic only:
     ΔP_b_dot / P_b_dot_GR is proportional to (α_A - α_B)^2 and is -1PN
     relative to the tensor quadrupole.  The normalized coefficient must be
-    imported from a scalar-tensor timing convention or derived for RFG.
+    imported from a scalar-tensor timing convention or derived for RG.
 
     Damour-Esposito-Farèse strong-field:
     αA = α_0 + β_0 · (Ω/mc²) + higher order
@@ -1334,7 +1334,7 @@ def scalar_dipole_prediction():
     alpha0_squared_bound = PSR_J1738_DATA["alpha0_squared_bound_95CL"]
     return {
         "Brans_Dicke_form": "ΔP_b ∝ (α_A - α_B)²",
-        "RFG_corrected_stageA4": "s_universal=1/2; dipole controlled by s_excess,A - s_excess,B",
+        "RG_corrected_stageA4": "s_universal=1/2; dipole controlled by s_excess,A - s_excess,B",
         "Damour_strong_field": "s_A = α_0 + β_0 · (Ω_A/(m_A c²))",
         "formula_status": "SCHEMATIC_ONLY__NORMALIZED_TIMING_COEFFICIENT_NOT_DERIVED",
         "pn_order": "scalar dipole is -1PN relative to tensor quadrupole unless differential charge cancels",
@@ -1347,26 +1347,26 @@ def scalar_dipole_prediction():
     }
 
 
-def rfg_strong_field_open():
-    """RFG-ის strong-field s_A derivation — ცდის სქელეტი."""
+def rg_strong_field_open():
+    """RG-ის strong-field s_A derivation — ცდის სქელეტი."""
     return [
         "Komar-integrand argument (phase9 Appendix 16) — s_A ≈ 1/2 leading order",
         "Bi-conformal weight e^(-φ) · ρ_0 — kinematic redshift + spatial volume",
         "Structural-response correction s_excess (open task per OLD/16)",
         "Strong-field NS: Ω/mc² ~ 0.1 — non-perturbative regime",
-        "PSR J1738 χ² fit RFG s_excess-დან — ცდა ღია",
+        "PSR J1738 χ² fit RG s_excess-დან — ცდა ღია",
         "Future: ngVLA + SKA pulsar timing → 100× precision",
     ]
 
 
 def falsification_window():
-    """RFG-ის ფალსიფიკაციის ფანჯარა PSR J1738-ში."""
+    """RG-ის ფალსიფიკაციის ფანჯარა PSR J1738-ში."""
     return {
-        "current_bound": "α_0²-style bound < 2 × 10⁻⁵; RFG normalization map still required",
-        "RFG_stageA4": "s_universal=1/2; require small differential s_excess",
-        "RFG_derived_value": "OPEN — matter-filled s_excess calculation needed",
-        "if_s_excess_NS_minus_WD_O(0.01)": "FALSIFIED (RFG differential charge too large)",
-        "if_s_excess_zero_strictly": "RFG ემთხვევა, არ ფალსიფიცირდება",
+        "current_bound": "α_0²-style bound < 2 × 10⁻⁵; RG normalization map still required",
+        "RG_stageA4": "s_universal=1/2; require small differential s_excess",
+        "RG_derived_value": "OPEN — matter-filled s_excess calculation needed",
+        "if_s_excess_NS_minus_WD_O(0.01)": "FALSIFIED (RG differential charge too large)",
+        "if_s_excess_zero_strictly": "RG ემთხვევა, არ ფალსიფიცირდება",
     }
 
 
@@ -1390,8 +1390,8 @@ if __name__ == "__main__":
     for key, val in dipole.items():
         print(f"  {key:25s}: {val}")
 
-    print("\n4. RFG strong-field s_excess — ცდის ღია ნაბიჯები")
-    for i, task in enumerate(rfg_strong_field_open(), 1):
+    print("\n4. RG strong-field s_excess — ცდის ღია ნაბიჯები")
+    for i, task in enumerate(rg_strong_field_open(), 1):
         print(f"  {i}. {task}")
 
     print("\n5. ფალსიფიკაციის ფანჯარა")
@@ -1401,9 +1401,9 @@ if __name__ == "__main__":
 
     print("\n6. სტატუსი")
     print("  - PSR J1738 alpha_0²-style bound < 2e-5 დაფიქსირებულია; |alpha_0| map არ არის პირდაპირი")
-    print("  - RFG corrected: s_universal = 1/2; dipole sees only s_excess differences")
+    print("  - RG corrected: s_universal = 1/2; dipole sees only s_excess differences")
     print("  - Strong-field s_excess derivation — ღია (Damour-Esposito-Farèse-ის ანალოგი)")
-    print("  - If derived differential s_excess is too large in NS-WD — RFG ფალსიფიცირდება")
+    print("  - If derived differential s_excess is too large in NS-WD — RG ფალსიფიცირდება")
 
 
 # =============================================================================
@@ -1412,10 +1412,10 @@ if __name__ == "__main__":
 
 def stage_a4_sensitivity_definition():
     """
-    Drain of OLD/16. ISPG_Sensitivity.tex into the new RFG GW sector.
+    Drain of OLD/16. ISPG_Sensitivity.tex into the new RG GW sector.
 
     Corrected core statement:
-    - old wording "s_A=0" is too weak/wrong for RFG;
+    - old wording "s_A=0" is too weak/wrong for RG;
     - the Komar/operational response gives a universal sensitivity s=1/2;
     - scalar charge is not absent, but its universal part is effaced in dipole
       radiation because binaries see charge differences.
@@ -1450,7 +1450,7 @@ def stage_a4_dipole_effacement_formula():
         "dipole_power_scaling": "P_dipole ∝ (s_excess,A - s_excess,B)^2",
         "relative_pn_order": "dipole is -1PN (v^-2 relative to quadrupole) unless differential charge cancels",
         "interpretation": (
-            "RFG may have scalar charge, but binary dipole radiation is absent "
+            "RG may have scalar charge, but binary dipole radiation is absent "
             "when the excess sensitivities match or vanish."
         ),
     }
@@ -1516,7 +1516,7 @@ def stage_a4_scalar_sensitivity_status():
         "new_file": "p04_gw.py",
         "old_file_drained": "OLD/16. ISPG_Sensitivity.tex",
         "replaces": "s_A=0 postulate",
-        "stronger_RFG_statement": (
+        "stronger_RG_statement": (
             "s_universal=1/2 and dipole radiation tests only the differential "
             "excess sensitivity"
         ),
@@ -1547,7 +1547,7 @@ def stage_c2_old_wave_status():
             "Horndeski/EFT tensor speed: G4_X=0 and G5=0 imply alpha_T=0",
             "GW170817 speed-sector compatibility is structural, not a full propagation proof",
             "TT detector response requires the spatial metric sector; LIGO consistency bridge retained",
-            "RFG detector-response gate: common-mode cancels, TT/shear phase residual survives",
+            "RG detector-response gate: common-mode cancels, TT/shear phase residual survives",
             "breathing polarization is allowed as scalar-medium channel",
         ],
         "corrected_from_old": [
@@ -1632,7 +1632,7 @@ def gw_central_claim_gate():
     One-place export gate for p04_gw.py.
 
     This intentionally separates an algebraic tensor-speed pass from the much
-    stronger observational claim "RFG is fully GW-safe."  The latter remains
+    stronger observational claim "RG is fully GW-safe."  The latter remains
     blocked until the listed gates are actually calculated or fitted.
     """
     speed_gate = tensor_speed_scope_gate()
@@ -1641,7 +1641,7 @@ def gw_central_claim_gate():
     pulsar_gate = scalar_dipole_prediction()
     detector_gate = step4c_detector_response_claim_gate()
     return {
-        "file_export_status": "NOT_READY_FOR_RFG_THEORY_EXPORT",
+        "file_export_status": "NOT_READY_FOR_RG_THEORY_EXPORT",
         "tensor_speed_sector": speed_gate["status"],
         "detector_response": detector_gate["status"],
         "massive_dispersion": mass_gate["status"],
@@ -1653,7 +1653,7 @@ def gw_central_claim_gate():
             "do not claim full c_g=c propagation from alpha_T=0 alone",
             "do not claim GR-like orbital decay from c_T=c alone",
             "do not claim scalar breathing amplitude is observationally allowed without LVK polarization fit",
-            "do not claim PSR J1738 alpha0 bound in RFG variables before normalization mapping",
+            "do not claim PSR J1738 alpha0 bound in RG variables before normalization mapping",
             "do not export toy waveform overlaps as catalog/LVK evidence",
         ],
     }

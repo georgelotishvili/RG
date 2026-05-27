@@ -34,7 +34,7 @@ conditional mechanism benchmark, not a completed Bullet Cluster proof.
     გაზი (უმეტესობა) -> MOND მოელის ლენზირების პიკს გაზთან.
     დაკვირვება: პიკი გალაქტიკებთან -> MOND-ის სტანდარტული ფორმა ვერ ხსნის.
 
-RFG-ის მექანიზმი:
+RG-ის მექანიზმი:
     chi ველი ვორტექსულ-მეხსიერებითი ფაზაა (PLAN.md ფაზა 4).
     მისი თავისებურება: *მეხსიერების შენარჩუნება დიდი დროით*
     (tau_chi >> t_collision).
@@ -111,7 +111,7 @@ def bullet_claim_gate() -> list[ClaimGate]:
                 "tau_rel/tau_cross≈2.1e3 for the fiducial Bullet-scale merger."
             ),
             open_requirement=(
-                "derive tau_rel=c/g_vir from the nonlinear RFG/vortex transport "
+                "derive tau_rel=c/g_vir from the nonlinear RG/vortex transport "
                 "equation rather than using it as a macroscopic law."
             ),
         ),
@@ -123,7 +123,7 @@ def bullet_claim_gate() -> list[ClaimGate]:
                 "keeps chi close to its pre-collision/collisionless source."
             ),
             open_requirement=(
-                "derive the chi source from RFG oscillon/vortex dynamics and show "
+                "derive the chi source from RG oscillon/vortex dynamics and show "
                 "that shocked gas does not dominate that source."
             ),
         ),
@@ -136,7 +136,7 @@ def bullet_claim_gate() -> list[ClaimGate]:
             ),
             open_requirement=(
                 "derive the sign, normalization, and projected lensing coupling "
-                "of the actual chi kernel from the relativistic RFG potentials."
+                "of the actual chi kernel from the relativistic RG potentials."
             ),
         ),
         ClaimGate(
@@ -411,7 +411,7 @@ def step4_frozen_hysteresis_lensing_benchmark():
     Dynamics:
         frozen positive Helmholtz chi response centered on collisionless galaxies
         L_chi ~ 100 kpc, f_hyst ~ 1.3 as benchmark shape/amplitude knobs.
-        They are not yet first-principles RFG predictions.
+        They are not yet first-principles RG predictions.
 
     Outputs copied from the old frozen-hysteresis benchmark:
         peaks at x ~ ±715 kpc, within ~5 kpc of galaxy centroids
@@ -611,12 +611,12 @@ def bullet_threshold_and_robustness():
 
 def step5_mond_contrast():
     """
-    MOND (Milgrom) vs RFG-chi:
+    MOND (Milgrom) vs RG-chi:
         Standard local-baryon MOND/AQUAL:
             if the extra field is sourced only by the instantaneous local
             baryonic map, a gas-dominated aperture tends to pull the lensing
             peak toward the shocked gas.
-        RFG frozen-memory benchmark:
+        RG frozen-memory benchmark:
             if chi/residual memory stays with collisionless galaxies, the
             effective lensing source is galaxy + residual/chi, not gas alone.
     """
@@ -624,7 +624,7 @@ def step5_mond_contrast():
         "standard_local_baryon_MOND_pressure_point": (
             "instantaneous local baryon sourcing tends toward the gas peak in a gas-dominated merger aperture"
         ),
-        "RFG_benchmark_result": "frozen chi/hysteresis source -> peak at galaxies in the snapshot benchmark",
+        "RG_benchmark_result": "frozen chi/hysteresis source -> peak at galaxies in the snapshot benchmark",
         "mechanism": "tau_rel=c/g_vir >> tau_cross freezes the transported component onto collisionless galaxies",
         "no_new_particle": "chi is an effective collective memory field, not a sterile-neutrino/particle-DM species",
         "scope_guard": (
@@ -640,7 +640,7 @@ def step5_mond_contrast():
 
 def step6_falsifiable_predictions():
     """
-    RFG-ის ფალსიფიცირებადი პროგნოზები (ტექსტური ესკიზი):
+    RG-ის ფალსიფიცირებადი პროგნოზები (ტექსტური ესკიზი):
     """
     return {
         "Bullet Cluster": "two convergence peaks locked to galaxy centroids; gas center remains subdominant",
@@ -700,7 +700,7 @@ def multi_cluster_universality_gate():
     return {
         "universal_parameters_to_hold_fixed_or_derive": [
             "tau_rel=c/g_vir law",
-            "L_chi from ICM/RFG transport physics",
+            "L_chi from ICM/RG transport physics",
             "f_hyst or chi normalization",
             "gas-to-galaxy source-suppression rule after shock heating",
         ],
@@ -722,7 +722,7 @@ def chi_source_and_lensing_coupling_gate():
     """The exact place where the Bullet mechanism is still not first-principles."""
     return {
         "source_used_here": "chi_eq = k_chi * (omega dot v) as a symbolic toy/source label",
-        "source_status": "NOT_DERIVED_FROM_RFG_ACTION",
+        "source_status": "NOT_DERIVED_FROM_RG_ACTION",
         "required_derivation": [
             "coarse-grain oscillon/vortex degrees of freedom into chi",
             "show why collisionless galaxy flow sources chi more than shocked gas",
@@ -746,10 +746,10 @@ def status_upgrade_audit():
             "conditional galaxy-vs-gas peak dominance theorem added",
             "mass-budget ledger corrected: gas+galaxy-associated component is separated from residual/chi",
             "old benchmark peak positions, contrasts, and threshold imported as snapshot inputs",
-            "RFG avoids the standard local-baryon MOND gas-peak failure in this frozen benchmark",
+            "RG avoids the standard local-baryon MOND gas-peak failure in this frozen benchmark",
         ],
         "still_open": [
-            "derive chi source and lensing coupling from RFG action/coarse-grained vortex dynamics",
+            "derive chi source and lensing coupling from RG action/coarse-grained vortex dynamics",
             "full time-dependent N-body+gas+chi simulation",
             "pixel-level weak-lensing likelihood against Clowe et al.",
             "first-principles derivation of L_chi for intracluster plasma conditions",
@@ -789,7 +789,7 @@ def stage_b5_cluster_resonant_tail_binding_benchmark():
     return {
         "source": "OLD/ISPG_MOND.tex cluster-binding section",
         "problem": "simple MOND often leaves about a factor-of-two residual in rich clusters",
-        "RFG_mechanism": (
+        "RG_mechanism": (
             "overlapping irreversible resonant tails in dense ICM/galaxy environments "
             "raise the local background vibration and Bernoulli pressure deficit"
         ),
@@ -924,7 +924,7 @@ if __name__ == "__main__":
         print(f"  {k:24s}: {v}")
 
     # ნაბიჯი 5
-    print("\n--- ნაბიჯი 5: MOND-ის კლასიკური მოლოდინი vs RFG-ის chi-მოდელი ---")
+    print("\n--- ნაბიჯი 5: MOND-ის კლასიკური მოლოდინი vs RG-ის chi-მოდელი ---")
     contrast = step5_mond_contrast()
     for k, v in contrast.items():
         print(f"  {k:18s}: {v}")

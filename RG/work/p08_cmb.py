@@ -19,7 +19,7 @@ PHASE 21: CMB — კოსმოლოგიური პერტურბა�
 
 ცენტრალური დასკვნები:
     1. სტანდარტული Horndeski (Bellini-Sawicki) პარამეტრიზაცია არ არის 
-       საკმარისი RFG-სთვის, რადგან I_k ელასტიური სექტორი შეიცავს 
+       საკმარისი RG-სთვის, რადგან I_k ელასტიური სექტორი შეიცავს 
        სივრცულ ტრანსვერსულ მოდებს. საჭიროა "EFT of Solid Inflation" (ESS) ჩარჩო.
     2. Ghost-ის პირობა არის alpha_K_total > 0. X-სქემაში ეს იწერება 
        c_X=-2*c_Y^(Y) ხიდით; ამიტომ bare "c_Y < 0" claim აკრძალულია
@@ -70,11 +70,11 @@ DESI_DR2 = {
     "status": "DR2 replaces the earlier DR1 placeholder; use full likelihood for parameter fitting.",
 }
 
-DEFAULT_ALPHA_TABLE = Path("RFG/work/cmb_alpha_table.dat")
+DEFAULT_ALPHA_TABLE = Path("RG/work/cmb_alpha_table.dat")
 
 
 @dataclass
-class RFGAlphaModel:
+class RGAlphaModel:
     """
     hi_class/CLASS bridge parameterization:
         alpha_i(a) = alpha_i0 * Omega_DE(a)/Omega_DE0.
@@ -184,8 +184,8 @@ def cmb_claim_gate() -> list[ClaimGate]:
 
 def cmb_do_not_claim() -> list[str]:
     return [
-        "Do not claim RFG fits Planck TT/TE/EE+lensing before a likelihood run.",
-        "Do not claim RFG replaces particle dark matter in the CMB from same-matter inheritance.",
+        "Do not claim RG fits Planck TT/TE/EE+lensing before a likelihood run.",
+        "Do not claim RG replaces particle dark matter in the CMB from same-matter inheritance.",
         "Do not claim BBN/BAO/LSS compatibility before numerical coefficient bounds are applied.",
         "Do not claim CMB is the substrate; it is the observed photon bath/calibration frame here.",
         "Do not import process-time C(z) into H(z) or the primary CMB branch.",
@@ -254,7 +254,7 @@ def cmb_comoving_time_calibration() -> dict[str, object]:
         ),
         "not_substrate_identity": (
             "CMB is the observable thermal photon field/trace of the early "
-            "universe, not automatically the unobserved RFG substrate itself"
+            "universe, not automatically the unobserved RG substrate itself"
         ),
         "process_time_bridge": (
             "p02b may use this T0 as normalization, while C(z) remains outside "
@@ -263,9 +263,9 @@ def cmb_comoving_time_calibration() -> dict[str, object]:
     }
 
 
-def map_rfg_to_horndeski():
+def map_rg_to_horndeski():
     """
-    RFG-ის L_solid → Horndeski G_2, G_3, G_4, G_5 (მხოლოდ Y-სექტორით)
+    RG-ის L_solid → Horndeski G_2, G_3, G_4, G_5 (მხოლოდ Y-სექტორით)
 
     Y = -2X (Bellini-Sawicki convention: X = -½ g^μν ∂_μφ ∂_νφ)
     ⟹ Y-სექტორი ⊂ G_2(X, φ)
@@ -303,7 +303,7 @@ def compute_alpha_T():
     Bellini-Sawicki:
         α_T = 2X·(G_{4,X} - G_{5,φ}) / M_*²    +  (G_5,X-term)
 
-    RFG-ში:
+    RG-ში:
         G_4 = M_Pl²/2 (X-დამოუკიდებელი) ⟹ G_{4,X} = 0
         G_5 = 0 ⟹ G_{5,φ} = 0
 
@@ -313,7 +313,7 @@ def compute_alpha_T():
     მკაცრი GW170817 თავსებადობისთვის მოითხოვება phase9 კონსტრეინტი:
     -0.5*c_Y - 0.5*c_Y2 + 0.5*c_I1 + 7.5*c_I1sq + 1.5*c_I2 + 0.5*c_I3 + 0.5*c_YI1 = 0
     """
-    G_2, G_3, G_4, G_5, X = map_rfg_to_horndeski()
+    G_2, G_3, G_4, G_5, X = map_rg_to_horndeski()
     M_star_sq = Symbol('M_star_sq', positive=True)
     phi = Symbol('phi', real=True)
 
@@ -341,7 +341,7 @@ def compute_alpha_M():
     α_M = (d ln M_*² / dt) / H
     რადგან G_4 = M_Pl²/2 = const, საბაზისო Horndeski სექტორში α_M = 0.
     """
-    G_2, G_3, G_4, G_5, X = map_rfg_to_horndeski()
+    G_2, G_3, G_4, G_5, X = map_rg_to_horndeski()
     M_Pl = Symbol('M_Pl', positive=True)
 
     M_star_sq = 2 * G_4  # = M_Pl²
@@ -368,7 +368,7 @@ def compute_alpha_B():
 
     α_B = 0, რადგან G_3 = 0 და G_4 = const.
     """
-    G_2, G_3, G_4, G_5, X = map_rfg_to_horndeski()
+    G_2, G_3, G_4, G_5, X = map_rg_to_horndeski()
 
     G3_X = diff(G_3, X)
     G4_X = diff(G_4, X)
@@ -395,7 +395,7 @@ def compute_alpha_K():
     ეს არ უნდა გადაიწეროს bare "c_Y<0" claim-ად, რადგან p08 Bellini-Sawicki
     X ხიდს იყენებს, ხოლო p01/p02 აქტიური ფანჯარა Y-სქემაში იწერება.
     """
-    G_2, G_3, G_4, G_5, X = map_rfg_to_horndeski()
+    G_2, G_3, G_4, G_5, X = map_rg_to_horndeski()
     H, M_Pl = symbols('H M_Pl', positive=True)
 
     G2_X = diff(G_2, X)
@@ -409,10 +409,10 @@ def compute_alpha_K():
 
 def flrw_metric_sector_locking_theorem():
     """
-    Old-theory CMB core, translated to RFG notation.
+    Old-theory CMB core, translated to RG notation.
 
     In the physical matter-clock FLRW frame, g_tt = 1 (signature +---).
-    The static RFG/bi-conformal time factor is g_tt = exp(Phi_0).
+    The static RG/bi-conformal time factor is g_tt = exp(Phi_0).
     Imposing both on the homogeneous cosmological background locks:
 
         exp(Phi_0) = 1  ->  Phi_0 = 0  ->  dot(Phi_0)=0  ->  X_0=0.
@@ -479,7 +479,7 @@ def linear_metric_decoupling_theorem():
         "poisson_equation": sp.Eq(k**2 * Psi, -4 * sp.pi * G * a**2 * rho * Delta),
         "slip_equation": sp.Eq(Phi - Psi, 0),
         "lensing_potential": "(Phi + Psi)/2 is GR-identical at linear order",
-        "cmb_power": "C_ell^RFG = C_ell^LCDM for same matter content and initial conditions",
+        "cmb_power": "C_ell^RG = C_ell^LCDM for same matter content and initial conditions",
     }
 
 
@@ -504,7 +504,7 @@ def acoustic_ruler_inheritance():
 
 def trace_channel_recombination_filter():
     """
-    RFG scalar sourcing is trace-sensitive. Relativistic radiation has T=0, so
+    RG scalar sourcing is trace-sensitive. Relativistic radiation has T=0, so
     the photon bath does not directly drive the trace channel at linear order.
     """
     rho, p = symbols("rho p", real=True)
@@ -515,17 +515,17 @@ def trace_channel_recombination_filter():
         "radiation_p": sp.Eq(p, rho / 3),
         "T_radiation": simplify(trace.subs(p, rho / 3)),
         "T_pressureless_matter": simplify(trace.subs(p, 0)),
-        "cmb_meaning": "photon acoustic pressure is not directly modified by the RFG trace channel",
+        "cmb_meaning": "photon acoustic pressure is not directly modified by the RG trace channel",
     }
 
 
 def is_memory_freezing_cmb_estimate():
     """
-    Old-theory idea migrated into RFG language.
+    Old-theory idea migrated into RG language.
 
-    If the nonlinear/transport channel has a relaxation time tau_RFG ~ c/g,
+    If the nonlinear/transport channel has a relaxation time tau_RG ~ c/g,
     then recombination-era acoustic oscillations see it as frozen whenever
-    tau_RFG/T_acoustic >> 1. This is the possible route by which CMB potential
+    tau_RG/T_acoustic >> 1. This is the possible route by which CMB potential
     wells can behave CDM-like at z~1100 while galaxies later show MOND response.
     """
     c = 299_792_458.0
@@ -540,11 +540,11 @@ def is_memory_freezing_cmb_estimate():
         lam_phys = lam_mpc * mpc / (1.0 + z_star)
         t_acoustic = lam_phys / c_s
         for g in accelerations:
-            tau_rfg = c / g
-            ratios.append(tau_rfg / t_acoustic)
+            tau_rg = c / g
+            ratios.append(tau_rg / t_acoustic)
 
     return {
-        "tau_RFG": "c/g",
+        "tau_RG": "c/g",
         "T_acoustic": "lambda_phys/c_s",
         "z_star": z_star,
         "lambda_comoving_Mpc_grid": wavelengths_comoving_mpc,
@@ -575,7 +575,7 @@ def cmb_consistency_check():
     }
 
 
-def old_to_rfg_cmb_migration_audit():
+def old_to_rg_cmb_migration_audit():
     return {
         "old_core": "alpha_K=alpha_B=alpha_M=alpha_T=0 on Phi_0=0 FLRW branch",
         "migrated_here": [
@@ -587,7 +587,7 @@ def old_to_rfg_cmb_migration_audit():
             "radiation trace-channel filter",
             "CMB-era frozen-memory estimate",
         ],
-        "conditional_claim": "RFG does not shift primary CMB peaks in the same-matter metric-sector limit",
+        "conditional_claim": "RG does not shift primary CMB peaks in the same-matter metric-sector limit",
         "not_yet_claimed": [
             "full Planck TT/TE/EE likelihood",
             "no-particle-DM replacement of all CDM wells",
@@ -648,7 +648,7 @@ def omega_de_fraction(a: float, omega_m0: float = PLANCK_2018["Omega_m"][0]) -> 
     return omega_de0 / e2
 
 
-def alpha_at_a(model: RFGAlphaModel, a: float) -> dict[str, float]:
+def alpha_at_a(model: RGAlphaModel, a: float) -> dict[str, float]:
     """Return alpha_K, alpha_B, alpha_M, alpha_T at scale factor a."""
     omega_de0 = omega_de_fraction(1.0, model.omega_m0)
     weight = omega_de_fraction(a, model.omega_m0) / omega_de0
@@ -662,7 +662,7 @@ def alpha_at_a(model: RFGAlphaModel, a: float) -> dict[str, float]:
     }
 
 
-def alpha_table(model: RFGAlphaModel) -> list[dict[str, float]]:
+def alpha_table(model: RGAlphaModel) -> list[dict[str, float]]:
     """Generate logarithmic alpha(a) samples for a Boltzmann-code bridge."""
     if model.n_steps < 2:
         raise ValueError("n_steps must be at least 2")
@@ -677,10 +677,10 @@ def alpha_table(model: RFGAlphaModel) -> list[dict[str, float]]:
     return rows
 
 
-def alpha_table_text(model: RFGAlphaModel) -> str:
+def alpha_table_text(model: RGAlphaModel) -> str:
     """Text table that can be adapted to hi_class tabulated-alpha input."""
     lines = [
-        "# RFG EFT alpha table",
+        "# RG EFT alpha table",
         "# columns: a z alpha_K alpha_B alpha_M alpha_T",
         "# alpha_i(a)=alpha_i0*Omega_DE(a)/Omega_DE0",
         "# default alpha_i0=0 is the locked-FLRW same-matter CMB branch",
@@ -694,7 +694,7 @@ def alpha_table_text(model: RFGAlphaModel) -> str:
     return "\n".join(lines) + "\n"
 
 
-def write_alpha_table(model: RFGAlphaModel, path: str | Path = DEFAULT_ALPHA_TABLE) -> Path:
+def write_alpha_table(model: RGAlphaModel, path: str | Path = DEFAULT_ALPHA_TABLE) -> Path:
     """Write the alpha table. Not called automatically unless explicitly requested."""
     output = Path(path)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -702,7 +702,7 @@ def write_alpha_table(model: RFGAlphaModel, path: str | Path = DEFAULT_ALPHA_TAB
     return output
 
 
-def boltzmann_stability_filters(model: RFGAlphaModel) -> dict[str, object]:
+def boltzmann_stability_filters(model: RGAlphaModel) -> dict[str, object]:
     """
     Minimal EFT stability filters for the computational bridge.
 
@@ -746,13 +746,13 @@ def same_matter_cmb_inheritance_audit() -> dict[str, object]:
     return {
         "status": "ANALYTICALLY_CLOSED_SAME_MATTER_LIMIT",
         "CMB_comoving_calibration": cmb_comoving_time_calibration(),
-        "background": "Phi_0=0 -> rho_RFG_scalar=0 -> H(z) inherited",
+        "background": "Phi_0=0 -> rho_RG_scalar=0 -> H(z) inherited",
         "EFT_alphas": {"alpha_K": 0.0, "alpha_B": 0.0, "alpha_M": 0.0, "alpha_T": 0.0},
         "metric_equations": "Poisson and slip are GR-identical at linear order",
         "photon_trace_channel": "T_gamma=rho_gamma-3p_gamma=0, so photon pressure is not directly driven",
         "sound_horizon": "r_s(z*) inherited for same H(z), baryon density, photon density",
         "angular_scale": "theta*=r_s(z*)/D_A(z*) inherited",
-        "primary_cls": "C_ell^RFG = C_ell^LCDM in this restricted limit",
+        "primary_cls": "C_ell^RG = C_ell^LCDM in this restricted limit",
     }
 
 
@@ -795,7 +795,7 @@ def cmb_lensing_isw_null_shift_theorem() -> dict[str, object]:
         "delta_weyl_same_matter": sp.Integer(0),
         "delta_lensing_source": sp.Integer(0),
         "delta_ISW_source": sp.Integer(0),
-        "linear_CMB_lensing": "C_L^{phiphi,RFG}=C_L^{phiphi,LCDM} in same-matter limit",
+        "linear_CMB_lensing": "C_L^{phiphi,RG}=C_L^{phiphi,LCDM} in same-matter limit",
         "linear_ISW": "Delta T_ISW proportional to d(Phi+Psi)/d eta is unchanged",
         "late_time_warning": "nonlinear MOND/memory activation can still alter low-z lensing/ISW and needs full line-of-sight modeling",
     }
@@ -864,7 +864,7 @@ def same_input_cmb_identity_theorem() -> dict[str, object]:
             "delta_ISW_source": lensing["delta_ISW_source"],
         },
         "conclusion": (
-            "C_ell^RFG = C_ell^LCDM in the locked same-input linear branch; "
+            "C_ell^RG = C_ell^LCDM in the locked same-input linear branch; "
             "this is a consistency/health check, not a new CMB fit"
         ),
         "not_claimed": "no-particle-dark-matter CMB fit or Planck likelihood pass",
@@ -875,7 +875,7 @@ def article_cmb_theorem() -> dict[str, object]:
     """
     Article-facing CMB ledger.
 
-    Exports the same-input locked-branch result: RFG does not shift the linear
+    Exports the same-input locked-branch result: RG does not shift the linear
     Einstein-Boltzmann hierarchy when the metric branch, matter content,
     recombination history, and initial spectrum are inherited.
     """
@@ -958,7 +958,7 @@ def ik_sector_delta_neff_and_curvature_filters() -> dict[str, object]:
 
     return {
         "rho_extra_radiation_like": rho_extra_rad,
-        "Delta_Neff_RFG": delta_neff,
+        "Delta_Neff_RG": delta_neff,
         "Delta_Neff_bound": sp.Le(sp.Abs(delta_neff), delta_neff_max),
         "stiff_ratio_at_BBN": stiff_ratio_bbn,
         "stiff_BBN_bound": sp.Le(sp.Abs(stiff_ratio_bbn), epsilon_bbn),
@@ -975,14 +975,14 @@ def cmb_closed_conditional_open_scorecard() -> dict[str, list[str]]:
             "if Phi_0=X_0=0 is imposed, alpha_K=alpha_B=alpha_M=alpha_T=0 on the locked branch",
             "linear Poisson/slip equations are inherited in the same-matter locked branch",
             "primary acoustic ruler is inherited for same matter, same recombination, and same primordial spectrum",
-            "radiation trace T_gamma=0, so photon acoustic pressure is not directly driven by the RFG trace channel",
+            "radiation trace T_gamma=0, so photon acoustic pressure is not directly driven by the RG trace channel",
         ],
         "conditional": [
             "Phi_0=X_0=0 must be derived from EOM or kept as an explicit branch assumption",
             "I_k background terms must pass Delta N_eff, stiff-fluid, and curvature-like filters",
             "late lensing/ISW remains identical only while the nonlinear MOND/memory response is not active in the line-of-sight model",
             "off-branch scalar/ESS perturbations require no-ghost and sound-speed checks",
-            "identifying CMB with the deeper RFG substrate requires a separate bridge, not assumed here",
+            "identifying CMB with the deeper RG substrate requires a separate bridge, not assumed here",
             "coefficient signs must always state Y-scheme vs X-scheme",
         ],
         "open": [
@@ -999,17 +999,17 @@ def no_particle_dm_cmb_open_register() -> list[dict[str, str]]:
     return [
         {
             "problem": "CMB gravitational well depth without particle CDM",
-            "candidate_RFG_mechanism": "IS/RFG memory channel frozen at recombination, tau_RFG~c/g >> T_acoustic",
+            "candidate_RG_mechanism": "IS/RG memory channel frozen at recombination, tau_RG~c/g >> T_acoustic",
             "needed_test": "add the memory variable to the Boltzmann hierarchy and compare TT/TE/EE+lensing",
         },
         {
             "problem": "primordial amplitude A_s and tilt n_s",
-            "candidate_RFG_mechanism": "Planck-epoch oscillon nucleation/tail interaction",
+            "candidate_RG_mechanism": "Planck-epoch oscillon nucleation/tail interaction",
             "needed_test": "derive or simulate the two-point spectrum; central-limit smoothing alone is too small",
         },
         {
             "problem": "late ISW and CMB lensing if MOND response activates late",
-            "candidate_RFG_mechanism": "quasi-static bound-structure response with a0(z)=cH(z)/(2*pi)",
+            "candidate_RG_mechanism": "quasi-static bound-structure response with a0(z)=cH(z)/(2*pi)",
             "needed_test": "line-of-sight potential evolution and lensing kernel in CLASS/hi_class",
         },
     ]
@@ -1115,15 +1115,15 @@ def full_fit_readiness() -> FitReadiness:
     )
 
 
-def hi_class_run_template(model: RFGAlphaModel, alpha_table_path: str | Path) -> list[str]:
+def hi_class_run_template(model: RGAlphaModel, alpha_table_path: str | Path) -> list[str]:
     """
     Minimal external-run template.
 
     hi_class parameter names differ across branches. This template records the
-    RFG inputs that must be mapped into the chosen local hi_class branch.
+    RG inputs that must be mapped into the chosen local hi_class branch.
     """
     return [
-        "# RFG phase21 CMB hi_class bridge template",
+        "# RG phase21 CMB hi_class bridge template",
         f"# alpha table: {alpha_table_path}",
         f"# alpha_K0={model.alpha_K0}",
         f"# alpha_B0={model.alpha_B0}",
@@ -1137,7 +1137,7 @@ def hi_class_run_template(model: RFGAlphaModel, alpha_table_path: str | Path) ->
     ]
 
 
-def boltzmann_status_assessment(model: RFGAlphaModel) -> dict[str, object]:
+def boltzmann_status_assessment(model: RGAlphaModel) -> dict[str, object]:
     filters = boltzmann_stability_filters(model)
     readiness = full_fit_readiness()
     compressed = compressed_observational_chi2()
@@ -1221,7 +1221,7 @@ if __name__ == "__main__":
         print(f"  {k:30s}: {v}")
 
     print("\n--- Horndeski მაპირება ---")
-    G_2, G_3, G_4, G_5, X = map_rfg_to_horndeski()
+    G_2, G_3, G_4, G_5, X = map_rg_to_horndeski()
     print(f"  G_2(X) = {G_2}")
     print(f"  G_3    = {G_3}")
     print(f"  G_4    = {G_4}")
@@ -1253,7 +1253,7 @@ if __name__ == "__main__":
     print("  Ghost-ის თავიდან ასაცილებლად საჭიროა alpha_K_total > 0.")
     print("  bare c_Y<0 აღარ არის exportable claim; უნდა მიეთითოს Y/X scheme.")
 
-    print("\n--- ნაბიჯი 4b: ძველი CMB ბირთვის RFG-ში გადმოტანა ---")
+    print("\n--- ნაბიჯი 4b: ძველი CMB ბირთვის RG-ში გადმოტანა ---")
     lock = flrw_metric_sector_locking_theorem()
     for k, v in lock.items():
         print(f"  {k:30s}: {v}")
@@ -1298,7 +1298,7 @@ if __name__ == "__main__":
     for k, v in p02_p08_ik_sign_consistency_gate().items():
         print(f"  {k:30s}: {v}")
 
-    model = RFGAlphaModel()
+    model = RGAlphaModel()
 
     print("\n--- ნაბიჯი 7: Boltzmann/hi_class bridge alpha(a) ---")
     for row in alpha_table(model)[:: max(1, model.n_steps // 5)]:
@@ -1347,7 +1347,7 @@ if __name__ == "__main__":
     print("\n--- ნაბიჯი 15: no-particle-DM CMB open register ---")
     for row in no_particle_dm_cmb_open_register():
         print(f"  problem: {row['problem']}")
-        print(f"    candidate: {row['candidate_RFG_mechanism']}")
+        print(f"    candidate: {row['candidate_RG_mechanism']}")
         print(f"    needed:    {row['needed_test']}")
 
     print("\n--- ნაბიჯი 16: full Planck C_l fit readiness ---")
@@ -1371,7 +1371,7 @@ if __name__ == "__main__":
     print("1. placeholder ტექსტები სრულად გასუფთავდა.")
     print("2. c_Y-ის bare-sign claim გამკაცრდა: p08 იყენებს Y->X ხიდს,")
     print("   ამიტომ export პირობა არის scheme-labeled alpha_K_total > 0.")
-    print("3. Bellini-Sawicki პარამეტრიზაციის არასრულფასოვნება RFG-სთვის აღიარებულია.")
+    print("3. Bellini-Sawicki პარამეტრიზაციის არასრულფასოვნება RG-სთვის აღიარებულია.")
     print("   ელასტიური სექტორისთვის აუცილებელია 'EFT of Solid Inflation' (ESS) ჩარჩო.")
     print("4. ძველი CMB ბირთვი გადმოტანილია conditional result-ად: locked FLRW branch")
     print("   -> alpha_i=0 -> GR-identical linear metric equations -> inherited acoustic ruler.")

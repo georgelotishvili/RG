@@ -254,7 +254,7 @@ def self_similar_Cz_phi_bridge():
         ),
         "remaining_physics_gap": (
             "phi_bg(z) is still a diagnostic background history until derived "
-            "from an RFG field equation or fitted with observational bounds"
+            "from an RG field equation or fitted with observational bounds"
         ),
     }
 
@@ -274,7 +274,7 @@ def process_rate_vs_lapse_separation():
         "local_metric_lapse": sp.Eq(d_tau_local, alpha * dt_cmb),
         "not_identical_by_default": sp.Ne(C_proc, alpha),
         "identification_allowed_only_if": (
-            "a separate stress/lapse/substrate bridge proves that the same RFG "
+            "a separate stress/lapse/substrate bridge proves that the same RG "
             "field controls both the intrinsic process clock and the local lapse"
         ),
         "double_counting_rule": (
@@ -403,7 +403,7 @@ def clock_pressure_index_definition():
     """
     Operational index built from local cosmic-age reading.
 
-    This is a measurement definition. Identifying it with RFG physical
+    This is a measurement definition. Identifying it with RG physical
     pressure requires a separate bridge to stress/lapse/substrate invariants.
     """
     T0 = sp.Symbol("T0", positive=True, real=True)
@@ -434,7 +434,7 @@ def clock_pressure_index_definition():
         "derived_input": "uses T0 from cosmic_age_invariance_result",
         "not_yet_claimed": (
             "Pi_clock equals physical stress pressure only after an explicit "
-            "bridge to RFG stress-energy, lapse, or substrate invariants"
+            "bridge to RG stress-energy, lapse, or substrate invariants"
         ),
     }
 
@@ -456,15 +456,15 @@ def clock_pressure_lapse_bridge():
         "status": "GEOMETRIC_LAPSE_BRIDGE_CONDITIONAL",
         "local_age_lapse_rule": sp.Eq(T_local, alpha * T0),
         "clock_pressure_index": sp.Eq(Pi_clock, 1 / alpha),
-        "RFG_biconformal_lapse_if_gtt_exp_Phi": sp.Eq(alpha, sp.exp(Phi / 2)),
-        "RFG_field_form_if_bridge_accepted": sp.Eq(Pi_clock, sp.exp(-Phi / 2)),
+        "RG_biconformal_lapse_if_gtt_exp_Phi": sp.Eq(alpha, sp.exp(Phi / 2)),
+        "RG_field_form_if_bridge_accepted": sp.Eq(Pi_clock, sp.exp(-Phi / 2)),
         "weak_field": sp.series(sp.exp(-Phi / 2), Phi, 0, 2).removeO(),
         "reformulated_as_lapse": (
             "Pi_clock can be rewritten as the inverse local lapse when local "
             "cosmic-age readings are controlled by a metric clock"
         ),
         "remaining_physics_gap": (
-            "Pi_clock becomes physical RFG pressure only after a stress-energy "
+            "Pi_clock becomes physical RG pressure only after a stress-energy "
             "or substrate-invariant derivation"
         ),
         "sign_warning": (
@@ -500,7 +500,7 @@ def schwarzschild_clock_pressure_reference():
             "near the horizon alpha -> 0, so the local cosmic-age reading "
             "shrinks and Pi_clock grows"
         ),
-        "guardrail": "do not treat this as a new RFG pressure law without the bridge",
+        "guardrail": "do not treat this as a new RG pressure law without the bridge",
     }
 
 

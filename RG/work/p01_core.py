@@ -1228,26 +1228,26 @@ if __name__ == "__main__" and _should_run_main_section("stress"):
 
 """
 ================================================================================
-PHASE 23: RFG-ის ჩასმა Horndeski/DHOST/ESS ფარგლებში
+PHASE 23: RG-ის ჩასმა Horndeski/DHOST/ESS ფარგლებში
 ================================================================================
 
 რეფერენცია: NOTATION.md, phase22, p08_cmb.py
 
 მიზანი (STRATEGY.md ეტაპი II §1):
-- RFG-ის ცხადი მაპირება Horndeski-ის G_2, G_3, G_4, G_5 ფუნქციებზე
+- RG-ის ცხადი მაპირება Horndeski-ის G_2, G_3, G_4, G_5 ფუნქციებზე
 - DHOST გავრცობის გადახედვა — საიდან მოვა G_3, G_4, G_5
 - ESS (Effective Solid State, Endlich-Nicolis-Wang) ფარგლი I_k სოლიდისთვის
 - Bellini-Sawicki α_K, α_B, α_M, α_T სრული გადათვლა
 
 დასკვნა:
-- RFG დღეს მხოლოდ k-essence (G_2(X) only) Horndeski-ის ქვეჯგუფშია
+- RG დღეს მხოლოდ k-essence (G_2(X) only) Horndeski-ის ქვეჯგუფშია
 - I_k სოლიდი არ ჯდება სუფთა Horndeski-ში — საჭიროა ESS გავრცობა
 - DHOST-ის ფუნქციები G_4(X), G_5(X) ცარიელ ცდად რჩება
 
 ცენტრალური მაპირება (Bellini-Sawicki კონვენცია X = -½ g^μν ∂_μΦ ∂_νΦ):
     Y = -2X    (NOTATION.md § Horndeski/EFT Map)
 
-RFG ლაგრანჟიანი (NOTATION-ის Y კონვენციით):
+RG ლაგრანჟიანი (NOTATION-ის Y კონვენციით):
     L = c_Y·Y + c_Y2·Y^2 + c_I1·I_1 + c_I1sq·I_1^2 + c_I2·I_2 + c_I3·I_3 + c_YI1·Y·I_1
 
 Horndeski მაპირება:
@@ -1269,9 +1269,9 @@ import sympy as sp
 # ============================================================================
 
 
-def rfg_to_horndeski():
+def rg_to_horndeski():
     """
-    RFG-ის Y-სექტორის ცხადი ჩასმა Horndeski G_2(X)-ში.
+    RG-ის Y-სექტორის ცხადი ჩასმა Horndeski G_2(X)-ში.
     """
     X = sp.Symbol("X", real=True)
     c_Y, c_Y2 = sp.symbols("c_Y c_Y2", real=True)
@@ -1375,7 +1375,7 @@ def dhost_extension():
     DHOST (Degenerate Higher Order Scalar Tensor) framework.
     Crisostomi-Koyama-Tasinato 2016, Langlois-Noui 2016.
 
-    RFG-ის ფესვი დღეს არ მოიცავს DHOST-ის Class I, II, III ფუნქციებს.
+    RG-ის ფესვი დღეს არ მოიცავს DHOST-ის Class I, II, III ფუნქციებს.
     G_4(X), G_5(X) X-დამოკიდებული ვერსიები ჯერ არ არის დაფარული; ქვემოთ
     ჩამოთვლილია კონკრეტული completion targets.
     """
@@ -1394,12 +1394,12 @@ def dhost_extension():
 
 if __name__ == "__main__" and _should_run_main_section("horndeski"):
     print("=" * 72)
-    print("PHASE 23: RFG-ის ჩასმა Horndeski/DHOST/ESS ფარგლებში")
+    print("PHASE 23: RG-ის ჩასმა Horndeski/DHOST/ESS ფარგლებში")
     print("რეფერენცია: NOTATION.md, phase22, p08_cmb.py")
     print("=" * 72)
 
     print("\n1. Horndeski მაპირება (Y = -2X კონვერსია)")
-    horndeski = rfg_to_horndeski()
+    horndeski = rg_to_horndeski()
     print(f"  X დეფინიცია: {horndeski['X_def']}")
     print(f"  Y → X: {horndeski['Y_to_X']}")
     print(f"  G_2(X) = {horndeski['G_2']}")
@@ -1426,7 +1426,7 @@ if __name__ == "__main__" and _should_run_main_section("horndeski"):
         print(f"  {i}. {task}")
 
     print("\n5. სტატუსი")
-    print("  - RFG = k-essence (G_2(X) only) ქვეჯგუფი Horndeski-ში")
+    print("  - RG = k-essence (G_2(X) only) ქვეჯგუფი Horndeski-ში")
     print("  - α_T, α_M, α_B = 0 ფიქსირდება ცხადად")
     print("  - α_K = (-4*c_Y*X + 48*c_Y2*X²) / (H²·M_Pl²) — მიიღება sympy-დან")
     print("  - I_k სოლიდი ESS-ის გავრცობას მოითხოვს (Horndeski არ ფარდდება)")
@@ -1927,7 +1927,7 @@ def article_core_theorem():
     basis_theorem = minimal_action_basis_theorem()
     symmetry_gate = covariance_and_spontaneous_breaking_gate()
     K_Phi_c, K_pi_c = analyze_lorentz_constrained_stability()
-    horndeski_map = rfg_to_horndeski()
+    horndeski_map = rg_to_horndeski()
     alphas = bellini_sawicki_alphas()
     coeffs_m, _s, _det, _roots = minkowski_principal_symbol()
     mixed_conditions = mixed_mode_stability_conditions(coeffs_m)
@@ -2494,7 +2494,7 @@ if __name__ == "__main__" and _should_run_main_section("lorentz"):
     print(f"  ამ ორი პირობის სხვაობა: {diff} = 0  =>  c_Y2 = c_I1sq")
     
     print("\n4. ფიზიკური დასკვნა")
-    print("  RFG-ის ნორმალიზებული სუპერსოლიდური ფონი ზოგად შემთხვევაში არ არის")
+    print("  RG-ის ნორმალიზებული სუპერსოლიდური ფონი ზოგად შემთხვევაში არ არის")
     print("  background-stress დონეზე boost-სიმეტრიული.")
     print("  თუ კოეფიციენტები აკმაყოფილებს მიღებულ კონსტრეინტს, ფონის სტრეს-ტენზორი")
     print("  x-boost background-stress დონეზე რჩება T_μν ∝ η_μν.")
@@ -2506,7 +2506,7 @@ if __name__ == "__main__" and _should_run_main_section("lorentz"):
 # ===================== OLD BACKBONE INTEGRATION =====================
 
 """
-STAGE A1: OLD backbone -> RFG core candidate ledger
+STAGE A1: OLD backbone -> RG core candidate ledger
 
 Purpose:
     This block records the valuable mathematical backbone of the old files
@@ -2521,7 +2521,7 @@ Purpose:
     calculations already live above in this same p01_core.py file.
 
 Status:
-    Represented as working RFG-core bookkeeping, not closed theory text.
+    Represented as working RG-core bookkeeping, not closed theory text.
     The Dirac-Bergmann second-class bracket closure, anomaly audit, and
     matter-channel EFT stability remain open.  The DOF count below is a
     candidate target until that proof is written.
@@ -2551,7 +2551,7 @@ def old_variational_backbone_ledger():
         "scalar_trace": sp.Eq(sp.Symbol("T_phi"), -dphi_sq),
         "metric_equation": "G_mn = 8*pi*G*T_mn^(m) + kappa*T_mn^(phi)",
         "kappa": kappa,
-        "legacy_negative_kappa": "rejected; RFG core does not use a wrong-sign scalar sector",
+        "legacy_negative_kappa": "rejected; RG core does not use a wrong-sign scalar sector",
         "direct_scalar_EL_unsourced": sp.Eq(box_phi_el, 0),
         "reduced_trace_relation_not_independent_EL": sp.Eq(
             box_phi_trace, -8 * sp.pi * G * T_matter / c**4
@@ -2570,7 +2570,7 @@ def old_operational_geometry_ledger():
     Operational metric derivation inherited from OLD/3.
 
     The old theory's useful content is not a separate postulate set anymore:
-    it becomes the RFG interpretation of why the diagonal metric is
+    it becomes the RG interpretation of why the diagonal metric is
     bi-conformal and why gamma_PPN=1 follows structurally.
     """
     phi = sp.Symbol("phi", real=True)
@@ -2631,7 +2631,7 @@ def old_stability_gate():
     Consolidated stability bookkeeping and limits.
 
     This is the logical gate for keeping old stability material in the new
-    RFG work file without promoting it to final theory.
+    RG work file without promoting it to final theory.
     """
     return {
         "hyperbolicity": "covered above by phase24 principal-symbol and well-posedness checks",
@@ -2667,7 +2667,7 @@ def stage_a1_old_backbone_status():
 
 if __name__ == "__main__" and _should_run_main_section("old"):
     print("=" * 72)
-    print("STAGE A1: OLD backbone -> RFG core candidate ledger")
+    print("STAGE A1: OLD backbone -> RG core candidate ledger")
     print("=" * 72)
 
     status = stage_a1_old_backbone_status()
@@ -2743,5 +2743,5 @@ if __name__ == "__main__" and _should_run_main_section("audit"):
 
 if __name__ == "__main__" and not _requested_main_sections():
     print("p01_core.py loaded. Run a section explicitly:")
-    print("  python RFG\\work\\p01_core.py base|spherical|moduli|stress|horndeski|hyperbolicity|eft|lorentz|old|audit")
+    print("  python RG\\work\\p01_core.py base|spherical|moduli|stress|horndeski|hyperbolicity|eft|lorentz|old|audit")
 

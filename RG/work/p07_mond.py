@@ -5,23 +5,23 @@
 
 """
 ================================================================================
-PHASE 33: SPARC ბრუნვის მრუდები — RFG/AQUAL chi-square ფაიფლაინი
+PHASE 33: SPARC ბრუნვის მრუდები — RG/AQUAL chi-square ფაიფლაინი
 ================================================================================
 
 რეფერენცია: p07_mond.py, STRATEGY.md S3/E5
 
 სტატუსი:
-ეს ფაილი ამოწმებს RFG-ის გალაქტიკურ/MOND სექტორის პირობით მათემატიკურ
+ეს ფაილი ამოწმებს RG-ის გალაქტიკურ/MOND სექტორის პირობით მათემატიკურ
 ჯაჭვს:
 ჰაბლის coherence-boundary => a0=cH/(2*pi), ორარხიანი vortex closure
 g=g_N+g_h და g_h/g_N=a0/g, აქედან mu(x)=x/(1+x), AQUAL PDE,
-RFG Delta_p სტრესი, BTFR და finite-radius ვორტექსული plateau.
+RG Delta_p სტრესი, BTFR და finite-radius ვორტექსული plateau.
 
 მკაცრი სტატუსი:
 - mu(x), AQUAL და BTFR აქ გამოდის ალგებრულად იმ შემთხვევაში, თუ vortex
   transport closure უკვე მიღებულია.
 - თვითონ closure, a0-ის 2*pi ნორმალიზაცია და finite-energy vortex plateau
-  ჯერ უნდა გამოვიდეს RFG action/coarse-grained vortex dynamics-იდან.
+  ჯერ უნდა გამოვიდეს RG action/coarse-grained vortex dynamics-იდან.
 მიმდინარე რეპოზიტორიუმში არ არის ატვირთული 175 SPARC ბრუნვის მრუდის ფაილი, ამიტომ
 SPARC-ის სრული chi-square verdict დარჩება მონაცემების ჩატვირთვის შემდეგ.
 
@@ -30,17 +30,17 @@ SPARC-ის სრული chi-square verdict დარჩება მონ�
 - AQUAL/MOND სიჩქარის მოდელი mu(x) = x/(1+x)-ით, რაც ეკვივალენტურია
   nu(y) = 0.5 * (1 + sqrt(1 + 4/y))-ს.
 - გლობალური ბადისებრი ფიტი (grid fit) უნივერსალური a0-ისა და chi_coupling-ისთვის.
-- RFG ანიზოტროპიის (Delta p) პროფილის პირდაპირი ექსტრაქცია დაკვირვებული სიჩქარეებიდან.
-- ძველი MOND ფაილის ბირთვი RFG ენაზე: a0, ორარხიანი closure, mu(x), AQUAL,
+- RG ანიზოტროპიის (Delta p) პროფილის პირდაპირი ექსტრაქცია დაკვირვებული სიჩქარეებიდან.
+- ძველი MOND ფაილის ბირთვი RG ენაზე: a0, ორარხიანი closure, mu(x), AQUAL,
   Delta_p-ხიდი, BTFR, EFE — სტატუსის გამიჯვნით: ალგებრული შედეგი vs
-  RFG-დან გამომავალი დინამიკური მექანიზმი.
+  RG-დან გამომავალი დინამიკური მექანიზმი.
 - ინდივიდუალური გალაქტიკების nuisance პარამეტრების ფიტი (მასა-ნათობის ფარდობა).
 - სინთეტიკური smoke-test, რომელიც ამოწმებს, შეუძლია თუ არა ფაიფლაინს ხელოვნურად 
   ჩასმული a0 და chi_coupling მნიშვნელობების აღდგენა. ეს არ არის ემპირიული შედეგი.
 
 მოსალოდნელი ლოკალური მონაცემების სტრუქტურა:
-    RFG/data/SPARC/*_rotmod.dat
-    RFG/work/data/SPARC/*_rotmod.dat
+    RG/data/SPARC/*_rotmod.dat
+    RG/work/data/SPARC/*_rotmod.dat
     data/SPARC/*_rotmod.dat
 ან გამოიყენეთ SPARC_DATA_DIR გარემოს ცვლადი.
 """
@@ -62,13 +62,13 @@ SPARC_SUMMARY = {
     "n_galaxies": 175,
     "reference": "Lelli, McGaugh, Schombert 2016 (AJ 152:157)",
     "model_used_here": "AQUAL/Famaey-Binney mu(x)=x/(1+x)",
-    "rfg_status": "conditional algebraic ledger; vortex closure and a0 mechanism still require RFG derivation",
+    "rg_status": "conditional algebraic ledger; vortex closure and a0 mechanism still require RG derivation",
     "empirical_status": "local SPARC/RAR verdict is open until real rotmod data are present",
 }
 
 DEFAULT_DATA_DIRS = (
-    Path("RFG/data/SPARC"),
-    Path("RFG/work/data/SPARC"),
+    Path("RG/data/SPARC"),
+    Path("RG/work/data/SPARC"),
     Path("data/SPARC"),
     Path("SPARC"),
 )
@@ -77,7 +77,7 @@ DEFAULT_MAIN_SECTIONS = {"phase33"}
 
 
 def _requested_main_sections() -> set[str]:
-    raw = os.environ.get("RFG_P07_SECTIONS", "")
+    raw = os.environ.get("RG_P07_SECTIONS", "")
     return {part.strip().lower() for part in raw.split(",") if part.strip()}
 
 
@@ -147,7 +147,7 @@ class ClaimGate:
     open_requirement: str
 
 
-def rfg_mond_claim_gate() -> list[ClaimGate]:
+def rg_mond_claim_gate() -> list[ClaimGate]:
     """
     Honest theorem gate for the galactic/MOND sector.
 
@@ -159,13 +159,13 @@ def rfg_mond_claim_gate() -> list[ClaimGate]:
             claim="a0 = cH/(2*pi)",
             status="COHERENCE_SCALE_POSTULATE",
             verified_here="If lambda_H=2*pi*c/H is assumed, a0=c^2/lambda_H follows algebraically.",
-            open_requirement="derive the coherence boundary, 2*pi normalization, and baryonic coupling from p02/p10/RFG dynamics",
+            open_requirement="derive the coherence boundary, 2*pi normalization, and baryonic coupling from p02/p10/RG dynamics",
         ),
         ClaimGate(
             claim="g_h/g_N = a0/g",
             status="PRIMARY_VORTEX_CLOSURE_NOT_DERIVED_HERE",
             verified_here="Used as the transport closure that generates the MOND branch.",
-            open_requirement="derive this ratio from the weak-field, coarse-grained vortex equation of the RFG action",
+            open_requirement="derive this ratio from the weak-field, coarse-grained vortex equation of the RG action",
         ),
         ClaimGate(
             claim="mu(x)=x/(1+x)",
@@ -177,7 +177,7 @@ def rfg_mond_claim_gate() -> list[ClaimGate]:
             claim="AQUAL PDE",
             status="CONDITIONAL_EQUIVALENCE",
             verified_here="The scalar AQUAL equation follows when the total and Newtonian gradients are collinear/curl-free.",
-            open_requirement="derive the curl-field suppression or disk/aspherical correction from RFG, not only spherical algebra",
+            open_requirement="derive the curl-field suppression or disk/aspherical correction from RG, not only spherical algebra",
         ),
         ClaimGate(
             claim="Delta_p rotation-curve inversion",
@@ -206,9 +206,9 @@ def rfg_mond_claim_gate() -> list[ClaimGate]:
     ]
 
 
-def rfg_mond_do_not_claim() -> list[str]:
+def rg_mond_do_not_claim() -> list[str]:
     return [
-        "Do not claim that p07 derives the vortex transport closure from the RFG action.",
+        "Do not claim that p07 derives the vortex transport closure from the RG action.",
         "Do not claim that a0=cH/(2*pi) is derived beyond the coherence-scale postulate.",
         "Do not claim that mu(x)=x/(1+x) is unique until the closure is derived uniquely.",
         "Do not claim a SPARC/RAR observational pass without local real data and residual statistics.",
@@ -390,7 +390,7 @@ def predict_velocity_km_s(
     ml_bulge: float,
 ) -> list[float]:
     """
-    RFG/AQUAL rotation curve.
+    RG/AQUAL rotation curve.
 
     chi_coupling = 0 gives the Newtonian baryonic curve.
     chi_coupling = 1 gives the AQUAL/MOND curve used in phase11.
@@ -415,14 +415,14 @@ def predict_velocity_km_s(
     return predicted
 
 
-def rfg_required_anisotropy_delta_p(
+def rg_required_anisotropy_delta_p(
     curve: RotationCurve,
     ml_disk: float,
     ml_bulge: float,
 ) -> list[float]:
     """
-    RFG-ის პირდაპირი მიკროფიზიკური გათვლა.
-    ჩვენ ვიყენებთ RFG-ის ანიზოტროპიულ განტოლებას (phase1-დან):
+    RG-ის პირდაპირი მიკროფიზიკური გათვლა.
+    ჩვენ ვიყენებთ RG-ის ანიზოტროპიულ განტოლებას (phase1-დან):
         a_obs = v_obs^2 / r = g_N + 2 * Delta_p / (r * rho_solid)
     აქედან ვითვლით, რა ანიზოტროპიული სტრესი (Delta p) არის საჭირო ფუძე-მედიუმში, 
     რომ გალაქტიკამ იარსებოს ბნელი მატერიის გარეშე.
@@ -446,7 +446,7 @@ def rfg_required_anisotropy_delta_p(
     return delta_p_list
 
 
-def rfg_hubble_coherence_a0_derivation():
+def rg_hubble_coherence_a0_derivation():
     """
     a0-ის coherence-scale ხიდი.
 
@@ -457,7 +457,7 @@ def rfg_hubble_coherence_a0_derivation():
         a0 = c^2/lambda_H = c*H/(2*pi).
 
     ეს ფუნქცია ამოწმებს algebra-ს ამ coherence postulate-ის შიგნით; ის არ
-    ამტკიცებს, რომ 2*pi საზღვარი უკვე გამოყვანილია RFG action-იდან.
+    ამტკიცებს, რომ 2*pi საზღვარი უკვე გამოყვანილია RG action-იდან.
     """
     c_sym, H, H_z = sp.symbols('c H H_z', real=True, positive=True)
     k_H, lambda_H, a0, a0_z = sp.symbols('k_H lambda_H a0 a0_z', real=True, positive=True)
@@ -483,11 +483,11 @@ def rfg_hubble_coherence_a0_derivation():
     }
 
 
-def rfg_two_channel_mond_closure():
+def rg_two_channel_mond_closure():
     """
     MOND-ის მთავარი ალგებრული ბირთვი.
 
-    ორარხიანი RFG/MOND closure:
+    ორარხიანი RG/MOND closure:
         g = g_N + g_h
         g_h/g_N = a0/g
 
@@ -529,15 +529,15 @@ def rfg_two_channel_mond_closure():
         "deep_acceleration": sp.Eq(g, deep_g),
         "proof_result": "vortex არხის თანაფარდობა g_h/g_N=a0/g საკმარისია "
                         "mu(x)=x/(1+x)-ის ზუსტად გამოსაყვანად.",
-        "open_requirement": "derive g_h/g_N=a0/g from RFG action/coarse-grained vortex transport.",
+        "open_requirement": "derive g_h/g_N=a0/g from RG action/coarse-grained vortex transport.",
     }
 
 
-def rfg_delta_p_mond_bridge():
+def rg_delta_p_mond_bridge():
     """
-    MOND closure-ს პირდაპირი გადაყვანა RFG-ის სტრესის ენაზე.
+    MOND closure-ს პირდაპირი გადაყვანა RG-ის სტრესის ენაზე.
 
-    RFG-ში vortex/halo არხი არის:
+    RG-ში vortex/halo არხი არის:
         g_h = 2*Delta_p/(r*rho_solid)
 
     ძველი MOND closure ამბობს:
@@ -556,9 +556,9 @@ def rfg_delta_p_mond_bridge():
     )
     Delta_p = sp.Symbol('Delta_p', real=True)
 
-    rfg_halo_channel = 2 * Delta_p / (r * rho_solid)
+    rg_halo_channel = 2 * Delta_p / (r * rho_solid)
     mond_transport_channel = a0 * g_N / g
-    delta_p_bridge = sp.solve(sp.Eq(rfg_halo_channel, mond_transport_channel), Delta_p)[0]
+    delta_p_bridge = sp.solve(sp.Eq(rg_halo_channel, mond_transport_channel), Delta_p)[0]
 
     point_mass_gN = G * M / r**2
     deep_mond_g = sp.sqrt(a0 * point_mass_gN)
@@ -569,7 +569,7 @@ def rfg_delta_p_mond_bridge():
     return {
         "claim": "Delta_p is the stress representation of the MOND vortex channel under the acceleration bridge",
         "status": "EXACT_BRIDGE_IF_g_h_EQUALS_2Delta_p_OVER_rrho",
-        "RFG_halo_channel": sp.Eq(sp.Symbol('g_h'), rfg_halo_channel),
+        "RG_halo_channel": sp.Eq(sp.Symbol('g_h'), rg_halo_channel),
         "MOND_transport_channel": sp.Eq(sp.Symbol('g_h'), mond_transport_channel),
         "Delta_p_bridge": sp.Eq(Delta_p, delta_p_bridge),
         "point_mass_gN": sp.Eq(g_N, point_mass_gN),
@@ -577,14 +577,14 @@ def rfg_delta_p_mond_bridge():
         "deep_Delta_p": sp.Eq(Delta_p, deep_delta_p),
         "v_flat_squared": sp.Eq(sp.Symbol('v_flat^2'), v_flat_squared),
         "BTFR": btfr,
-        "proof_result": "MOND-ის g_h/g_N=a0/g და RFG-ის "
+        "proof_result": "MOND-ის g_h/g_N=a0/g და RG-ის "
                         "g_h=2*Delta_p/(r*rho_solid) მიღების შემდეგ deep regime-ში "
                         "ზუსტად მიიღება BTFR stress closure.",
         "open_requirement": "derive g_h=2*Delta_p/(r*rho_solid) as an external geodesic/test-particle bridge from p01/p10.",
     }
 
 
-def rfg_aqual_equivalence_closure():
+def rg_aqual_equivalence_closure():
     """
     ძველი MOND ფაილის AQUAL closure-ის Phase 33 ვერსია.
 
@@ -616,11 +616,11 @@ def rfg_aqual_equivalence_closure():
     }
 
 
-def rfg_external_field_effect_closure():
+def rg_external_field_effect_closure():
     """
-    EFE ძველი MOND ფაილიდან, RFG-ის ვაკუუმური სტრესის ენაზე.
+    EFE ძველი MOND ფაილიდან, RG-ის ვაკუუმური სტრესის ენაზე.
 
-    MOND/RFG რეაქცია კონტროლდება total field-ით g_total/a0 და არა მხოლოდ
+    MOND/RG რეაქცია კონტროლდება total field-ით g_total/a0 და არა მხოლოდ
     satellite/internal field-ით. ამიტომ ძლიერი external field ამცირებს
     vortex/free response-ს და suppression-ს იძლევა.
     """
@@ -639,12 +639,12 @@ def rfg_external_field_effect_closure():
         "local_mu": sp.Eq(sp.Symbol('mu_total'), mu_total),
         "isolated_deep_regime": "g_ext << g_int << a0 -> full deep-MOND boost",
         "external_suppressed_regime": "g_int << g_ext and g_ext >= a0 -> vortex response is suppressed",
-        "RFG_meaning": "external field tilts/loads the same supersolid medium, reducing the free vortex fraction.",
-        "open_requirement": "derive the total-gradient response from the RFG vortex/coarse-grained transport equation.",
+        "RG_meaning": "external field tilts/loads the same supersolid medium, reducing the free vortex fraction.",
+        "open_requirement": "derive the total-gradient response from the RG vortex/coarse-grained transport equation.",
     }
 
 
-def rfg_mond_derivation_ledger() -> list[str]:
+def rg_mond_derivation_ledger() -> list[str]:
     return [
         "coherence-scale postulate: lambda_H=2*pi*c/H -> a0=cH/(2*pi)",
         "two-channel split: g=g_N+g_h",
@@ -660,11 +660,11 @@ def rfg_mond_derivation_ledger() -> list[str]:
     ]
 
 
-def rfg_theoretical_anisotropy_scaling():
+def rg_theoretical_anisotropy_scaling():
     """
-    RFG flat-curve algebra inside the assumed acceleration bridge.
+    RG flat-curve algebra inside the assumed acceleration bridge.
 
-    სრული RFG-ის გალაქტიკური განტოლებაა:
+    სრული RG-ის გალაქტიკური განტოლებაა:
         a_obs = g_N + 2*Delta_p/(r*rho_solid)
 
     ამიტომ ნებისმიერი ბრუნვის მრუდისთვის ზუსტად:
@@ -705,10 +705,10 @@ def rfg_theoretical_anisotropy_scaling():
     static_v_squared = sp.simplify(r * static_acceleration)
     
     return {
-        "claim": "RFG flat-curve algebra inside a_extra=2*Delta_p/(r*rho_solid)",
+        "claim": "RG flat-curve algebra inside a_extra=2*Delta_p/(r*rho_solid)",
         "status": "EXACT_INVERSION_AFTER_ACCELERATION_BRIDGE_IS_ASSUMED",
-        "RFG_acceleration_law": sp.Eq(sp.Symbol('a_obs'), a_total),
-        "RFG_velocity_law": sp.Eq(sp.Symbol('v_obs^2'), v_squared_exact),
+        "RG_acceleration_law": sp.Eq(sp.Symbol('a_obs'), a_total),
+        "RG_velocity_law": sp.Eq(sp.Symbol('v_obs^2'), v_squared_exact),
         "exact_rotation_curve_inversion": sp.Eq(Delta_p, exact_delta_p),
         "flat_curve_equation": flat_curve_equation,
         "necessary_and_sufficient_Delta_p": sp.Eq(Delta_p, flat_delta_p),
@@ -723,13 +723,13 @@ def rfg_theoretical_anisotropy_scaling():
         "physical_resolution": "სტატიკური 1/r^2 კუდი უარყოფილია როგორც გალაქტიკური plateau-ს წყარო. "
                                "გალაქტიკის ბრტყელი ნაწილი უნდა იყოს დინამიკური ვორტექსული plateau, "
                                "ხოლო plateau-ს გარეთ საჭიროა finite-radius cutoff.",
-        "open_requirement": "derive the external acceleration bridge and the dynamic plateau from the RFG vortex equation.",
+        "open_requirement": "derive the external acceleration bridge and the dynamic plateau from the RG vortex equation.",
     }
 
 
-def rfg_a0_vortex_emergence():
+def rg_a0_vortex_emergence():
     """
-    RFG BTFR closure identity.
+    RG BTFR closure identity.
 
     flat-curve algebra-დან:
         v_flat^2 = 2*Delta_p/rho_solid
@@ -749,26 +749,26 @@ def rfg_a0_vortex_emergence():
     # 1. MOND-ის ემპირიული აჩქარება Deep-MOND (შორ) ლიმიტში: a = sqrt(a0 * g_N)
     g_mond = sp.sqrt(a0 * G * M / r**2)
     
-    # 2. RFG-ის ანიზოტროპიული აჩქარება: a = 2*Delta_p / (r*rho_solid)
-    g_rfg = 2 * Delta_p / (r * rho_solid)
+    # 2. RG-ის ანიზოტროპიული აჩქარება: a = 2*Delta_p / (r*rho_solid)
+    g_rg = 2 * Delta_p / (r * rho_solid)
     
     # 3. ვუტოლებთ და ვხსნით Delta_p-სთვის
-    dp_eq = sp.Eq(g_rfg, g_mond)
+    dp_eq = sp.Eq(g_rg, g_mond)
     dp_sol = sp.solve(dp_eq, Delta_p)[0]
 
-    v2_rfg_plateau = sp.simplify(2 * Delta_p / rho_solid)
-    btfr_from_rfg = sp.simplify(v2_rfg_plateau**2)
+    v2_rg_plateau = sp.simplify(2 * Delta_p / rho_solid)
+    btfr_from_rg = sp.simplify(v2_rg_plateau**2)
     btfr_target = G * M * a0
-    btfr_delta_p = sp.solve(sp.Eq(btfr_from_rfg, btfr_target), Delta_p)[1]
+    btfr_delta_p = sp.solve(sp.Eq(btfr_from_rg, btfr_target), Delta_p)[1]
     
     return {
-        "claim": "RFG BTFR closure identity",
+        "claim": "RG BTFR closure identity",
         "status": "CONDITIONAL_IDENTITY_UNTIL_PLATEAU_STRESS_IS_DERIVED",
         "MOND_deep_acceleration": g_mond,
-        "RFG_anisotropic_acceleration": g_rfg,
+        "RG_anisotropic_acceleration": g_rg,
         "required_vortex_stress_Delta_p": sp.simplify(dp_sol),
-        "RFG_plateau_velocity_squared": sp.Eq(sp.Symbol('v_flat^2'), v2_rfg_plateau),
-        "RFG_BTFR_left_side": sp.Eq(sp.Symbol('v_flat^4'), btfr_from_rfg),
+        "RG_plateau_velocity_squared": sp.Eq(sp.Symbol('v_flat^2'), v2_rg_plateau),
+        "RG_BTFR_left_side": sp.Eq(sp.Symbol('v_flat^4'), btfr_from_rg),
         "BTFR_exact_closure": sp.Eq(Delta_p, sp.simplify(btfr_delta_p)),
         "physical_conclusion": "აჩქარების ხიდის შიგნით MOND/BTFR ზუსტად მიიღება, "
                                "თუ გალაქტიკური ვორტექსის plateau-სტრესი მასშტაბირდება "
@@ -776,7 +776,7 @@ def rfg_a0_vortex_emergence():
         "open_requirement": "derive this plateau-stress amplitude from finite-energy vortex dynamics.",
     }
 
-def rfg_vortex_stress_generation():
+def rg_vortex_stress_generation():
     """
     იკვლევს, რა ტიპის დინამიკური პროფილი ქმნის
     მუდმივ Delta p ანიზოტროპიას შორ მანძილებზე.
@@ -802,14 +802,14 @@ def rfg_vortex_stress_generation():
     }
 
 
-def rfg_finite_vortex_plateau_model():
+def rg_finite_vortex_plateau_model():
     """
     finite-radius vortex constructive profile.
 
     ეს არის კონსტრუქციული მაგალითი: არსებობს გლუვი finite-radius
     Delta_p პროფილი, რომელიც დაკვირვებულ შიდა არეში ბრტყელ მრუდს იძლევა,
     ხოლო გარე არეში ქრება და უსასრულო plateau-ს ენერგეტიკულ პრობლემას ხსნის.
-    იგი არ არის ჯერ RFG ვორტექსის EOM-დან მიღებული უნიკალური ამოხსნა.
+    იგი არ არის ჯერ RG ვორტექსის EOM-დან მიღებული უნიკალური ამოხსნა.
     """
     r, R_v, rho_solid, Delta_p0 = sp.symbols(
         'r R_v rho_solid Delta_p0',
@@ -839,11 +839,11 @@ def rfg_finite_vortex_plateau_model():
                           "მთელ დაკვირვებულ ინტერვალზე მიიღება ბრტყელი plateau; "
                           "r >> R_v-ზე კი finite cutoff იძლევა v ∝ 1/r-ს.",
         "status": "constructive finite-profile example; not yet an EOM-derived vortex solution.",
-        "open_requirement": "derive this profile or its allowed family from the nonlinear RFG vortex equation.",
+        "open_requirement": "derive this profile or its allowed family from the nonlinear RG vortex equation.",
     }
 
 
-def rfg_vortex_cosmological_evolution():
+def rg_vortex_cosmological_evolution():
     """
     ამოწმებს მომხმარებლის ინტუიციას: როგორც სინათლე ატარებს წარსულის 
     (უფრო სწრაფი დროის/მკვრივი მედიუმის) კვალს წითელი წანაცვლების სახით, 
@@ -1080,12 +1080,12 @@ def format_global_fit(fit: GlobalFit, max_galaxies: int = 8) -> list[str]:
 
 def model_scope_notes() -> list[str]:
     return [
-        "Phase 33 is a conditional MOND/RFG ledger: a0 scale -> vortex closure -> mu -> AQUAL -> Delta_p.",
+        "Phase 33 is a conditional MOND/RG ledger: a0 scale -> vortex closure -> mu -> AQUAL -> Delta_p.",
         "a0=cH/(2*pi) is a coherence-scale postulate/bridge until the 2*pi mechanism is derived.",
         "The simple interpolating function is derived algebraically from the assumed closure: g_h/g_N=a0/g -> mu(x)=x/(1+x).",
-        "The RFG stress bridge is exact only after the external acceleration bridge is accepted.",
-        "The RFG inversion algebra is exact: every rotation curve fixes Delta_p=rho_solid*(v_obs^2-r*g_N)/2.",
-        "The RFG flat-curve algebra is exact after baryonic subtraction: v=const iff the plateau Delta_p is constant.",
+        "The RG stress bridge is exact only after the external acceleration bridge is accepted.",
+        "The RG inversion algebra is exact: every rotation curve fixes Delta_p=rho_solid*(v_obs^2-r*g_N)/2.",
+        "The RG flat-curve algebra is exact after baryonic subtraction: v=const iff the plateau Delta_p is constant.",
         "BTFR is an exact conditional identity: v^4=G*M_b*a0 fixes Delta_p=rho_solid*sqrt(G*M_b*a0)/2.",
         "The mature vortex branch is AQUAL-equivalent only under curl-free/collinear gradient control.",
         "The external-field effect is an expected consequence if the vortex response is controlled by the total gradient.",
@@ -1097,11 +1097,11 @@ def model_scope_notes() -> list[str]:
 
 def main() -> None:
     print("=" * 72)
-    print("PHASE 33: SPARC rotation curves — RFG/AQUAL chi-square pipeline")
+    print("PHASE 33: SPARC rotation curves — RG/AQUAL chi-square pipeline")
     print("=" * 72)
 
-    print("\n0. RFG/MOND claim gate")
-    for gate in rfg_mond_claim_gate():
+    print("\n0. RG/MOND claim gate")
+    for gate in rg_mond_claim_gate():
         print(f"  {gate.claim}: {gate.status}")
         print(f"    verified_here: {gate.verified_here}")
         print(f"    open_requirement: {gate.open_requirement}")
@@ -1129,41 +1129,41 @@ def main() -> None:
         for directory in DEFAULT_DATA_DIRS:
             print(f"    {directory}")
 
-        print("\n3a. RFG მიკროფიზიკა — ანიზოტროპიის ექსტრაქცია სინთეტიკური მონაცემებიდან")
+        print("\n3a. RG მიკროფიზიკა — ანიზოტროპიის ექსტრაქცია სინთეტიკური მონაცემებიდან")
         mock_curve = make_synthetic_curve("mock_HSB", 150.0, 45.0, 70.0, 0.6, 0.7)
-        dp_profile = rfg_required_anisotropy_delta_p(mock_curve, 0.6, 0.7)
+        dp_profile = rg_required_anisotropy_delta_p(mock_curve, 0.6, 0.7)
         print(f"  გალაქტიკა {mock_curve.name}-ისთვის ვაკუუმის სტრესის (Delta p) პროფილი:")
         for r, dp in zip(mock_curve.radius_kpc[::5], dp_profile[::5]):
             print(f"    r = {r:4.1f} kpc -> Delta p = {dp:.3e} Pa")
-        print("  დასკვნა: acceleration bridge-ის მიღების შემდეგ RFG ზუსტად ითვლის,")
+        print("  დასკვნა: acceleration bridge-ის მიღების შემდეგ RG ზუსტად ითვლის,")
         print("  რა Delta_p პროფილი დასჭირდება მედიუმს მოცემული მრუდის ასახსნელად.")
 
         print("\n3b. Hubble coherence bridge — a0-ის სამუშაო მასშტაბი")
-        a0_origin = rfg_hubble_coherence_a0_derivation()
+        a0_origin = rg_hubble_coherence_a0_derivation()
         for k, v in a0_origin.items():
             print(f"  {k:28s}: {v}")
 
-        print("\n3c. RFG two-channel MOND closure — closure => mu(x)")
-        two_channel = rfg_two_channel_mond_closure()
+        print("\n3c. RG two-channel MOND closure — closure => mu(x)")
+        two_channel = rg_two_channel_mond_closure()
         for k, v in two_channel.items():
             print(f"  {k:28s}: {v}")
 
-        print("\n3d. RFG Delta_p bridge — MOND-ის stress ფორმა")
-        stress_bridge = rfg_delta_p_mond_bridge()
+        print("\n3d. RG Delta_p bridge — MOND-ის stress ფორმა")
+        stress_bridge = rg_delta_p_mond_bridge()
         for k, v in stress_bridge.items():
             print(f"  {k:28s}: {v}")
 
         print("\n3e. Conditional AQUAL equivalence — nonlinear field equation")
-        aqual = rfg_aqual_equivalence_closure()
+        aqual = rg_aqual_equivalence_closure()
         for k, v in aqual.items():
             print(f"  {k:28s}: {v}")
 
-        print("\n3f. RFG flat-curve algebra — აუცილებელი და საკმარისი პირობა")
-        scaling_audit = rfg_theoretical_anisotropy_scaling()
+        print("\n3f. RG flat-curve algebra — აუცილებელი და საკმარისი პირობა")
+        scaling_audit = rg_theoretical_anisotropy_scaling()
         print(f"  claim: {scaling_audit['claim']}")
         print(f"  status: {scaling_audit['status']}")
-        print(f"  RFG აჩქარება: {scaling_audit['RFG_acceleration_law']}")
-        print(f"  RFG სიჩქარის კანონი: {scaling_audit['RFG_velocity_law']}")
+        print(f"  RG აჩქარება: {scaling_audit['RG_acceleration_law']}")
+        print(f"  RG სიჩქარის კანონი: {scaling_audit['RG_velocity_law']}")
         print(f"  ზუსტი ინვერსია ნებისმიერი მრუდისთვის: {scaling_audit['exact_rotation_curve_inversion']}")
         print(f"  flat-curve განტოლება: {scaling_audit['flat_curve_equation']}")
         print(f"  აუცილებელი და საკმარისი Delta_p: {scaling_audit['necessary_and_sufficient_Delta_p']}")
@@ -1175,35 +1175,35 @@ def main() -> None:
         print(f"  სიჩქარის სკალირება: {scaling_audit['velocity_scaling_from_static']}")
         print(f"  no-go შედეგი: {scaling_audit['static_no_go']}")
         print(f"  მტკიცების შედეგი: {scaling_audit['proof_result']}")
-        print(f"  RFG მექანიზმი: {scaling_audit['physical_resolution']}")
+        print(f"  RG მექანიზმი: {scaling_audit['physical_resolution']}")
 
-        print("\n3g. RFG BTFR closure identity — a_0 და ვორტექსის სტრესი")
-        vortex = rfg_a0_vortex_emergence()
+        print("\n3g. RG BTFR closure identity — a_0 და ვორტექსის სტრესი")
+        vortex = rg_a0_vortex_emergence()
         for k, v in vortex.items():
             print(f"  {k:32s}: {v}")
 
         print("\n3h. მუდმივი ანიზოტროპიის წარმომქმნელი მექანიზმი (მედიუმის ბრუნვა)")
-        stress_gen = rfg_vortex_stress_generation()
+        stress_gen = rg_vortex_stress_generation()
         for k, v in stress_gen.items():
             print(f"  {k:20s}: {v}")
 
         print("\n3i. finite-radius vortex plateau profile")
-        finite_vortex = rfg_finite_vortex_plateau_model()
+        finite_vortex = rg_finite_vortex_plateau_model()
         for k, v in finite_vortex.items():
             print(f"  {k:24s}: {v}")
 
         print("\n3j. External-field effect — conditional total-gradient response")
-        efe = rfg_external_field_effect_closure()
+        efe = rg_external_field_effect_closure()
         for k, v in efe.items():
             print(f"  {k:28s}: {v}")
 
         print("\n3k. კოსმოლოგიური ევოლუცია და ვორტექსის მეხსიერება (z-დამოკიდებულება)")
-        z_evol = rfg_vortex_cosmological_evolution()
+        z_evol = rg_vortex_cosmological_evolution()
         for k, v in z_evol.items():
             print(f"  {k:25s}: {v}")
 
-        print("\n3l. Complete RFG/MOND derivation ledger")
-        for step in rfg_mond_derivation_ledger():
+        print("\n3l. Complete RG/MOND derivation ledger")
+        for step in rg_mond_derivation_ledger():
             print(f"  - {step}")
 
         print("\n3m. Synthetic smoke-test (pipeline only, not SPARC)")
@@ -1226,7 +1226,7 @@ def main() -> None:
         print(f"  - {note}")
 
     print("\n6. Do-not-claim")
-    for item in rfg_mond_do_not_claim():
+    for item in rg_mond_do_not_claim():
         print(f"  - {item}")
 
 
@@ -1299,7 +1299,7 @@ def aqual_lagrangian_explicit():
 def derive_mu_choice():
     """
     μ(x) ფენომენოლოგიური არჩევანი (Famaey-Binney 2005).
-    ეს არ არის RFG-დან გამოყვანა — ფენომენოლოგიური არჩევანია.
+    ეს არ არის RG-დან გამოყვანა — ფენომენოლოგიური არჩევანია.
 
     Deep-MOND consistency check (μ → x as x → 0):
     F(y) = ∫ μ(√y) dy with μ = x/(1+x)
@@ -1369,7 +1369,7 @@ def btfr_derivation():
     BTFR (Baryonic Tully-Fisher Relation): M_b ∝ v^4
     Deep MOND ლიმიტში g_chi = √(a_0 g_N), ორბიტა v^2/r = g_chi.
 
-    შენიშვნა: ეს არის ალგებრული ჩასმა, არა RFG-დან გამოყვანა. 
+    შენიშვნა: ეს არის ალგებრული ჩასმა, არა RG-დან გამოყვანა. 
     g_chi = √(a_0·g_N)-ის ჩასმა v^2/r-ში აუცილებლად იძლევა v^4 ∝ M_b.
     """
     v, r, M_b, G_grav, a0 = sp.symbols(
@@ -1415,7 +1415,7 @@ def mu_derivation_audit():
     """
     Strategy 3 / M5 audit.
 
-    RFG-ის ფესვიდან μ(x)-ის გამოყვანა ნიშნავს არა მხოლოდ ისეთი F(y)-ის პოვნას,
+    RG-ის ფესვიდან μ(x)-ის გამოყვანა ნიშნავს არა მხოლოდ ისეთი F(y)-ის პოვნას,
     რომლის derivative იძლევა μ-ს, არამედ χ-მედიუმის მიკროფიზიკური მოქმედებიდან
     ამ F(y)-ის აუცილებლობის ჩვენებას.
     """
@@ -1425,12 +1425,12 @@ def mu_derivation_audit():
         "candidate_F_y": F_y,
         "deep_mond_target": F_deep_target,
         "deep_mond_consistency": deep_mond_limit,
-        "rfg_microphysical_derivation": "FAIL",
+        "rg_microphysical_derivation": "FAIL",
         "reason": (
             "phase11 reconstructs a valid AQUAL F(y) for the chosen Famaey-Binney "
-            "mu, but no RFG action or vortex-memory dynamics forces this function."
+            "mu, but no RG action or vortex-memory dynamics forces this function."
         ),
-        "status": "phenomenological AQUAL bridge, not an RFG derivation",
+        "status": "phenomenological AQUAL bridge, not an RG derivation",
     }
 
 
@@ -1443,7 +1443,7 @@ def a0_lambda_eff_audit():
 
     This can be evaluated with H0 or with a Lambda-only de Sitter scale
     H_Lambda = c sqrt(Lambda/3), but the 2π and the MOND coupling are not
-    derived from the polynomial RFG action. Therefore this remains a scaling
+    derived from the polynomial RG action. Therefore this remains a scaling
     coincidence until a mechanism fixes the coherence length and coupling.
     """
     c_si = 299792458.0
@@ -1478,18 +1478,18 @@ def a0_lambda_eff_audit():
             "it does not by itself derive the MOND interpolation, the coupling to "
             "baryons, or the 2π normalization."
         ),
-        "status": "dimensional bridge / numerical coincidence, not a closed RFG mechanism",
+        "status": "dimensional bridge / numerical coincidence, not a closed RG mechanism",
     }
 
 
 def open_tasks():
     """ცარიელი ცდები, რომელიც phase23+-ში გადადის."""
     return [
-        "μ(x) RFG-დან გამოყვანა (ფენომენოლოგიური Famaey-Binney არ უდრის RFG-დან გამოყვანას)",
+        "μ(x) RG-დან გამოყვანა (ფენომენოლოგიური Famaey-Binney არ უდრის RG-დან გამოყვანას)",
         "a_0 = c·H_0/(2π)-ის მექანიზმი Λ_eff-დან (ნუმეროლოგიური დამთხვევაა ჯერ)",
         "SPARC ~175 გალაქტიკის χ^2 fit (phase33-ის კანდიდატი)",
         "Bullet/Abell 520/El Gordo lensing შედარება (p09_bullet.py)",
-        "χ ლაგრანჟიანის RFG-დან გამოყვანა (ჯერ ცალკე AQUAL-ის ჩასმაა)",
+        "χ ლაგრანჟიანის RG-დან გამოყვანა (ჯერ ცალკე AQUAL-ის ჩასმაა)",
     ]
 
 
@@ -1562,10 +1562,10 @@ if __name__ == "__main__" and _should_run_main_section("phase11"):
 
     print("\n9. სტატუსი")
     print("  - AQUAL ფარგლი დაფიქსირებულია (Bekenstein-Milgrom 1984)")
-    print("  - μ(x) ფენომენოლოგიური არჩევანი, არა RFG-დან გამოყვანა")
+    print("  - μ(x) ფენომენოლოგიური არჩევანი, არა RG-დან გამოყვანა")
     print("  - a_0 cH_0/(2π) რიცხობრივი დამთხვევაა (~10% ცდომილებით)")
     print("  - BTFR ალგებრული ჩასმაა, ემპირიულ ფიტს ეყრდნობა")
-    print("  - SPARC შედარება, χ ლაგრანჟიანის RFG-დან გამოყვანა — ღია")
+    print("  - SPARC შედარება, χ ლაგრანჟიანის RG-დან გამოყვანა — ღია")
 
 
 # ===================== merged from p07_mond.py =====================
@@ -1628,7 +1628,7 @@ if __name__ == "__main__" and _should_run_main_section("deprecated"):
 
 
 # =============================================================================
-# STAGE B1-B4: OLD MOND/Relics -> RFG galactic-sector integration ledger
+# STAGE B1-B4: OLD MOND/Relics -> RG galactic-sector integration ledger
 # =============================================================================
 
 def stage_b1_chi_route_a_effective_template():
@@ -1636,7 +1636,7 @@ def stage_b1_chi_route_a_effective_template():
     Drain of OLD/13 into the new p07 MOND sector.
 
     chi is not introduced as particle dark matter.  It is an effective
-    collective memory field for the transported response of the RFG medium
+    collective memory field for the transported response of the RG medium
     around bound structures.
     """
     chi, beta, lam, Y_qs = sp.symbols('chi beta lambda Y_qs', positive=True)
@@ -1725,7 +1725,7 @@ def stage_b2_vortex_origin_and_morphology_ledger():
         "source": "OLD/ISPG_MOND.tex vortex-origin sections",
         "causal_chain": [
             "CMB pressure/density fluctuations",
-            "inhomogeneous cooling in the RFG medium",
+            "inhomogeneous cooling in the RG medium",
             "pressure gradients",
             "large-scale flows",
             "Kelvin-Helmholtz roll-up / turbulent cascade",

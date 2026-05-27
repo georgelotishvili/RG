@@ -4,7 +4,7 @@
 # Horndeski/EFT bridge only: X = -1/2 g^mn d_m Phi d_n Phi, so Y = -2X.
 
 """
-PHASE 18: RFG compact object, Bernoulli saturation, and singularity audit
+PHASE 18: RG compact object, Bernoulli saturation, and singularity audit
 
 ეს ფაილი არის compact-object სამუშაო ledger, არა theory-export proof.
 აქ მოწმდება exponential exterior-ის algebraic/phenomenological branch:
@@ -31,7 +31,7 @@ def compact_signature_bridge():
     """
     Sign-convention firewall.
 
-    The global RFG work files use signature (+---).  The compact-object block
+    The global RG work files use signature (+---).  The compact-object block
     below often writes a positive lapse/spatial-factor line element as
         ds^2 = -B(r)c^2dt^2 + A(r)(dr^2+r^2dOmega^2).
 
@@ -44,7 +44,7 @@ def compact_signature_bridge():
     B_lapse = sp.exp(phi)
     A_spatial = sp.exp(-phi)
     return {
-        "global_RFG_signature": "(+---)",
+        "global_RG_signature": "(+---)",
         "compact_line_element_style": "ds^2=-B(r)c^2dt^2 + A(r)(dr^2+r^2dOmega^2)",
         "positive_lapse_B": sp.Eq(sp.Symbol('B'), B_lapse),
         "positive_spatial_A": sp.Eq(sp.Symbol('A'), A_spatial),
@@ -55,7 +55,7 @@ def compact_signature_bridge():
 
 def derive_exponential_exterior_from_phase_equation():
     """
-    Exterior derivation at the RFG phase-potential level.
+    Exterior derivation at the RG phase-potential level.
 
     Outside the compact source the static pressure/phase potential is harmonic:
         (r^2 phi')' = 0.
@@ -117,7 +117,7 @@ def derive_exponential_effective_source_profile():
         "Bernoulli_Delta_P": sp.Eq(sp.Symbol('Delta_P'), delta_p),
         "T_eff_if_G_eq_8piG_T": T_eff,
         "profile_match": sp.Eq(sp.Symbol('G^r_r/(8*pi*G)'), delta_p),
-        "sign_note": "standard Einstein-sign reading gives T^t_t=-Delta_P and T^r_r=+Delta_P; physical energy interpretation is gated by the RFG sign/source convention.",
+        "sign_note": "standard Einstein-sign reading gives T^t_t=-Delta_P and T^r_r=+Delta_P; physical energy interpretation is gated by the RG sign/source convention.",
         "source_status": "EFFECTIVE_GEOMETRIC_SOURCE_PROFILE_DERIVED__PHYSICAL_MEDIUM_SOURCE_OPEN",
     }
 
@@ -127,11 +127,11 @@ def derive_black_hole_singularity_breaker_gate():
     Geometry-level black-hole breaker gate.
 
     Compare the Schwarzschild finite-radius horizon / r=0 curvature blow-up
-    with the RFG exponential exterior branch.  This is the strongest statement
+    with the RG exponential exterior branch.  This is the strongest statement
     currently available before p01 source closure:
 
         Schwarzschild: B=1-r_s/r has B=0 at r=r_s and K~r^-6.
-        RFG exponential: B=exp(-r_s/r)>0 for finite r and K->0 at r->0.
+        RG exponential: B=exp(-r_s/r)>0 for finite r and K->0 at r->0.
 
     The result excludes the Schwarzschild-type curvature singularity inside
     the exponential phase metric.  It does not by itself prove collapse
@@ -159,12 +159,12 @@ def derive_black_hole_singularity_breaker_gate():
         "Schwarzschild_horizon_radius": sp.Eq(sp.Symbol('r_h'), r_s),
         "Schwarzschild_Kretschmann": K_schw,
         "lim_r_to_0_K_Schwarzschild": sp.limit(K_schw, r, 0, dir='+'),
-        "RFG_lapse": sp.Eq(sp.Symbol('B_exp'), B_exp),
-        "RFG_finite_r_horizon_test": "exp(-r_s/r) is strictly positive for every finite r>0",
-        "RFG_Kretschmann": K_exp,
-        "lim_r_to_0_K_RFG": sp.limit(K_exp, r, 0, dir='+'),
-        "RFG_Bernoulli_profile": sp.Eq(sp.Symbol('Delta_P'), delta_p),
-        "lim_r_to_0_DeltaP_RFG": sp.limit(delta_p, r, 0, dir='+'),
+        "RG_lapse": sp.Eq(sp.Symbol('B_exp'), B_exp),
+        "RG_finite_r_horizon_test": "exp(-r_s/r) is strictly positive for every finite r>0",
+        "RG_Kretschmann": K_exp,
+        "lim_r_to_0_K_RG": sp.limit(K_exp, r, 0, dir='+'),
+        "RG_Bernoulli_profile": sp.Eq(sp.Symbol('Delta_P'), delta_p),
+        "lim_r_to_0_DeltaP_RG": sp.limit(delta_p, r, 0, dir='+'),
         "spatial_proper_distance_to_r0": sp.Eq(
             sp.Integral(sp.sqrt(A_exp), (r, 0, sp.Symbol('r0', positive=True))),
             sp.oo,
@@ -797,9 +797,9 @@ def analyze_photon_shadow_isco():
     gr_isco_iso = (5 + 2 * sp.sqrt(6)) * r_s / 4
     gr_isco_areal = 3 * r_s
     isco_iso_ratio = sp.N(isco_physical / gr_isco_iso, 8)
-    shadow_rfg = sp.E * r_s
+    shadow_rg = sp.E * r_s
     shadow_gr = 3 * sp.sqrt(3) * r_s / 2
-    shadow_ratio = sp.N(shadow_rfg / shadow_gr, 8)
+    shadow_ratio = sp.N(shadow_rg / shadow_gr, 8)
 
     return {
         "effective_potential_timelike": sp.Eq(sp.Symbol('V_eff'), v_eff),
@@ -811,9 +811,9 @@ def analyze_photon_shadow_isco():
         "photon_barrier": photon_barrier,
         "photon_condition": sp.Eq(photon_condition, 0),
         "photon_sphere": sp.Eq(sp.Symbol('r_ph'), r_s),
-        "critical_impact_parameter": sp.Eq(sp.Symbol('b_c'), shadow_rfg),
+        "critical_impact_parameter": sp.Eq(sp.Symbol('b_c'), shadow_rg),
         "GR_shadow_reference": sp.Eq(sp.Symbol('b_c_GR'), shadow_gr),
-        "shadow_ratio_RFG_over_GR": shadow_ratio,
+        "shadow_ratio_RG_over_GR": shadow_ratio,
         "shadow_size_shift": f"{float((shadow_ratio - 1) * 100):.2f}%",
         "stability_second_derivative": stability_second_derivative,
         "stability_polynomial": sp.Eq(stability_polynomial, 0),
@@ -827,10 +827,10 @@ def analyze_photon_shadow_isco():
         "GR_binding_efficiency_reference": gr_binding_efficiency,
         "GR_areal_ISCO_reference": sp.Eq(sp.Symbol('R_ISCO_GR'), gr_isco_areal),
         "GR_isotropic_ISCO_reference": sp.Eq(sp.Symbol('r_ISCO_GR_iso'), gr_isco_iso),
-        "ISCO_radius_ratio_RFG_over_GR_iso": isco_iso_ratio,
+        "ISCO_radius_ratio_RG_over_GR_iso": isco_iso_ratio,
         "Omega_ISCO_squared": sp.Eq(sp.Symbol('Omega_ISCO^2'), omega_isco_sq),
         "GR_Omega_ISCO_squared_reference": sp.Eq(sp.Symbol('Omega_GR^2'), omega_gr_sq),
-        "frequency_ratio_RFG_over_GR": omega_ratio,
+        "frequency_ratio_RG_over_GR": omega_ratio,
         "frequency_proxy": "f_ISCO = 0.931 f_ISCO_GR for the same total mass",
         "mechanism": "golden-ratio ISCO is the marginal-stability root of the exponential-vacuum geodesic potential, not a fitted number.",
     }
@@ -838,7 +838,7 @@ def analyze_photon_shadow_isco():
 
 def singularity_strength_ledger() -> list[str]:
     return [
-        "Geometry-level breaker: Schwarzschild has B=0 at r_s and K->infinity at r=0; the RFG exponential branch has B>0 for every finite r>0 and K->0 at r=0.",
+        "Geometry-level breaker: Schwarzschild has B=0 at r_s and K->infinity at r=0; the RG exponential branch has B>0 for every finite r>0 and K->0 at r=0.",
         "Within the exponential exterior ansatz: R->0, Ricci^2->0, K->0 at r->0.",
         "Within the Bernoulli branch: Delta_P peaks at r_s/4 and returns to 0 at r->0.",
         "The r=0 endpoint is not a curvature singularity in the exponential branch, but exterior radial geodesics still expose a boundary unless a derived core/boundary law is added.",
@@ -920,7 +920,7 @@ def analyze_regular_center():
 
 if __name__ == "__main__":
     print("=" * 72)
-    print("PHASE 18: RFG compact object and singularity audit")
+    print("PHASE 18: RG compact object and singularity audit")
     print("=" * 72)
 
     print("\n0. Sign-convention bridge")
@@ -1036,7 +1036,7 @@ if __name__ == "__main__":
 # Horndeski/EFT bridge only: X = -1/2 g^mn d_m Phi d_n Phi, so Y = -2X.
 
 """
-PHASE 29: EHT shadow - static spherical compact-object benchmark in RFG.
+PHASE 29: EHT shadow - static spherical compact-object benchmark in RG.
 
 Phase 18 now derives the exponential exterior:
 
@@ -1048,13 +1048,13 @@ For null circular orbits:
 
 The critical impact parameter is therefore:
 
-    b_c^RFG = e*r_s,
+    b_c^RG = e*r_s,
 
 while Schwarzschild gives:
 
     b_c^GR = (3*sqrt(3)/2)*r_s.
 
-Thus the static spherical RFG benchmark gives a shadow diameter larger by
+Thus the static spherical RG benchmark gives a shadow diameter larger by
 2e/(3sqrt(3))-1 = 4.63%.  This is not a full EHT model until rotation,
 plasma/accretion emission and ray-traced image fitting are added.
 """
@@ -1102,8 +1102,8 @@ def schwarzschild_shadow_prediction(m_solar, distance_m):
     }
 
 
-def rfg_shadow_prediction(m_solar, distance_m):
-    """RFG exponential-exterior critical-curve diameter: theta = 2*e*r_s/D."""
+def rg_shadow_prediction(m_solar, distance_m):
+    """RG exponential-exterior critical-curve diameter: theta = 2*e*r_s/D."""
     mass = m_solar * M_SUN
     r_s = 2 * G * mass / C**2
     b_c = math.e * r_s
@@ -1119,22 +1119,22 @@ def rfg_shadow_prediction(m_solar, distance_m):
 
 
 def compare_with_observation(name, m_solar, distance_m, theta_obs, theta_err):
-    """Compare GR and RFG static spherical shadow benchmarks to one observation."""
+    """Compare GR and RG static spherical shadow benchmarks to one observation."""
     gr = schwarzschild_shadow_prediction(m_solar, distance_m)
-    rfg = rfg_shadow_prediction(m_solar, distance_m)
-    ratio = rfg["theta_uas"] / gr["theta_uas"]
+    rg = rg_shadow_prediction(m_solar, distance_m)
+    ratio = rg["theta_uas"] / gr["theta_uas"]
 
     return {
         "name": name,
         "r_s_meters": gr["r_s_meters"],
         "GR_prediction_uas": gr["theta_uas"],
-        "RFG_prediction_uas": rfg["theta_uas"],
-        "RFG_over_GR_ratio": ratio,
-        "RFG_shadow_shift_percent": (ratio - 1.0) * 100.0,
+        "RG_prediction_uas": rg["theta_uas"],
+        "RG_over_GR_ratio": ratio,
+        "RG_shadow_shift_percent": (ratio - 1.0) * 100.0,
         "EHT_observation_uas": theta_obs,
         "EHT_error_uas": theta_err,
         "GR_deviation_sigma": abs(gr["theta_uas"] - theta_obs) / theta_err,
-        "RFG_deviation_sigma": abs(rfg["theta_uas"] - theta_obs) / theta_err,
+        "RG_deviation_sigma": abs(rg["theta_uas"] - theta_obs) / theta_err,
     }
 
 
@@ -1149,34 +1149,34 @@ def distance_to_meters(obs):
     raise KeyError("distance field not found")
 
 
-def rfg_shadow_derivation_ledger():
+def rg_shadow_derivation_ledger():
     return [
         "exponential exterior: g_tt=-exp(-r_s/r), g_rr=exp(r_s/r)",
         "null barrier: V_null proportional to exp(-2r_s/r)/r^2",
         "photon sphere: dV_null/dr=0 -> r_ph=r_s",
         "critical impact parameter: b_c=r*exp(r_s/r) at r=r_s -> e*r_s",
         "GR reference: b_c=(3*sqrt(3)/2)*r_s",
-        "static spherical benchmark: RFG shadow diameter is +4.63% relative to GR",
+        "static spherical benchmark: RG shadow diameter is +4.63% relative to GR",
     ]
 
 
 def predictions_summary():
-    """RFG vs GR shadow status."""
+    """RG vs GR shadow status."""
     ratio = 2.0 * math.e / (3.0 * math.sqrt(3.0))
     return {
         "current_status": "static spherical benchmark derived inside the exponential branch; full EHT verdict open",
-        "RFG_b_c": "e*r_s",
+        "RG_b_c": "e*r_s",
         "GR_b_c": "3*sqrt(3)*r_s/2",
-        "RFG_over_GR": ratio,
+        "RG_over_GR": ratio,
         "shift_percent": (ratio - 1.0) * 100.0,
-        "needed_for_decisive_test": "rotating RFG exterior, accretion/plasma emission, mass-distance priors, and ray-traced image modelling",
+        "needed_for_decisive_test": "rotating RG exterior, accretion/plasma emission, mass-distance priors, and ray-traced image modelling",
         "ngEHT_BHEX_window": "few-percent shadow/ring precision can test the +4.63% benchmark",
     }
 
 
 if __name__ == "__main__":
     print("=" * 72)
-    print("PHASE 29: EHT shadow - RFG b_c=e*r_s static benchmark")
+    print("PHASE 29: EHT shadow - RG b_c=e*r_s static benchmark")
     print("=" * 72)
 
     print("\n1. დაკვირვება (EHT priors used in this local script)")
@@ -1186,10 +1186,10 @@ if __name__ == "__main__":
             print(f"    {key:25s}: {val}")
 
     print("\n2. Derivation ledger")
-    for item in rfg_shadow_derivation_ledger():
+    for item in rg_shadow_derivation_ledger():
         print(f"  - {item}")
 
-    print("\n3. GR vs RFG static benchmark compared to EHT numbers")
+    print("\n3. GR vs RG static benchmark compared to EHT numbers")
     for name, obs in EHT_OBSERVATIONS.items():
         result = compare_with_observation(
             name,
@@ -1201,12 +1201,12 @@ if __name__ == "__main__":
         print(f"\n  {result['name']}")
         print(f"    r_s = {result['r_s_meters']:.3e} m")
         print(f"    GR theta  = {result['GR_prediction_uas']:.2f} microas")
-        print(f"    RFG theta = {result['RFG_prediction_uas']:.2f} microas")
-        print(f"    RFG/GR    = {result['RFG_over_GR_ratio']:.8f}")
-        print(f"    shift     = {result['RFG_shadow_shift_percent']:.2f}%")
+        print(f"    RG theta = {result['RG_prediction_uas']:.2f} microas")
+        print(f"    RG/GR    = {result['RG_over_GR_ratio']:.8f}")
+        print(f"    shift     = {result['RG_shadow_shift_percent']:.2f}%")
         print(f"    observed  = {result['EHT_observation_uas']:.1f} +/- {result['EHT_error_uas']:.1f} microas")
         print(f"    GR sigma  = {result['GR_deviation_sigma']:.2f}")
-        print(f"    RFG sigma = {result['RFG_deviation_sigma']:.2f}")
+        print(f"    RG sigma = {result['RG_deviation_sigma']:.2f}")
 
     print("\n4. Predictions summary")
     for key, val in predictions_summary().items():
@@ -1214,8 +1214,8 @@ if __name__ == "__main__":
 
     print("\n5. სტატუსი")
     print("  - +4.6% shadow shift static exponential benchmark-ად გამოდის.")
-    print("  - მიმდინარე EHT რიცხვები არ არის საკმარისი სუფთა GR/RFG გარჩევისთვის.")
-    print("  - decisive test მოითხოვს rotating RFG ray tracing-ს, plasma model-ს და ngEHT/BHEX კლასის სიზუსტეს.")
+    print("  - მიმდინარე EHT რიცხვები არ არის საკმარისი სუფთა GR/RG გარჩევისთვის.")
+    print("  - decisive test მოითხოვს rotating RG ray tracing-ს, plasma model-ს და ngEHT/BHEX კლასის სიზუსტეს.")
 
 
 # ===================== merged from p05_compact.py =====================
@@ -1227,7 +1227,7 @@ if __name__ == "__main__":
 
 """
 ================================================================================
-PHASE 31: ნეიტრონული ვარსკვლავები — RFG ანიზოტროპიული TOV და M-R მრუდი
+PHASE 31: ნეიტრონული ვარსკვლავები — RG ანიზოტროპიული TOV და M-R მრუდი
 ================================================================================
 
 რეფერენცია: p10_oscillons.py, p01_core.py,
@@ -1236,18 +1236,18 @@ PHASE 31: ნეიტრონული ვარსკვლავები �
 სტატუსი:
 ეს არის TOV განტოლების შესამოწმებელი (executable) გარემო. ის არ წარმოადგენს სრულ 
 nuclear-EOS მორგებას და არ არის საბოლოო NICER/GW170817 likelihood ცდა. 
-RFG-ის ანიზოტროპია წარმოდგენილია ერთი ფენომენოლოგიური პარამეტრით (eta_delta):
+RG-ის ანიზოტროპია წარმოდგენილია ერთი ფენომენოლოგიური პარამეტრით (eta_delta):
 
     Delta p = p_tan - p_rad = eta_delta * p_rad * u,
     u = 2GM(r)/(r c^2).
 
 eta_delta = 0 არის GR/იზოტროპული TOV ლიმიტი. დადებითი eta_delta ქმნის დამატებით 
-ტანგენციალურ მხარდაჭერას და ხდის RFG-ის მსგავსი ანიზოტროპიული სტრესის გავლენას 
-ხილულს. RFG-დან უშუალოდ გამოყვანილი ნეიტრონული ვარსკვლავის EoS ჯერჯერობით ღიაა.
+ტანგენციალურ მხარდაჭერას და ხდის RG-ის მსგავსი ანიზოტროპიული სტრესის გავლენას 
+ხილულს. RG-დან უშუალოდ გამოყვანილი ნეიტრონული ვარსკვლავის EoS ჯერჯერობით ღიაა.
 
 რა არის იმპლემენტირებული:
 - SI ერთეულების მქონე GR TOV ინტეგრატორი RK4 მეთოდით.
-- RFG-ის ანიზოტროპიული TOV წევრი +2 Delta p/r.
+- RG-ის ანიზოტროპიული TOV წევრი +2 Delta p/r.
 - M-R (მასა-რადიუსი) მიმდევრობა ცენტრალური სიმკვრივის ცვლილებით.
 - M_max >= 2.08 M_sun შემოწმება.
 - Lambda_1.4 კომპაქტურობის პროქსი GW170817 ზღვრისთვის.
@@ -1357,7 +1357,7 @@ class SequenceSummary:
 
 
 def anisotropy_delta_p(pressure_pa: float, compactness_u: float, eta_delta: float) -> float:
-    """Phenomenological RFG anisotropy: Delta p = eta * p * u."""
+    """Phenomenological RG anisotropy: Delta p = eta * p * u."""
     return eta_delta * pressure_pa * compactness_u
 
 
@@ -1624,13 +1624,13 @@ def model_scope_notes() -> list[str]:
 
 def main() -> None:
     print("=" * 72)
-    print("PHASE 31: Neutron stars — RFG anisotropic TOV and M-R curve")
+    print("PHASE 31: Neutron stars — RG anisotropic TOV and M-R curve")
     print("=" * 72)
 
     eos = PolytropicEOS()
     models = {
         "GR_isotropic": 0.0,
-        "RFG_anisotropic_eta0.5": 0.5,
+        "RG_anisotropic_eta0.5": 0.5,
     }
 
     print("\n1. Observational filters")
@@ -1686,7 +1686,7 @@ def main() -> None:
 
     print("\n7. Status")
     print("  - Strategy E6 TOV integrator: implemented.")
-    print("  - M-R curve: generated for GR and RFG-anisotropic toy branches.")
+    print("  - M-R curve: generated for GR and RG-anisotropic toy branches.")
     print("  - Delta p effect: quantified by eta_delta branch comparison.")
     print("  - Full EOS/Love-number/Bayesian fit: still open.")
 
@@ -1823,7 +1823,7 @@ def compact_central_claim_gate():
     signature = compact_signature_bridge()
     scalar_probe = stage_a3_scalar_perturbation_verification()
     return {
-        "file_export_status": "NOT_READY_FOR_RFG_THEORY_EXPORT",
+        "file_export_status": "NOT_READY_FOR_RG_THEORY_EXPORT",
         "signature_bridge": signature["stress_bridge_status"],
         "exterior_status": "DERIVED_FROM_VACUUM_PHASE_EQUATION_PLUS_BICONFORMAL_MAP",
         "black_hole_breaker_status": "SCHWARZSCHILD_CURVATURE_SINGULARITY_REMOVED_AT_GEOMETRY_LEVEL__GEODESIC_BOUNDARY_STILL_OPEN",
@@ -1839,10 +1839,10 @@ def compact_central_claim_gate():
             "EHT ray-traced images with mass-distance and plasma/accretion priors",
             "full coupled QNM/ringdown and echo transfer function",
             "surface/absorption luminosity for horizonless core candidates",
-            "RFG-derived neutron-star EOS/anisotropy and Love-number ODEs",
+            "RG-derived neutron-star EOS/anisotropy and Love-number ODEs",
         ],
         "do_not_claim": [
-            "do not claim a derived RFG black-hole replacement from the static ansatz alone",
+            "do not claim a derived RG black-hole replacement from the static ansatz alone",
             "do not claim geodesic completion from C2 matching alone",
             "do not claim no-horizon observational viability before QNM/echo/surface tests",
             "do not claim EHT support from the static +4.63% benchmark alone",
