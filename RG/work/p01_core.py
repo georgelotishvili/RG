@@ -2009,6 +2009,93 @@ def minimal_response_power_counting_basis_theorem():
     }
 
 
+def eft_cutoff_power_counting_ledger():
+    """
+    Reviewer-facing EFT cutoff ledger for the minimal seven-term action.
+
+    The first article uses a deliberately small response truncation.  This
+    ledger makes explicit which operators are in that truncation, which are
+    moved to the extended EFT, and how the notation relates to a cutoff scale.
+    """
+    Y, I1, I2, I3 = init_variables()
+    Lambda_EFT, M_star = sp.symbols("Lambda_EFT M_star", positive=True)
+
+    leading_channels = [Y, I1, I2, I3]
+    first_nonlinear = [Y**2, I1**2, Y * I1]
+    retained_basis = leading_channels + first_nonlinear
+    expected_excluded_degree_le_2 = [
+        Y * I2,
+        Y * I3,
+        I1 * I2,
+        I1 * I3,
+        I2**2,
+        I2 * I3,
+        I3**2,
+    ]
+    higher_response_examples = [
+        Y**3,
+        Y**2 * I1,
+        Y * I1**2,
+        I1**3,
+    ]
+    curvature_coupled_examples = [
+        "R*Y",
+        "R_{mu nu} partial^mu Phi partial^nu Phi",
+        "R_{mu nu} partial^mu phi^A partial^nu phi^A",
+    ]
+
+    basis_theorem = minimal_response_power_counting_basis_theorem()
+    excluded_set = {
+        sp.srepr(sp.expand(term))
+        for term in basis_theorem["excluded_degree_le_2_operators"]
+    }
+    expected_excluded_set = {
+        sp.srepr(sp.expand(term))
+        for term in expected_excluded_degree_le_2
+    }
+    retained_set = {sp.srepr(sp.expand(term)) for term in retained_basis}
+    admitted_set = {
+        sp.srepr(sp.expand(term))
+        for term in basis_theorem["admitted_basis"]
+    }
+
+    status = (
+        "PASS_EFT_CUTOFF_POWER_COUNTING_LEDGER"
+        if basis_theorem["status"] == "PASS_MINIMAL_RESPONSE_POWER_COUNTING_BASIS"
+        and retained_set == admitted_set
+        and excluded_set == expected_excluded_set
+        else "CHECK_EFT_CUTOFF_POWER_COUNTING_LEDGER"
+    )
+
+    return {
+        "status": status,
+        "working_cutoff": sp.Eq(Lambda_EFT, M_star),
+        "cutoff_reading": (
+            "Lambda_EFT is the working validity scale of the response EFT; "
+            "the first article sets the minimal low-energy ledger below this "
+            "scale and leaves the UV completion separate."
+        ),
+        "retained_basis": retained_basis,
+        "excluded_degree_le_2_operators": expected_excluded_degree_le_2,
+        "higher_response_examples": higher_response_examples,
+        "curvature_coupled_examples": curvature_coupled_examples,
+        "curvature_coupling_status": (
+            "not part of the minimal G2/solid truncation; such terms belong to "
+            "the extended EFT and can change higher-derivative/tensor sectors"
+        ),
+        "horndeski_sector_assumption": {
+            "G3": 0,
+            "G5": 0,
+            "validity": "minimal sub-cutoff sector only",
+        },
+        "coefficient_dimension_note": (
+            "in the article convention L=M_*^4 F the c_i are dimensionless; "
+            "if L is written directly as an energy density, the corresponding "
+            "physical coefficients carry the density dimension"
+        ),
+    }
+
+
 def covariance_and_spontaneous_breaking_gate():
     """
     Diffeomorphism covariance and solid/supersolid background status.
@@ -2060,6 +2147,7 @@ def article_core_theorem():
     L_poly = get_polynomial_lagrangian(Y, I1, I2, I3)
     basis_theorem = minimal_action_basis_theorem()
     power_counting_basis = minimal_response_power_counting_basis_theorem()
+    eft_power_counting = eft_cutoff_power_counting_ledger()
     symmetry_gate = covariance_and_spontaneous_breaking_gate()
     K_Phi_c, K_pi_c = analyze_lorentz_constrained_stability()
     horndeski_map = rg_to_horndeski()
@@ -2086,6 +2174,7 @@ def article_core_theorem():
         "polynomial_lagrangian": L_poly,
         "minimal_action_basis": basis_theorem,
         "minimal_response_power_counting_basis": power_counting_basis,
+        "eft_cutoff_power_counting": eft_power_counting,
         "covariance_and_spontaneous_breaking": symmetry_gate,
         "sign_bridge": {
             "Y_to_X": horndeski_map["Y_to_X"],
@@ -2128,6 +2217,7 @@ def article_core_theorem():
             "action": "CLOSED_MINIMAL_POLYNOMIAL",
             "sign_convention": "CLOSED_Y_TO_X_BRIDGE",
             "no_ghost": "NECESSARY_LOCAL_WINDOW",
+            "eft_cutoff_power_counting": eft_power_counting["status"],
             "mixed_modes": "LOCAL_PRINCIPAL_SYMBOL_CRITERIA_AVAILABLE",
             "global_stability": "SEPARATE_PROOF_TARGET",
             "dof_count": "CANDIDATE_LEDGER_ONLY",

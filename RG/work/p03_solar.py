@@ -554,6 +554,7 @@ def solar_ansatz_scope_table():
     same exterior solution.
     """
     U, u, gamma, beta, b2 = sp.symbols("U u gamma beta b_2", real=True)
+    r_iso, r_area, r_g = sp.symbols("r_iso r_area r_g", positive=True)
     A_area = "Schwarzschild-like areal radial coefficient, expanded through 1PN"
     B_area = "Schwarzschild-like time coefficient, expanded through 1PN"
     A_iso = 1 - 2 * u + 2 * beta * u**2
@@ -561,6 +562,7 @@ def solar_ansatz_scope_table():
     A_completion = 1 + 2 * U + 4 * U**2
     B_completion = 1 - 2 * U
 
+    A_t, B_r = sp.symbols("A_t B_r", positive=True)
     static_spherical_invariants = {
         "B_AB_eigenvalues": [sp.Symbol("A") ** -1, 1, 1],
         "I1": 2 + sp.Symbol("A") ** -1,
@@ -568,27 +570,63 @@ def solar_ansatz_scope_table():
         "I3": sp.Symbol("A") ** -1,
         "Y": sp.Symbol("B") ** -1,
     }
+    isotropic_invariants = {
+        "B_AB_eigenvalues": [B_r**-1, B_r**-1, B_r**-1],
+        "I1": 3 / B_r,
+        "I2": 3 / B_r**2,
+        "I3": 1 / B_r**3,
+        "Y": 1 / A_t,
+    }
+    A_iso_gr = (1 - u / 2) ** 2 / (1 + u / 2) ** 2
+    B_iso_gr = (1 + u / 2) ** 4
+    n_iso_gr = sp.series(sp.sqrt(B_iso_gr / A_iso_gr), u, 0, 3).removeO()
+    q_gr_check = sp.expand(n_iso_gr).coeff(u, 2)
+    coordinate_ledger_status = (
+        "PASS_SOLAR_ANSATZ_COORDINATE_LEDGER"
+        if q_gr_check == sp.Rational(7, 4)
+        and isotropic_invariants["I1"] == 3 / B_r
+        else "CHECK_SOLAR_ANSATZ_COORDINATE_LEDGER"
+    )
 
     return {
         "status": "PASS_SOLAR_ANSATZ_SCOPE_TABLE",
+        "coordinate_ledger_status": coordinate_ledger_status,
         "static_spherical_invariant_derivation": static_spherical_invariants,
+        "isotropic_invariant_derivation": isotropic_invariants,
+        "area_to_isotropic_schwarzschild_map": {
+            "radius_map": sp.Eq(r_area, r_iso * (1 + r_g / (2 * r_iso)) ** 2),
+            "A_iso_GR": A_iso_gr,
+            "B_iso_GR": B_iso_gr,
+            "n_iso_GR_series": n_iso_gr,
+            "q_GR_check": q_gr_check,
+        },
         "rows": [
             {
                 "ansatz": "areal-radius PN",
+                "coordinate": "areal radius / Schwarzschild-like",
                 "A_r": A_area,
                 "B_t": B_area,
+                "solid_eigenvalues": static_spherical_invariants[
+                    "B_AB_eigenvalues"
+                ],
                 "scope": "minimal 7-coefficient truncation, 1PN stress closure",
             },
             {
                 "ansatz": "isotropic 2PN",
+                "coordinate": "isotropic radius",
                 "A_r": A_iso,
                 "B_t": B_iso,
+                "solid_eigenvalues": isotropic_invariants["B_AB_eigenvalues"],
                 "scope": "minimal isotropic closure and b2/q_2PN derivation",
             },
             {
                 "ansatz": "S=6 completion 1PN",
+                "coordinate": "areal radius / completion branch",
                 "A_r": A_completion,
                 "B_t": B_completion,
+                "solid_eigenvalues": static_spherical_invariants[
+                    "B_AB_eigenvalues"
+                ],
                 "scope": "completion branch showing LCDM plus Solar 1PN closure",
             },
         ],
@@ -600,9 +638,9 @@ def solar_ansatz_scope_table():
     }
 
 
-def q2pn_cassini_scale_estimate(q_rg=sp.Integer(10), b_over_r_sun=1.0):
+def q2pn_cassini_scale_estimate(q_rg=sp.Integer(10), b_over_r_sun=1.6):
     """
-    Numerical scale of the q_2PN=10 branch near the solar limb.
+    Numerical scale of the q_2PN=10 branch near the Cassini reference geometry.
 
     This is not a Cassini likelihood and not a formal exclusion.  It converts
     the minimal isotropic 2PN branch into the size of the local optical-index
@@ -634,6 +672,7 @@ def q2pn_cassini_scale_estimate(q_rg=sp.Integer(10), b_over_r_sun=1.0):
         "Delta_q": delta_q,
         "solar_limb_u": u_limb,
         "b_over_R_sun": b_over_r_sun,
+        "reference_geometry": "Cassini solar-conjunction proxy b/R_sun ~= 1.6",
         "local_equivalent_gamma_minus_1_proxy": local_equiv_delta_gamma,
         "local_relative_to_1PN_index": local_relative_to_1pn_index,
         "one_way_extra_2PN_delay_seconds": extra_delay_s,
@@ -771,6 +810,10 @@ def cassini_2pn_tracking_proxy_theorem(
     q_gr = sp.Rational(7, 4)
     q_rg_value = sp.sympify(q_rg)
     delta_q = float(q_rg_value - q_gr)
+    q_sym, q_gr_sym, r_g_sym, b_sym, sigma_sym = sp.symbols(
+        "q q_GR r_g b sigma_Cassini",
+        positive=True,
+    )
 
     rg_sun_m = 1.4766250385e3
     r_sun_m = 6.957e8
@@ -813,6 +856,7 @@ def cassini_2pn_tracking_proxy_theorem(
     cassini_sigma = 2.3e-5
     conservative_bound = abs(cassini_central) + cassini_sigma
     sigma_distance = abs(doppler_equivalent_gamma - cassini_central) / cassini_sigma
+    chi2_proxy_value = sigma_distance**2
 
     gamma_per_delta_q = rg_sun_m * d_integral_db / d_log_db
     q_interval_1sigma = (
@@ -841,8 +885,23 @@ def cassini_2pn_tracking_proxy_theorem(
         "q_RG": q_rg_value,
         "q_GR": q_gr,
         "Delta_q": sp.simplify(q_rg_value - q_gr),
+        "compressed_proxy_formula": {
+            "local_Delta_gamma_eff": sp.Eq(
+                sp.Symbol("Delta_gamma_eff"),
+                (q_sym - q_gr_sym) * r_g_sym / b_sym,
+            ),
+            "local_chi2_proxy": sp.Eq(
+                sp.Symbol("chi2_proxy"),
+                ((q_sym - q_gr_sym) * r_g_sym / (b_sym * sigma_sym)) ** 2,
+            ),
+            "finite_endpoint_Doppler_reading": (
+                "Delta gamma_Doppler=(q-q_GR)*r_g*(dI_2PN/db)/(dlog_1PN/db); "
+                "chi2_proxy=(Delta gamma_Doppler-gamma_Cassini)^2/sigma^2"
+            ),
+        },
         "geometry": {
             "b_over_R_sun": b_over_r_sun,
+            "reference": "Cassini solar-conjunction proxy b/R_sun ~= 1.6",
             "r_earth_AU": r_earth_au,
             "r_spacecraft_AU": r_spacecraft_au,
             "endpoint_angle_rad": endpoint_angle,
@@ -860,6 +919,7 @@ def cassini_2pn_tracking_proxy_theorem(
         "cassini_gamma_minus_1_central": cassini_central,
         "cassini_gamma_sigma": cassini_sigma,
         "sigma_distance_from_central": sigma_distance,
+        "chi2_proxy_from_central": chi2_proxy_value,
         "q_interval_1sigma_from_proxy": q_interval_1sigma,
         "q_interval_conservative_from_proxy": q_interval_conservative,
         "q_passes_1sigma_proxy": q_passes_1sigma,
@@ -902,6 +962,15 @@ def q2pn_observational_table(
         rows.append(
             {
                 "b_over_R_sun": b_scale,
+                "geometry_role": (
+                    "Cassini reference geometry"
+                    if abs(b_scale - 1.6) < 1.0e-12
+                    else (
+                        "solar-limb grazing scale"
+                        if abs(b_scale - 1.0) < 1.0e-12
+                        else "impact-parameter scan"
+                    )
+                ),
                 "u": u,
                 "Delta_gamma_eff_proxy": delta_q * u,
                 "one_way_extra_delay_s": one_way_delay_s,
@@ -1026,6 +1095,86 @@ def standard_ppn_alpha_i_export_table():
         "scope": (
             "standard PPN alpha_i export after the minimal moving-source RG "
             "vector-source check; full solar-system likelihood remains separate"
+        ),
+    }
+
+
+def standard_ppn_status_ledger():
+    """
+    Full standard-PPN parameter status ledger for the first article.
+
+    This is not a new fit.  It records which PPN entries are already derived in
+    the active weak-field files and which entries are formal export tasks for a
+    complete standard-PPN table.
+    """
+    one_pn = solar_1pn_closure_branch()
+    alpha_export = standard_ppn_alpha_i_export_table()
+    matcher = standard_ppn_alpha_i_matcher()
+
+    rows = [
+        {
+            "parameter": "gamma",
+            "RG_value_or_condition": sp.Integer(1),
+            "status": "DERIVED_STATIC_SPHERICAL_1PN_BRANCH",
+            "support": one_pn["status"],
+        },
+        {
+            "parameter": "beta",
+            "RG_value_or_condition": sp.Integer(1),
+            "status": "DERIVED_STATIC_SPHERICAL_1PN_BRANCH",
+            "support": one_pn["status"],
+        },
+    ]
+    rows.extend(
+        {
+            "parameter": row["parameter"],
+            "RG_value_or_condition": row["RG_minimal_value"],
+            "status": "DERIVED_MOVING_SOURCE_VECTOR_CHAIN",
+            "support": alpha_export["status"],
+        }
+        for row in alpha_export["rows"]
+    )
+    rows.extend(
+        [
+            {
+                "parameter": "xi",
+                "RG_value_or_condition": "conservative one-metric target xi=0",
+                "status": "STANDARD_PPN_EXPORT_TASK",
+                "support": matcher["remaining_non_alpha_condition"],
+            },
+            {
+                "parameter": "zeta_1",
+                "RG_value_or_condition": matcher["remaining_non_alpha_condition"],
+                "status": "STANDARD_PPN_EXPORT_TASK",
+                "support": "requires full matter-potential matching",
+            },
+            {
+                "parameter": "zeta_2,zeta_3,zeta_4",
+                "RG_value_or_condition": "minimal covariant matter sector target 0",
+                "status": "STANDARD_PPN_EXPORT_TASK",
+                "support": "requires full matter-potential matching",
+            },
+        ]
+    )
+
+    status = (
+        "PASS_STANDARD_PPN_STATUS_LEDGER"
+        if one_pn["status"] == "NONTRIVIAL_1PN_STRESS_CLOSURE_BRANCH"
+        and alpha_export["status"] == "PASS_STANDARD_PPN_ALPHA_I_EXPORT_TABLE"
+        and {row["parameter"] for row in rows}
+        >= {"gamma", "beta", "alpha_1", "alpha_2", "alpha_3", "xi"}
+        else "CHECK_STANDARD_PPN_STATUS_LEDGER"
+    )
+
+    return {
+        "status": status,
+        "rows": rows,
+        "derived_now": ["gamma", "beta", "alpha_1", "alpha_2", "alpha_3"],
+        "standard_ppn_export_tasks": ["xi", "zeta_1", "zeta_2", "zeta_3", "zeta_4"],
+        "article_rule": (
+            "state the closed gamma,beta,alpha_i results and keep xi/zeta as "
+            "formal standard-PPN export rows until the full matter-potential "
+            "matching is written"
         ),
     }
 
@@ -2169,6 +2318,7 @@ def article_solar_theorem():
     rg_vector_source = moving_source_rg_vector_source_theorem()
     alpha_i_chain = preferred_frame_alpha_i_closure_chain()
     alpha_i_export = standard_ppn_alpha_i_export_table()
+    ppn_status_ledger = standard_ppn_status_ledger()
     alpha_i_appendix = preferred_frame_alpha_i_appendix_payload()
     frame_dragging_chain = frame_dragging_minimal_1p5pn_chain()
     shapiro_2pn = calculate_shapiro_2pn_discriminator()
@@ -2209,6 +2359,7 @@ def article_solar_theorem():
         "moving_source_rg_vector_source": rg_vector_source,
         "preferred_frame_alpha_i_closure_chain": alpha_i_chain,
         "standard_ppn_alpha_i_export_table": alpha_i_export,
+        "standard_ppn_status_ledger": ppn_status_ledger,
         "preferred_frame_alpha_i_appendix_payload": alpha_i_appendix,
         "frame_dragging_minimal_1p5pn_chain": frame_dragging_chain,
         "two_pn_discriminator": {
@@ -2303,6 +2454,7 @@ def article_solar_theorem():
             "moving_source_rg_vector_source": rg_vector_source["status"],
             "preferred_frame_alpha_i_closure_chain": alpha_i_chain["status"],
             "standard_ppn_alpha_i_export_table": alpha_i_export["status"],
+            "standard_ppn_status_ledger": ppn_status_ledger["status"],
             "preferred_frame_alpha_i_appendix_payload": alpha_i_appendix["status"],
             "rotating_sources": frame_dragging_chain["status"],
         },

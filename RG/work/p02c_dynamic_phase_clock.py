@@ -446,6 +446,71 @@ def compressed_lcdm_background_residual_check():
     }
 
 
+def completion_origin_and_operator_audit():
+    """
+    Algebraic origin of the S=6 completion and its operator content.
+
+    On the normalized unit background Y=1, B^{AB}=delta^{AB}, the solid
+    invariants are I1=3 and I3=1.  Therefore S=Y+2*I1-I3 has background value
+    6.  Expanding (S-6)^2 also records which terms lie outside the minimal
+    seven-term p01 response basis.
+    """
+    Y, I1, I3 = sp.symbols("Y I1 I3", real=True)
+    lambda_S, M_star = sp.symbols("lambda_S M_star", positive=True)
+
+    S = Y + 2 * I1 - I3
+    unit_background = {Y: 1, I1: 3, I3: 1}
+    S0 = sp.simplify(S.subs(unit_background))
+    expanded_square = sp.expand((S - S0) ** 2)
+    expected_square = sp.expand(
+        Y**2
+        + 4 * Y * I1
+        - 2 * Y * I3
+        + 4 * I1**2
+        - 4 * I1 * I3
+        + I3**2
+        - 12 * Y
+        - 24 * I1
+        + 12 * I3
+        + 36
+    )
+    outside_minimal_basis_terms = [Y * I3, I1 * I3, I3**2]
+    outside_coefficients = {
+        "Y*I3": sp.expand(expanded_square).coeff(Y, 1).coeff(I3, 1),
+        "I1*I3": sp.expand(expanded_square).coeff(I1, 1).coeff(I3, 1),
+        "I3^2": sp.expand(expanded_square).coeff(I3, 2),
+    }
+
+    status = (
+        "PASS_S6_ORIGIN_AND_OPERATOR_EXPANSION_AUDIT"
+        if S0 == 6
+        and sp.simplify(expanded_square - expected_square) == 0
+        and outside_coefficients == {"Y*I3": -2, "I1*I3": -4, "I3^2": 1}
+        else "CHECK_S6_ORIGIN_AND_OPERATOR_EXPANSION_AUDIT"
+    )
+
+    return {
+        "status": status,
+        "S_definition": sp.Eq(sp.Symbol("S"), S),
+        "unit_background_values": {
+            "Y0": unit_background[Y],
+            "I1_0": unit_background[I1],
+            "I3_0": unit_background[I3],
+        },
+        "S0_from_unit_background": S0,
+        "expanded_completion_square": expanded_square,
+        "expected_completion_square": expected_square,
+        "outside_minimal_basis_terms": outside_minimal_basis_terms,
+        "outside_minimal_basis_coefficients": outside_coefficients,
+        "lambda_S_dimension_note": (
+            "in L=M_*^4 F, lambda_S is dimensionless and M_*^4*lambda_S "
+            "is the physical density coefficient; if L is written directly as "
+            "a density, lambda_S carries density dimension"
+        ),
+        "example_scaled_completion": M_star**4 * lambda_S * (S - S0) ** 2,
+    }
+
+
 def global_lcdm_solar_completion_theorem():
     """
     Common late-cosmology and Solar-1PN completion branch.
@@ -593,6 +658,7 @@ def global_lcdm_solar_completion_theorem():
         "branch_condition": sp.Eq(sp.Symbol("S"), S0),
         "L_completion": L_completion,
         "L_extended_completion": L_extended_completion,
+        "origin_and_operator_audit": completion_origin_and_operator_audit(),
         "cosmology": cosmology,
         "solar_1PN_with_Lambda_stress": solar,
         "kinetic_completion": kinetic,
@@ -888,6 +954,57 @@ def completion_q2pn_scope_gate():
     }
 
 
+def clock_completion_roadmap_gate():
+    """
+    Separate the minimal dynamic clock branch from the S=6 completion branch.
+
+    Both use a phase clock, but they are different EFT scenarios.  The minimal
+    branch solves the p01 seven-term current equation.  The S=6 completion adds
+    extended operators and solves a different current whose contribution
+    vanishes on S=6.
+    """
+    a = sp.Symbol("a", positive=True)
+    c_Y, c_Y2, c_YI1 = sp.symbols("c_Y c_Y2 c_YI1", real=True)
+
+    minimal_zero_current_u2 = sp.simplify(
+        -(c_Y + 3 * c_YI1 / a**2) / (2 * c_Y2)
+    )
+    completion_s6_u2 = sp.simplify(6 - 6 / a**2 + a**-6)
+    generic_difference = sp.simplify(minimal_zero_current_u2 - completion_s6_u2)
+    tuned_solution = sp.solve(
+        sp.Poly(sp.together(generic_difference * 2 * c_Y2 * a**6), a).coeffs(),
+        [c_Y, c_YI1, c_Y2],
+        dict=True,
+    )
+
+    status = (
+        "PASS_CLOCK_COMPLETION_BRANCH_ROADMAP"
+        if generic_difference != 0
+        and completion_phase_current_theorem()["status"]
+        == "PASS_COMPLETION_PHASE_CURRENT_VANISHES_ON_S6_BRANCH"
+        else "CHECK_CLOCK_COMPLETION_BRANCH_ROADMAP"
+    )
+
+    return {
+        "status": status,
+        "minimal_dynamic_clock_branch": sp.Eq(
+            sp.Symbol("u_minimal") ** 2,
+            minimal_zero_current_u2,
+        ),
+        "S6_completion_branch": sp.Eq(
+            sp.Symbol("u_S6") ** 2,
+            completion_s6_u2,
+        ),
+        "generic_difference": generic_difference,
+        "constant_coefficient_tuning_attempt": tuned_solution,
+        "branch_reading": (
+            "the minimal seven-term dynamic clock is the economical background "
+            "candidate; the S=6/Z sector is an extended completion branch that "
+            "closes exact LCDM plus Solar 1PN at background level"
+        ),
+    }
+
+
 def early_scaling_after_zero_current():
     """
     Show that substituting the dynamic branch reshuffles early powers.
@@ -995,10 +1112,12 @@ def article_dynamic_phase_clock_theorem():
     exact_lcdm = exact_lcdm_zero_current_background_theorem()
     lcdm_residuals = compressed_lcdm_background_residual_check()
     global_completion = global_lcdm_solar_completion_theorem()
+    completion_origin_audit = completion_origin_and_operator_audit()
     completion_perturbations = completion_branch_local_perturbation_theorem()
     z_sign_audit = completion_z_sign_and_degeneracy_audit()
     completion_current = completion_phase_current_theorem()
     completion_q2pn_scope = completion_q2pn_scope_gate()
+    clock_completion_roadmap = clock_completion_roadmap_gate()
     early = early_scaling_after_zero_current()
 
     return {
@@ -1029,10 +1148,12 @@ def article_dynamic_phase_clock_theorem():
         "exact_lcdm_background_branch": exact_lcdm,
         "compressed_lcdm_background_residual_check": lcdm_residuals,
         "global_lcdm_solar_completion": global_completion,
+        "completion_origin_and_operator_audit": completion_origin_audit,
         "completion_branch_local_perturbations": completion_perturbations,
         "completion_z_sign_and_degeneracy_audit": z_sign_audit,
         "completion_phase_current": completion_current,
         "completion_q2pn_scope": completion_q2pn_scope,
+        "clock_completion_roadmap": clock_completion_roadmap,
         "background_observables": {
             "status": observables["status"],
             "rho_RG": observables["rho_RG"],
@@ -1055,10 +1176,12 @@ def article_dynamic_phase_clock_theorem():
             "background_lcdm_closure": exact_lcdm["status"],
             "compressed_background_residuals": lcdm_residuals["status"],
             "global_lcdm_solar_completion": global_completion["status"],
+            "completion_origin_and_operator_audit": completion_origin_audit["status"],
             "completion_local_perturbations": completion_perturbations["status"],
             "completion_z_sign_and_degeneracy": z_sign_audit["status"],
             "completion_phase_current": completion_current["status"],
             "completion_q2pn_scope": completion_q2pn_scope["status"],
+            "clock_completion_roadmap": clock_completion_roadmap["status"],
             "observational_fit": (
                 "GLOBAL_BACKGROUND_1PN_COMPLETION_CLOSED__LIKELIHOOD_REQUIRED"
             ),
