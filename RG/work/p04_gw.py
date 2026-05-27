@@ -145,6 +145,65 @@ def tensor_mass_term_gate():
     }
 
 
+def local_minkowski_tensor_dispersion_theorem():
+    """
+    Local weak-field TT dispersion on the Solar 1PN branch.
+
+    This is the part needed for local GW propagation near asymptotically flat
+    sources: alpha_T=0, no solid TT kinetic/gradient correction, and the raw
+    TT h^2 mass coefficient vanishes at a=1 on the p03 Solar branch.
+    """
+    coeff_h_dot2, coeff_h_z2, mass_term_flrw = analyze_gw_full()
+    speed = analyze_horndeski_luminal_speed()
+    a = sp.Symbol('a', real=True, positive=True)
+    c_Y, c_Y2, c_I1, c_I1sq, c_I2, c_I3, c_YI1 = sp.symbols(
+        'c_Y c_Y2 c_I1 c_I1sq c_I2 c_I3 c_YI1',
+        real=True,
+    )
+    p03_1pn_branch = {
+        c_I1: 4 * c_Y2 + 2 * c_YI1,
+        c_I1sq: c_Y2,
+        c_I2: -10 * c_Y2 - 3 * c_YI1,
+        c_I3: 8 * c_Y2 + 4 * c_YI1,
+        c_Y: -4 * c_Y2 - 2 * c_YI1,
+    }
+    local_mass = sp.simplify(mass_term_flrw.subs(p03_1pn_branch).subs(a, 1))
+    omega, k, c = sp.symbols('omega k c', real=True)
+    dispersion_residual = sp.simplify(omega**2 - c**2 * k**2)
+    rg_correction_residual = sp.simplify(
+        coeff_h_dot2 + coeff_h_z2 + local_mass + speed["alpha_T"].rhs
+    )
+
+    status = (
+        "PASS_LOCAL_MINKOWSKI_TT_DISPERSION_MASSLESS"
+        if coeff_h_dot2 == 0
+        and coeff_h_z2 == 0
+        and local_mass == 0
+        and speed["alpha_T"].rhs == 0
+        else "CHECK_LOCAL_MINKOWSKI_TT_DISPERSION"
+    )
+
+    return {
+        "status": status,
+        "solid_TT_h_dot2_correction": coeff_h_dot2,
+        "solid_TT_h_z2_correction": coeff_h_z2,
+        "raw_FLRW_h2_mass": mass_term_flrw,
+        "local_Minkowski_mass_on_Solar_1PN_branch": local_mass,
+        "alpha_T": speed["alpha_T"],
+        "dispersion_relation": sp.Eq(omega**2, c**2 * k**2),
+        "GR_form_residual": dispersion_residual,
+        "RG_correction_residual": rg_correction_residual,
+        "closed_here": (
+            "local asymptotically-flat TT propagation is massless and luminal "
+            "on the Solar 1PN branch"
+        ),
+        "not_closed_here": (
+            "FLRW all-a tensor mass, source flux normalization, and catalog "
+            "waveform likelihood are separate gates"
+        ),
+    }
+
+
 def tensor_speed_scope_gate():
     coeff_h_dot2, coeff_h_z2, _ = analyze_gw_full()
     return {
@@ -1592,6 +1651,7 @@ def article_gw_theorem():
     algebra = tensor_speed_algebra_theorem()
     scope = tensor_speed_scope_gate()
     mass_gate = tensor_mass_term_gate()
+    local_dispersion = local_minkowski_tensor_dispersion_theorem()
     detector = step4c_detector_response_claim_gate()
 
     return {
@@ -1608,12 +1668,14 @@ def article_gw_theorem():
             "solid_TT_h_z2_correction": algebra["solid_TT_h_z2_correction"],
         },
         "solid_TT_scope": scope["closed"],
+        "local_minkowski_tensor_dispersion": local_dispersion,
         "detector_response": {
             "status": detector["status"],
             "article_reading": detector["what_is_measured"],
         },
         "separate_gates": {
-            "massive_dispersion": mass_gate["status"],
+            "massive_dispersion": local_dispersion["status"],
+            "FLRW_mass_gate": mass_gate["status"],
             "waveform": "CATALOG_LEVEL_FIT_REQUIRED",
             "polarization": "LVK_POLARIZATION_POSTERIOR_REQUIRED",
             "binary_pulsar": "TENSOR_FLUX_AND_DIPOLE_NORMALIZATION_REQUIRED",
@@ -1621,6 +1683,7 @@ def article_gw_theorem():
         "article_status": {
             "alpha_T": "CLOSED_ZERO",
             "c_g": "CLOSED_LUMINAL_IN_MINIMAL_BRANCH",
+            "local_TT_dispersion": local_dispersion["status"],
             "full_waveform": "SEPARATE_GATE",
             "extra_polarizations": "SEPARATE_GATE",
         },

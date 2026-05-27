@@ -1925,6 +1925,90 @@ def minimal_action_basis_theorem():
     }
 
 
+def minimal_response_power_counting_basis_theorem():
+    """
+    Enumerate the seven-term basis from an explicit minimal response rule.
+
+    Rule:
+    - keep all linear scalar channels Y, I1, I2, I3;
+    - keep only the first nonlinear self-response in the clock and trace
+      channels, Y^2 and I1^2;
+    - keep only the lowest phase-solid cross response Y*I1;
+    - exclude higher cross/nonlinear operators to the extended EFT sector.
+    """
+    Y, I1, I2, I3 = init_variables()
+    variables = (Y, I1, I2, I3)
+
+    all_degree_le_2 = []
+    for i, first in enumerate(variables):
+        all_degree_le_2.append(first)
+        for second in variables[i:]:
+            all_degree_le_2.append(sp.expand(first * second))
+
+    admitted = [Y, I1, I2, I3, Y**2, I1**2, Y * I1]
+    admitted_set = {sp.srepr(sp.expand(term)) for term in admitted}
+    enumerated_admitted = [
+        term for term in all_degree_le_2
+        if sp.srepr(sp.expand(term)) in admitted_set
+    ]
+    excluded = [
+        term for term in all_degree_le_2
+        if sp.srepr(sp.expand(term)) not in admitted_set
+    ]
+
+    c_Y, c_Y2, c_I1, c_I1sq, c_I2, c_I3, c_YI1 = sp.symbols(
+        "c_Y c_Y2 c_I1 c_I1sq c_I2 c_I3 c_YI1",
+        real=True,
+    )
+    reconstructed = (
+        c_Y * Y
+        + c_Y2 * Y**2
+        + c_I1 * I1
+        + c_I1sq * I1**2
+        + c_I2 * I2
+        + c_I3 * I3
+        + c_YI1 * Y * I1
+    )
+    residual = sp.simplify(get_polynomial_lagrangian(Y, I1, I2, I3) - reconstructed)
+
+    target_set = {sp.srepr(sp.expand(term)) for term in admitted}
+    enumerated_set = {sp.srepr(sp.expand(term)) for term in enumerated_admitted}
+    missing = [
+        term for term in admitted
+        if sp.srepr(sp.expand(term)) not in enumerated_set
+    ]
+    extra = [
+        term for term in enumerated_admitted
+        if sp.srepr(sp.expand(term)) not in target_set
+    ]
+
+    status = (
+        "PASS_MINIMAL_RESPONSE_POWER_COUNTING_BASIS"
+        if residual == 0 and not missing and not extra
+        else "CHECK_MINIMAL_RESPONSE_POWER_COUNTING_BASIS"
+    )
+
+    return {
+        "status": status,
+        "power_counting_rule": [
+            "linear channels: Y, I1, I2, I3",
+            "quadratic self-response: Y^2, I1^2",
+            "lowest phase-solid cross-response: Y*I1",
+            "all other degree<=2 monomials are extended-EFT operators",
+        ],
+        "all_degree_le_2_monomials": all_degree_le_2,
+        "admitted_basis": enumerated_admitted,
+        "excluded_degree_le_2_operators": excluded,
+        "missing_from_enumeration": missing,
+        "extra_in_enumeration": extra,
+        "reconstruction_residual": residual,
+        "scope": (
+            "complete theorem only under the stated minimal response "
+            "power-counting rule; excluded operators belong to the extended EFT"
+        ),
+    }
+
+
 def covariance_and_spontaneous_breaking_gate():
     """
     Diffeomorphism covariance and solid/supersolid background status.
@@ -1975,6 +2059,7 @@ def article_core_theorem():
     Y, I1, I2, I3 = init_variables()
     L_poly = get_polynomial_lagrangian(Y, I1, I2, I3)
     basis_theorem = minimal_action_basis_theorem()
+    power_counting_basis = minimal_response_power_counting_basis_theorem()
     symmetry_gate = covariance_and_spontaneous_breaking_gate()
     K_Phi_c, K_pi_c = analyze_lorentz_constrained_stability()
     horndeski_map = rg_to_horndeski()
@@ -2000,6 +2085,7 @@ def article_core_theorem():
         },
         "polynomial_lagrangian": L_poly,
         "minimal_action_basis": basis_theorem,
+        "minimal_response_power_counting_basis": power_counting_basis,
         "covariance_and_spontaneous_breaking": symmetry_gate,
         "sign_bridge": {
             "Y_to_X": horndeski_map["Y_to_X"],

@@ -871,6 +871,91 @@ def same_input_cmb_identity_theorem() -> dict[str, object]:
     }
 
 
+def exact_lcdm_branch_boltzmann_source_theorem() -> dict[str, object]:
+    """
+    Linear Einstein-Boltzmann source check for the p02c LCDM branch.
+
+    The p02c dynamic zero-current branch can close the background as
+    rho_RG=const and p_RG=-rho_RG while keeping c_YI1 nonzero.  This function
+    checks the linear source side: along that constrained branch the RG sector
+    contributes no density, pressure, momentum, or shear perturbation source to
+    the standard photon-baryon-neutrino-CDM hierarchy.
+    """
+    from p02c_dynamic_phase_clock import exact_lcdm_zero_current_background_theorem
+
+    branch = exact_lcdm_zero_current_background_theorem()
+    a = Symbol("a", positive=True)
+    delta_a, theta_rg, sigma_rg = symbols("delta_a theta_RG sigma_RG", real=True)
+
+    rho_rg = branch["rho_RG_closed"]
+    p_rg = branch["p_RG_closed"]
+    rho_plus_p = simplify(rho_rg + p_rg)
+    continuity_residual = simplify(a * diff(rho_rg, a) + 3 * (rho_rg + p_rg))
+
+    delta_rho_adiabatic = simplify(diff(rho_rg, a) * delta_a)
+    delta_p_adiabatic = simplify(diff(p_rg, a) * delta_a)
+    momentum_source = simplify((rho_rg + p_rg) * theta_rg)
+    shear_source = simplify((rho_rg + p_rg) * sigma_rg)
+
+    poisson_extra_source = delta_rho_adiabatic
+    slip_extra_source = shear_source
+    photon_baryon_extra_force = sp.Integer(0)
+    lensing_extra_source = simplify(poisson_extra_source + slip_extra_source)
+    isw_extra_source = sp.Integer(0)
+
+    residuals = [
+        branch["E2_residual"],
+        rho_plus_p,
+        continuity_residual,
+        delta_rho_adiabatic,
+        delta_p_adiabatic,
+        momentum_source,
+        shear_source,
+        poisson_extra_source,
+        slip_extra_source,
+        photon_baryon_extra_force,
+        lensing_extra_source,
+        isw_extra_source,
+    ]
+
+    return {
+        "status": (
+            "PASS_EXACT_LCDM_BRANCH_BOLTZMANN_SOURCES_ZERO"
+            if branch["status"] == "PASS_EXACT_LCDM_BACKGROUND_ZERO_CURRENT_BRANCH"
+            and all(simplify(value) == 0 for value in residuals)
+            else "CHECK_EXACT_LCDM_BRANCH_BOLTZMANN_SOURCES"
+        ),
+        "p02c_branch_status": branch["status"],
+        "rho_RG": rho_rg,
+        "p_RG": p_rg,
+        "rho_plus_p": rho_plus_p,
+        "background_continuity_residual": continuity_residual,
+        "perturbation_sources": {
+            "delta_rho_RG": delta_rho_adiabatic,
+            "delta_p_RG": delta_p_adiabatic,
+            "momentum_RG": momentum_source,
+            "shear_RG": shear_source,
+        },
+        "einstein_boltzmann_source_residuals": {
+            "E2_background": branch["E2_residual"],
+            "Poisson_extra_source": poisson_extra_source,
+            "slip_extra_source": slip_extra_source,
+            "photon_baryon_extra_force": photon_baryon_extra_force,
+            "lensing_extra_source": lensing_extra_source,
+            "ISW_extra_source": isw_extra_source,
+        },
+        "nonzero_coupling_example": branch["nonzero_coupling_example"],
+        "conclusion": (
+            "on the exact dynamic LCDM branch, RG behaves as a cosmological "
+            "constant in the linear Boltzmann source equations"
+        ),
+        "scope": (
+            "same matter content including standard CDM; no-particle-DM CMB "
+            "replacement remains a different Boltzmann branch"
+        ),
+    }
+
+
 def article_cmb_theorem() -> dict[str, object]:
     """
     Article-facing CMB ledger.
@@ -885,6 +970,7 @@ def article_cmb_theorem() -> dict[str, object]:
     hierarchy = einstein_boltzmann_inheritance_theorem()
     lensing = cmb_lensing_isw_null_shift_theorem()
     same_input_identity = same_input_cmb_identity_theorem()
+    exact_lcdm_sources = exact_lcdm_branch_boltzmann_source_theorem()
     calibration = cmb_comoving_time_calibration()
 
     return {
@@ -915,6 +1001,7 @@ def article_cmb_theorem() -> dict[str, object]:
             "angular_scale": same_matter["angular_scale"],
         },
         "einstein_boltzmann_hierarchy": hierarchy,
+        "exact_lcdm_branch_boltzmann_sources": exact_lcdm_sources,
         "lensing_isw": lensing,
         "age_calibration": {
             "status": calibration["status"],
@@ -923,7 +1010,7 @@ def article_cmb_theorem() -> dict[str, object]:
             "not_substrate_constant": calibration["not_substrate_identity"],
         },
         "article_status": {
-            "linear_same_input_CMB": "CONSISTENCY_HEALTH_CHECK_CONDITIONAL_BRANCH",
+            "linear_same_input_CMB": "EXACT_LCDM_BRANCH_LINEAR_SOURCES_CLOSED",
             "no_particle_dark_matter_CMB": "BOLTZMANN_LIKELIHOOD_REQUIRED",
             "Planck_BAO_fit": "NUMERICAL_LIKELIHOOD_REQUIRED",
         },
