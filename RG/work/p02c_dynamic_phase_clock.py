@@ -608,15 +608,18 @@ def completion_branch_local_perturbation_theorem():
     Local perturbation theorem for the S/Z completion branch.
 
     Work around the normalized local background Phi=t, phi^A=x^A.  Use the
-    article Stückelberg convention phi^A=x^A+pi^A; this pi is the opposite of
-    the common solid-displacement variable sometimes written in the literature.
-    To first order,
+    article Stückelberg convention phi^A=x^A+pi^A.  Direct expansion of
+    Y, I1 and I3 gives
 
-        delta S = 2 (dot chi - div pi),
+        delta S = 2 (dot chi + div pi),
 
     while the Z invariant starts at quadratic order,
 
         Z = (dot pi_i - partial_i chi)^2.
+
+    In the scalar-longitudinal Fourier symbol we use the standard longitudinal
+    amplitude convention div(pi) -> -k*pi_L.  Therefore the same invariant
+    expansion is represented by delta S -> 2*(omega*chi - k*pi_L).
 
     Thus the scalar-longitudinal principal symbol is fixed exactly by the two
     positive coefficients lambda_S and c_Z.
@@ -627,7 +630,12 @@ def completion_branch_local_perturbation_theorem():
     pi_dot_L, grad_chi = sp.symbols("pi_dot_L grad_chi", real=True)
     pi_dot_T1, pi_dot_T2 = sp.symbols("pi_dot_T1 pi_dot_T2", real=True)
 
-    delta_S_linear = 2 * (chi_dot - theta)
+    delta_Y_linear = 2 * chi_dot
+    delta_I1_linear = 2 * theta
+    delta_I3_linear = 2 * theta
+    delta_S_linear = sp.simplify(
+        delta_Y_linear + 2 * delta_I1_linear - delta_I3_linear
+    )
     Z_quadratic = (
         (pi_dot_L - grad_chi) ** 2
         + pi_dot_T1**2
@@ -680,8 +688,13 @@ def completion_branch_local_perturbation_theorem():
 
     return {
         "status": status,
+        "stueckelberg_convention": "phi^A=x^A+pi^A",
+        "delta_Y_linear": delta_Y_linear,
+        "delta_I1_linear": delta_I1_linear,
+        "delta_I3_linear": delta_I3_linear,
         "delta_S_linear": delta_S_linear,
         "Z_quadratic": Z_quadratic,
+        "longitudinal_fourier_rule": "div(pi) -> -k*pi_L",
         "quadratic_lagrangian": L2,
         "kinetic_variables": kinetic_variables,
         "kinetic_matrix": kinetic_matrix,
@@ -711,19 +724,34 @@ def completion_z_sign_and_degeneracy_audit():
     """
     Explicit sign audit for the Z invariant and the degenerate characteristic.
 
-    The article convention is phi^A=x^A+pi^A.  A reviewer using the opposite
-    displacement phi^A=x^A-pi^A must replace pi -> -pi everywhere; otherwise
-    delta S and Z are mixed with inconsistent signs.  This function records
-    both the article convention and the opposite-displacement warning.
+    The article convention is phi^A=x^A+pi^A.  With
+    B^AB=-g^mn d_m phi^A d_n phi^B, the invariant expansion gives
+    delta I1=2 div(pi), delta I3=2 div(pi), and therefore
+    delta S=2*(dot(chi)+div(pi)).  Since the longitudinal scalar amplitude is
+    conventionally chosen with div(pi)->-k*pi_L, the principal symbol uses
+    delta S -> 2*(omega*chi-k*pi_L).  The Z invariant gives
+    (dot(pi)_i-partial_i chi)^2 in the same convention.
+
+    A reviewer using the opposite displacement phi^A=x^A-pi^A must replace
+    pi -> -pi everywhere; otherwise delta S and Z are mixed with inconsistent
+    signs.
     """
     omega, k = sp.symbols("omega k", positive=True, real=True)
     lambda_S, c_Z = sp.symbols("lambda_S c_Z", positive=True)
     chi, pi_L = sp.symbols("chi pi_L", real=True)
+    chi_dot, theta = sp.symbols("chi_dot theta", real=True)
 
+    delta_Y_linear = 2 * chi_dot
+    delta_I1_linear = 2 * theta
+    delta_I3_linear = 2 * theta
+    delta_S_linear_from_invariants = sp.simplify(
+        delta_Y_linear + 2 * delta_I1_linear - delta_I3_linear
+    )
+    delta_S_symbol = 2 * (omega * chi - k * pi_L)
     u_partial_phi_linear = "dot(pi)^A - partial^A(chi)"
     z_quadratic = "(dot(pi)_i - partial_i(chi))^2"
     L2 = sp.expand(
-        4 * lambda_S * (omega * chi - k * pi_L) ** 2
+        lambda_S * delta_S_symbol**2
         + c_Z * (omega * pi_L - k * chi) ** 2
     )
     principal_matrix = sp.Matrix(
@@ -739,7 +767,8 @@ def completion_z_sign_and_degeneracy_audit():
 
     status = (
         "PASS_Z_SIGN_AND_LUMINAL_DEGENERACY_AUDIT"
-        if sp.simplify(determinant - determinant_expected) == 0
+        if delta_S_linear_from_invariants == 2 * (chi_dot + theta)
+        and sp.simplify(determinant - determinant_expected) == 0
         and len(nullspace_plus) == 1
         and len(nullspace_minus) == 1
         else "CHECK_Z_SIGN_AND_LUMINAL_DEGENERACY_AUDIT"
@@ -747,9 +776,19 @@ def completion_z_sign_and_degeneracy_audit():
 
     return {
         "status": status,
+        "stueckelberg_convention": "phi^A=x^A+pi^A",
+        "delta_Y_linear": delta_Y_linear,
+        "delta_I1_linear": delta_I1_linear,
+        "delta_I3_linear": delta_I3_linear,
+        "delta_S_linear_from_invariants": delta_S_linear_from_invariants,
+        "longitudinal_fourier_rule": "div(pi) -> -k*pi_L",
+        "delta_S_scalar_longitudinal_symbol": delta_S_symbol,
         "u_partial_phi_linear": u_partial_phi_linear,
         "Z_quadratic": z_quadratic,
-        "opposite_displacement_rule": "if phi^A=x^A-pi^A is used, replace pi -> -pi consistently in delta S and Z",
+        "opposite_displacement_rule": (
+            "if phi^A=x^A-pi^A is used, replace pi -> -pi consistently in "
+            "delta S, Z and the longitudinal Fourier amplitude"
+        ),
         "scalar_longitudinal_L2": L2,
         "principal_matrix": principal_matrix,
         "determinant": determinant,
