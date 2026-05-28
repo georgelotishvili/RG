@@ -8,6 +8,8 @@ RG/CODES.md
 RG/Intuitive_Theory.md
 RG/RG_Theory 1.md
 RG/work/*.md
+artikle/*
+!artikle/article_ge.md
 
 # Python caches and test/build artifacts
 __pycache__/
