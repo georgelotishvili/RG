@@ -1635,11 +1635,11 @@ q_2PN = 10.
 
 ---
 
-## დანართი A. preferred-frame PPN ჯაჭვი
+## *დანართი A. preferred-frame PPN ჯაჭვი*
 
-ეს დანართი აჯამებს მინიმალურ `alpha_i=0` proof chain-ს. იგი იძლევა ალგებრულ PPN export-ს იმ პირობით, რომ Solar 1PN branch-ზე Ref-G სექტორი არ ამატებს დამოუკიდებელ vector-source-ს. raw ephemeris likelihood არის შემდეგი დაკვირვებითი fit.
+*ეს დანართი აჯამებს მინიმალურ `alpha_i=0` დამტკიცების ჯაჭვს. იგი იძლევა სტანდარტული PPN პარამეტრების ალგებრულ ექსპორტს იმ პირობით, რომ Solar 1PN განშტოებაზე Ref-G სექტორი არ წარმოქმნის დამოუკიდებელ ვექტორულ ან preferred-frame წყაროს. ეს არ არის ეფემერიდების უშუალო მონაცემებთან მორგება და არც სრული standard-PPN likelihood; raw ephemeris fit შემდგომ დაკვირვებით ეტაპად რჩება.*
 
-პირველი ნაბიჯი არის boosted ფონური სტრესის შემოწმება. მცირე boost-ის ფონზე `T_{0i}` წრფივი კოეფიციენტები შეიცავს საერთო prefactor-ს, რომელიც Solar 1PN კოეფიციენტურ branch-ზე ნულდება:
+*პირველი ნაბიჯი მცირე ბუსტით გადაყვანილი ფონური სტრესის შემოწმებაა. ამ ფონზე `T_{0i}` კომპონენტის წრფივი კოეფიციენტები შეიცავს საერთო პრეფაქტორს, რომელიც Solar 1PN კოეფიციენტურ განშტოებაზე ნულდება:*
 
 ```text
 K_pf -> 0,
@@ -1647,32 +1647,32 @@ T_{0i}^{Ref-G}[O(v_i)] -> 0,
 T_{ij}^{Ref-G}[O(v_i v_j)]_anisotropic -> 0.
 ```
 
-მეორე ნაბიჯი არის მოძრავი წყაროს vector-source. inverse-metric vector perturbation-ებით `q_{0i}=h_i` და boost-velocity-ებით `v_i` ვამოწმებთ:
+*მეორე ნაბიჯი მოძრავი წყაროს ვექტორული წევრის შემოწმებაა. შებრუნებული მეტრიკის ვექტორული პერტურბაციებით `q_{0i}=h_i` და ბუსტის სიჩქარეებით `v_i` მოწმდება Ref-G სექტორის წყარო*
 
 ```text
-dL_{Ref-G}/dq_{0i} = 0
+d L_{Ref-G}/d q_{0i} = 0.
 ```
 
-წრფივ რიგში, ანუ ორივე მატრიცა ნულდება Solar 1PN branch-ზე:
+*წრფივ რიგში ორივე მატრიცა ნულდება Solar 1PN განშტოებაზე:*
 
 ```text
-partial(dL_{Ref-G}/dq_{0i})/partial h_j -> 0,
-partial(dL_{Ref-G}/dq_{0i})/partial v_j -> 0.
+partial(d L_{Ref-G}/d q_{0i})/partial h_j -> 0,
+partial(d L_{Ref-G}/d q_{0i})/partial v_j -> 0.
 ```
 
-მესამე ნაბიჯი არის standard PPN matcher. Will-Nordtvedt ფორმაში vector და preferred-frame კოეფიციენტები იწერება:
+*მესამე ნაბიჯი standard PPN matcher-ია. Will-Nordtvedt ფორმაში ვექტორული და preferred-frame კოეფიციენტები იწერება ასე:*
 
 ```text
-V_i:       -1/2 (4 gamma + 3 + alpha_1 - alpha_2 + zeta_1 - 2 xi),
-W_i:       -1/2 (1 + alpha_2 - zeta_1 + 2 xi),
-w_i U:     -1/2 (alpha_1 - 2 alpha_2),
-w_j U_ij:  -alpha_2,
-w^2 U:     -(alpha_1 - alpha_2 - alpha_3),
-w_iw_jUij: -alpha_2,
-w_iV_i:    2 alpha_3 - alpha_1.
+V_i:        -1/2 (4 gamma + 3 + alpha_1 - alpha_2 + zeta_1 - 2 xi),
+W_i:        -1/2 (1 + alpha_2 - zeta_1 + 2 xi),
+w_i U:      -1/2 (alpha_1 - 2 alpha_2),
+w_j U_ij:   -alpha_2,
+w^2 U:      -(alpha_1 - alpha_2 - alpha_3),
+w_i w_j U_ij: -alpha_2,
+w_i V_i:    2 alpha_3 - alpha_1.
 ```
 
-Ref-G vector-source-ის არარსებობა და GR-ის vector coefficients ერთად აყენებს:
+*Ref-G ვექტორული წყაროს არარსებობა და GR-ის ვექტორული კოეფიციენტები ერთად აყენებს შემდეგ algebraic matcher-ს:*
 
 ```text
 gamma = 1,
@@ -1682,28 +1682,30 @@ alpha_3 = 0,
 zeta_1 = 2 xi.
 ```
 
-ამიტომ მინიმალურ moving-source ჯაჭვში:
+*აქ `zeta_1 = 2 xi` არ არის დამოუკიდებლად დახურული დაკვირვებითი შედეგი. ეს არის matcher-ის დარჩენილი non-alpha პირობა, რომელიც სრულ matter-potential matching-ში უნდა ჩაიწეროს. ამ დანართში დახურული preferred-frame შედეგია მხოლოდ მინიმალური one-metric moving-source ჯაჭვის `alpha_i=0` ექსპორტი.*
 
-| პარამეტრი | Ref-G მნიშვნელობა | დაკვირვებითი ზღვრის რიგი |
-| ------------------ | ---------------------------: | ---------------------------------------------: |
-| `alpha_1`        |                        `0` |                                      `10^-4` |
-| `alpha_2`        |                        `0` |                                      `10^-7` |
-| `alpha_3`        |                        `0` |                                     `10^-20` |
+*ამრიგად, მინიმალურ moving-source ჯაჭვში მიიღება:*
 
-სრული standard-PPN ledger ამ ვერსიაში ასე იკითხება:
+| *პარამეტრი* | *Ref-G მნიშვნელობა* | *დაკვირვებითი ზღვრის რიგი* |
+| :--- | :---: | :---: |
+| *`alpha_1`* | *`0`* | *`10^-4`* |
+| *`alpha_2`* | *`0`* | *`10^-7`* |
+| *`alpha_3`* | *`0`* | *`10^-20`* |
 
-| PPN პარამეტრი   | Ref-G მნიშვნელობა/პირობა    | სტატუსი                                                                                |
-| ------------------------ | -------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| `gamma`                | `1`                                        | ფართობის-რადიუსის სტატიკური 1PN branch-დან გამოყვანილი |
-| `beta`                 | `1`                                        | ფართობის-რადიუსის სტატიკური 1PN branch-დან გამოყვანილი |
-| `alpha_1`              | `0`                                        | moving-source vector chain                                                                    |
-| `alpha_2`              | `0`                                        | moving-source vector chain                                                                    |
-| `alpha_3`              | `0`                                        | moving-source vector chain                                                                    |
-| `xi`                   | conservative one-metric target `0`         | standard matter-potential matching-ის export row                                            |
-| `zeta_1`               | `zeta_1=2 xi` matcher-ში                 | standard matter-potential matching-ის export row                                            |
-| `zeta_2,zeta_3,zeta_4` | minimal covariant matter sector target `0` | standard matter-potential matching-ის export row                                            |
+*სტანდარტული PPN სტატუს-ნუსხა ამ ვერსიაში ასე იკითხება:*
 
-ეს არის სტატიის preferred-frame claim-ის ზუსტი scope: `gamma`, `beta` და `alpha_i` არხები ალგებრულად იხურება აქტიურ სამუშაო ფაილებში; სრული მზის სისტემის დაკვირვებითი verdict გადადის standard matter-potential matching-სა და 2PN Shapiro/light-bending likelihood-ზე.
+| *PPN პარამეტრი* | *Ref-G მნიშვნელობა/პირობა* | *სტატუსი* |
+| :--- | :--- | :--- |
+| *`gamma`* | *`1`* | *ფართობის რადიუსის სტატიკური 1PN განშტოებიდან გამოყვანილი* |
+| *`beta`* | *`1`* | *ფართობის რადიუსის სტატიკური 1PN განშტოებიდან გამოყვანილი* |
+| *`alpha_1`* | *`0`* | *მინიმალური moving-source vector chain* |
+| *`alpha_2`* | *`0`* | *მინიმალური moving-source vector chain* |
+| *`alpha_3`* | *`0`* | *მინიმალური moving-source vector chain* |
+| *`xi`* | *კონსერვატიული ერთ-მეტრიკული სამიზნე `0`* | *standard matter-potential matching-ის export row* |
+| *`zeta_1`* | *`zeta_1 = 2 xi` matcher-ში* | *standard matter-potential matching-ის export row* |
+| *`zeta_2`, `zeta_3`, `zeta_4`* | *მინიმალური კოვარიანტული მატერიალური სექტორის სამიზნე `0`* | *standard matter-potential matching-ის export row* |
+
+*ეს ცხრილი ზუსტად განსაზღვრავს preferred-frame მტკიცების ფარგალს. `gamma`, `beta` და `alpha_i` არხები ალგებრულად იხურება აქტიურ სამუშაო ფაილებში; ხოლო სრული მზის სისტემური დაკვირვებითი დასკვნა standard matter-potential matching-სა და 2PN Shapiro/light-bending likelihood-ზე გადადის. `q_2PN=10` ამ დანართის `alpha_i` ჯაჭვს არ მიეკუთვნება და ცალკე 2PN ფალსიფიკაციის ბარიერად რჩება.*
 
 ---
 
