@@ -188,6 +188,36 @@ def s6_solar_exterior_claim_gate():
     }
 
 
+def s6_solar_scale_short_path_certificate():
+    """Compact S=6 Solar scale certificate."""
+    structure = s6_completion_solar_stress_structure()
+    scale = s6_completion_solar_scale_suppression()
+    branches = q2pn_branch_interpolation()
+    physical = branches["physical_dark_energy_scale"]
+
+    status = (
+        "PASS_S6_SOLAR_SCALE_SHORT_PATH"
+        if structure["status"] == "PASS_S6_COMPLETION_SOLAR_STRESS_STRUCTURE"
+        and scale["status"] == "PASS_S6_SOLAR_SCALE_SUPPRESSION"
+        and scale["completion_over_geometry_ratio"] < 1.0e-30
+        and physical["q_2PN"] == sp.Rational(7, 4)
+        and physical["status"] == "PHYSICAL_SOLAR_EXTERIOR_IS_GR"
+        else "CHECK_S6_SOLAR_SCALE_SHORT_PATH"
+    )
+
+    return {
+        "status": status,
+        "stress_structure_status": structure["status"],
+        "scale_status": scale["status"],
+        "completion_over_geometry_ratio": scale["completion_over_geometry_ratio"],
+        "physical_q_2PN": physical["q_2PN"],
+        "short_reading": (
+            "S=6 supplies cosmological stress; at Solar radius its local 2PN "
+            "weight is Lambda*R^2, so the physical weak-field exterior stays GR."
+        ),
+    }
+
+
 if __name__ == "__main__":
     print("=" * 72)
     print("p03b: S=6 completion Solar exterior — scale theorem")
@@ -212,4 +242,8 @@ if __name__ == "__main__":
 
     print("\n4. Claim gate")
     for k, v in s6_solar_exterior_claim_gate().items():
+        print(f"  {k}: {v}")
+
+    print("\n5. S=6 Solar scale short path")
+    for k, v in s6_solar_scale_short_path_certificate().items():
         print(f"  {k}: {v}")

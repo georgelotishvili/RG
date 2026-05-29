@@ -1813,6 +1813,52 @@ def stage_a3_compact_old_file_status():
     }
 
 
+def compact_exterior_short_path_certificate():
+    """
+    Compact strong-field/exterior spine.
+
+    The detailed file keeps curvature, shadow, core and TOV ledgers.  This
+    certificate keeps the useful compact-object route in one place: the vacuum
+    phase equation gives the exponential exterior, its effective source has the
+    Bernoulli profile, the Schwarzschild-type curvature singularity is removed
+    in that geometry, and the C2 core matching algebra is explicit.
+    """
+    exterior = derive_exponential_exterior_from_phase_equation()
+    source = derive_exponential_effective_source_profile()
+    breaker = derive_black_hole_singularity_breaker_gate()
+    core = derive_c2_core_matching_coefficients()
+
+    status = (
+        "PASS_COMPACT_EXTERIOR_SHORT_PATH"
+        if exterior["derivation_status"]
+        == "DERIVED_FROM_VACUUM_PHASE_EQUATION_PLUS_BICONFORMAL_MAP"
+        and exterior["laplace_residual_for_solution"] == 0
+        and source["source_status"]
+        == "EFFECTIVE_GEOMETRIC_SOURCE_PROFILE_DERIVED__PHYSICAL_MEDIUM_SOURCE_OPEN"
+        and breaker["lim_r_to_0_K_RG"] == 0
+        and breaker["lim_r_to_0_DeltaP_RG"] == 0
+        and breaker["geometry_verdict"]
+        == "SCHWARZSCHILD_CURVATURE_SINGULARITY_REMOVED_IN_EXPONENTIAL_BRANCH"
+        and core["derivation_status"]
+        == "C2_MATCHING_COEFFICIENTS_DERIVED__CORE_FIELD_EQUATIONS_OPEN"
+        else "CHECK_COMPACT_EXTERIOR_SHORT_PATH"
+    )
+
+    return {
+        "status": status,
+        "exterior_status": exterior["derivation_status"],
+        "laplace_residual": exterior["laplace_residual_for_solution"],
+        "source_status": source["source_status"],
+        "geometry_verdict": breaker["geometry_verdict"],
+        "core_matching_status": core["derivation_status"],
+        "short_reading": (
+            "vacuum phase equation -> exponential biconformal exterior -> "
+            "Bernoulli-shaped effective source -> finite-curvature endpoint "
+            "with explicit C2 core matching algebra."
+        ),
+    }
+
+
 def compact_central_claim_gate():
     """
     One-place export gate for p05_compact.py.
@@ -1822,8 +1868,10 @@ def compact_central_claim_gate():
     """
     signature = compact_signature_bridge()
     scalar_probe = stage_a3_scalar_perturbation_verification()
+    short_path = compact_exterior_short_path_certificate()
     return {
         "file_export_status": "NOT_READY_FOR_RG_THEORY_EXPORT",
+        "compact_exterior_short_path": short_path["status"],
         "signature_bridge": signature["stress_bridge_status"],
         "exterior_status": "DERIVED_FROM_VACUUM_PHASE_EQUATION_PLUS_BICONFORMAL_MAP",
         "black_hole_breaker_status": "SCHWARZSCHILD_CURVATURE_SINGULARITY_REMOVED_AT_GEOMETRY_LEVEL__GEODESIC_BOUNDARY_STILL_OPEN",
@@ -1912,6 +1960,7 @@ def article_strong_field_gate():
     return {
         "article_use": "strong-field/screening scope boundary",
         "status": "STRONG_FIELD_PROGRAM_REGISTERED_NOT_PROMOTED",
+        "compact_exterior_short_path": compact_gate["compact_exterior_short_path"],
         "static_exterior_boundary": {
             "exterior_result": boundary["exterior_result"],
             "finite_r_horizon_test": boundary["finite_r_horizon_test"],
@@ -1954,5 +2003,9 @@ if __name__ == "__main__":
 
     print("\n4. Central compact-object claim gate")
     for key, value in compact_central_claim_gate().items():
+        print(f"  {key:30s}: {value}")
+
+    print("\n5. Compact exterior short path")
+    for key, value in compact_exterior_short_path_certificate().items():
         print(f"  {key:30s}: {value}")
 

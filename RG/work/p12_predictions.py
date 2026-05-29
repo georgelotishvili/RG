@@ -499,6 +499,54 @@ def stage_d5_prediction_priority_order():
     ]
 
 
+def prediction_priority_short_path_certificate():
+    """
+    Compact prediction-priority certificate.
+
+    p12 is a routing file, not a proof file.  This short path keeps the
+    publishable order clean: gravity tests first, MOND/cluster next, particle
+    and quantum work only after their p10/p11 gates, and legacy N4/X17 material
+    outside the active prediction spine.
+    """
+    assessment = status_assessment()
+    score = migrated_prediction_scorecard()
+    priority = stage_d5_prediction_priority_order()
+    c1 = n4_fixed_prediction()
+    c5 = framed_vortex_protocol()
+    unique = unique_scorecard()
+
+    gravity_first = priority[0]["target"] == "gravity article"
+    legacy_n4_inactive = not c1["active_prediction"]
+    no_unique_ready = score["active_unique_ready"] == 0
+    c5_best_candidate = c5["name"] == "C5_Dy_Er_framed_vortex"
+    scorecard_not_ready = all(not item["operational_ready"] for item in unique)
+
+    status = (
+        "PASS_PREDICTION_PRIORITY_SHORT_PATH"
+        if gravity_first
+        and legacy_n4_inactive
+        and no_unique_ready
+        and c5_best_candidate
+        and scorecard_not_ready
+        else "CHECK_PREDICTION_PRIORITY_SHORT_PATH"
+    )
+
+    return {
+        "status": status,
+        "gravity_first": gravity_first,
+        "legacy_n4_inactive": legacy_n4_inactive,
+        "no_unique_ready": no_unique_ready,
+        "best_near_term_candidate": c5["name"],
+        "scorecard_not_ready": scorecard_not_ready,
+        "closed_now": assessment["closed_now"],
+        "short_reading": (
+            "prediction order is gravity article first; MOND/cluster second; "
+            "particle/quantum predictions wait for p10/p11 gates; N4/X17 stay "
+            "legacy audit material."
+        ),
+    }
+
+
 def p12_do_not_claim():
     """Prediction-sector overclaim blacklist."""
     return [
@@ -521,8 +569,10 @@ def p12_prediction_claim_gate():
     c1 = n4_fixed_prediction()
     c5 = framed_vortex_protocol()
     score = migrated_prediction_scorecard()
+    short_path = prediction_priority_short_path_certificate()
     return {
         "overall_status": "PREDICTION_LEDGER_NOT_PUBLICATION_READY",
+        "prediction_priority_short_path": short_path["status"],
         "active_unique_predictions_ready": False,
         "best_near_term_candidate": c5["name"],
         "c1_active_prediction": c1["active_prediction"],

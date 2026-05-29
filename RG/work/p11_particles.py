@@ -3554,6 +3554,58 @@ def stage_d4_particle_old_file_status():
 # FINAL P11 CLAIM GATE
 # =============================================================================
 
+def particle_sector_route_short_path_certificate():
+    """
+    Compact particle-sector route splitter.
+
+    This keeps the current particle file from mixing two stories.  The active
+    route is the C3/order-9 charged-lepton spine; the older radial/Mathieu
+    ladder is retained as legacy audit material.  The certificate checks only
+    the algebraic spine and the route separation.
+    """
+    action = audit_action_c3_lock()
+    z9_h2 = audit_z9_and_h2()
+    mass = audit_mass_predictions()
+    cleanup = internal_consistency_cleanup()
+
+    legacy_demoted = all(
+        "legacy" in row["new_status"] or "not part" in row["new_status"]
+        or "do not present" in row["new_status"]
+        or "suspended" in row["new_status"]
+        for row in cleanup
+    )
+
+    status = (
+        "PASS_PARTICLE_ROUTE_SPLIT_SHORT_PATH"
+        if all(action.values())
+        and z9_h2["axis_order_is_3"]
+        and z9_h2["phase_order_is_3"]
+        and z9_h2["closure_slots_is_9"]
+        and z9_h2["h_selected_is_2"]
+        and z9_h2["theta_is_2_over_9"]
+        and mass["koide_exact"]
+        and mass["electron_is_anchor_not_prediction"]
+        and mass["relative_compression_ok"]
+        and legacy_demoted
+        else "CHECK_PARTICLE_ROUTE_SPLIT_SHORT_PATH"
+    )
+
+    return {
+        "status": status,
+        "action_lock_all_pass": all(action.values()),
+        "closure_slots_is_9": z9_h2["closure_slots_is_9"],
+        "h_selected_is_2": z9_h2["h_selected_is_2"],
+        "theta_is_2_over_9": z9_h2["theta_is_2_over_9"],
+        "koide_exact": mass["koide_exact"],
+        "relative_compression_ok": mass["relative_compression_ok"],
+        "legacy_route_demoted": legacy_demoted,
+        "short_reading": (
+            "active particle spine is C3/order-9 charged-lepton algebra; the "
+            "radial/Mathieu ladder is kept only as legacy audit material."
+        ),
+    }
+
+
 def p11_do_not_claim():
     """Particle-sector overclaim blacklist."""
     return [
@@ -3577,8 +3629,10 @@ def p11_particle_sector_claim_gate():
     h2_gate = h2_offset_gate()
     mass_bridge = mass_bridge_gate()
     mathieu_gate = mathieu_sign_stability_gate()
+    short_path = particle_sector_route_short_path_certificate()
     return {
         "overall_status": "STRONG_CANDIDATE_NOT_FINAL_PARTICLE_THEORY",
+        "particle_route_short_path": short_path["status"],
         "closed_algebra": [
             "C3 triplet gives Koide K=2/3.",
             "I3=det(B) contains the C3 triaxial strain lock in principal-axis normal form.",
@@ -3607,6 +3661,7 @@ if __name__ == "__main__":
     print("=" * 72)
     gate = p11_particle_sector_claim_gate()
     print(f"overall_status: {gate['overall_status']}")
+    print(f"particle_route_short_path: {gate['particle_route_short_path']}")
     print(f"PDG precision pass: {gate['pdg_precision_pass']}")
     print(f"PDG chi2 non-anchor: {gate['pdg_chi2_non_anchor']:.3e}")
     print("\nClosed algebra:")

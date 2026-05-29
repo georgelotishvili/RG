@@ -1286,9 +1286,68 @@ def ppn_and_observation_gate():
     }
 
 
+def oscillon_gravity_short_path_certificate():
+    """
+    Compact oscillon-to-gravity spine.
+
+    The long file keeps the trial-family and biconformal checks.  This short
+    certificate records the central gravity route: Bernoulli pressure gives the
+    radial deficit, a localized zero-frequency source fixes the 1/r tail, the
+    asymptotic charge normalization gives Newton, the first-order p01 exterior
+    selects the biconformal branch, and nu0 stays behind the operational
+    firewall.
+    """
+    bernoulli = bernoulli_static_gravity_identity()
+    newton = bernoulli_newton_law_recovery()
+    normalization = poisson_to_newton_normalization_gate()
+    branch = static_spherical_first_order_biconformal_branch()
+    spherical = static_spherical_theorem_gate()
+    nu0 = step12_cosmological_nu0()
+    bernoulli_identity = str(bernoulli["bernoulli_integral"]) == (
+        "Eq(P_static + Delta_P, 0)"
+    )
+    newton_identity = str(newton["geodesic_acceleration"]) == (
+        "Eq(a_geo, -G*M/r**2)"
+    )
+
+    status = (
+        "PASS_OSCILLON_GRAVITY_SHORT_PATH"
+        if bernoulli_identity
+        and newton_identity
+        and normalization["status"] == "PASS_ASYMPTOTIC_CHARGE_NORMALIZATION"
+        and branch["status"] == "PASS_STATIC_SPHERICAL_FIRST_ORDER_BICONFORMAL_BRANCH"
+        and branch["biconformal_identity"]
+        and spherical["status"]
+        == "PASS_FIRST_ORDER_STATIC_SPHERICAL_BRANCH__NONLINEAR_CONTINUATION_TARGET"
+        and nu0["status"] == "PASS_SUBSTRATE_NU0_OPERATIONAL_FIREWALL"
+        and nu0["conversion_cancels_identity"]
+        else "CHECK_OSCILLON_GRAVITY_SHORT_PATH"
+    )
+
+    return {
+        "status": status,
+        "bernoulli_identity": bernoulli["bernoulli_integral"],
+        "bernoulli_identity_check": bernoulli_identity,
+        "newton_acceleration": newton["geodesic_acceleration"],
+        "newton_identity_check": newton_identity,
+        "normalization_status": normalization["status"],
+        "biconformal_branch_status": branch["status"],
+        "biconformal_identity": branch["biconformal_identity"],
+        "spherical_gate_status": spherical["status"],
+        "nu0_firewall_status": nu0["status"],
+        "short_reading": (
+            "Bernoulli pressure -> localized source -> asymptotic charge -> "
+            "Newton force; p01 first order selects the biconformal exterior, "
+            "while nu0 remains sub-operational."
+        ),
+    }
+
+
 def p10_status_audit():
     """Compact status ledger for the whole file."""
+    short_path = oscillon_gravity_short_path_certificate()
     return {
+        "oscillon_gravity_short_path": short_path["status"],
         "overall_status": "strong symbolic consistency ledger; not complete oscillon-to-gravity proof",
         "closed": [
             "Bernoulli pressure identity",
@@ -1496,6 +1555,11 @@ if __name__ == "__main__" and _should_run_main_section("gates"):
     print("\n--- Whole-file status audit ---")
     status = p10_status_audit()
     for key, value in status.items():
+        print(f"{key}: {value}")
+
+    print("\n--- Oscillon gravity short path ---")
+    short_path = oscillon_gravity_short_path_certificate()
+    for key, value in short_path.items():
         print(f"{key}: {value}")
 
     print("\n--- Claim gate ---")

@@ -570,6 +570,47 @@ def lambda_scale_suppression_estimate() -> dict[str, Any]:
     }
 
 
+def solar_exterior_master_short_path_certificate() -> dict[str, Any]:
+    """
+    Compact Solar exterior master certificate.
+
+    p03c carries the augmented 2PN strain system; p03b carries the S=6 scale
+    suppression.  Together they give the short Solar reading: the weak-field
+    exterior is GR-compatible, the old q=10 number is diagnostic, and the
+    refractive source-to-index mechanism belongs to p13 rather than to a large
+    Solar 2PN deviation.
+    """
+    from p03b_s6_exterior_scale import s6_solar_scale_short_path_certificate
+
+    local = solar_2pn_short_path_certificate()
+    lift = static_silent_ess_kinetic_lift_theorem()
+    scale = lambda_scale_suppression_estimate()
+    s6_scale = s6_solar_scale_short_path_certificate()
+
+    status = (
+        "PASS_SOLAR_EXTERIOR_MASTER_SHORT_PATH"
+        if local["status"] == "PASS_SOLAR_2PN_SHORT_PATH_CERTIFICATE"
+        and lift["status"] == "PASS_STATIC_SILENT_ESS_KINETIC_LIFT"
+        and scale["Lambda_times_Rsun_squared"] < 1.0e-30
+        and s6_scale["status"] == "PASS_S6_SOLAR_SCALE_SHORT_PATH"
+        else "CHECK_SOLAR_EXTERIOR_MASTER_SHORT_PATH"
+    )
+
+    return {
+        "status": status,
+        "local_2pn_status": local["status"],
+        "static_silent_lift_status": lift["status"],
+        "lambda_scale_status": scale["status"],
+        "s6_scale_status": s6_scale["status"],
+        "physical_q_2PN": s6_scale["physical_q_2PN"],
+        "short_reading": (
+            "augmented p03c admits the GR-compatible Solar 2PN branch; p03b "
+            "shows S=6 completion is Lambda-scale at the Sun; q=10 remains a "
+            "diagnostic branch, not the physical Solar exterior."
+        ),
+    }
+
+
 def q2pn_branch_ledger() -> dict[str, Any]:
     """Honest ledger of every q_2PN value and its real status after this file."""
     return {
@@ -741,6 +782,7 @@ def module_status() -> dict[str, Any]:
         "augmented_medium_strain_2pn_system": augmented_medium_strain_2pn_system(),
         "static_silent_ess_kinetic_lift": static_silent_ess_kinetic_lift_theorem(),
         "solar_2pn_short_path_certificate": solar_2pn_short_path_certificate(),
+        "solar_exterior_master_short_path": solar_exterior_master_short_path_certificate(),
         "lambda_scale_estimate": lambda_scale_suppression_estimate(),
         "q2pn_ledger": q2pn_branch_ledger(),
         "refractive_verdict": refractive_axis_verdict(),
@@ -796,6 +838,12 @@ if __name__ == "__main__":
     print("  medium strain solution:", short["medium_strain_solution"])
     print("  residual identity:", short["residual_identity"])
     print("  meaning:", short["meaning"])
+
+    print("\n4b. Solar exterior master short path")
+    master = solar_exterior_master_short_path_certificate()
+    print("  status:", master["status"])
+    print("  physical q_2PN:", master["physical_q_2PN"])
+    print("  meaning:", master["short_reading"])
 
     print("\n5. Lambda-scale suppression at the Solar radius")
     est = lambda_scale_suppression_estimate()
