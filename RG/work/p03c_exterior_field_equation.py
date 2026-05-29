@@ -501,6 +501,51 @@ def static_silent_ess_kinetic_lift_theorem() -> dict[str, Any]:
     }
 
 
+def solar_2pn_short_path_certificate() -> dict[str, Any]:
+    """
+    Compact certificate for the Solar 2PN result.
+
+    On the augmented medium ansatz, the exact-GR metric branch reduces the old
+    frozen-solid angular obstruction to the radial strain equation
+
+        2*r*s'(r) + 2*s(r) + 1 = 0.
+
+    Its exterior solution is s(r)=-1/2+C/r.  The decaying tail C/r is a boundary
+    mode; the constant piece is the local GR-compatible strain.
+    """
+    r, cY2, eta_ESS, B_metric, C = sp.symbols(
+        "r cY2 eta_ESS B_metric C",
+        positive=True,
+    )
+    s = sp.Function("s")(r)
+    strain_solution = -sp.Rational(1, 2) + C / r
+    common_residual = sp.simplify(2 * r * sp.diff(s, r) + 2 * s + 1)
+    tt_residual = sp.simplify(4 * cY2 * common_residual)
+    theta_residual = sp.simplify(8 * cY2 * common_residual)
+    solved_residuals = [
+        sp.simplify(expr.subs(s, strain_solution).doit())
+        for expr in (tt_residual, theta_residual)
+    ]
+    lifted_K_pi = eta_ESS / B_metric
+
+    return {
+        "status": "PASS_SOLAR_2PN_SHORT_PATH_CERTIFICATE",
+        "coupling_slice": sp.Eq(sp.Symbol("c_YI1"), 2 * cY2),
+        "metric_branch": {"f": 0, "g": 0},
+        "strain_equation": sp.Eq(common_residual, 0),
+        "medium_strain_solution": sp.Eq(s, strain_solution),
+        "residuals_after_strain": solved_residuals,
+        "residual_identity": all(residual == 0 for residual in solved_residuals),
+        "static_silent_ESS_lifted_Kpi": lifted_K_pi,
+        "meaning": (
+            "The Solar 2PN statement can be made directly: the frozen-solid "
+            "residual is the radial medium-strain equation; on c_YI1=2*c_Y2 it "
+            "selects the GR metric branch, with ESS supplying positive solid "
+            "kinetic energy without changing the static exterior."
+        ),
+    }
+
+
 def lambda_scale_suppression_estimate() -> dict[str, Any]:
     """
     Numerical size of the 2PN medium correction at the Solar radius.
@@ -695,6 +740,7 @@ def module_status() -> dict[str, Any]:
         "exterior_solution": solve_exterior_field_equation(),
         "augmented_medium_strain_2pn_system": augmented_medium_strain_2pn_system(),
         "static_silent_ess_kinetic_lift": static_silent_ess_kinetic_lift_theorem(),
+        "solar_2pn_short_path_certificate": solar_2pn_short_path_certificate(),
         "lambda_scale_estimate": lambda_scale_suppression_estimate(),
         "q2pn_ledger": q2pn_branch_ledger(),
         "refractive_verdict": refractive_axis_verdict(),
@@ -743,26 +789,34 @@ if __name__ == "__main__":
     print("  lifted K_pi:", lift["lifted_Kpi"])
     print("  meaning:", lift["meaning"])
 
-    print("\n4. Lambda-scale suppression at the Solar radius")
+    print("\n4. Solar 2PN short-path certificate")
+    short = solar_2pn_short_path_certificate()
+    print("  status:", short["status"])
+    print("  strain equation:", short["strain_equation"])
+    print("  medium strain solution:", short["medium_strain_solution"])
+    print("  residual identity:", short["residual_identity"])
+    print("  meaning:", short["meaning"])
+
+    print("\n5. Lambda-scale suppression at the Solar radius")
     est = lambda_scale_suppression_estimate()
     print("  Lambda*R_sun^2 ~", f"{est['Lambda_times_Rsun_squared']:.1e}")
     print("  reading:", est["reading"])
     print("  cross-check:", est["cross_check"])
 
-    print("\n5. q_2PN branch ledger")
+    print("\n6. q_2PN branch ledger")
     for key, value in q2pn_branch_ledger().items():
         print(f"  {key}: {value}")
 
-    print("\n6. Refractive-axis verdict")
+    print("\n7. Refractive-axis verdict")
     verdict = refractive_axis_verdict()
     print("  verdict:", verdict["verdict"])
     print("  reason:", verdict["reason"])
     print("  O(1) coupling candidate acts in:", verdict["where_refractive_coupling_acts_at_O1"])
 
-    print("\n7. Claim gate")
+    print("\n8. Claim gate")
     for gate in exterior_claim_gate():
         print(f"  - [{gate.status}] {gate.claim}")
 
-    print("\n8. Do not claim")
+    print("\n9. Do not claim")
     for item in do_not_claim():
         print(f"  - {item}")

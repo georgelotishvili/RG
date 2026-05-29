@@ -204,6 +204,42 @@ def local_minkowski_tensor_dispersion_theorem():
     }
 
 
+def gw_tensor_speed_short_path_certificate():
+    """
+    Compact tensor-speed certificate.
+
+    The long GW file keeps waveform, polarization and cosmological propagation
+    ledgers.  This short path records the structural result used by the first
+    gravity article: the minimal branch has alpha_T=0 and the solid TT
+    projection adds no h_dot^2 or h_z^2 kinetic-gradient correction.
+    """
+    speed = tensor_speed_algebra_theorem()
+    local = local_minkowski_tensor_dispersion_theorem()
+
+    status = (
+        "PASS_GW_TENSOR_SPEED_SHORT_PATH"
+        if speed["status"] == "PASS"
+        and speed["alpha_T"].rhs == 0
+        and speed["solid_TT_h_dot2_correction"] == 0
+        and speed["solid_TT_h_z2_correction"] == 0
+        and local["status"] == "PASS_LOCAL_MINKOWSKI_TT_DISPERSION_MASSLESS"
+        else "CHECK_GW_TENSOR_SPEED_SHORT_PATH"
+    )
+
+    return {
+        "status": status,
+        "tensor_speed_status": speed["status"],
+        "local_tt_status": local["status"],
+        "alpha_T": speed["alpha_T"],
+        "solid_TT_h_dot2_correction": speed["solid_TT_h_dot2_correction"],
+        "solid_TT_h_z2_correction": speed["solid_TT_h_z2_correction"],
+        "short_reading": (
+            "G4_X=0, G5=0, and the solid TT projection has no kinetic-gradient "
+            "correction; the detailed GW ledger keeps propagation gates separate."
+        ),
+    }
+
+
 def tensor_speed_scope_gate():
     coeff_h_dot2, coeff_h_z2, _ = analyze_gw_full()
     return {
@@ -1652,6 +1688,7 @@ def article_gw_theorem():
     scope = tensor_speed_scope_gate()
     mass_gate = tensor_mass_term_gate()
     local_dispersion = local_minkowski_tensor_dispersion_theorem()
+    short_path = gw_tensor_speed_short_path_certificate()
     detector = step4c_detector_response_claim_gate()
 
     return {
@@ -1669,6 +1706,7 @@ def article_gw_theorem():
         },
         "solid_TT_scope": scope["closed"],
         "local_minkowski_tensor_dispersion": local_dispersion,
+        "tensor_speed_short_path": short_path,
         "detector_response": {
             "status": detector["status"],
             "article_reading": detector["what_is_measured"],
@@ -1683,6 +1721,7 @@ def article_gw_theorem():
         "article_status": {
             "alpha_T": "CLOSED_ZERO",
             "c_g": "CLOSED_LUMINAL_IN_MINIMAL_BRANCH",
+            "tensor_speed_short_path": short_path["status"],
             "local_TT_dispersion": local_dispersion["status"],
             "full_waveform": "SEPARATE_GATE",
             "extra_polarizations": "SEPARATE_GATE",
@@ -1699,6 +1738,7 @@ def gw_central_claim_gate():
     blocked until the listed gates are actually calculated or fitted.
     """
     speed_gate = tensor_speed_scope_gate()
+    short_path = gw_tensor_speed_short_path_certificate()
     mass_gate = tensor_mass_term_gate()
     waveform_gate = status_assessment()
     pulsar_gate = scalar_dipole_prediction()
@@ -1706,6 +1746,7 @@ def gw_central_claim_gate():
     return {
         "file_export_status": "NOT_READY_FOR_RG_THEORY_EXPORT",
         "tensor_speed_sector": speed_gate["status"],
+        "tensor_speed_short_path": short_path["status"],
         "detector_response": detector_gate["status"],
         "massive_dispersion": mass_gate["status"],
         "waveform_fit": waveform_gate["export_status"],

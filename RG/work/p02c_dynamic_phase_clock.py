@@ -669,6 +669,61 @@ def global_lcdm_solar_completion_theorem():
     }
 
 
+def s6_lcdm_solar_short_path_certificate():
+    """
+    Short certificate for the S=6 global branch.
+
+    The long theorem above carries the detailed stress components.  This compact
+    check records the decisive core: S=6 is exact on the LCDM branch and its
+    Solar GR-like exterior has no completion source through 1PN, apart from the
+    homogeneous rho_0 stress already identified with the cosmological branch.
+    """
+    x, U = sp.symbols("x U", nonnegative=True, real=True)
+
+    y_flrw = 6 - 6 * x + x**3
+    s_flrw_minus_6 = sp.simplify(y_flrw + 2 * (3 * x) - x**3 - 6)
+
+    a_solar = 1 + 2 * U + 4 * U**2
+    b_solar = 1 - 2 * U
+    s_solar_minus_6 = sp.series(
+        1 / b_solar + 2 * (2 + 1 / a_solar) - 1 / a_solar - 6,
+        U,
+        0,
+        3,
+    ).removeO().expand()
+
+    completion = global_lcdm_solar_completion_theorem()
+    solar = completion["solar_1PN_with_Lambda_stress"]
+
+    status = (
+        "PASS_S6_LCDM_SOLAR_SHORT_PATH"
+        if s_flrw_minus_6 == 0
+        and s_solar_minus_6.coeff(U, 0) == 0
+        and s_solar_minus_6.coeff(U, 1) == 0
+        and completion["status"] == "PASS_GLOBAL_LCDM_SOLAR_1PN_COMPLETION"
+        and all(value == 0 for value in solar["O0_anisotropy_residuals"])
+        and all(value == 0 for value in solar["O1_residuals"].values())
+        else "CHECK_S6_LCDM_SOLAR_SHORT_PATH"
+    )
+
+    return {
+        "status": status,
+        "FLRW_S_minus_6": s_flrw_minus_6,
+        "Solar_S_minus_6_through_1PN": sp.series(
+            s_solar_minus_6,
+            U,
+            0,
+            2,
+        ).removeO().expand(),
+        "Solar_first_nonzero_order_hint": s_solar_minus_6,
+        "global_completion_status": completion["status"],
+        "short_reading": (
+            "S=6 gives the LCDM background exactly and is silent through "
+            "Solar 1PN; the detailed theorem above keeps the stress audit."
+        ),
+    }
+
+
 def completion_branch_local_perturbation_theorem():
     """
     Local perturbation theorem for the S/Z completion branch.
@@ -1088,6 +1143,7 @@ def module_status():
         "current_self_check": phase_current_self_check(),
         "dynamic_branch": dynamic_phase_clock_branch(),
         "late_zero_current_candidate": late_zero_current_candidate(),
+        "s6_lcdm_solar_short_path": s6_lcdm_solar_short_path_certificate(),
         "early_scaling_after_zero_current": early_scaling_after_zero_current(),
         "process_time_match_gate": process_time_match_gate(),
         "export_status": "NOT_READY_FOR_RG_THEORY_EXPORT",
@@ -1112,6 +1168,7 @@ def article_dynamic_phase_clock_theorem():
     exact_lcdm = exact_lcdm_zero_current_background_theorem()
     lcdm_residuals = compressed_lcdm_background_residual_check()
     global_completion = global_lcdm_solar_completion_theorem()
+    s6_short_path = s6_lcdm_solar_short_path_certificate()
     completion_origin_audit = completion_origin_and_operator_audit()
     completion_perturbations = completion_branch_local_perturbation_theorem()
     z_sign_audit = completion_z_sign_and_degeneracy_audit()
@@ -1148,6 +1205,7 @@ def article_dynamic_phase_clock_theorem():
         "exact_lcdm_background_branch": exact_lcdm,
         "compressed_lcdm_background_residual_check": lcdm_residuals,
         "global_lcdm_solar_completion": global_completion,
+        "s6_lcdm_solar_short_path": s6_short_path,
         "completion_origin_and_operator_audit": completion_origin_audit,
         "completion_branch_local_perturbations": completion_perturbations,
         "completion_z_sign_and_degeneracy_audit": z_sign_audit,
@@ -1176,6 +1234,7 @@ def article_dynamic_phase_clock_theorem():
             "background_lcdm_closure": exact_lcdm["status"],
             "compressed_background_residuals": lcdm_residuals["status"],
             "global_lcdm_solar_completion": global_completion["status"],
+            "s6_lcdm_solar_short_path": s6_short_path["status"],
             "completion_origin_and_operator_audit": completion_origin_audit["status"],
             "completion_local_perturbations": completion_perturbations["status"],
             "completion_z_sign_and_degeneracy": z_sign_audit["status"],

@@ -1708,6 +1708,39 @@ def preferred_frame_alpha_i_closure_chain():
     }
 
 
+def ppn_preferred_frame_short_path_certificate():
+    """
+    Compact preferred-frame PPN certificate.
+
+    The detailed appendix payload keeps the boosted-background and moving-source
+    matrices.  This short path keeps the logic in one place: no RG vector source
+    on the Solar 1PN branch plus the standard PPN matcher fixes
+    alpha_1=alpha_2=alpha_3=0.
+    """
+    chain = preferred_frame_alpha_i_closure_chain()
+    table = standard_ppn_alpha_i_export_table()
+    alpha_values = chain["alpha_i_values"]
+
+    status = (
+        "PASS_PPN_PREFERRED_FRAME_SHORT_PATH"
+        if chain["status"] == "PASS_MINIMAL_MOVING_SOURCE_ALPHA_I_CHAIN"
+        and table["status"] == "PASS_STANDARD_PPN_ALPHA_I_EXPORT_TABLE"
+        and all(value == 0 for value in alpha_values.values())
+        else "CHECK_PPN_PREFERRED_FRAME_SHORT_PATH"
+    )
+
+    return {
+        "status": status,
+        "chain_status": chain["status"],
+        "export_table_status": table["status"],
+        "alpha_i_values": alpha_values,
+        "short_reading": (
+            "boosted background stress plus RG vector-source absence feeds the "
+            "standard PPN matcher and fixes alpha_1=alpha_2=alpha_3=0."
+        ),
+    }
+
+
 if __name__ == "__main__":
     delta_n, dt_gen, gamma_sym = calculate_shapiro_delay()
     print("--- Shapiro Time Delay (1PN) ---")
@@ -2317,6 +2350,7 @@ def article_solar_theorem():
     alpha_i_matcher = standard_ppn_alpha_i_matcher()
     rg_vector_source = moving_source_rg_vector_source_theorem()
     alpha_i_chain = preferred_frame_alpha_i_closure_chain()
+    alpha_i_short_path = ppn_preferred_frame_short_path_certificate()
     alpha_i_export = standard_ppn_alpha_i_export_table()
     ppn_status_ledger = standard_ppn_status_ledger()
     alpha_i_appendix = preferred_frame_alpha_i_appendix_payload()
@@ -2358,6 +2392,7 @@ def article_solar_theorem():
         "standard_ppn_alpha_i_matcher": alpha_i_matcher,
         "moving_source_rg_vector_source": rg_vector_source,
         "preferred_frame_alpha_i_closure_chain": alpha_i_chain,
+        "preferred_frame_short_path": alpha_i_short_path,
         "standard_ppn_alpha_i_export_table": alpha_i_export,
         "standard_ppn_status_ledger": ppn_status_ledger,
         "preferred_frame_alpha_i_appendix_payload": alpha_i_appendix,
@@ -2453,6 +2488,7 @@ def article_solar_theorem():
             "standard_ppn_alpha_i_matcher": alpha_i_matcher["status"],
             "moving_source_rg_vector_source": rg_vector_source["status"],
             "preferred_frame_alpha_i_closure_chain": alpha_i_chain["status"],
+            "preferred_frame_short_path": alpha_i_short_path["status"],
             "standard_ppn_alpha_i_export_table": alpha_i_export["status"],
             "standard_ppn_status_ledger": ppn_status_ledger["status"],
             "preferred_frame_alpha_i_appendix_payload": alpha_i_appendix["status"],
@@ -2493,6 +2529,9 @@ def solar_system_claim_gate():
         ],
         "preferred_frame_alpha_i_closure_chain": (
             preferred_frame_alpha_i_closure_chain()["status"]
+        ),
+        "preferred_frame_short_path": (
+            ppn_preferred_frame_short_path_certificate()["status"]
         ),
         "frame_dragging_minimal_1p5pn_chain": (
             frame_dragging_minimal_1p5pn_chain()["status"]

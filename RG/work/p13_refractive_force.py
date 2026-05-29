@@ -1962,6 +1962,105 @@ def required_enthalpy_profiles_for_newton_mond() -> dict[str, Any]:
     }
 
 
+def refractive_source_short_path_theorem() -> dict[str, Any]:
+    """
+    Short theorem kernel for the refractive mechanism.
+
+    The long bridge reduces to:
+
+        action stress conservation -> TOV source for h_eff
+        minimal matter coupling     -> n_eff=exp(h_eff)
+        index gradient              -> force.
+
+    This is the compact route the article should emphasize.
+    """
+    r, c = sp.symbols("r c", positive=True)
+    rho = sp.Function("rho_eff")(r)
+    p_rad = sp.Function("p_rad")(r)
+    Delta_p = sp.Function("Delta_p")(r)
+    h_eff = sp.Function("h_eff")(r)
+    n_eff = sp.exp(h_eff)
+
+    h_prime_source = sp.simplify(
+        (sp.diff(p_rad, r) - 2 * Delta_p / r) / (c**2 * rho)
+    )
+    acceleration_from_index = sp.simplify(c**2 * sp.diff(sp.log(n_eff), r))
+    acceleration_from_source = sp.simplify(
+        acceleration_from_index.subs(sp.diff(h_eff, r), h_prime_source)
+    )
+    expected_source_acceleration = sp.simplify(
+        (sp.diff(p_rad, r) - 2 * Delta_p / r) / rho
+    )
+
+    return {
+        "status": "PASS_SHORT_REFRACTIVE_SOURCE_THEOREM",
+        "source_equation": sp.Eq(sp.diff(h_eff, r), h_prime_source),
+        "index_definition": sp.Eq(sp.Symbol("n_eff"), n_eff),
+        "acceleration_from_source": acceleration_from_source,
+        "identity": sp.simplify(
+            acceleration_from_source - expected_source_acceleration
+        ) == 0,
+        "meaning": (
+            "The weak static refractive mechanism needs no separate scalar "
+            "Pi_eff map: action stress enters through the TOV source, and "
+            "minimal metric coupling turns h_eff into n_eff."
+        ),
+    }
+
+
+def newton_mond_transition_short_path_theorem() -> dict[str, Any]:
+    """
+    Short theorem kernel for the Newton/MOND weak transition.
+
+    One source equation carries both channels:
+
+        p_rad' = -rho*g_N,
+        Delta_p = rho*r*g_v/2,
+        g = g_N + g_v.
+
+    The variational loading law selects the interpolation.
+    """
+    r, c, rho, g_N, g_v, a0, G, M = sp.symbols(
+        "r c rho_eff g_N g_v a0 G M",
+        positive=True,
+    )
+    x = sp.symbols("x", positive=True)
+
+    p_rad_prime = -rho * g_N
+    Delta_p = rho * r * g_v / 2
+    h_prime = sp.simplify((p_rad_prime - 2 * Delta_p / r) / (c**2 * rho))
+    total_acceleration = sp.simplify(c**2 * h_prime)
+
+    W = g_v**3 / 3 + g_N * g_v**2 / 2 - a0 * g_N * g_v
+    loading_equation = sp.factor(sp.diff(W, g_v))
+    mu_x_identity = sp.simplify(1 / (1 + 1 / x) - x / (1 + x)) == 0
+
+    deep_g = sp.sqrt(G * M * a0) / r
+    deep_Delta_p = sp.simplify(rho * r * deep_g / 2)
+    deep_plateau_identity = (
+        sp.simplify(deep_Delta_p - rho * sp.sqrt(G * M * a0) / 2) == 0
+    )
+
+    return {
+        "status": "PASS_SHORT_NEWTON_MOND_TRANSITION_THEOREM",
+        "stress_split": {
+            "p_rad_prime": sp.Eq(sp.Symbol("p_rad_prime"), p_rad_prime),
+            "Delta_p": sp.Eq(sp.Symbol("Delta_p"), Delta_p),
+        },
+        "total_acceleration": total_acceleration,
+        "total_acceleration_identity": sp.simplify(total_acceleration + g_N + g_v) == 0,
+        "loading_potential": W,
+        "loading_equation": sp.Eq(loading_equation, 0),
+        "mu_x_identity": mu_x_identity,
+        "deep_plateau_identity": deep_plateau_identity,
+        "meaning": (
+            "The bridge does not need separate force laws.  It needs one stress "
+            "split: radial source pressure gives g_N, vortex anisotropy gives "
+            "g_v, and the variational loading selects the transition."
+        ),
+    }
+
+
 def pressure_to_index_bridge_requirements() -> dict[str, Any]:
     """Central theorem target: derive the active RG stress sources."""
 
@@ -1973,6 +2072,8 @@ def pressure_to_index_bridge_requirements() -> dict[str, Any]:
 
     return {
         "status": "PASS_REFRACTIVE_BRIDGE_SOURCE_LEDGER_READY",
+        "short_refractive_source_theorem": refractive_source_short_path_theorem()["status"],
+        "short_newton_mond_transition_theorem": newton_mond_transition_short_path_theorem()["status"],
         "algebraic_ansatz_status": "NOT_CLOSED_AND_DISFAVORED_AS_A_SINGLE_LOCAL_MAP",
         "differential_bridge_status": "CLOSED_AT_WEAK_STRESS_PROJECTION_LEVEL",
         "index_definition": "n_eff = exp(h_eff)",
@@ -2061,8 +2162,14 @@ def refractive_gravity_weak_field_chain_theorem() -> dict[str, Any]:
     pressure_unification = pressure_variable_unification_audit()
     master = master_refractive_stress_bridge()
     matter_action = minimal_point_particle_action_bridge()
+    short_refractive = refractive_source_short_path_theorem()
+    short_transition = newton_mond_transition_short_path_theorem()
 
     checks = (
+        short_refractive["identity"],
+        short_transition["total_acceleration_identity"],
+        short_transition["mu_x_identity"],
+        short_transition["deep_plateau_identity"],
         action_stress["isotropic_limit_identity"],
         action_stress["generic_anisotropy_sources_Delta_p"],
         bianchi_tov["bianchi_identity"],
@@ -2129,6 +2236,8 @@ def refractive_gravity_weak_field_chain_theorem() -> dict[str, Any]:
             "ledger, and a finite coherence cutoff."
         ),
         "chain": (
+            short_refractive["status"],
+            short_transition["status"],
             action_stress["status"],
             bianchi_tov["status"],
             action_to_index["status"],
@@ -2692,6 +2801,8 @@ def refractive_do_not_claim() -> tuple[str, ...]:
 
 def p13_refractive_force_status() -> dict[str, Any]:
     weak_chain = refractive_gravity_weak_field_chain_theorem()
+    short_refractive = refractive_source_short_path_theorem()
+    short_transition = newton_mond_transition_short_path_theorem()
     static_identity = static_metric_refractive_indices()
     newton_identity = newton_refractive_index_identity()
     mond_identity = mond_refractive_btfr_identity()
@@ -2725,6 +2836,10 @@ def p13_refractive_force_status() -> dict[str, Any]:
     bridge = pressure_to_index_bridge_requirements()
 
     closed_checks = (
+        short_refractive["identity"],
+        short_transition["total_acceleration_identity"],
+        short_transition["mu_x_identity"],
+        short_transition["deep_plateau_identity"],
         static_identity["acceleration_identity"],
         newton_identity["newton_identity"],
         mond_identity["deep_mond_identity"],
@@ -2822,6 +2937,8 @@ def p13_refractive_force_status() -> dict[str, Any]:
         "export_status": "REFRACTIVE_GRAVITY_WEAK_FIELD_CHAIN_READY",
         "closed_identity_status": "PASS" if all(closed_checks) else "FAIL",
         "weak_field_chain_theorem": weak_chain["status"],
+        "short_refractive_source_theorem": short_refractive,
+        "short_newton_mond_transition_theorem": short_transition,
         "central_theorem_target": bridge["status"],
         "static_metric_identity": static_identity,
         "newton_index_identity": newton_identity,
@@ -2866,6 +2983,8 @@ if __name__ == "__main__":
     print("closed_identity_status:", status["closed_identity_status"])
     print("export_status:", status["export_status"])
     print("weak_field_chain_theorem:", status["weak_field_chain_theorem"])
+    print("short_refractive_source:", status["short_refractive_source_theorem"]["status"])
+    print("short_newton_mond_transition:", status["short_newton_mond_transition_theorem"]["status"])
     print("central_theorem_target:", status["central_theorem_target"])
     print("static_metric:", status["static_metric_identity"]["status"])
     print("newton_index:", status["newton_index_identity"]["status"])

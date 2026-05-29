@@ -1083,6 +1083,44 @@ def s_completion_same_input_boltzmann_source_theorem() -> dict[str, object]:
     }
 
 
+def cmb_same_input_short_path_certificate() -> dict[str, object]:
+    """
+    Compact zero-source certificate for the same-input CMB branch.
+
+    The detailed CMB ledger remains below.  This function is the short path:
+    when H(a), matter content, recombination history and primordial spectrum
+    are the LCDM inputs, the locked RG metric/EFT sources and the S/Z completion
+    sources all vanish at linear order.
+    """
+    same_input = same_input_cmb_identity_theorem()
+    s_completion = s_completion_same_input_boltzmann_source_theorem()
+
+    metric_residuals = list(same_input["metric_source_residuals"].values())
+    completion_residuals = list(
+        s_completion["einstein_boltzmann_source_residuals"].values()
+    )
+    zero_source_residuals = metric_residuals + completion_residuals
+
+    status = (
+        "PASS_CMB_SAME_INPUT_SHORT_PATH"
+        if same_input["status"].startswith("PASS")
+        and s_completion["status"].startswith("PASS")
+        and all(simplify(value) == 0 for value in zero_source_residuals)
+        else "CHECK_CMB_SAME_INPUT_SHORT_PATH"
+    )
+
+    return {
+        "status": status,
+        "same_input_status": same_input["status"],
+        "s_completion_status": s_completion["status"],
+        "zero_source_residuals": zero_source_residuals,
+        "short_reading": (
+            "same H(a), same matter, same recombination and locked RG linear "
+            "sources give the LCDM Einstein-Boltzmann hierarchy."
+        ),
+    }
+
+
 def active_s_completion_linear_source_order_theorem() -> dict[str, object]:
     """
     Active S/Z completion source order around the exact S=6 background.
@@ -1195,6 +1233,7 @@ def article_cmb_theorem() -> dict[str, object]:
     same_input_identity = same_input_cmb_identity_theorem()
     exact_lcdm_sources = exact_lcdm_branch_boltzmann_source_theorem()
     s_completion_sources = s_completion_same_input_boltzmann_source_theorem()
+    same_input_short_path = cmb_same_input_short_path_certificate()
     active_s_completion_order = active_s_completion_linear_source_order_theorem()
     no_particle_dm_gate = no_particle_dm_cmb_decision_gate()
     calibration = cmb_comoving_time_calibration()
@@ -1229,6 +1268,7 @@ def article_cmb_theorem() -> dict[str, object]:
         "einstein_boltzmann_hierarchy": hierarchy,
         "exact_lcdm_branch_boltzmann_sources": exact_lcdm_sources,
         "s_completion_same_input_boltzmann_sources": s_completion_sources,
+        "same_input_short_path": same_input_short_path,
         "active_s_completion_linear_source_order": active_s_completion_order,
         "no_particle_dm_cmb_decision_gate": no_particle_dm_gate,
         "lensing_isw": lensing,
@@ -1241,6 +1281,7 @@ def article_cmb_theorem() -> dict[str, object]:
         "article_status": {
             "linear_same_input_CMB": "EXACT_LCDM_BRANCH_LINEAR_SOURCES_CLOSED",
             "s_completion_same_input_CMB": s_completion_sources["status"],
+            "same_input_short_path": same_input_short_path["status"],
             "active_s_completion_linear_source_order": (
                 active_s_completion_order["status"]
             ),

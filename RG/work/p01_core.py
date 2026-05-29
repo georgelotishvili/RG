@@ -1683,6 +1683,36 @@ def article_nonempty_stability_example():
     }
 
 
+def local_stability_short_path_certificate():
+    """
+    Compact local-stability certificate.
+
+    The mixed-mode ledger gives the full principal-symbol criteria.  This short
+    path records the decisive non-emptiness result: one explicit coefficient
+    point satisfies the local no-ghost and mixed-mode inequalities.
+    """
+    example = article_nonempty_stability_example()
+    checks = example["checks"]
+
+    status = (
+        "PASS_LOCAL_STABILITY_SHORT_PATH"
+        if example["status"] == "PASS_EXPLICIT_NONEMPTY_LOCAL_STABILITY_POINT"
+        and all(bool(value) for value in checks.values())
+        else "CHECK_LOCAL_STABILITY_SHORT_PATH"
+    )
+
+    return {
+        "status": status,
+        "example_status": example["status"],
+        "point": example["point"],
+        "checks": checks,
+        "short_reading": (
+            "one explicit coefficient point satisfies the local no-ghost and "
+            "mixed principal-symbol inequalities."
+        ),
+    }
+
+
 def minkowski_principal_symbol():
     coeffs = quadratic_principal_coefficients(scale_factor=1)
     s, det, roots = characteristic_polynomial(coeffs)
@@ -2155,6 +2185,7 @@ def article_core_theorem():
     coeffs_m, _s, _det, _roots = minkowski_principal_symbol()
     mixed_conditions = mixed_mode_stability_conditions(coeffs_m)
     nonempty_stability = article_nonempty_stability_example()
+    local_stability_short = local_stability_short_path_certificate()
 
     c_Y, c_Y2, c_YI1 = sp.symbols("c_Y c_Y2 c_YI1", real=True)
 
@@ -2213,12 +2244,14 @@ def article_core_theorem():
         },
         "mixed_mode_gate": mixed_conditions,
         "nonempty_local_stability_example": nonempty_stability,
+        "local_stability_short_path": local_stability_short,
         "article_status": {
             "action": "CLOSED_MINIMAL_POLYNOMIAL",
             "sign_convention": "CLOSED_Y_TO_X_BRIDGE",
             "no_ghost": "NECESSARY_LOCAL_WINDOW",
             "eft_cutoff_power_counting": eft_power_counting["status"],
             "mixed_modes": "LOCAL_PRINCIPAL_SYMBOL_CRITERIA_AVAILABLE",
+            "local_stability_short_path": local_stability_short["status"],
             "global_stability": "SEPARATE_PROOF_TARGET",
             "dof_count": "CANDIDATE_LEDGER_ONLY",
         },
