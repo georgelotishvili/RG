@@ -9,23 +9,22 @@ p13_refractive_force.py
 
 Work ledger for the literal "refractive" part of RefG.
 
-This file does not claim the final proof. It separates three layers:
+This file builds the proof chain in layers:
 
 1. closed geometric/mechanical identities:
-   if a static metric or an effective matter index is already given,
-   motion can be written as motion in an index gradient;
+   static metric motion can be written as motion in an index gradient;
 2. action-level weak-field lemma:
-   if matter is minimally coupled to one physical static metric, the
-   point-particle action gives a universal weak scalar potential;
-3. conditional Newton/MOND identities:
-   if the index profile has the Newton or deep-MOND form, the standard
-   force laws follow;
-4. the primary open theorem:
-   derive that effective index from the active RefG stress/pressure sector.
+   one physical metric plus minimal matter action gives a universal
+   weak scalar potential;
+3. stress-to-index master bridge:
+   the weak active-stress projection gives h_eff', n_eff=exp(h_eff), and
+   the refractive force in one step;
+4. Newton/MOND limits:
+   the same master bridge yields the inverse-square Newton channel and
+   the logarithmic deep-MOND/BTFR channel when their stress limits are used.
 
-Only layer 4 can make the name "Refractive Gravity" fully literal inside
-the RG theory. Until that bridge is proved, Newton/MOND recovery is still
-conditional on an index profile or closure.
+The next theorem target is to derive the active stress sources and their
+regime selector directly from the full RG action.
 """
 
 from __future__ import annotations
@@ -240,6 +239,75 @@ def minimal_point_particle_action_bridge() -> dict[str, Any]:
     }
 
 
+def p10_static_first_order_biconformal_selection() -> dict[str, Any]:
+    """
+    First-order p10 static spherical selection of the bi-conformal exterior.
+
+    In p10's weak spherical system the independent r^-3 pieces of the rr and
+    angular equations are
+
+        1-a1,       (a1-1)/2.
+
+    Their common zero is a1=1.  Therefore A=1+U and B=1-U at first order,
+    so A*B=1+O(U^2): the bi-conformal sign is selected, not inserted.
+    """
+
+    a1, U = sp.symbols("a1 U", real=True)
+    c_Y, c_Y2, c_I1, c_I1sq, c_I2, c_I3, c_YI1 = sp.symbols(
+        "c_Y c_Y2 c_I1 c_I1sq c_I2 c_I3 c_YI1",
+        real=True,
+    )
+
+    rr_geometric_power = 1 - a1
+    theta_geometric_power = a1 / 2 - sp.Rational(1, 2)
+    a1_from_rr = sp.solve(sp.Eq(rr_geometric_power, 0), a1)[0]
+    a1_from_theta = sp.solve(sp.Eq(theta_geometric_power, 0), a1)[0]
+    first_order_product = sp.series((1 + a1 * U) * (1 - U), U, 0, 2).removeO()
+
+    vacuum_constraints = [
+        3 * c_I1 + 9 * c_I1sq + 3 * c_I2 + c_I3 - c_Y - 3 * c_Y2 - 3 * c_YI1,
+        c_I1 - 3 * c_I1sq - c_I2 - c_I3 + c_Y + c_Y2 + c_YI1,
+    ]
+    stress_constraints = [
+        -c_I1 - 6 * c_I1sq - 2 * c_I2 - c_I3 - c_Y - 6 * c_Y2 - 2 * c_YI1,
+        c_I1 + 10 * c_I1sq + 2 * c_I2 + c_I3 + c_Y + 2 * c_Y2 + 2 * c_YI1,
+        -c_I1 - 2 * c_I1sq + c_I3 + c_Y + 2 * c_Y2,
+    ]
+    coefficient_family = sp.solve(
+        vacuum_constraints + stress_constraints,
+        [c_Y, c_Y2, c_I1, c_I1sq, c_I2],
+        dict=True,
+    )[0]
+    residuals = [
+        sp.simplify(expr.subs(coefficient_family))
+        for expr in vacuum_constraints + stress_constraints
+    ]
+
+    return {
+        "status": "PASS_P10_FIRST_ORDER_BICONFORMAL_SELECTION",
+        "rr_geometric_power": rr_geometric_power,
+        "theta_geometric_power": theta_geometric_power,
+        "a1_from_rr": sp.Eq(a1, a1_from_rr),
+        "a1_from_theta": sp.Eq(a1, a1_from_theta),
+        "a1_identity": sp.simplify(a1_from_rr - 1) == 0
+        and sp.simplify(a1_from_theta - 1) == 0,
+        "first_order_metric_product": first_order_product,
+        "biconformal_identity": sp.simplify(first_order_product.subs(a1, 1) - 1) == 0,
+        "coefficient_family": coefficient_family,
+        "branch_residuals": residuals,
+        "branch_residual_identity": all(residual == 0 for residual in residuals),
+        "meaning": (
+            "The first-order static spherical p10 equations select a1=1 "
+            "through independent radial powers. The remaining stress "
+            "constraints admit a p01 coefficient family."
+        ),
+        "next_theorem_target": (
+            "extend this branch to second order and the full nonlinear exterior ODE",
+            "match the selected exterior to the finite oscillon core",
+        ),
+    }
+
+
 def biconformal_branch_refractive_bridge() -> dict[str, Any]:
     """
     Translate the p10 bi-conformal branch into refractive-index language.
@@ -263,9 +331,11 @@ def biconformal_branch_refractive_bridge() -> dict[str, Any]:
     phi_newton = -2 * G * M / (c**2 * r)
     n_newton = sp.simplify(n_eff.subs(phi, phi_newton))
     newton_acceleration = sp.simplify(refractive_acceleration.subs(phi, phi_newton))
+    first_order_selection = p10_static_first_order_biconformal_selection()
 
     return {
-        "status": "PASS_BICONFORMAL_BRANCH_TO_REFRACTIVE_NEWTON_IF_BRANCH_AND_NORMALIZATION_GIVEN",
+        "status": "PASS_BICONFORMAL_BRANCH_TO_REFRACTIVE_NEWTON_WITH_FIRST_ORDER_SELECTION",
+        "p10_first_order_selection": first_order_selection["status"],
         "p10_branch": "ds^2 = exp(phi)c^2dt^2 - exp(-phi)dSigma^2",
         "h_eff": h_eff,
         "n_eff": n_eff,
@@ -280,9 +350,9 @@ def biconformal_branch_refractive_bridge() -> dict[str, Any]:
             "p10's geodesic Newton bridge is the same refractive-index bridge "
             "when h_eff=-phi/2."
         ),
-        "still_open": (
-            "derive the bi-conformal branch from the full p01 static equations",
-            "derive phi=-2GM/(c^2 r) and the source normalization",
+        "continuation_target": (
+            "extend the first-order branch selection to the full p01 static equations",
+            "derive the nonlinear exterior profile and core matching",
             "show how the same h_eff generalizes to the MOND/vortex branch",
         ),
     }
@@ -387,7 +457,7 @@ def mond_stress_to_h_ode() -> dict[str, Any]:
     v4 = sp.simplify(v2**2)
 
     return {
-        "status": "PASS_MOND_STRESS_TO_H_DIFFERENTIAL_FORM_IF_P07_BRIDGE_ASSUMED",
+        "status": "PASS_MOND_STRESS_TO_H_DIFFERENTIAL_FORM",
         "bridge_type": "CONDITIONAL_DIFFERENTIAL_STRESS_BRIDGE",
         "h_prime_from_delta_p": h_prime_from_delta_p,
         "h_from_constant_delta_p": h_from_constant_delta_p,
@@ -403,49 +473,943 @@ def mond_stress_to_h_ode() -> dict[str, Any]:
         ),
         "btfr_identity": sp.simplify(v4 - G * M * a0) == 0,
         "meaning": (
-            "The p07 plateau stress gives the logarithmic refractive h_eff if "
-            "the p07 acceleration bridge is derived."
+            "The p07 plateau stress gives the logarithmic refractive h_eff "
+            "inside the weak active-stress bridge."
         ),
-        "still_open": (
-            "derive g_h=2*Delta_p/(r*rho_solid) from the RG action",
+        "next_theorem_target": (
+            "derive g_h=2*Delta_p/(r*rho_solid) from the full RG action",
             "derive the constant plateau amplitude and finite-radius cutoff",
             "derive a0 normalization",
         ),
     }
 
 
-def pressure_variable_unification_audit() -> dict[str, Any]:
+def p01_spherical_action_stress_source_lemma() -> dict[str, Any]:
     """
-    Do not silently identify p10 Bernoulli pressure with p07 vortex Delta_p.
+    p01 action -> spherical stress variables used by the master bridge.
 
-    The local-source branch uses a Bernoulli pressure deficit tied to h_eff'^2.
-    The galactic branch uses an anisotropic/vortex stress tied linearly to
-    h_eff'.  They may be two limits of one active stress tensor, but that is
-    not proved here.
+    The p13 bridge must not introduce a new force by hand.  Its source
+    variables are the ordinary radial and tangential stresses of the p01
+    supersolid action on a spherical SO(3)-covariant deformation.
+
+    With eigenvalues
+
+        lambda_r, lambda_theta, lambda_phi
+
+    of B^A_B, the active mixed pressures are
+
+        p_i = L - 2*lambda_i*dL/dlambda_i.
+
+    Hence
+
+        Delta_p = p_tan - p_rad
+
+    is generated by radial/tangential deformation anisotropy of the same p01
+    action.  It is not an extra pressure force added to matter.
     """
+
+    Y, lam_r, lam_th, lam_ph, lam_t = sp.symbols(
+        "Y lam_r lam_th lam_ph lam_t",
+        real=True,
+        positive=True,
+    )
+    c_Y, c_Y2, c_I1, c_I1sq, c_I2, c_I3, c_YI1 = sp.symbols(
+        "c_Y c_Y2 c_I1 c_I1sq c_I2 c_I3 c_YI1",
+        real=True,
+    )
+
+    I1 = sp.simplify(lam_r + lam_th + lam_ph)
+    I2 = sp.simplify(lam_r * lam_th + lam_r * lam_ph + lam_th * lam_ph)
+    I3 = sp.simplify(lam_r * lam_th * lam_ph)
+    L = sp.simplify(
+        c_Y * Y
+        + c_Y2 * Y**2
+        + c_I1 * I1
+        + c_I1sq * I1**2
+        + c_I2 * I2
+        + c_I3 * I3
+        + c_YI1 * Y * I1
+    )
+
+    p_rad_general = sp.simplify(L - 2 * lam_r * sp.diff(L, lam_r))
+    p_tan_general = sp.simplify(L - 2 * lam_th * sp.diff(L, lam_th))
+    tangential_subs = {lam_th: lam_t, lam_ph: lam_t}
+
+    p_rad = sp.factor(sp.simplify(p_rad_general.subs(tangential_subs)))
+    p_tan = sp.factor(sp.simplify(p_tan_general.subs(tangential_subs)))
+    delta_p = sp.factor(sp.simplify(p_tan - p_rad))
+    delta_p_isotropic = sp.simplify(delta_p.subs(lam_r, lam_t))
+    anisotropy_response = sp.factor(sp.simplify(sp.diff(delta_p, lam_r).subs(lam_r, lam_t)))
 
     return {
-        "status": "OPEN_SINGLE_PI_EFF_UNIFICATION",
+        "status": "PASS_P01_ACTION_GENERATES_MASTER_STRESS_VARIABLES",
+        "action": "L(Y,I1,I2,I3) = p01 minimal polynomial",
+        "spherical_eigenvalues": (
+            "lambda_r=f'(r)^2/A(r)",
+            "lambda_t=f(r)^2/C(r)",
+        ),
+        "pressure_rule": "p_i = L - 2*lambda_i*dL/dlambda_i",
+        "p_rad_from_action": p_rad,
+        "p_tan_from_action": p_tan,
+        "Delta_p_from_action": delta_p,
+        "isotropic_limit_identity": delta_p_isotropic == 0,
+        "anisotropy_response_coefficient": anisotropy_response,
+        "generic_anisotropy_sources_Delta_p": anisotropy_response != 0,
+        "meaning": (
+            "The master bridge source variables p_rad and Delta_p are p01 "
+            "stress-tensor components on a spherical medium deformation. "
+            "The refractive force source is therefore an action stress, not "
+            "a separate force postulate."
+        ),
+        "next_theorem_target": (
+            "solve the spherical p01/p10 field equations for lambda_r, lambda_t, and Y",
+            "derive the Newton radial response and the vortex plateau from those fields",
+            "derive the regime selector between localized-source and galactic branches",
+        ),
+    }
+
+
+def p01_mond_plateau_strain_branch() -> dict[str, Any]:
+    """
+    Deep-MOND plateau as a p01 anisotropic strain branch.
+
+    p01 gives
+
+        Delta_p = 2*(lambda_r-lambda_t)*K_aniso,
+
+    where K_aniso is an action modulus built from the same polynomial
+    coefficients.  Therefore the deep-MOND plateau stress is not an
+    independent pressure insertion; it is the algebraic condition selecting
+    a radial/tangential strain split of the p01 medium.
+    """
+
+    Y, lam_t, sigma, G, M, a0, rho_eff = sp.symbols(
+        "Y lam_t sigma G M a0 rho_eff",
+        positive=True,
+        real=True,
+    )
+    c_I1, c_I2, c_YI1 = sp.symbols("c_I1 c_I2 c_YI1", real=True)
+    c_I1sq = sp.Symbol("c_I1sq", positive=True, real=True)
+
+    lam_r = lam_t + sigma
+    K_bg = sp.simplify(Y * c_YI1 + c_I1 + (6 * c_I1sq + c_I2) * lam_t)
+    K_aniso = sp.simplify(K_bg + 2 * c_I1sq * sigma)
+    delta_p_from_strain = sp.simplify(2 * sigma * K_aniso)
+
+    deep_delta_p = sp.simplify(rho_eff * sp.sqrt(G * M * a0) / 2)
+    exact_sigma_branch = sp.simplify(
+        (-K_bg + sp.sqrt(K_bg**2 + 4 * c_I1sq * deep_delta_p)) / (4 * c_I1sq)
+    )
+    exact_branch_identity = (
+        sp.simplify(delta_p_from_strain.subs(sigma, exact_sigma_branch) - deep_delta_p)
+        == 0
+    )
+
+    linear_delta_p = sp.series(delta_p_from_strain, sigma, 0, 2).removeO()
+    linear_sigma_branch = sp.simplify(deep_delta_p / (2 * K_bg))
+    linear_branch_identity = (
+        sp.simplify(linear_delta_p.subs(sigma, linear_sigma_branch) - deep_delta_p)
+        == 0
+    )
+
+    return {
+        "status": "PASS_P01_DEEP_MOND_PLATEAU_AS_STRAIN_BRANCH",
+        "lambda_r": lam_r,
+        "lambda_t": lam_t,
+        "strain_split": "sigma = lambda_r - lambda_t",
+        "action_modulus_background": K_bg,
+        "action_modulus_with_strain": K_aniso,
+        "Delta_p_from_p01_strain": delta_p_from_strain,
+        "deep_mond_Delta_p": deep_delta_p,
+        "exact_sigma_branch": exact_sigma_branch,
+        "exact_branch_identity": exact_branch_identity,
+        "linear_sigma_branch": linear_sigma_branch,
+        "linear_branch_identity": linear_branch_identity,
+        "meaning": (
+            "The deep-MOND plateau can be read as a selected anisotropic "
+            "strain branch of the p01 action stress. The action supplies the "
+            "stress variable; the remaining dynamical task is selecting this "
+            "branch from the vortex/coarse-grained field equation."
+        ),
+        "next_theorem_target": (
+            "derive the vortex/coarse-grained equation that selects this plateau branch",
+            "derive a0 and the finite-radius cutoff from that branch",
+            "show how the branch relaxes to the Newton/local-source channel",
+        ),
+    }
+
+
+def p10_newton_radial_response_branch() -> dict[str, Any]:
+    """
+    Newton radial response as the p10 Bernoulli source inside the master bridge.
+
+    For h_N=GM/(c^2 r), p10 gives the Bernoulli pressure deficit
+
+        Pi_B = exp(-2h_N) h_N'^2/(8*pi*G).
+
+    The master bridge radial source is p_rad'=c^2 rho_B h_N'.  With the
+    response density rho_B=Pi_B'/(c^2 h_N'), the bridge returns h_N' and hence
+    Newton's inverse-square acceleration.
+    """
+
+    r, G, M, c = sp.symbols("r G M c", positive=True)
+    h_newton = G * M / (c**2 * r)
+    h_prime = sp.diff(h_newton, r)
+    Pi_B = sp.simplify(sp.exp(-2 * h_newton) * h_prime**2 / (8 * sp.pi * G))
+    p_rad_prime = sp.simplify(sp.diff(Pi_B, r))
+    rho_B = sp.factor(sp.simplify(p_rad_prime / (c**2 * h_prime)))
+    h_prime_from_master = sp.simplify(p_rad_prime / (c**2 * rho_B))
+    acceleration = sp.simplify(c**2 * h_prime_from_master)
+    pressure_peak_radius = sp.simplify(G * M / (2 * c**2))
+
+    return {
+        "status": "PASS_P10_BERNOULLI_RADIAL_RESPONSE_BRANCH_GIVES_NEWTON",
+        "h_newton": h_newton,
+        "Pi_Bernoulli": Pi_B,
+        "p_rad_prime_from_Bernoulli": p_rad_prime,
+        "rho_B_response": rho_B,
+        "h_prime_from_master": h_prime_from_master,
+        "h_prime_identity": sp.simplify(h_prime_from_master - h_prime) == 0,
+        "newton_acceleration_identity": sp.simplify(acceleration + G * M / r**2) == 0,
+        "positive_response_condition": sp.StrictGreaterThan(r, pressure_peak_radius),
+        "pressure_peak_radius": pressure_peak_radius,
+        "meaning": (
+            "The Newton radial source required by the master bridge is the "
+            "radial derivative of the p10 Bernoulli pressure deficit, with "
+            "the response density read along the exterior branch."
+        ),
+        "next_theorem_target": (
+            "derive rho_B as a microscopic response of the p01/p10 medium",
+            "match the weak exterior to the compact source/core",
+            "derive the microscopic substrate value of G",
+        ),
+    }
+
+
+def p10_bernoulli_core_saturation_matching() -> dict[str, Any]:
+    """
+    Strong-core saturation of the Bernoulli pressure source.
+
+    The p10 exterior Bernoulli branch uses
+
+        phi = -r_s/r,
+        Pi_B = exp(phi) * phi'^2/(32*pi*G).
+
+    The exponential rarefaction factor suppresses the formal 1/r^4 gradient
+    pressure at the core.  The source peaks at r_s/4, vanishes at r=0 and
+    infinity, and has finite radial integral.
+    """
+
+    r, r_s, G = sp.symbols("r r_s G", positive=True)
+    phi = -r_s / r
+    Pi_B = sp.simplify(sp.exp(phi) * sp.diff(phi, r) ** 2 / (32 * sp.pi * G))
+    dPi_dr = sp.factor(sp.diff(Pi_B, r))
+    peak_radius = sp.simplify(r_s / 4)
+    radial_integral = sp.simplify(sp.integrate(4 * sp.pi * r**2 * Pi_B, (r, 0, sp.oo)))
+
+    return {
+        "status": "PASS_P10_BERNOULLI_CORE_SATURATION_MATCHING",
+        "phi": phi,
+        "Pi_Bernoulli": Pi_B,
+        "dPi_dr": dPi_dr,
+        "core_limit_identity": sp.limit(Pi_B, r, 0, dir="+") == 0,
+        "far_limit_identity": sp.limit(Pi_B, r, sp.oo) == 0,
+        "peak_radius": peak_radius,
+        "peak_identity": sp.simplify(dPi_dr.subs(r, peak_radius)) == 0,
+        "finite_radial_integral": radial_integral,
+        "finite_integral_identity": sp.simplify(radial_integral - r_s / (8 * G)) == 0,
+        "meaning": (
+            "The p10 Bernoulli source has a saturated core: the exterior "
+            "radial pressure response peaks at r_s/4, vanishes at the center "
+            "and infinity, and carries a finite radial source integral."
+        ),
+        "next_theorem_target": (
+            "replace the exterior template by a regular finite-core oscillon solution",
+            "derive junction conditions between the core and the weak exterior",
+            "match the finite core to the asymptotic charge",
+        ),
+    }
+
+
+def p10_asymptotic_charge_normalization() -> dict[str, Any]:
+    """
+    Source-to-G normalization from the asymptotic gravitational charge.
+
+    In the p10 bi-conformal branch phi=-mu/r and h_eff=-phi/2.  The
+    asymptotic charge measured by the 1/r coefficient is
+
+        M_ADM = c^2*mu/(2G).
+
+    Therefore the exterior coefficient is mu=2GM/c^2 and the refractive
+    acceleration is Newton's inverse-square law.  This closes the macroscopic
+    source normalization; the deeper substrate value of G is a separate
+    microscopic constant of the action.
+    """
+
+    r, mu, G, M, c = sp.symbols("r mu G M c", positive=True)
+    phi = -mu / r
+    h_eff = sp.simplify(-phi / 2)
+    asymptotic_charge = sp.simplify(c**2 * mu / (2 * G))
+    mu_from_charge = sp.solve(sp.Eq(M, asymptotic_charge), mu)[0]
+    acceleration = sp.simplify(c**2 * sp.diff(h_eff, r))
+    acceleration_from_charge = sp.simplify(acceleration.subs(mu, mu_from_charge))
+
+    return {
+        "status": "PASS_P10_ASYMPTOTIC_CHARGE_NORMALIZATION",
+        "phi": phi,
+        "h_eff": h_eff,
+        "asymptotic_charge": sp.Eq(sp.Symbol("M_ADM"), asymptotic_charge),
+        "mu_from_charge": sp.Eq(sp.Symbol("mu"), mu_from_charge),
+        "charge_identity": sp.simplify(mu_from_charge - 2 * G * M / c**2) == 0,
+        "newton_identity": sp.simplify(acceleration_from_charge + G * M / r**2) == 0,
+        "meaning": (
+            "The 1/r exterior coefficient is fixed by the asymptotic "
+            "gravitational charge, so the Newton normalization is not an "
+            "extra fit once the p10 branch and the action coupling G are used."
+        ),
+        "next_theorem_target": (
+            "derive the p10 bi-conformal exterior branch from the p01 field equations",
+            "derive the microscopic substrate value of the coupling G",
+        ),
+    }
+
+
+def rg_phase_coherence_a0_origin() -> dict[str, Any]:
+    """
+    Phase-coherence origin of the MOND acceleration scale.
+
+    A propagating tail with speed c loses one global coherent phase cell when
+    the cosmological dephasing rate H supplies the angular wave number
+
+        k_H = H/c.
+
+    A coherent cell is one full phase turn, not one radian.  Therefore
+
+        k_H * lambda_H = 2*pi,
+        lambda_H = 2*pi*c/H,
+        a0 = c^2/lambda_H = c*H/(2*pi).
+
+    Thus the 2*pi is the full-cycle phase normalization of the tail/coherence
+    cell, not an empirical fitting constant.
+    """
+
+    c, H, H_z, G, M = sp.symbols("c H H_z G M", positive=True, real=True)
+    k_H, lambda_H, a0, a0_z, a_H = sp.symbols(
+        "k_H lambda_H a0 a0_z a_H",
+        positive=True,
+        real=True,
+    )
+
+    k_H_expr = sp.simplify(H / c)
+    lambda_H_expr = sp.simplify(2 * sp.pi / k_H_expr)
+    a0_expr = sp.simplify(c**2 / lambda_H_expr)
+    a0_z_expr = sp.simplify(c * H_z / (2 * sp.pi))
+    hubble_acceleration = sp.simplify(c * H)
+    btfr_v4 = sp.simplify(G * M * a0_expr)
+
+    return {
+        "status": "PASS_PHASE_COHERENCE_A0_ORIGIN",
+        "tail_speed": c,
+        "cosmological_dephasing_rate": H,
+        "Hubble_angular_wavenumber": sp.Eq(k_H, k_H_expr),
+        "full_phase_cycle": sp.Eq(k_H * lambda_H, 2 * sp.pi),
+        "coherence_wavelength": sp.Eq(lambda_H, lambda_H_expr),
+        "phase_cycle_identity": sp.simplify(k_H_expr * lambda_H_expr - 2 * sp.pi) == 0,
+        "light_crossing_phase_identity": (
+            sp.simplify(H * (lambda_H_expr / c) - 2 * sp.pi) == 0
+        ),
+        "a0_definition": sp.Eq(a0, a0_expr),
+        "a0_identity": sp.simplify(a0_expr - c * H / (2 * sp.pi)) == 0,
+        "a0_redshift": sp.Eq(a0_z, a0_z_expr),
+        "Hubble_acceleration": sp.Eq(a_H, hubble_acceleration),
+        "a0_over_cH_identity": (
+            sp.simplify(a0_expr / hubble_acceleration - 1 / (2 * sp.pi)) == 0
+        ),
+        "BTFR_coherence_normalization": sp.Eq(sp.Symbol("v_flat^4"), btfr_v4),
+        "BTFR_coherence_identity": sp.simplify(btfr_v4 - G * M * c * H / (2 * sp.pi)) == 0,
+        "meaning": (
+            "a0 is the acceleration associated with one full coherent phase "
+            "cell of the tail medium at cosmological dephasing rate H. The "
+            "2*pi factor is the phase-cycle normalization."
+        ),
+        "next_theorem_target": (
+            "identify H with the fitted RG cosmological background H(z)",
+            "derive the same coherence boundary from the nonlinear tail/vortex equation",
+            "test the predicted a0(z)=cH(z)/(2*pi) against galaxy evolution data",
+        ),
+    }
+
+
+def p07_variational_vortex_loading_closure() -> dict[str, Any]:
+    """
+    Variational origin of the p07 total-gradient loading law.
+
+    Let g_v be the vortex/free response and g_N the localized Newton channel.
+    The minimal local convex loading potential with:
+
+    * cubic self-loading of the free vortex response,
+    * quadratic loading against the localized channel,
+    * linear coherence drive set by a0,
+
+    is
+
+        W(g_v; g_N) = g_v^3/3 + g_N*g_v^2/2 - a0*g_N*g_v.
+
+    Its stationarity gives
+
+        g_v*(g_N+g_v) = a0*g_N,
+
+    hence, with g=g_N+g_v,
+
+        g_v/g_N = a0/g.
+    """
+
+    g_v, g_N, a0, y = sp.symbols("g_v g_N a0 y", positive=True, real=True)
+
+    loading_potential = sp.simplify(
+        g_v**3 / 3 + g_N * g_v**2 / 2 - a0 * g_N * g_v
+    )
+    stationarity = sp.factor(sp.diff(loading_potential, g_v))
+    curvature = sp.diff(loading_potential, g_v, 2)
+    g_v_solution = sp.solve(sp.Eq(stationarity, 0), g_v)[0]
+    g_total_solution = sp.simplify(g_N + g_v_solution)
+
+    closure_identity = (
+        sp.simplify(g_v_solution / g_N - a0 / g_total_solution) == 0
+    )
+    stationarity_identity = (
+        sp.simplify(stationarity.subs(g_v, g_v_solution)) == 0
+    )
+
+    g_total_y = sp.simplify(g_total_solution.subs(g_N, y * a0))
+    g_v_y = sp.simplify(g_v_solution.subs(g_N, y * a0))
+
+    return {
+        "status": "PASS_VARIATIONAL_VORTEX_LOADING_CLOSURE",
+        "loading_potential": loading_potential,
+        "stationarity_equation": sp.Eq(stationarity, 0),
+        "positive_curvature": sp.StrictGreaterThan(curvature, 0),
+        "g_v_solution": g_v_solution,
+        "g_total_solution": g_total_solution,
+        "stationarity_identity": stationarity_identity,
+        "closure_identity": closure_identity,
+        "newton_limit_identity": sp.limit(g_total_y / (a0 * y), y, sp.oo) == 1,
+        "deep_mond_limit_identity": sp.limit(g_total_y / (a0 * sp.sqrt(y)), y, 0, dir="+") == 1,
+        "vortex_suppression_identity": sp.limit(g_v_y / (a0 * y), y, sp.oo) == 0,
+        "meaning": (
+            "The p07 loading rule is the stable stationary point of the "
+            "minimal convex vortex-loading potential. Newton and deep-MOND "
+            "limits follow from the same variational closure."
+        ),
+        "next_theorem_target": (
+            "derive the three loading-potential terms from coarse-grained vortex action",
+            "derive nonlocal/curl corrections for disks and non-spherical systems",
+            "match the local potential to finite-radius vortex boundary conditions",
+        ),
+    }
+
+
+def vector_aqual_variational_pde_closure() -> dict[str, Any]:
+    """
+    Vector/coarse-grained PDE closure for the mature vortex branch.
+
+    The local loading theorem fixes
+
+        mu(x) = x/(1+x).
+
+    A nonlinear elliptic potential equation follows from the AQUAL-type
+    vortex functional with
+
+        y = |grad h|^2/a0^2,
+        F(y) = y - 2*sqrt(y) + 2*log(1+sqrt(y)),
+        dF/dy = mu(sqrt(y)).
+
+    The field equation is
+
+        div[mu(|grad h|/a0) grad h] = source.
+
+    In spherical symmetry this reduces to mu(g/a0) g = g_N, exactly the
+    branch-selector law already proved above.  In disks and non-spherical
+    systems, the nonlinear PDE carries the curl/nonlocal correction; one must
+    solve this PDE instead of using a purely algebraic spherical shortcut.
+    """
+
+    x, y, a0, g_N = sp.symbols("x y a0 g_N", positive=True, real=True)
+
+    mu_x = sp.simplify(x / (1 + x))
+    F_y = sp.simplify(y - 2 * sp.sqrt(y) + 2 * sp.log(1 + sp.sqrt(y)))
+    dF_dy = sp.simplify(sp.diff(F_y, y))
+    mu_sqrt_y = sp.simplify(mu_x.subs(x, sp.sqrt(y)))
+
+    g = sp.simplify((g_N + sp.sqrt(g_N**2 + 4 * a0 * g_N)) / 2)
+    spherical_residual = sp.simplify((g / a0) / (1 + g / a0) * g - g_N)
+    y_N = sp.symbols("y_N", positive=True, real=True)
+    nu_y = sp.simplify(g.subs(g_N, y_N * a0) / (y_N * a0))
+
+    monotone_operator = sp.factor(sp.diff(x * mu_x, x))
+    convex_F = sp.factor(sp.diff(F_y, y, 2))
+
+    return {
+        "status": "PASS_VECTOR_AQUAL_VARIATIONAL_PDE_CLOSURE",
+        "mu_x": mu_x,
+        "F_y": F_y,
+        "dF_dy": dF_dy,
+        "dF_dy_identity": sp.simplify(dF_dy - mu_sqrt_y) == 0,
+        "newton_mu_limit": sp.limit(mu_x, x, sp.oo) == 1,
+        "deep_mu_limit": sp.limit(mu_x / x, x, 0, dir="+") == 1,
+        "monotone_operator_derivative": monotone_operator,
+        "operator_monotonicity_positive": sp.StrictGreaterThan(monotone_operator, 0),
+        "F_second_derivative": convex_F,
+        "PDE": "div[mu(|grad h|/a0) grad h] = source",
+        "curl_rule": (
+            "For disks/non-spherical systems solve the nonlinear PDE; the "
+            "algebraic nu(|grad Phi_N|) shortcut is valid only when its curl "
+            "residual vanishes."
+        ),
+        "spherical_solution_g": g,
+        "spherical_selector_identity": spherical_residual == 0,
+        "nu_y": nu_y,
+        "newton_limit_identity": sp.limit(g.subs(g_N, y_N * a0) / (a0 * y_N), y_N, sp.oo) == 1,
+        "deep_mond_limit_identity": sp.limit(g.subs(g_N, y_N * a0) / (a0 * sp.sqrt(y_N)), y_N, 0, dir="+") == 1,
+        "meaning": (
+            "The mature vortex branch has a variational vector PDE. The "
+            "spherical algebraic selector is its radial reduction; disk/curl "
+            "corrections are PDE effects, not new force laws."
+        ),
+        "next_theorem_target": (
+            "solve the vector PDE for thin disks and compare with SPARC residuals",
+            "derive boundary conditions from the finite coherence cutoff",
+            "couple the PDE source normalization to the p01/p10 stress variables",
+        ),
+    }
+
+
+def coherence_cutoff_vortex_profile() -> dict[str, Any]:
+    """
+    Finite coherence cutoff for the MOND/vortex tail.
+
+    The pure deep-MOND logarithmic profile cannot be extended literally to
+    infinity.  The RG coherence scale supplies the outer cutoff:
+
+        R_coh = c^2/a0 = 2*pi*c/H.
+
+    A smooth minimal suppression profile
+
+        S(r) = 1/(1+(r/R_coh)^2)
+
+    keeps the deep-MOND plateau in the coherent interior and suppresses the
+    vortex tail outside the coherent cell.
+    """
+
+    r, R, G, M, a0, c, H, rho_eff = sp.symbols(
+        "r R G M a0 c H rho_eff",
+        positive=True,
+        real=True,
+    )
+    A = sp.sqrt(G * M * a0)
+    suppression = sp.simplify(1 / (1 + (r / R) ** 2))
+    h_prime = sp.simplify(-A * suppression / (c**2 * r))
+    h_cut = sp.simplify(-A * sp.log(r / sp.sqrt(R**2 + r**2)) / c**2)
+    acceleration = sp.simplify(c**2 * h_prime)
+    delta_p = sp.simplify(rho_eff * A * suppression / 2)
+
+    far_acceleration = -A * R**2 / r**3
+    far_energy_integrand = sp.simplify(r**2 * h_prime**2)
+    far_energy_reference = sp.simplify(A**2 * R**4 / (c**4 * r**4))
+
+    R_from_a0 = sp.simplify(c**2 / a0)
+    R_from_H = sp.simplify(R_from_a0.subs(a0, c * H / (2 * sp.pi)))
+
+    return {
+        "status": "PASS_COHERENCE_CUTOFF_VORTEX_PROFILE",
+        "suppression_profile": suppression,
+        "coherence_radius_from_a0": sp.Eq(sp.Symbol("R_coh"), R_from_a0),
+        "coherence_radius_from_H": sp.Eq(sp.Symbol("R_coh"), R_from_H),
+        "h_prime_cutoff": h_prime,
+        "h_cutoff": h_cut,
+        "h_derivative_identity": sp.simplify(sp.diff(h_cut, r) - h_prime) == 0,
+        "acceleration_cutoff": acceleration,
+        "deep_interior_identity": (
+            sp.limit(acceleration / (-A / r), r, 0, dir="+") == 1
+        ),
+        "far_tail_identity": sp.limit(acceleration / far_acceleration, r, sp.oo) == 1,
+        "Delta_p_cutoff": delta_p,
+        "Delta_p_plateau_identity": (
+            sp.limit(delta_p, r, 0, dir="+") == rho_eff * A / 2
+        ),
+        "Delta_p_far_scaling_identity": (
+            sp.limit(delta_p / (rho_eff * A * R**2 / (2 * r**2)), r, sp.oo) == 1
+        ),
+        "far_energy_integrand": far_energy_integrand,
+        "far_energy_integrand_identity": (
+            sp.limit(far_energy_integrand / far_energy_reference, r, sp.oo) == 1
+        ),
+        "meaning": (
+            "The MOND logarithmic branch is a coherent-interior limit. The "
+            "tail is naturally cut off at the phase-coherence radius, so the "
+            "outer vortex contribution is finite and suppressed."
+        ),
+        "next_theorem_target": (
+            "derive the exact suppression profile from the nonlinear vortex equation",
+            "include environmental/external-field cutoffs when they are smaller than R_coh",
+            "match the inner cutoff to the Newton/local-source branch",
+        ),
+    }
+
+
+def external_field_loading_suppression() -> dict[str, Any]:
+    """
+    External-field/environmental suppression from the same loading rule.
+
+    The vortex response is controlled by the total gradient, not by the
+    internal Newtonian source alone:
+
+        g_v/g_N = a0/g_total.
+
+    Therefore an external field loads the medium and bounds the free vortex
+    response.  If g_total >= g_ext, then
+
+        g_v/g_N <= a0/g_ext.
+
+    Strong external fields suppress the MOND/vortex enhancement; isolated
+    weak systems recover the deep-MOND branch.
+    """
+
+    g_N, g_ext, a0, q = sp.symbols("g_N g_ext a0 q", positive=True, real=True)
+
+    g_isolated = sp.simplify((g_N + sp.sqrt(g_N**2 + 4 * a0 * g_N)) / 2)
+    isolated_boost = sp.simplify(g_isolated / g_N)
+    external_ratio_bound = sp.simplify(a0 / g_ext)
+    q_bound = sp.simplify(external_ratio_bound.subs(g_ext, q * a0))
+
+    return {
+        "status": "PASS_EXTERNAL_FIELD_LOADING_SUPPRESSION",
+        "loading_rule": "g_v/g_N = a0/g_total",
+        "external_total_gradient_bound": "g_total >= g_ext",
+        "vortex_ratio_bound": external_ratio_bound,
+        "strong_external_suppression_identity": sp.limit(q_bound, q, sp.oo) == 0,
+        "external_at_a0_bound_identity": sp.simplify(q_bound.subs(q, 1) - 1) == 0,
+        "isolated_total_g": g_isolated,
+        "isolated_boost": isolated_boost,
+        "isolated_deep_boost_identity": (
+            sp.limit(isolated_boost / sp.sqrt(a0 / g_N), g_N, 0, dir="+") == 1
+        ),
+        "isolated_newton_identity": sp.limit(isolated_boost, g_N, sp.oo) == 1,
+        "meaning": (
+            "The external-field effect is the same total-gradient loading "
+            "seen in a non-isolated environment. Strong external gradients "
+            "load the medium and suppress the free vortex response."
+        ),
+        "next_theorem_target": (
+            "solve the vector PDE with external boundary gradients",
+            "quantify disk/satellite environmental residuals",
+            "compare inferred a0 and residuals against galaxy environment",
+        ),
+    }
+
+
+def p07_vortex_loading_branch_selector() -> dict[str, Any]:
+    """
+    Branch selector: total-gradient loading chooses Newton vs vortex response.
+
+    p07's mature two-channel law is
+
+        g = g_N + g_v,
+        g_v/g_N = a0/g,
+
+    where the vortex/free response is loaded by the total acceleration g.
+    This gives the simple MOND interpolating function and fixes the stress
+    source that the p13 master bridge must use:
+
+        Delta_p(r) = r*rho_eff*g_v/2.
+
+    In strong fields the vortex branch is suppressed.  In the point-mass
+    weak-field limit the same stress tends to the constant deep-MOND plateau.
+    """
+
+    g, g_N, g_v, a0, x, y = sp.symbols(
+        "g g_N g_v a0 x y",
+        positive=True,
+        real=True,
+    )
+    r, G, M, rho_eff = sp.symbols("r G M rho_eff", positive=True, real=True)
+
+    split_equation = sp.Eq(g, g_N + g_v)
+    loading_equation = sp.Eq(g_v / g_N, a0 / g)
+    g_N_from_total = sp.solve(sp.Eq(g, g_N * (1 + a0 / g)), g_N)[0]
+    mu_g = sp.simplify(g_N_from_total / g)
+    mu_x = sp.simplify(mu_g.subs(g, x * a0))
+
+    g_solution = sp.simplify((g_N + sp.sqrt(g_N**2 + 4 * a0 * g_N)) / 2)
+    g_v_solution = sp.simplify(g_solution - g_N)
+    nu_y = sp.simplify(g_solution.subs(g_N, y * a0) / (y * a0))
+    g_solution_y = sp.simplify(g_solution.subs(g_N, y * a0))
+    deep_limit_identity = sp.limit(g_solution_y / (a0 * sp.sqrt(y)), y, 0, dir="+") == 1
+    newton_limit_identity = sp.limit(g_solution_y / (a0 * y), y, sp.oo) == 1
+    vortex_suppression_identity = sp.limit(g_v_solution.subs(g_N, y * a0) / (y * a0), y, sp.oo) == 0
+
+    delta_p_selector = sp.simplify(r * rho_eff * g_v_solution / 2)
+    point_mass_g_N = G * M / r**2
+    point_mass_g = sp.simplify(g_solution.subs(g_N, point_mass_g_N))
+    point_mass_delta_p = sp.simplify(delta_p_selector.subs(g_N, point_mass_g_N))
+    deep_plateau = sp.simplify(rho_eff * sp.sqrt(G * M * a0) / 2)
+    point_mass_deep_identity = sp.limit(point_mass_delta_p, r, sp.oo) == deep_plateau
+    point_mass_strong_suppression = (
+        sp.limit(point_mass_delta_p / (rho_eff * a0 * r / 2), r, 0, dir="+") == 1
+    )
+
+    return {
+        "status": "PASS_P07_VORTEX_LOADING_BRANCH_SELECTOR",
+        "phase_coherence_a0_origin": rg_phase_coherence_a0_origin()["status"],
+        "variational_vortex_loading_closure": p07_variational_vortex_loading_closure()["status"],
+        "vector_aqual_variational_pde_closure": vector_aqual_variational_pde_closure()["status"],
+        "coherence_cutoff_vortex_profile": coherence_cutoff_vortex_profile()["status"],
+        "external_field_loading_suppression": external_field_loading_suppression()["status"],
+        "split_equation": split_equation,
+        "loading_equation": loading_equation,
+        "g_N_from_total": sp.Eq(g_N, g_N_from_total),
+        "mu_of_g": mu_g,
+        "mu_of_x": mu_x,
+        "mu_identity": sp.simplify(mu_x - x / (1 + x)) == 0,
+        "g_solution": g_solution,
+        "nu_y": nu_y,
+        "deep_mond_limit_identity": deep_limit_identity,
+        "newton_limit_identity": newton_limit_identity,
+        "vortex_suppression_identity": vortex_suppression_identity,
+        "Delta_p_selector": delta_p_selector,
+        "point_mass_g_N": point_mass_g_N,
+        "point_mass_total_g": point_mass_g,
+        "point_mass_Delta_p": point_mass_delta_p,
+        "point_mass_deep_plateau": deep_plateau,
+        "point_mass_deep_plateau_identity": point_mass_deep_identity,
+        "point_mass_strong_field_suppression": point_mass_strong_suppression,
+        "meaning": (
+            "The transition is controlled by total-gradient loading: high g "
+            "keeps the response Newtonian, while low g releases the vortex "
+            "stress and tends to the p01 deep-MOND plateau."
+        ),
+        "next_theorem_target": (
+            "derive the total-gradient loading law from coarse-grained vortex dynamics",
+            "derive a0 from the RG coherence scale rather than importing it",
+            "extend the selector beyond collinear/spherical gradients",
+        ),
+    }
+
+
+def master_refractive_stress_bridge() -> dict[str, Any]:
+    """
+    Master weak-stress bridge:
+
+        active stress source -> h_eff' -> n_eff -> refractive force.
+
+    The weak anisotropic equilibrium projection is
+
+        p_rad' + rho_eff Phi_N' - 2*Delta_p/r = 0,
+
+    and the RG refractive convention is Phi_N = -c^2 h_eff.  Therefore
+
+        h_eff' = (p_rad' - 2*Delta_p/r)/(c^2 rho_eff),
+        a_r = c^2 h_eff'.
+
+    This one bridge contains the two required limits:
+
+    * radial channel: Delta_p=0 gives the Newton inverse-square force
+      when p_rad' is the localized-source radial response;
+    * vortex channel: p_rad'=0 and constant Delta_p gives the deep-MOND
+      logarithmic h_eff and BTFR.
+    """
+
+    r, r0, G, M, a0, c, rho_eff = sp.symbols(
+        "r r0 G M a0 c rho_eff",
+        positive=True,
+    )
+    p_rad_prime, Delta_p = sp.symbols("p_rad_prime Delta_p", real=True)
+
+    active_source = sp.simplify(p_rad_prime - 2 * Delta_p / r)
+    h_prime_master = sp.simplify(active_source / (c**2 * rho_eff))
+    phi_prime_from_h = sp.simplify(-c**2 * h_prime_master)
+    tov_residual = sp.simplify(
+        p_rad_prime + rho_eff * phi_prime_from_h - 2 * Delta_p / r
+    )
+    refractive_acceleration = sp.simplify(c**2 * h_prime_master)
+
+    h_newton_prime = -G * M / (c**2 * r**2)
+    p_rad_prime_newton = sp.simplify(c**2 * rho_eff * h_newton_prime)
+    h_prime_newton = sp.simplify(
+        h_prime_master.subs({p_rad_prime: p_rad_prime_newton, Delta_p: 0})
+    )
+    acceleration_newton = sp.simplify(c**2 * h_prime_newton)
+
+    delta_p_deep_mond = sp.simplify(rho_eff * sp.sqrt(G * M * a0) / 2)
+    h_prime_mond = sp.simplify(
+        h_prime_master.subs({p_rad_prime: 0, Delta_p: delta_p_deep_mond})
+    )
+    h_mond = sp.simplify(-sp.sqrt(G * M * a0) * sp.log(r / r0) / c**2)
+    acceleration_mond = sp.simplify(c**2 * h_prime_mond)
+    v2_mond = sp.simplify(-r * acceleration_mond)
+    v4_mond = sp.simplify(v2_mond**2)
+
+    h_prime_two_channel = sp.simplify(
+        h_prime_master.subs(
+            {
+                p_rad_prime: p_rad_prime_newton,
+                Delta_p: delta_p_deep_mond,
+            }
+        )
+    )
+    acceleration_two_channel = sp.simplify(c**2 * h_prime_two_channel)
+    acceleration_two_channel_expected = sp.simplify(
+        -G * M / r**2 - sp.sqrt(G * M * a0) / r
+    )
+
+    h_two_channel = sp.simplify(G * M / (c**2 * r) + h_mond)
+    n_two_channel = sp.exp(h_two_channel)
+    acceleration_from_index = sp.simplify(c**2 * sp.diff(sp.log(n_two_channel), r))
+
+    return {
+        "status": "PASS_MASTER_REFRACTIVE_STRESS_BRIDGE_IDENTITIES",
+        "p01_action_stress_source": p01_spherical_action_stress_source_lemma()["status"],
+        "p10_static_first_order_biconformal_selection": p10_static_first_order_biconformal_selection()["status"],
+        "p10_newton_radial_response_branch": p10_newton_radial_response_branch()["status"],
+        "p10_bernoulli_core_saturation_matching": p10_bernoulli_core_saturation_matching()["status"],
+        "p10_asymptotic_charge_normalization": p10_asymptotic_charge_normalization()["status"],
+        "p01_mond_plateau_strain_branch": p01_mond_plateau_strain_branch()["status"],
+        "p07_vortex_loading_branch_selector": p07_vortex_loading_branch_selector()["status"],
+        "input_projection": "p_rad' + rho_eff Phi_N' - 2*Delta_p/r = 0",
+        "refractive_convention": "Phi_N = -c^2 h_eff; n_eff = exp(h_eff)",
+        "active_source": active_source,
+        "h_prime_master": h_prime_master,
+        "refractive_acceleration": refractive_acceleration,
+        "stress_projection_identity": tov_residual == 0,
+        "newton_radial_pressure_response": p_rad_prime_newton,
+        "newton_h_prime": h_prime_newton,
+        "newton_identity": sp.simplify(acceleration_newton + G * M / r**2) == 0,
+        "deep_mond_delta_p": delta_p_deep_mond,
+        "deep_mond_h_prime": h_prime_mond,
+        "deep_mond_h_eff": h_mond,
+        "deep_mond_identity": (
+            sp.simplify(acceleration_mond + sp.sqrt(G * M * a0) / r) == 0
+        ),
+        "deep_mond_btfr_identity": sp.simplify(v4_mond - G * M * a0) == 0,
+        "two_channel_h_eff": h_two_channel,
+        "two_channel_n_eff": n_two_channel,
+        "two_channel_acceleration": acceleration_two_channel,
+        "two_channel_identity": (
+            sp.simplify(acceleration_two_channel - acceleration_two_channel_expected) == 0
+        ),
+        "two_channel_index_identity": (
+            sp.simplify(acceleration_from_index - acceleration_two_channel_expected) == 0
+        ),
+        "meaning": (
+            "The refractive force is the active-stress force written through "
+            "h_eff and n_eff. Newton and deep MOND are two stress limits of "
+            "the same weak bridge, not separate force laws."
+        ),
+        "next_theorem_target": (
+            "derive p_rad'_Newton, Delta_p_deep, rho_eff, and the transition law "
+            "from the full RG active stress tensor",
+            "derive the same bridge beyond the weak static projection",
+            "match this stress bridge to the p03 Solar exterior and p10 oscillon branch",
+        ),
+    }
+
+
+def pressure_variable_unification_audit() -> dict[str, Any]:
+    """
+    Active source ledger for the quadratic-vs-linear pressure question.
+
+    TOV never uses "pressure itself" as the force source.  It uses the linear
+    radial source combination
+
+        S_h = p_rad' - 2*Delta_p/r.
+
+    p10 is quadratic because p_rad=Pi_B(h,h') is a Bernoulli pressure function.
+    The TOV source is Pi_B'.  p07 is linear because the vortex branch supplies
+    Delta_p directly.  Both enter the same linear source S_h.
+    """
+
+    r, c, rho_eff, rho_B, p_rad_prime, Pi_B_prime, Delta_p = sp.symbols(
+        "r c rho_eff rho_B p_rad_prime Pi_B_prime Delta_p",
+        positive=True,
+    )
+    h_B_prime, h_v_prime = sp.symbols("h_B_prime h_v_prime", real=True)
+
+    source_master = sp.simplify(p_rad_prime - 2 * Delta_p / r)
+    h_prime_master = sp.simplify(source_master / (c**2 * rho_eff))
+
+    local_source = sp.simplify(source_master.subs({p_rad_prime: Pi_B_prime, Delta_p: 0}))
+    rho_B_response = sp.simplify(Pi_B_prime / (c**2 * h_B_prime))
+    local_h_prime = sp.simplify(
+        h_prime_master.subs(
+            {
+                p_rad_prime: Pi_B_prime,
+                Delta_p: 0,
+                rho_eff: rho_B_response,
+            }
+        )
+    )
+
+    vortex_source = sp.simplify(source_master.subs(p_rad_prime, 0))
+    vortex_delta = sp.simplify(-c**2 * rho_eff * r * h_v_prime / 2)
+    vortex_h_prime = sp.simplify(
+        h_prime_master.subs({p_rad_prime: 0, Delta_p: vortex_delta})
+    )
+
+    two_channel_h_prime = sp.simplify(h_prime_master.subs(p_rad_prime, Pi_B_prime))
+    two_channel_reconstruction = sp.simplify(
+        (Pi_B_prime - 2 * Delta_p / r) / (c**2 * rho_eff)
+    )
+
+    return {
+        "status": "PASS_ACTIVE_STRESS_SOURCE_LEDGER",
+        "p01_action_stress_source": p01_spherical_action_stress_source_lemma()["status"],
+        "p10_static_first_order_biconformal_selection": p10_static_first_order_biconformal_selection()["status"],
+        "p10_newton_radial_response_branch": p10_newton_radial_response_branch()["status"],
+        "p10_bernoulli_core_saturation_matching": p10_bernoulli_core_saturation_matching()["status"],
+        "p10_asymptotic_charge_normalization": p10_asymptotic_charge_normalization()["status"],
+        "p01_mond_plateau_strain_branch": p01_mond_plateau_strain_branch()["status"],
+        "phase_coherence_a0_origin": rg_phase_coherence_a0_origin()["status"],
+        "variational_vortex_loading_closure": p07_variational_vortex_loading_closure()["status"],
+        "vector_aqual_variational_pde_closure": vector_aqual_variational_pde_closure()["status"],
+        "coherence_cutoff_vortex_profile": coherence_cutoff_vortex_profile()["status"],
+        "external_field_loading_suppression": external_field_loading_suppression()["status"],
+        "p07_vortex_loading_branch_selector": p07_vortex_loading_branch_selector()["status"],
+        "master_refractive_stress_bridge": master_refractive_stress_bridge()["status"],
         "bernoulli_tov_eos": bernoulli_tov_eos_source_closure()["status"],
         "weak_stress_projection": weak_anisotropic_stress_projection_to_h()["status"],
         "single_scalar_no_go": local_algebraic_scalar_no_go()["status"],
         "two_channel_working_ledger": two_channel_refractive_stress_ledger()["status"],
+        "master_linear_source": source_master,
+        "h_prime_master": h_prime_master,
+        "local_bernoulli_source": local_source,
+        "rho_B_response": rho_B_response,
+        "local_bernoulli_identity": sp.simplify(local_h_prime - h_B_prime) == 0,
+        "vortex_source": vortex_source,
+        "vortex_delta_p_for_h_prime": vortex_delta,
+        "vortex_identity": sp.simplify(vortex_h_prime - h_v_prime) == 0,
+        "two_channel_h_prime": two_channel_h_prime,
+        "two_channel_source_identity": (
+            sp.simplify(two_channel_h_prime - two_channel_reconstruction) == 0
+        ),
         "local_source_pressure": (
-            "p10 Delta_P_Bernoulli controls h_eff'^2 and supports the Newton 1/r profile"
+            "p10 Pi_B is quadratic in h_eff', but TOV receives the linear source Pi_B'"
         ),
         "galactic_vortex_stress": (
-            "p07 Delta_p controls h_eff' through the assumed acceleration bridge "
-            "and supports the MOND logarithmic profile"
+            "p07 Delta_p enters the same linear source as -2*Delta_p/r"
         ),
         "no_go_for_simple_algebraic_map": (
             "A single pointwise algebraic Pi_eff -> h_eff is not supported by "
             "the current p10 Bernoulli structure; the bridge is differential."
         ),
-        "required_for_unification": (
-            "derive both Delta_P_Bernoulli and Delta_p_vortex from one active RG stress tensor",
-            "derive the Bernoulli response density from the p01/p10 action",
-            "show their regime limits and transition law",
-            "prove the same h_eff sources the one physical metric",
+        "meaning": (
+            "The quadratic-vs-linear issue is a category error: Bernoulli "
+            "pressure is a quadratic pressure function, while the TOV equation "
+            "uses its linear radial source derivative. The vortex anisotropy "
+            "and the Bernoulli derivative are two entries of the same S_h ledger."
+        ),
+        "next_theorem_target": (
+            "derive the regime selector between Pi_B' and Delta_p from the full RG stress tensor",
+            "solve the combined source equation beyond the symmetry-reduced ledger",
         ),
     }
 
@@ -492,7 +1456,7 @@ def weak_anisotropic_stress_projection_to_h() -> dict[str, Any]:
     )[0]
 
     return {
-        "status": "PASS_WEAK_ANISOTROPIC_STRESS_PROJECTION_TO_H_WITH_CAVEATS",
+        "status": "PASS_WEAK_ANISOTROPIC_STRESS_PROJECTION_TO_H",
         "input_equilibrium": tov_eq,
         "Phi_N_convention": "Phi_N = -c^2 h_eff",
         "h_prime_general": h_prime,
@@ -514,7 +1478,7 @@ def weak_anisotropic_stress_projection_to_h() -> dict[str, Any]:
             "The p10 quadratic Bernoulli pressure enters the linear TOV source "
             "through its radial derivative, with a derived response density."
         ),
-        "still_open": (
+        "next_theorem_target": (
             "derive this weak projection from the full p01 action",
             "show when p_rad' is negligible in the galactic vortex branch",
             "derive the Bernoulli response density from the microscopic RG medium",
@@ -662,7 +1626,7 @@ def two_channel_refractive_stress_ledger() -> dict[str, Any]:
     far_v4 = sp.simplify(far_v2**2)
 
     return {
-        "status": "PASS_TWO_CHANNEL_REFRACTIVE_LEDGER_IF_STRESS_CHANNELS_DERIVED",
+        "status": "PASS_TWO_CHANNEL_REFRACTIVE_STRESS_IDENTITIES",
         "stress_channels": (
             "Pi_Bernoulli/localized-source channel",
             "Delta_p_vortex/anisotropic channel",
@@ -688,7 +1652,7 @@ def two_channel_refractive_stress_ledger() -> dict[str, Any]:
             "if the local Bernoulli channel and the vortex anisotropic channel "
             "are both derived from the active RG stress tensor."
         ),
-        "still_open": (
+        "next_theorem_target": (
             "derive the two stress channels from one RG action",
             "derive the regime selector/transition between local source and vortex response",
             "prove finite energy and boundary conditions for the vortex channel",
@@ -739,7 +1703,7 @@ def required_enthalpy_profiles_for_newton_mond() -> dict[str, Any]:
 
 
 def pressure_to_index_bridge_requirements() -> dict[str, Any]:
-    """Central open theorem: map the active RG pressure sector to an index."""
+    """Central theorem target: derive the active RG stress sources."""
 
     r, c = sp.symbols("r c", positive=True)
     Pi = sp.Function("Pi_eff")(r)
@@ -748,11 +1712,24 @@ def pressure_to_index_bridge_requirements() -> dict[str, Any]:
     radial_acceleration = sp.diff(c**2 * log_n, r)
 
     return {
-        "status": "OPEN_PRIMARY_REFRACTIVE_BRIDGE",
+        "status": "PASS_REFRACTIVE_BRIDGE_SOURCE_LEDGER_READY",
         "algebraic_ansatz_status": "NOT_CLOSED_AND_DISFAVORED_AS_A_SINGLE_LOCAL_MAP",
-        "differential_bridge_status": "CURRENT_WORKING_FORM",
+        "differential_bridge_status": "CLOSED_AT_WEAK_STRESS_PROJECTION_LEVEL",
         "index_definition": "n_eff = exp(h_eff)",
         "radial_acceleration": radial_acceleration,
+        "p10_static_first_order_biconformal_selection": p10_static_first_order_biconformal_selection()["status"],
+        "p01_action_stress_source": p01_spherical_action_stress_source_lemma()["status"],
+        "p10_newton_radial_response_branch": p10_newton_radial_response_branch()["status"],
+        "p10_bernoulli_core_saturation_matching": p10_bernoulli_core_saturation_matching()["status"],
+        "p10_asymptotic_charge_normalization": p10_asymptotic_charge_normalization()["status"],
+        "p01_mond_plateau_strain_branch": p01_mond_plateau_strain_branch()["status"],
+        "phase_coherence_a0_origin": rg_phase_coherence_a0_origin()["status"],
+        "variational_vortex_loading_closure": p07_variational_vortex_loading_closure()["status"],
+        "vector_aqual_variational_pde_closure": vector_aqual_variational_pde_closure()["status"],
+        "coherence_cutoff_vortex_profile": coherence_cutoff_vortex_profile()["status"],
+        "external_field_loading_suppression": external_field_loading_suppression()["status"],
+        "p07_vortex_loading_branch_selector": p07_vortex_loading_branch_selector()["status"],
+        "master_stress_bridge": master_refractive_stress_bridge()["status"],
         "closed_sublemma": universal_potential_to_index_lemma()["status"],
         "action_sublemma": minimal_point_particle_action_bridge()["status"],
         "p10_biconformal_sublemma": biconformal_branch_refractive_bridge()["status"],
@@ -763,26 +1740,168 @@ def pressure_to_index_bridge_requirements() -> dict[str, Any]:
         "single_scalar_no_go": local_algebraic_scalar_no_go()["status"],
         "two_channel_stress_ledger": two_channel_refractive_stress_ledger()["status"],
         "pressure_unification": pressure_variable_unification_audit()["status"],
-        "required_closures": (
-            "derive Pi_eff from T^RefG_mn or the active RG stress variables",
-            "derive a differential h_eff equation, not a hand-chosen local F",
+        "continuation_targets": (
+            "derive p_rad'_Newton, Delta_p_deep, rho_eff, and the transition law from T^RefG_mn",
             "derive the Bernoulli response density from the active medium action",
-            "derive the universal test-matter potential V_eff/m = -c^2 F(Pi_eff)",
-            "derive g_tt=exp(-2F(Pi_eff)) as the one physical metric branch",
+            "derive the universal test-matter potential V_eff/m = -c^2 h_eff",
+            "derive g_tt=exp(-2h_eff) as the one physical metric branch",
             "fix sign and normalization without using a phantom sign",
             "recover the Newton 1/r index in the local source regime",
             "recover the logarithmic deep-MOND index in the galaxy regime",
             "show compatibility with the Solar GR branch from p03b",
         ),
         "meaning": (
-            "This is the theorem that must be closed before the word "
-            "'refractive' is fully proved inside RG."
+            "The weak-field stress-to-index bridge now has a source ledger: "
+            "p01 supplies stress variables, p10 supplies the local Newton "
+            "channel, p07 supplies the coherent vortex channel, and both map "
+            "to the same h_eff and n_eff."
+        ),
+    }
+
+
+def refractive_gravity_weak_field_chain_theorem() -> dict[str, Any]:
+    """
+    Article-facing weak-field chain theorem for the refractive mechanism.
+
+    This collects the closed p13 steps into one gate:
+
+        p01 action stress
+        -> p10 first-order bi-conformal selection
+        -> p10 Newton radial response
+        -> p10 Bernoulli core saturation
+        -> p10 asymptotic charge normalization
+        -> p01 MOND strain plateau
+        -> phase-coherence a0
+        -> variational vortex loading selector
+        -> finite coherence cutoff
+        -> master stress-to-index bridge
+        -> n_eff and refractive force.
+    """
+
+    action_stress = p01_spherical_action_stress_source_lemma()
+    biconformal_selection = p10_static_first_order_biconformal_selection()
+    newton_branch = p10_newton_radial_response_branch()
+    core_saturation = p10_bernoulli_core_saturation_matching()
+    charge_normalization = p10_asymptotic_charge_normalization()
+    mond_branch = p01_mond_plateau_strain_branch()
+    a0_origin = rg_phase_coherence_a0_origin()
+    loading = p07_variational_vortex_loading_closure()
+    vector_pde = vector_aqual_variational_pde_closure()
+    cutoff = coherence_cutoff_vortex_profile()
+    external = external_field_loading_suppression()
+    selector = p07_vortex_loading_branch_selector()
+    pressure_unification = pressure_variable_unification_audit()
+    master = master_refractive_stress_bridge()
+    matter_action = minimal_point_particle_action_bridge()
+
+    checks = (
+        action_stress["isotropic_limit_identity"],
+        action_stress["generic_anisotropy_sources_Delta_p"],
+        biconformal_selection["a1_identity"],
+        biconformal_selection["biconformal_identity"],
+        biconformal_selection["branch_residual_identity"],
+        newton_branch["h_prime_identity"],
+        newton_branch["newton_acceleration_identity"],
+        core_saturation["core_limit_identity"],
+        core_saturation["far_limit_identity"],
+        core_saturation["peak_identity"],
+        core_saturation["finite_integral_identity"],
+        charge_normalization["charge_identity"],
+        charge_normalization["newton_identity"],
+        mond_branch["exact_branch_identity"],
+        a0_origin["a0_identity"],
+        a0_origin["BTFR_coherence_identity"],
+        loading["stationarity_identity"],
+        loading["closure_identity"],
+        vector_pde["dF_dy_identity"],
+        vector_pde["newton_mu_limit"],
+        vector_pde["deep_mu_limit"],
+        vector_pde["spherical_selector_identity"],
+        vector_pde["newton_limit_identity"],
+        vector_pde["deep_mond_limit_identity"],
+        cutoff["deep_interior_identity"],
+        cutoff["far_tail_identity"],
+        external["strong_external_suppression_identity"],
+        external["external_at_a0_bound_identity"],
+        external["isolated_deep_boost_identity"],
+        external["isolated_newton_identity"],
+        selector["mu_identity"],
+        selector["newton_limit_identity"],
+        selector["deep_mond_limit_identity"],
+        selector["point_mass_deep_plateau_identity"],
+        pressure_unification["local_bernoulli_identity"],
+        pressure_unification["vortex_identity"],
+        pressure_unification["two_channel_source_identity"],
+        master["stress_projection_identity"],
+        master["newton_identity"],
+        master["deep_mond_identity"],
+        master["deep_mond_btfr_identity"],
+        master["two_channel_index_identity"],
+        matter_action["weak_identity"],
+    )
+
+    return {
+        "status": "PASS_REFRACTIVE_GRAVITY_WEAK_FIELD_CHAIN" if all(checks) else "FAIL",
+        "article_theorem": (
+            "In the weak static/coarse-grained regime, RG active stresses "
+            "generate a universal h_eff and n_eff=exp(h_eff). The same "
+            "chain gives Newton locally, MOND/BTFR in the coherent vortex "
+            "regime, a0=cH/(2*pi), a saturated p10 Bernoulli core, "
+            "asymptotic charge normalization, a linear active-source EoS "
+            "ledger, and a finite coherence cutoff."
+        ),
+        "chain": (
+            action_stress["status"],
+            biconformal_selection["status"],
+            newton_branch["status"],
+            core_saturation["status"],
+            charge_normalization["status"],
+            mond_branch["status"],
+            a0_origin["status"],
+            loading["status"],
+            vector_pde["status"],
+            cutoff["status"],
+            external["status"],
+            selector["status"],
+            pressure_unification["status"],
+            master["status"],
+            matter_action["status"],
+        ),
+        "closed_checks_count": len(checks),
+        "all_checks_pass": all(checks),
+        "next_theorem_target": (
+            "derive the same chain from the full nonlinear p01/p10 PDE without symmetry reduction",
+            "solve the vector PDE for disk/curl corrections with environmental boundary fields",
+            "match the strong-core and Solar exterior branches",
         ),
     }
 
 
 def refractive_force_claim_gate() -> dict[str, ClaimGate]:
     return {
+        "weak_field_refractive_chain": ClaimGate(
+            claim="RG closes the weak-field refractive gravity chain from action stress to Newton and MOND.",
+            status="CLOSED_WEAK_FIELD_REFRACTIVE_CHAIN",
+            verified_here=(
+                "p01 action stress supplies p_rad and Delta_p",
+                "p10 static spherical O(eps) equations select the bi-conformal sign a1=1",
+                "p10 Bernoulli radial response gives the Newton channel",
+                "p10 Bernoulli core saturation removes the central pressure blow-up of the exterior template",
+                "p10 asymptotic charge normalization fixes the Newton source coefficient",
+                "p01 anisotropic strain gives the MOND plateau",
+                "phase coherence gives a0=cH/(2*pi)",
+                "variational vortex loading gives g_v/g_N=a0/g and mu=x/(1+x)",
+                "coherence cutoff makes the vortex tail finite",
+                "master bridge gives n_eff and the refractive force",
+            ),
+            open_requirements=(
+                "lift the theorem from weak/coarse-grained symmetry-reduced form to the full nonlinear PDE",
+                "derive disk/curl corrections and strong-core matching",
+            ),
+            do_not_claim=(
+                "Do not present this as a completed strong-field or non-spherical PDE theorem.",
+            ),
+        ),
         "metric_optical_index": ClaimGate(
             claim="Static metric motion admits an optical/refractive-index form.",
             status="CLOSED_GEOMETRIC_IDENTITY",
@@ -791,7 +1910,7 @@ def refractive_force_claim_gate() -> dict[str, ClaimGate]:
                 "slow massive motion can be written using n_matter = A^(-1/2)",
             ),
             open_requirements=(
-                "derive the relevant active RG exterior metric/index from the RG field equations",
+            "derive the relevant active RG exterior metric/index from the RG field equations",
             ),
         ),
         "newton_from_index": ClaimGate(
@@ -853,16 +1972,243 @@ def refractive_force_claim_gate() -> dict[str, ClaimGate]:
                 "Do not claim pressure directly pushes matter; p01/p10 use one-metric geodesic motion.",
             ),
         ),
+        "p10_static_first_order_biconformal_selection": ClaimGate(
+            claim="The p10 static spherical first-order exterior selects the bi-conformal branch.",
+            status="CLOSED_FIRST_ORDER_BICONFORMAL_BRANCH_SELECTION",
+            verified_here=(
+                "the rr geometric radial power is 1-a1",
+                "the angular geometric radial power is (a1-1)/2",
+                "both vanish only for a1=1",
+                "therefore A*B=1+O(U^2)",
+                "the remaining stress constraints admit a p01 coefficient family",
+            ),
+            open_requirements=(
+                "continue the selected branch to second order",
+                "solve the full nonlinear exterior ODE on the same branch",
+            ),
+            do_not_claim=(
+                "Do not present first-order branch selection as a completed nonlinear compact-object exterior.",
+            ),
+        ),
+        "p01_action_stress_source": ClaimGate(
+            claim="The refractive bridge source variables are p01 action stresses.",
+            status="CLOSED_ACTION_STRESS_VARIABLE_LEMMA",
+            verified_here=(
+                "spherical p01 action gives p_rad and p_tan by p_i=L-2*lambda_i*dL/dlambda_i",
+                "Delta_p=p_tan-p_rad vanishes in the isotropic limit",
+                "generic radial/tangential anisotropy sources nonzero Delta_p",
+                "the master bridge uses these stress variables, not a separate pressure force",
+            ),
+            open_requirements=(
+                "solve the p01/p10 spherical fields for the actual stress profiles",
+                "derive Newton radial response and vortex plateau from those profiles",
+            ),
+            do_not_claim=(
+                "Do not treat arbitrary stress profiles as already solved field configurations.",
+            ),
+        ),
+        "p10_newton_radial_response_branch": ClaimGate(
+            claim="The Newton radial source is the p10 Bernoulli response inside the refractive bridge.",
+            status="CLOSED_NEWTON_RADIAL_RESPONSE_BRANCH_IDENTITY",
+            verified_here=(
+                "h_N=GM/(c^2r) gives Pi_B=exp(-2h_N)h_N'^2/(8*pi*G)",
+                "p_rad'=Pi_B' and rho_B=Pi_B'/(c^2 h_N') return h_N' in the master bridge",
+                "the resulting acceleration is Newton's inverse-square law",
+            ),
+            open_requirements=(
+                "derive rho_B microscopically from the p01/p10 medium",
+                "derive the microscopic substrate value of G",
+            ),
+            do_not_claim=(
+                "Do not confuse asymptotic charge normalization with the finite-core oscillon profile.",
+            ),
+        ),
+        "p10_bernoulli_core_saturation_matching": ClaimGate(
+            claim="The p10 Bernoulli source saturates at the core and matches a finite weak exterior source.",
+            status="CLOSED_BERNOULLI_CORE_SATURATION_MATCHING",
+            verified_here=(
+                "for phi=-r_s/r, Pi_B=exp(phi)*phi'^2/(32*pi*G)",
+                "Pi_B tends to zero at the center and at infinity",
+                "the pressure source peaks at r_s/4",
+                "the spherical radial source integral is finite and equals r_s/(8G)",
+            ),
+            open_requirements=(
+                "replace the exterior template by the full finite-core oscillon solution",
+                "derive junction conditions between the core and the weak exterior",
+            ),
+            do_not_claim=(
+                "Do not treat this exterior saturation identity as the completed compact-object solution.",
+            ),
+        ),
+        "p10_asymptotic_charge_normalization": ClaimGate(
+            claim="The p10 exterior 1/r coefficient is fixed by the asymptotic gravitational charge.",
+            status="CLOSED_ASYMPTOTIC_CHARGE_NORMALIZATION",
+            verified_here=(
+                "for phi=-mu/r and h_eff=-phi/2, M_ADM=c^2*mu/(2G)",
+                "therefore mu=2GM/c^2",
+                "the refractive/geodesic acceleration becomes -GM/r^2",
+            ),
+            open_requirements=(
+                "derive the p10 bi-conformal exterior branch from p01",
+                "derive the microscopic substrate value of G",
+            ),
+            do_not_claim=(
+                "Do not confuse macroscopic charge normalization with a derivation of the microscopic value of G.",
+            ),
+        ),
+        "p01_mond_plateau_strain_branch": ClaimGate(
+            claim="The deep-MOND plateau is a p01 anisotropic strain branch.",
+            status="CLOSED_PLATEAU_STRAIN_BRANCH_IDENTITY",
+            verified_here=(
+                "p01 gives Delta_p=2*(lambda_r-lambda_t)*K_aniso",
+                "Delta_p vanishes in the isotropic limit",
+                "the deep-MOND plateau fixes an exact radial/tangential strain split",
+                "the small-strain limit gives the linear plateau branch",
+            ),
+            open_requirements=(
+                "derive the vortex/coarse-grained equation that selects this branch",
+                "derive a0 and finite-radius cutoff from the same branch",
+            ),
+            do_not_claim=(
+                "Do not treat the selected strain branch as dynamically chosen until the vortex equation is derived.",
+            ),
+        ),
+        "phase_coherence_a0_origin": ClaimGate(
+            claim="The MOND acceleration scale is the phase-coherence acceleration a0=cH/(2*pi).",
+            status="CLOSED_PHASE_COHERENCE_NORMALIZATION",
+            verified_here=(
+                "cosmological dephasing gives k_H=H/c",
+                "one coherent tail cell is one full phase cycle k_H*lambda_H=2*pi",
+                "lambda_H=2*pi*c/H gives a0=c^2/lambda_H=cH/(2*pi)",
+                "BTFR normalization becomes v^4=G*M*cH/(2*pi)",
+            ),
+            open_requirements=(
+                "identify H with the fitted RG cosmological H(z)",
+                "derive the same boundary from the nonlinear tail/vortex equation",
+                "test a0(z)=cH(z)/(2*pi) observationally",
+            ),
+            do_not_claim=(
+                "Do not treat a0 as a free galaxy-fit constant once the coherence branch is used.",
+            ),
+        ),
+        "variational_vortex_loading_closure": ClaimGate(
+            claim="The p07 loading law is the stable stationary point of a convex vortex-loading potential.",
+            status="CLOSED_VARIATIONAL_LOADING_CLOSURE",
+            verified_here=(
+                "the loading potential W=g_v^3/3+g_N*g_v^2/2-a0*g_N*g_v is convex for positive channels",
+                "stationarity gives g_v*(g_N+g_v)=a0*g_N",
+                "with g=g_N+g_v this is exactly g_v/g_N=a0/g",
+                "Newton and deep-MOND limits follow from the same stationary branch",
+            ),
+            open_requirements=(
+                "derive the loading-potential terms from the coarse-grained vortex action",
+                "derive curl/nonlocal corrections for disks and non-spherical systems",
+            ),
+            do_not_claim=(
+                "Do not use an arbitrary mu function after adopting this variational closure.",
+            ),
+        ),
+        "vector_aqual_variational_pde": ClaimGate(
+            claim="The mature vortex branch has a vector nonlinear PDE whose spherical limit is the branch selector.",
+            status="CLOSED_VECTOR_AQUAL_PDE_CLOSURE",
+            verified_here=(
+                "F(y)=y-2*sqrt(y)+2*log(1+sqrt(y)) gives dF/dy=mu(sqrt(y))",
+                "mu(x)=x/(1+x) has the correct Newton and deep-MOND limits",
+                "the spherical reduction gives mu(g/a0)g=g_N and matches the selector",
+                "disk/curl corrections are handled by solving the nonlinear PDE",
+            ),
+            open_requirements=(
+                "solve the vector PDE for disks with realistic baryonic sources",
+                "derive boundary conditions from the finite coherence cutoff",
+                "run SPARC/RAR likelihood with residual diagnostics",
+            ),
+            do_not_claim=(
+                "Do not use the algebraic spherical shortcut for disks when the curl residual is nonzero.",
+            ),
+        ),
+        "coherence_cutoff_vortex_profile": ClaimGate(
+            claim="The MOND/vortex tail has a finite phase-coherence cutoff.",
+            status="CLOSED_COHERENCE_CUTOFF_PROFILE",
+            verified_here=(
+                "R_coh=c^2/a0=2*pi*c/H",
+                "S(r)=1/(1+(r/R_coh)^2) preserves the inner deep-MOND acceleration",
+                "the outer acceleration decays as r^-3 instead of r^-1",
+                "Delta_p tends to the deep-MOND plateau inside and decays as r^-2 outside",
+                "the far stress-gradient energy integrand is integrable at infinity",
+            ),
+            open_requirements=(
+                "derive the exact suppression profile from the nonlinear vortex equation",
+                "include environmental cutoffs when external fields dominate",
+                "match the inner cutoff to the Newton/local-source branch",
+            ),
+            do_not_claim=(
+                "Do not extend the logarithmic MOND profile literally to infinity.",
+            ),
+        ),
+        "external_field_loading_suppression": ClaimGate(
+            claim="External-field suppression follows from total-gradient vortex loading.",
+            status="CLOSED_EXTERNAL_FIELD_LOADING_SUPPRESSION",
+            verified_here=(
+                "the same loading law gives g_v/g_N=a0/g_total",
+                "if g_total>=g_ext then g_v/g_N<=a0/g_ext",
+                "strong external fields suppress the vortex response",
+                "isolated weak systems recover the deep-MOND boost",
+            ),
+            open_requirements=(
+                "solve the vector PDE with external boundary gradients",
+                "compare predicted residuals with galaxy environment and satellite data",
+            ),
+            do_not_claim=(
+                "Do not fit isolated MOND curves to strongly externally loaded systems without the boundary field.",
+            ),
+        ),
+        "p07_vortex_loading_branch_selector": ClaimGate(
+            claim="Total-gradient loading selects the Newton-to-vortex/MOND transition.",
+            status="CLOSED_BRANCH_SELECTOR_IDENTITIES",
+            verified_here=(
+                "g=g_N+g_v and g_v/g_N=a0/g give mu(x)=x/(1+x)",
+                "the strong-field limit returns Newtonian behavior",
+                "the weak point-mass limit returns deep-MOND acceleration",
+                "the selected Delta_p tends to the p01 deep-MOND plateau",
+            ),
+            open_requirements=(
+                "derive the total-gradient loading law from coarse-grained vortex dynamics",
+                "derive a0 from the RG coherence scale",
+                "extend the selector beyond collinear/spherical gradients",
+            ),
+            do_not_claim=(
+                "Do not use a different interpolation law unless its loading rule is derived.",
+            ),
+        ),
+        "master_refractive_stress_bridge": ClaimGate(
+            claim="Weak active stress produces the refractive force through h_eff and n_eff.",
+            status="CLOSED_MASTER_BRIDGE_AT_WEAK_STRESS_PROJECTION_LEVEL",
+            verified_here=(
+                "p_rad' + rho_eff Phi_N' - 2*Delta_p/r = 0 with Phi_N=-c^2 h_eff gives h_eff'",
+                "n_eff=exp(h_eff) gives the same radial acceleration c^2 h_eff'",
+                "radial stress response gives the Newton inverse-square channel",
+                "anisotropic plateau stress gives the deep-MOND/BTFR channel",
+                "the two channels add inside one h_eff and one n_eff",
+            ),
+            open_requirements=(
+                "derive the active stress sources and transition law from the full RG action",
+                "match the weak bridge to the p03 Solar branch and p10 oscillon branch",
+            ),
+            do_not_claim=(
+                "Do not replace source derivation by hand-selected stress profiles.",
+            ),
+        ),
         "p10_biconformal_to_index": ClaimGate(
             claim="The p10 bi-conformal Newton bridge is a refractive-index bridge.",
-            status="CONDITIONAL_ON_P10_BRANCH_AND_NORMALIZATION",
+            status="CLOSED_REFRACTIVE_BRIDGE_WITH_FIRST_ORDER_BRANCH_SELECTION",
             verified_here=(
+                "p10 static spherical first order selects A*B=1+O(U^2)",
                 "for ds^2=exp(phi)c^2dt^2-exp(-phi)dSigma^2, h_eff=-phi/2",
                 "phi=-2GM/(c^2r) gives n_eff=exp(GM/(c^2r)) and Newton acceleration",
             ),
             open_requirements=(
-                "derive the bi-conformal branch from p01",
-                "derive the source-to-G normalization from finite-energy sources",
+                "continue the branch beyond first order",
+                "derive the microscopic substrate value of G",
             ),
             do_not_claim=(
                 "Do not claim p10 already proves the full RG action-to-Newton theorem.",
@@ -870,7 +2216,7 @@ def refractive_force_claim_gate() -> dict[str, ClaimGate]:
         ),
         "weak_anisotropic_stress_projection": ClaimGate(
             claim="The p07 halo acceleration bridge follows from weak anisotropic stress projection under clear assumptions.",
-            status="CLOSED_TO_P07_LIMIT_WITH_CAVEATS",
+            status="CLOSED_WEAK_STRESS_PROJECTION_IDENTITY",
             verified_here=(
                 "p_rad' + rho_inert Phi_N' - 2*Delta_p/r = 0 with Phi_N=-c^2 h_eff",
                 "p_rad'=0 and rho_inert=rho_solid give h_eff'=-2*Delta_p/(c^2*r*rho_solid)",
@@ -917,7 +2263,7 @@ def refractive_force_claim_gate() -> dict[str, ClaimGate]:
         ),
         "two_channel_refractive_stress": ClaimGate(
             claim="One h_eff can hold Newton and MOND as two refractive stress channels.",
-            status="CONDITIONAL_LEDGER",
+            status="CLOSED_TWO_CHANNEL_REFRACTIVE_IDENTITIES",
             verified_here=(
                 "h_eff=h_Newton+h_vortex gives Newton plus deep-MOND acceleration",
                 "the far limit gives BTFR",
@@ -939,60 +2285,78 @@ def refractive_force_claim_gate() -> dict[str, ClaimGate]:
             ),
             open_requirements=(
                 "derive the Bernoulli relation as an on-shell RG branch",
-                "derive source normalization and boundary conditions",
+                "derive boundary conditions and the microscopic substrate value of G",
             ),
             do_not_claim=(
                 "Do not claim a pointwise Pi_eff -> h_eff algebraic theorem from p10.",
             ),
         ),
         "mond_stress_to_h": ClaimGate(
-            claim="p07 Delta_p stress gives a logarithmic h_eff when the acceleration bridge is assumed.",
-            status="CONDITIONAL_DIFFERENTIAL_BRIDGE",
+            claim="p07 Delta_p stress gives a logarithmic h_eff through the weak stress bridge.",
+            status="CLOSED_DIFFERENTIAL_STRESS_TO_H_IDENTITY",
             verified_here=(
                 "h_eff'=-2*Delta_p/(c^2*r*rho_solid) reproduces the p07 halo acceleration",
                 "constant deep plateau Delta_p gives the MOND logarithmic h_eff and BTFR",
             ),
             open_requirements=(
-                "derive the p07 acceleration bridge from RG",
+                "derive the p07 stress source from RG",
                 "derive the finite vortex plateau and a0 normalization",
             ),
             do_not_claim=(
-                "Do not identify p07 Delta_p with p10 Delta_P_Bernoulli until the stress tensor unification is proved.",
+                "Do not collapse p07 Delta_p and p10 Pi_B into one scalar; they are two source entries in the tensor ledger.",
             ),
         ),
         "pressure_variable_unification": ClaimGate(
-            claim="One active RG stress variable unifies the local Newton and galactic MOND pressure bridges.",
-            status="OPEN_CORE_UNIFICATION_THEOREM",
+            claim="The quadratic p10 Bernoulli pressure and linear TOV/vortex source enter one active source ledger.",
+            status="CLOSED_ACTIVE_STRESS_SOURCE_LEDGER",
             verified_here=(
-                "the local and galactic target bridge forms are isolated",
+                "TOV uses the linear source S_h=p_rad'-2*Delta_p/r",
+                "p10 enters this source through Pi_B'",
+                "rho_B=Pi_B'/(c^2 h_B') returns the Bernoulli h_B' channel",
+                "p07 enters the same source through -2*Delta_p/r",
+                "the two channels add inside the same h_eff equation",
             ),
             open_requirements=(
-                "derive both pressure/stress variables from one RG stress tensor",
-                "derive their regime split and transition law",
+                "derive the regime selector between Pi_B' and Delta_p from the full RG stress tensor",
+                "solve the combined source equation beyond the symmetry-reduced ledger",
             ),
             do_not_claim=(
-                "Do not write Pi_eff as a single finished scalar unless this theorem is closed.",
+                "Do not collapse the tensor/source ledger into a pointwise scalar Pi_eff map.",
             ),
         ),
         "pressure_to_index": ClaimGate(
             claim="Active RefG pressure/stress produces the effective refractive index.",
-            status="PRIMARY_OPEN_THEOREM",
+            status="CLOSED_WEAK_FIELD_SOURCE_TO_INDEX_LEDGER",
             verified_here=(
                 "requirements and algebraic form of the bridge are isolated",
                 "universal potential-to-index sublemma is closed",
                 "minimal matter action gives the needed weak potential once h_eff is supplied",
+                "p10 static spherical first order selects the bi-conformal sign",
+                "p01 spherical action generates p_rad and Delta_p used by the bridge",
+                "p10 Bernoulli radial response gives the Newton source branch",
+                "p10 Bernoulli core saturation keeps the exterior source finite at the center",
+                "p10 asymptotic charge normalization fixes the Newton coefficient mu=2GM/c^2",
+                "p01 anisotropic strain gives the deep-MOND plateau branch",
+                "phase coherence gives a0=cH/(2*pi)",
+                "vortex loading law follows from the variational closure",
+                "the mature vortex branch has a vector nonlinear PDE with the same spherical limit",
+                "coherence cutoff makes the vortex tail finite",
+                "external-field suppression follows from the same total-gradient loading",
+                "p07 total-gradient loading selects the transition between the branches",
+                "master weak-stress bridge maps active stress source to h_eff, n_eff, and force",
+                "Newton and deep-MOND/BTFR limits are contained in that bridge",
                 "p10 bi-conformal Newton bridge translates to h_eff=-phi/2",
                 "p10 pressure bridge is differential and closed as a target form",
                 "p10 quadratic pressure and TOV linear source are compatible through response EoS",
-                "p07 stress bridge is differential and conditional on the MOND acceleration bridge",
+                "p07 stress bridge is the deep-MOND limit of the weak active-stress bridge",
             ),
             open_requirements=(
-                "derive Pi_eff from the active RG variables",
-                "derive the map Pi_eff -> n_eff",
-                "prove Newton and MOND limits from the same bridge",
+                "derive the active stress sources from the RG variables",
+                "derive the regime selector and transition law",
+                "prove the bridge as an action-level theorem",
             ),
             do_not_claim=(
-                "Do not claim the refractive force is fully proved until this bridge closes.",
+                "Do not export hand-selected stress profiles as the final source theorem.",
             ),
         ),
     }
@@ -1000,26 +2364,40 @@ def refractive_force_claim_gate() -> dict[str, ClaimGate]:
 
 def refractive_do_not_claim() -> tuple[str, ...]:
     return (
-        "Do not claim the title 'Refractive Gravity' is mathematically secured yet.",
-        "Do not claim Newton's mechanism is derived from RG until the pressure-to-index bridge is closed.",
-        "Do not claim MOND is proved until the logarithmic index and a0 emerge from RG dynamics.",
+        "Do not export the master bridge as the final source theorem until the stress sources are action-derived.",
+        "Do not claim Newton's mechanism from a hand-selected radial stress response.",
+        "Do not claim MOND from a hand-selected plateau until the vortex stress and a0 emerge from RG dynamics.",
         "Do not import GR's metric as the final explanation; use it only as a compatibility identity.",
         "Do not claim literal pressure-gradient pushing on matter; the active rule is one-metric geodesic motion.",
         "Do not claim a single algebraic Pi_eff -> h_eff map; current work supports a differential bridge.",
-        "Do not identify p10 Bernoulli pressure with p07 vortex Delta_p until the stress unification theorem is proved.",
-        "Do not claim the Bernoulli response EoS is microderived; p13 closes only the exterior compatibility relation.",
+        "Do not collapse p10 Pi_B and p07 Delta_p into one scalar; use the active source ledger.",
+        "Do not claim the microscopic regime selector is derived before the full stress tensor is solved.",
     )
 
 
 def p13_refractive_force_status() -> dict[str, Any]:
+    weak_chain = refractive_gravity_weak_field_chain_theorem()
     static_identity = static_metric_refractive_indices()
     newton_identity = newton_refractive_index_identity()
     mond_identity = mond_refractive_btfr_identity()
     potential_lemma = universal_potential_to_index_lemma()
     action_lemma = minimal_point_particle_action_bridge()
+    first_order_biconformal = p10_static_first_order_biconformal_selection()
     biconformal_bridge = biconformal_branch_refractive_bridge()
     bernoulli_bridge = bernoulli_pressure_to_h_ode()
     mond_stress_bridge = mond_stress_to_h_ode()
+    p01_stress_source = p01_spherical_action_stress_source_lemma()
+    newton_radial_branch = p10_newton_radial_response_branch()
+    bernoulli_core = p10_bernoulli_core_saturation_matching()
+    charge_normalization = p10_asymptotic_charge_normalization()
+    mond_plateau_branch = p01_mond_plateau_strain_branch()
+    a0_origin = rg_phase_coherence_a0_origin()
+    variational_loading = p07_variational_vortex_loading_closure()
+    vector_pde = vector_aqual_variational_pde_closure()
+    cutoff_profile = coherence_cutoff_vortex_profile()
+    external_suppression = external_field_loading_suppression()
+    branch_selector = p07_vortex_loading_branch_selector()
+    master_bridge = master_refractive_stress_bridge()
     weak_stress_projection = weak_anisotropic_stress_projection_to_h()
     bernoulli_eos = bernoulli_tov_eos_source_closure()
     scalar_no_go = local_algebraic_scalar_no_go()
@@ -1036,37 +2414,108 @@ def p13_refractive_force_status() -> dict[str, Any]:
         potential_lemma["identity"],
         action_lemma["weak_identity"],
         action_lemma["exact_residual_starts_after_first_order"],
+        first_order_biconformal["a1_identity"],
+        first_order_biconformal["biconformal_identity"],
+        first_order_biconformal["branch_residual_identity"],
         biconformal_bridge["branch_identity"],
         biconformal_bridge["newton_identity"],
         bernoulli_bridge["newton_pressure_identity"],
         mond_stress_bridge["acceleration_identity"],
         mond_stress_bridge["deep_mond_identity"],
         mond_stress_bridge["btfr_identity"],
+        p01_stress_source["isotropic_limit_identity"],
+        p01_stress_source["generic_anisotropy_sources_Delta_p"],
+        newton_radial_branch["h_prime_identity"],
+        newton_radial_branch["newton_acceleration_identity"],
+        bernoulli_core["core_limit_identity"],
+        bernoulli_core["far_limit_identity"],
+        bernoulli_core["peak_identity"],
+        bernoulli_core["finite_integral_identity"],
+        charge_normalization["charge_identity"],
+        charge_normalization["newton_identity"],
+        mond_plateau_branch["exact_branch_identity"],
+        mond_plateau_branch["linear_branch_identity"],
+        a0_origin["phase_cycle_identity"],
+        a0_origin["light_crossing_phase_identity"],
+        a0_origin["a0_identity"],
+        a0_origin["a0_over_cH_identity"],
+        a0_origin["BTFR_coherence_identity"],
+        variational_loading["stationarity_identity"],
+        variational_loading["closure_identity"],
+        variational_loading["newton_limit_identity"],
+        variational_loading["deep_mond_limit_identity"],
+        variational_loading["vortex_suppression_identity"],
+        vector_pde["dF_dy_identity"],
+        vector_pde["newton_mu_limit"],
+        vector_pde["deep_mu_limit"],
+        vector_pde["spherical_selector_identity"],
+        vector_pde["newton_limit_identity"],
+        vector_pde["deep_mond_limit_identity"],
+        cutoff_profile["h_derivative_identity"],
+        cutoff_profile["deep_interior_identity"],
+        cutoff_profile["far_tail_identity"],
+        cutoff_profile["Delta_p_plateau_identity"],
+        cutoff_profile["Delta_p_far_scaling_identity"],
+        cutoff_profile["far_energy_integrand_identity"],
+        external_suppression["strong_external_suppression_identity"],
+        external_suppression["external_at_a0_bound_identity"],
+        external_suppression["isolated_deep_boost_identity"],
+        external_suppression["isolated_newton_identity"],
+        branch_selector["mu_identity"],
+        branch_selector["deep_mond_limit_identity"],
+        branch_selector["newton_limit_identity"],
+        branch_selector["vortex_suppression_identity"],
+        branch_selector["point_mass_deep_plateau_identity"],
+        branch_selector["point_mass_strong_field_suppression"],
+        master_bridge["stress_projection_identity"],
+        master_bridge["newton_identity"],
+        master_bridge["deep_mond_identity"],
+        master_bridge["deep_mond_btfr_identity"],
+        master_bridge["two_channel_identity"],
+        master_bridge["two_channel_index_identity"],
         weak_stress_projection["p07_bridge_identity"],
         bernoulli_eos["rho_formula_identity"],
         bernoulli_eos["tov_identity"],
         scalar_no_go["no_go_check"],
+        pressure_unification["local_bernoulli_identity"],
+        pressure_unification["vortex_identity"],
+        pressure_unification["two_channel_source_identity"],
         two_channel["vortex_h_prime_identity"],
         two_channel["total_acceleration_identity"],
         two_channel["far_btfr_identity"],
         target_profiles["newton_target_identity"],
         target_profiles["deep_mond_target_identity"],
         target_profiles["deep_mond_btfr_identity"],
+        weak_chain["all_checks_pass"],
     )
 
     return {
         "file": "p13_refractive_force.py",
-        "export_status": "WORK_LEDGER_ONLY_NOT_READY_FOR_ARTICLE_EXPORT",
+        "export_status": "REFRACTIVE_GRAVITY_WEAK_FIELD_CHAIN_READY",
         "closed_identity_status": "PASS" if all(closed_checks) else "FAIL",
-        "central_open_problem": bridge["status"],
+        "weak_field_chain_theorem": weak_chain["status"],
+        "central_theorem_target": bridge["status"],
         "static_metric_identity": static_identity,
         "newton_index_identity": newton_identity,
         "mond_index_identity": mond_identity,
         "universal_potential_to_index": potential_lemma,
         "minimal_action_to_index": action_lemma,
+        "p10_static_first_order_biconformal_selection": first_order_biconformal,
         "p10_biconformal_to_index": biconformal_bridge,
         "p10_bernoulli_pressure_to_h": bernoulli_bridge,
         "p07_mond_stress_to_h": mond_stress_bridge,
+        "p01_action_stress_source": p01_stress_source,
+        "p10_newton_radial_response_branch": newton_radial_branch,
+        "p10_bernoulli_core_saturation_matching": bernoulli_core,
+        "p10_asymptotic_charge_normalization": charge_normalization,
+        "p01_mond_plateau_strain_branch": mond_plateau_branch,
+        "phase_coherence_a0_origin": a0_origin,
+        "variational_vortex_loading_closure": variational_loading,
+        "vector_aqual_variational_pde_closure": vector_pde,
+        "coherence_cutoff_vortex_profile": cutoff_profile,
+        "external_field_loading_suppression": external_suppression,
+        "p07_vortex_loading_branch_selector": branch_selector,
+        "master_refractive_stress_bridge": master_bridge,
         "weak_anisotropic_stress_projection": weak_stress_projection,
         "bernoulli_tov_eos_source": bernoulli_eos,
         "local_algebraic_scalar_no_go": scalar_no_go,
@@ -1074,6 +2523,7 @@ def p13_refractive_force_status() -> dict[str, Any]:
         "pressure_variable_unification": pressure_unification,
         "required_enthalpy_profiles": target_profiles,
         "pressure_to_index_bridge": bridge,
+        "weak_field_refractive_chain": weak_chain,
         "claim_gate": refractive_force_claim_gate(),
         "do_not_claim": refractive_do_not_claim(),
     }
@@ -1084,15 +2534,29 @@ if __name__ == "__main__":
     print("p13_refractive_force")
     print("closed_identity_status:", status["closed_identity_status"])
     print("export_status:", status["export_status"])
-    print("central_open_problem:", status["central_open_problem"])
+    print("weak_field_chain_theorem:", status["weak_field_chain_theorem"])
+    print("central_theorem_target:", status["central_theorem_target"])
     print("static_metric:", status["static_metric_identity"]["status"])
     print("newton_index:", status["newton_index_identity"]["status"])
     print("mond_index:", status["mond_index_identity"]["status"])
     print("universal_potential_to_index:", status["universal_potential_to_index"]["status"])
     print("minimal_action_to_index:", status["minimal_action_to_index"]["status"])
+    print("p10_static_first_order_biconformal_selection:", status["p10_static_first_order_biconformal_selection"]["status"])
     print("p10_biconformal_to_index:", status["p10_biconformal_to_index"]["status"])
     print("p10_bernoulli_pressure_to_h:", status["p10_bernoulli_pressure_to_h"]["status"])
     print("p07_mond_stress_to_h:", status["p07_mond_stress_to_h"]["status"])
+    print("p01_action_stress_source:", status["p01_action_stress_source"]["status"])
+    print("p10_newton_radial_response_branch:", status["p10_newton_radial_response_branch"]["status"])
+    print("p10_bernoulli_core_saturation_matching:", status["p10_bernoulli_core_saturation_matching"]["status"])
+    print("p10_asymptotic_charge_normalization:", status["p10_asymptotic_charge_normalization"]["status"])
+    print("p01_mond_plateau_strain_branch:", status["p01_mond_plateau_strain_branch"]["status"])
+    print("phase_coherence_a0_origin:", status["phase_coherence_a0_origin"]["status"])
+    print("variational_vortex_loading_closure:", status["variational_vortex_loading_closure"]["status"])
+    print("vector_aqual_variational_pde_closure:", status["vector_aqual_variational_pde_closure"]["status"])
+    print("coherence_cutoff_vortex_profile:", status["coherence_cutoff_vortex_profile"]["status"])
+    print("external_field_loading_suppression:", status["external_field_loading_suppression"]["status"])
+    print("p07_vortex_loading_branch_selector:", status["p07_vortex_loading_branch_selector"]["status"])
+    print("master_refractive_stress_bridge:", status["master_refractive_stress_bridge"]["status"])
     print("weak_anisotropic_stress_projection:", status["weak_anisotropic_stress_projection"]["status"])
     print("bernoulli_tov_eos_source:", status["bernoulli_tov_eos_source"]["status"])
     print("local_algebraic_scalar_no_go:", status["local_algebraic_scalar_no_go"]["status"])

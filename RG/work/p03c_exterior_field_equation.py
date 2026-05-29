@@ -7,8 +7,8 @@
 """
 p03c_exterior_field_equation.py
 
-Decisive static-spherical EXTERIOR computation for the q_2PN / "three
-incompatible exteriors" / refractive-axis question.
+Static-spherical exterior diagnostic for the q_2PN / "three incompatible
+exteriors" / refractive-axis question.
 
 WHY THIS FILE EXISTS
 --------------------
@@ -20,29 +20,39 @@ coefficient q_2PN, with several incompatible values floating around:
     q_2PN = 10    p03 minimal isotropic "stress-free" closure  (b_2 = 18)
     q_2PN = 11/4  lambda_S -> infinity strict S=6 limit
 
-p03b_s6_exterior_scale.py resolved this for the S=6 completion by a *scale
-argument* (the completion's local 2PN stress decays as Lambda*R_sun^2 ~ 1e-35,
-so the Solar exterior is GR, q=7/4).  The article's section 7 / 13 adopted that.
+p03b_s6_exterior_scale.py gives a *scale argument* for the S=6 completion:
+the completion's local 2PN stress is suppressed by Lambda*R_sun^2 ~ 1e-35.
+That strongly supports Solar-GR compatibility, but it is not a finished
+exterior ODE.
 
-This file replaces the scale heuristic with the DIRECT field-equation solution.
-It solves the physical exterior equation
+This file tests the physical exterior equation
 
     M_Pl^2 * G^mu_nu = T^RefG^mu_nu          (kappa = 1/M_Pl^2)
 
-in the areal static-spherical ansatz, on the p03 1PN closure branch, order by
-order in U = r_s/r, through 2PN.  No metric is imported from GR; A(r), B(r) are
-solved from G = kappa*T.
+in a restricted areal static-spherical power ansatz, on the p03 1PN closure
+branch, order by order in U = r_s/r, through 2PN.
 
-MAIN RESULT (reproducible by solve_exterior_field_equation() below)
--------------------------------------------------------------------
-1PN:  a1 = 1  =>  gamma = 1.  The RefG medium stress at O(U) vanishes only at
-      a1 = 1 (independently of kappa), so the 1PN exterior is exactly GR.
+IMPORTANT CAVEAT
+----------------
+The 2PN "solution" returned by the restricted constant-coefficient ansatz is
 
-2PN:  a2 = 1 + 4*c_Y2*kappa*r^2,
-      b2 =   - 4*c_Y2*kappa*r^2.
+    a2 = 1 + 4*c_Y2*kappa*r^2,
+    b2 =   - 4*c_Y2*kappa*r^2.
 
-      i.e. exterior = GR Schwarzschild (a2=1, b2=0) PLUS a medium correction of
-      amplitude  c_Y2 * kappa * r^2 = (c_Y2 / M_Pl^2) * r^2.
+Because a2 and b2 depend on r, this is NOT a self-consistent solution of the
+original constant-coefficient ansatz. If the correction is radial, its
+derivatives must be included from the beginning. Therefore this file is a
+diagnostic/obstruction ledger, not a closed 2PN exterior proof.
+
+WHAT SURVIVES
+-------------
+1PN: The O(U) tt-equation supports a1=1 on the generic nondegenerate branch,
+     consistent with the p03 1PN GR branch.  The degenerate combination
+     2*c_Y2+c_YI1=0 must not be hidden; p03 remains the stronger 1PN ledger.
+
+2PN: The tt/rr diagnostic points to a Lambda-scale radial correction, but the
+     restricted ansatz is incomplete and the angular equation still has a
+     residual.  A proper augmented ansatz or full ODE is required.
 
 PHYSICAL READING (the key point)
 --------------------------------
@@ -51,11 +61,12 @@ The SAME c_Y2 that fixes the cosmological dark-energy density in p02c
 
     (c_Y2 / M_Pl^2) * r^2  ~  Lambda * r^2  ~  1e-35   at the Solar radius.
 
-So the physical Solar exterior is GR, q_2PN = 7/4, with a ~1e-35 deviation.
-This CONFIRMS p03b / article section 7 by an explicit G=kappa*T solution rather
-than a heuristic scale estimate.
+So the Solar-GR-compatible q_2PN = 7/4 target remains supported at the
+~1e-35 scale.
+This is consistent with the p03b scale argument, but it does not replace the
+full exterior ODE.
 
-Deep consequence: the smallness of the dark-energy scale DIRECTLY forbids an
+Scale consequence: the smallness of the dark-energy scale strongly suppresses an
 observable refractive/2PN deviation in the Solar System.  An O(1) Solar
 deviation (e.g. the q=2 refractive value) would need c_Y2 ~ O(M_Pl^2), which
 would make dark energy enormous -- excluded.
@@ -66,27 +77,23 @@ p03's isotropic_2pn_stress_closure required the medium stress itself to vanish,
 T^t_t = T^i_i = 0 through O(u^2), which gave b_2 = 18 (q = 10).  That is NOT the
 physical exterior condition.  The physical exterior solves G = kappa*T with the
 medium stress PRESENT and kappa-suppressed.  Solving the correct equation gives
-GR + O(kappa*c_Y2*r^2), i.e. q = 7/4.  So q = 10 is an artifact of imposing
-exact stress-freeness, not "a different physical branch".
-[Status: strong, but flagged for independent re-check; see claim gate.]
+GR + O(kappa*c_Y2*r^2).  This supports the view that q = 10 is a diagnostic
+artifact of imposing exact stress-freeness, but p03c alone does not prove the
+full physical 2PN exterior.
 
 REFRACTIVE AXIS VERDICT
 -----------------------
 The literal refractive index n = exp(-phi) (the bi-conformal exponential metric,
-q_2PN = 2) is NOT selected by the field equations.  It is a 1PN-accurate ansatz
-(where it equals GR anyway, gamma=1); at 2PN the physical metric is GR + an
-effective-Lambda correction, not the exponential form.  Hence "refractive" is
-NOT a distinguishing Solar-System axis.  The refractive/medium coupling c_Y2
-acts at O(1) only in cosmology (dark energy), not locally.
+q_2PN = 2) is not selected by this restricted 2PN diagnostic.  It remains a
+1PN-accurate ansatz unless a full exterior branch derives it.
 
 HONEST OPEN ITEM (localized)
 ----------------------------
 The simple r_s/r power series does not close all three components: the angular
-equation leaves a residual proportional to (2*c_Y2 + c_YI1)*kappa*r_s^2.  This
-is exactly p03b's remaining "airtight self-consistent exterior ODE" item, now
-localized: the full 2PN exterior needs an augmented (de-Sitter-like / Lambda)
-ansatz to absorb that angular medium stress.  Its amplitude is the same ~Lambda
-scale, so it does not change the GR-compatibility conclusion.
+equation leaves a residual proportional to (2*c_Y2 + c_YI1)*kappa*r_s^2, and
+the tt/rr coefficients become r-dependent.  These are warning signs that the
+constant-coefficient ansatz is too narrow.  The full 2PN exterior needs an
+augmented radial ansatz or a genuine ODE solve.
 
 INVESTIGATION CHAIN THAT LED HERE (so context is not lost)
 ----------------------------------------------------------
@@ -101,7 +108,8 @@ INVESTIGATION CHAIN THAT LED HERE (so context is not lost)
   out the p01 static 1/r^2 stress as a source of flat curves (it gives v ~ 1/r).
 - p10_oscillons.py: the local Newton/bi-conformal refractive picture is closed
   only WITHIN the bi-conformal ansatz; its own gate marks the full static
-  spherical branch OPEN.  This file closes that gate at 1PN and clarifies 2PN.
+  spherical branch OPEN.  This file supports the generic 1PN branch and exposes
+  why the restricted 2PN ansatz is not enough.
 
 This file is a work ledger.  It is reproducible (run it) and uses the same
 claim-gate / do-not-claim discipline as the rest of work/.
@@ -202,11 +210,12 @@ def _build_field_equation_series():
 
 def solve_exterior_field_equation() -> dict[str, Any]:
     """
-    Solve G = kappa*T order by order in U on the 1PN closure branch.
+    Restricted diagnostic for G = kappa*T on the 1PN closure branch.
 
-    1PN: O(U) tt-equation forces a1 = 1 (gamma = 1).
-    2PN: O(U^2) tt+rr equations give a2, b2 with a kappa*c_Y2*r^2 medium term.
-    The angular (thth) residual on that solution is the localized open item.
+    The 1PN tt-equation supports a1 = 1 on the generic nondegenerate branch.
+    The 2PN tt+rr equations return r-dependent "coefficients"; this is useful
+    as a diagnostic for the missing radial/Lambda-like response, but it is not
+    a self-consistent constant-coefficient 2PN solution.
     """
     eps, kappa, r, rs, a1, a2, b2, cY2, cYI1, Ett, Err, Eth = _build_field_equation_series()
 
@@ -238,26 +247,45 @@ def solve_exterior_field_equation() -> dict[str, Any]:
     )
     gr_limit_a2 = sp.simplify(a2_value.subs({cY2: 0, cYI1: 0})) if a2_value is not None else None
     gr_limit_b2 = sp.simplify(b2_value.subs({cY2: 0, cYI1: 0})) if b2_value is not None else None
+    r_dependent_coefficients = (
+        (a2_value is not None and a2_value.has(r))
+        or (b2_value is not None and b2_value.has(r))
+    )
+    ansatz_status = (
+        "FAIL_AS_CONSTANT_COEFFICIENT_2PN_SOLUTION__DIAGNOSTIC_ONLY"
+        if r_dependent_coefficients
+        else "PASS_CONSTANT_COEFFICIENT_ANSATZ"
+    )
+    one_pn_degeneracy_warning = (
+        "O(U) tt equation is proportional to (a1-1)*(2*c_Y2+c_YI1); "
+        "it supports a1=1 generically but is degenerate if 2*c_Y2+c_YI1=0."
+    )
 
     return {
-        "status": "PASS_PHYSICAL_EXTERIOR_GR_PLUS_LAMBDA_SCALE_MEDIUM_CORRECTION",
+        "status": "DIAGNOSTIC_RESTRICTED_ANSATZ_NOT_A_CLOSED_2PN_EXTERIOR",
         "background_stress_free_on_branch": background_ok,
         "one_pn_tt_equation": e1_tt,
         "a1_value": a1_value,
-        "gamma_reading": "a1 = 1  =>  gamma = 1 (1PN exterior is GR)",
+        "gamma_reading": "a1 = 1 on the generic branch; p03 remains the main 1PN closure ledger",
+        "one_pn_degeneracy_warning": one_pn_degeneracy_warning,
         "two_pn_tt_equation": e2_tt,
         "two_pn_rr_equation": e2_rr,
         "two_pn_thth_equation": e2_th,
         "a2_value": a2_value,
         "b2_value": b2_value,
+        "r_dependent_2pn_coefficients": r_dependent_coefficients,
+        "ansatz_consistency_status": ansatz_status,
         "gr_schwarzschild_limit": {"a2": gr_limit_a2, "b2": gr_limit_b2},
         "gr_limit_recovers_schwarzschild": (gr_limit_a2 == 1 and gr_limit_b2 == 0),
         "areal_biconformal_residual_a2_plus_b2_minus_1": biconformal_areal,
-        "medium_correction_amplitude": "c_Y2 * kappa * r^2 = (c_Y2 / M_Pl^2) * r^2 ~ Lambda * r^2",
+        "medium_correction_amplitude": (
+            "diagnostic radial scale c_Y2*kappa*r^2 = (c_Y2/M_Pl^2)*r^2 ~ Lambda*r^2"
+        ),
         "thth_residual_localized_open_item": thth_residual,
         "thth_residual_reading": (
-            "proportional to (2*c_Y2 + c_YI1)*kappa*r_s^2; same Lambda scale; "
-            "needs an augmented de-Sitter-like ansatz to close airtight"
+            "proportional to (2*c_Y2 + c_YI1)*kappa*r_s^2; together with the "
+            "r-dependent tt/rr coefficients, this requires an augmented radial "
+            "ansatz or full ODE before any 2PN exterior proof is claimed"
         ),
     }
 
@@ -290,25 +318,29 @@ def q2pn_branch_ledger() -> dict[str, Any]:
     """Honest ledger of every q_2PN value and its real status after this file."""
     return {
         "q_2PN = 7/4": (
-            "PHYSICAL Solar exterior. Direct G=kappa*T solution gives GR plus a "
-            "(c_Y2/M_Pl^2)*r^2 ~ Lambda*r^2 correction (~1e-35 at the Sun)."
+            "Supported physical Solar target from GR compatibility and p03b scale "
+            "argument. p03c is consistent with a Lambda-scale radial correction, "
+            "but does not by itself close the 2PN exterior."
         ),
         "q_2PN = 2": (
-            "Bi-conformal exponential refractive index n=exp(-phi). NOT selected "
-            "by the field equations; a 1PN-accurate ansatz only."
+            "Bi-conformal exponential refractive index n=exp(-phi). Not selected "
+            "by this restricted diagnostic; a 1PN-accurate ansatz unless a full "
+            "exterior branch derives it."
         ),
         "q_2PN = 10": (
             "p03 minimal isotropic closure. Comes from imposing T=0 (medium "
-            "stress vanishes), which is NOT the physical exterior condition. "
-            "Artifact of the wrong condition, not a separate physical branch."
+            "stress vanishes), which is not the physical exterior condition. "
+            "Likely diagnostic artifact, but final wording needs the full "
+            "G=kappa*T exterior re-check."
         ),
         "q_2PN = 11/4": (
             "lambda_S -> infinity strict S=6 limit; unphysical for dark-energy "
             "calibration."
         ),
         "decisive_point": (
-            "the physical exterior equation is G=kappa*T (medium stress present "
-            "and kappa-suppressed), not T=0. Solving it gives GR at the Sun."
+            "the physical exterior equation should be G=kappa*T, not T=0. "
+            "The restricted p03c ansatz diagnoses the scale of the correction, "
+            "but the full radial ODE is still open."
         ),
     }
 
@@ -316,18 +348,18 @@ def q2pn_branch_ledger() -> dict[str, Any]:
 def refractive_axis_verdict() -> dict[str, Any]:
     """Strategic verdict on whether 'refractive' is a distinguishing axis."""
     return {
-        "verdict": "REFRACTIVE_IS_NOT_A_DISTINGUISHING_SOLAR_AXIS",
+        "verdict": "NO_SOLAR_REFRACTIVE_DISTINGUISHER_FROM_THIS_DIAGNOSTIC",
         "reason": (
-            "the field equations give GR in the Solar exterior; the refractive "
-            "deviation amplitude is set by c_Y2/M_Pl^2 ~ Lambda, so it is ~1e-35 "
-            "locally. The smallness of dark energy forbids an O(1) Solar "
-            "refractive signal."
+            "the restricted diagnostic and p03b scale argument point to "
+            "Lambda-scale local corrections, ~1e-35 at the Sun. This supports "
+            "Solar GR-compatibility but is not a closed no-go theorem for every "
+            "possible refractive exterior branch."
         ),
         "where_refractive_coupling_acts_at_O1": "cosmology (dark energy), via c_Y2",
         "title_status": (
             "'Refractive Gravity' is the physical picture/motivation; the literal "
-            "Pi_eff->n_eff exterior mapping is GR-equivalent locally and is not a "
-            "proven distinguishing prediction"
+            "Pi_eff->n_eff exterior mapping still requires the p13 bridge and the "
+            "full exterior ODE"
         ),
         "distinguishing_content_must_come_from": [
             "cosmology: the effective-Lambda / dark-energy sector where c_Y2 acts at O(1)",
@@ -335,8 +367,7 @@ def refractive_axis_verdict() -> dict[str, Any]:
         ],
         "p13_role": (
             "p13_refractive_force.py remains a correct map and one real no-go; it "
-            "cannot create a Solar distinguishing axis because the field equations "
-            "forbid one"
+            "does not by itself create a Solar distinguishing axis"
         ),
     }
 
@@ -344,34 +375,47 @@ def refractive_axis_verdict() -> dict[str, Any]:
 def exterior_claim_gate() -> list[ClaimGate]:
     return [
         ClaimGate(
-            claim="1PN exterior is GR (gamma=1) from the field equations",
-            status="CLOSED_FIELD_EQUATION_RESULT",
-            verified_here="O(U) tt-equation forces a1=1 on the 1PN closure branch, independent of kappa.",
-            open_requirement="none for 1PN gamma; beta=1 already in p03.",
+            claim="1PN generic branch supports gamma=1",
+            status="GENERIC_SUPPORTS_P03_1PN_BRANCH",
+            verified_here=(
+                "O(U) tt-equation is proportional to (a1-1)*(2*c_Y2+c_YI1), "
+                "so it supports a1=1 on the generic nondegenerate branch."
+            ),
+            open_requirement=(
+                "keep p03 as the main 1PN closure proof; handle the degenerate "
+                "2*c_Y2+c_YI1=0 branch explicitly if it is used."
+            ),
         ),
         ClaimGate(
             claim="2PN exterior = GR + (c_Y2/M_Pl^2)*r^2 medium correction",
-            status="CLOSED_FOR_TT_RR_OPEN_FOR_THTH",
-            verified_here="a2=1+4*c_Y2*kappa*r^2, b2=-4*c_Y2*kappa*r^2; reduces to Schwarzschild at c_Y2,c_YI1->0.",
-            open_requirement="absorb the angular residual ~(2*c_Y2+c_YI1)*kappa*r_s^2 with an augmented de-Sitter-like ansatz (airtight ODE).",
+            status="DIAGNOSTIC_ONLY_R_DEPENDENT_COEFFICIENTS",
+            verified_here=(
+                "tt/rr equations return a2=1+4*c_Y2*kappa*r^2 and "
+                "b2=-4*c_Y2*kappa*r^2; their r-dependence invalidates the "
+                "constant-coefficient ansatz as a closed solution."
+            ),
+            open_requirement=(
+                "redo with radial 2PN functions, de-Sitter/Lambda-like terms, "
+                "or a full static-spherical ODE solve."
+            ),
         ),
         ClaimGate(
-            claim="Solar exterior is GR (q_2PN=7/4) at the physical scale",
-            status="CONFIRMS_SECTION_7_BY_DIRECT_COMPUTATION",
-            verified_here="correction amplitude = c_Y2/M_Pl^2 ~ Lambda; Lambda*R_sun^2 ~ 1e-35.",
-            open_requirement="full airtight exterior ODE for a fully rigorous 2PN statement.",
+            claim="Solar q_2PN=7/4 target is supported at the physical scale",
+            status="SUPPORTED_BY_SCALE_DIAGNOSTIC_NOT_PROVED_HERE",
+            verified_here="diagnostic correction scale = c_Y2/M_Pl^2 ~ Lambda; Lambda*R_sun^2 ~ 1e-35.",
+            open_requirement="full airtight exterior ODE for a rigorous 2PN statement.",
         ),
         ClaimGate(
             claim="q_2PN=10 is an artifact of imposing T=0",
-            status="STRONG_BUT_RECHECK",
-            verified_here="the physical equation G=kappa*T gives GR; p03's q=10 came from requiring medium stress to vanish.",
-            open_requirement="independently re-derive the isotropic-frame exterior from G=kappa*T to confirm q->7/4 there too.",
+            status="PLAUSIBLE_DIAGNOSTIC_NOT_FINAL",
+            verified_here="p03's q=10 came from requiring medium stress to vanish; p03c suggests this is not the physical condition.",
+            open_requirement="derive the full G=kappa*T exterior and then reclassify q=10.",
         ),
         ClaimGate(
             claim="Refractive is not a distinguishing Solar axis",
-            status="CONSEQUENCE_OF_LAMBDA_SCALE_SUPPRESSION",
-            verified_here="O(1) Solar deviation would need c_Y2~O(M_Pl^2), which makes dark energy huge -- excluded.",
-            open_requirement="if a distinguishing refractive prediction is wanted, it must be derived in cosmology or in the (still postulated) MOND vortex sector.",
+            status="NO_DISTINGUISHER_FROM_THIS_RESTRICTED_SOLAR_DIAGNOSTIC",
+            verified_here="dark-energy-scale c_Y2 gives only Lambda*R_sun^2 suppression in this diagnostic.",
+            open_requirement="finish the refractive bridge and full exterior ODE before making a final Solar no-go claim.",
         ),
     ]
 
@@ -379,9 +423,10 @@ def exterior_claim_gate() -> list[ClaimGate]:
 def do_not_claim() -> list[str]:
     return [
         "Do not claim a fully airtight 2PN exterior; the angular residual is not yet absorbed.",
-        "Do not claim q_2PN=10 as a Solar prediction; the physical exterior is GR (q=7/4).",
+        "Do not claim p03c is a direct 2PN solution; its 2PN coefficients depend on r inside a constant-coefficient ansatz.",
+        "Do not claim q_2PN=10 as a Solar prediction; the supported Solar target is q=7/4 by the scale argument.",
         "Do not claim the literal refractive index n=exp(-phi) is the physical 2PN metric.",
-        "Do not claim a distinguishing Solar refractive signal; Lambda-scale suppression forbids it.",
+        "Do not claim a final Solar refractive no-go from this restricted diagnostic alone.",
         "Do not import this as a new article result until the augmented-ansatz airtight ODE is closed.",
         "Do not treat the q=10-artifact clarification as final before the independent isotropic G=kappa*T re-check.",
     ]
@@ -390,7 +435,7 @@ def do_not_claim() -> list[str]:
 def module_status() -> dict[str, Any]:
     return {
         "file": "p03c_exterior_field_equation.py",
-        "export_status": "WORK_LEDGER_STRONG_RESULT_NOT_YET_AIRTIGHT",
+        "export_status": "WORK_LEDGER_DIAGNOSTIC_ONLY_NOT_ARTICLE_READY",
         "exterior_solution": solve_exterior_field_equation(),
         "lambda_scale_estimate": lambda_scale_suppression_estimate(),
         "q2pn_ledger": q2pn_branch_ledger(),
@@ -402,16 +447,20 @@ def module_status() -> dict[str, Any]:
 
 if __name__ == "__main__":
     print("=" * 72)
-    print("p03c: physical static-spherical exterior  G = kappa*T  (areal, 1PN branch)")
+    print("p03c: restricted static-spherical exterior diagnostic  G = kappa*T")
     print("=" * 72)
 
     result = solve_exterior_field_equation()
-    print("\n1. Field-equation solution")
+    print("\n1. Restricted field-equation diagnostic")
+    print("  status:", result["status"])
     print("  background stress-free on branch:", result["background_stress_free_on_branch"])
     print("  O(U) tt-equation:", result["one_pn_tt_equation"])
     print("  a1 =", result["a1_value"], " ->", result["gamma_reading"])
+    print("  1PN warning:", result["one_pn_degeneracy_warning"])
     print("  a2 =", result["a2_value"])
     print("  b2 =", result["b2_value"])
+    print("  r-dependent 2PN coefficients:", result["r_dependent_2pn_coefficients"])
+    print("  ansatz consistency:", result["ansatz_consistency_status"])
     print("  GR (c_Y2,c_YI1->0) limit:", result["gr_schwarzschild_limit"],
           "recovers Schwarzschild:", result["gr_limit_recovers_schwarzschild"])
     print("  areal a2+b2-1 =", result["areal_biconformal_residual_a2_plus_b2_minus_1"])
@@ -433,7 +482,7 @@ if __name__ == "__main__":
     verdict = refractive_axis_verdict()
     print("  verdict:", verdict["verdict"])
     print("  reason:", verdict["reason"])
-    print("  O(1) coupling acts in:", verdict["where_refractive_coupling_acts_at_O1"])
+    print("  O(1) coupling candidate acts in:", verdict["where_refractive_coupling_acts_at_O1"])
 
     print("\n5. Claim gate")
     for gate in exterior_claim_gate():
