@@ -34,6 +34,9 @@ article_dynamic_phase_clock_theorem = _load_article_function(
     "p02c_dynamic_phase_clock", "article_dynamic_phase_clock_theorem"
 )
 article_solar_theorem = _load_article_function("p03_solar", "article_solar_theorem")
+article_s6_solar_exterior_claim_gate = _load_article_function(
+    "p03b_s6_exterior_scale", "s6_solar_exterior_claim_gate"
+)
 article_gw_theorem = _load_article_function("p04_gw", "article_gw_theorem")
 article_strong_field_gate = _load_article_function(
     "p05_compact", "article_strong_field_gate"
@@ -91,15 +94,40 @@ def first_article_branch_intersection_audit():
         ),
         "extended_global_completion": (
             "CLOSED_IN_p02c: S=Y+2*I1-I3=6 gives exact positive LCDM "
-            "zero-current background and Solar 1PN closure up to homogeneous "
+            "zero-current background and Solar 1PN compatibility up to homogeneous "
             "Lambda stress; Z kinetic completion supplies solid no-ghost term."
         ),
         "article_status": {
-            "global_branch": "EXTENDED_COMPLETION_CLOSED_BACKGROUND_AND_1PN",
+            "global_branch": "EXTENDED_COMPLETION_BACKGROUND_AND_SOLAR_1PN_COMPATIBILITY",
             "core_plus_solar": "NONEMPTY_CONDITIONAL_REGION",
             "strict_lambda_plus_solar": "STRICT_CLOCK_DIAGNOSTIC_INTERSECTION_EMPTY",
             "dynamic_phase_clock": "PRIMARY_WITH_EXTENDED_GLOBAL_COMPLETION",
         },
+    }
+
+
+def first_article_s6_solar_exterior_status():
+    """Article-facing wording for the p03b S=6 Solar scale result."""
+    gate = article_s6_solar_exterior_claim_gate()
+    return {
+        **gate,
+        "claim": (
+            "dark-energy-calibrated S=6 completion is Solar-GR-compatible at "
+            "q_2PN=7/4+O(1e-35); full exterior ODE remains open"
+        ),
+        "resolves": (
+            "separates the q_2PN branches: q=10/11/4/2 are diagnostic, "
+            "non-physical-scale, or strong-field branches, not the calibrated "
+            "S=6 Solar prediction"
+        ),
+        "open_requirement": (
+            "full self-consistent static-spherical exterior ODE solve with the "
+            "completion source to make the scale argument a closed solution"
+        ),
+        "do_not_claim": [
+            *gate["do_not_claim"],
+            "do not present q_2PN=7/4+O(1e-35) as a finished ODE solution yet",
+        ],
     }
 
 
@@ -110,6 +138,7 @@ def first_article_support_status():
         "p02_cosmo": article_cosmology_theorem(),
         "p02c_dynamic_phase_clock": article_dynamic_phase_clock_theorem(),
         "p03_solar": article_solar_theorem(),
+        "p03b_s6_solar_exterior": first_article_s6_solar_exterior_status(),
         "p04_gw": article_gw_theorem(),
         "p05_compact": article_strong_field_gate(),
         "p08_cmb": article_cmb_theorem(),
@@ -135,6 +164,7 @@ def first_article_machine_check(status=None):
     p02 = status["p02_cosmo"]
     p02c = status["p02c_dynamic_phase_clock"]
     p03 = status["p03_solar"]
+    p03b = status["p03b_s6_solar_exterior"]
     p04 = status["p04_gw"]
     p05 = status["p05_compact"]
     p08 = status["p08_cmb"]
@@ -437,56 +467,12 @@ def first_article_machine_check(status=None):
             ]["solution_residuals"]
             for value in row
         ),
-        "p03_q2pn_observational_scale_present": (
-            p03["two_pn_discriminator"]["q2pn_observational_scale"]["status"]
-            == "NEAR_CASSINI_SENSITIVITY_REQUIRES_FULL_2PN_FIT"
-        ),
-        "p03_general_q2pn_optical_observables_derived": (
-            p03["two_pn_discriminator"]["q2pn_general_optical_observables"]["status"]
-            == "DERIVED_GENERAL_Q2PN_OPTICAL_OBSERVABLES"
-            and _zero(
-                p03["two_pn_discriminator"]["q2pn_general_optical_observables"][
-                    "checks"
-                ]["q10_shapiro_coefficient"]
-                - sp.Rational(33, 4) * sp.pi
-            )
-            and _zero(
-                p03["two_pn_discriminator"]["q2pn_general_optical_observables"][
-                    "checks"
-                ]["q10_bending_ratio"]
-                - sp.Rational(16, 5)
-            )
-        ),
-        "p03_cassini_2pn_tracking_proxy_pass": (
-            p03["two_pn_discriminator"]["cassini_2pn_tracking_proxy"]["status"]
-            == "PASS_CASSINI_2PN_TRACKING_PROXY_DEFAULT_GEOMETRY"
-            and p03["two_pn_discriminator"]["cassini_2pn_tracking_proxy"][
-                "q_passes_1sigma_proxy"
-            ]
-            and p03["two_pn_discriminator"]["cassini_2pn_tracking_proxy"][
-                "q_passes_conservative_proxy"
-            ]
-        ),
-        "p03_q2pn_observational_table_pass": (
-            p03["two_pn_discriminator"]["q2pn_observational_table"]["status"]
-            == "PASS_Q2PN_OBSERVATIONAL_TABLE"
-            and len(p03["two_pn_discriminator"]["q2pn_observational_table"]["rows"])
-            >= 3
-            and any(
-                row["geometry_role"] == "Cassini reference geometry"
-                for row in p03["two_pn_discriminator"]["q2pn_observational_table"][
-                    "rows"
-                ]
-            )
-        ),
-        "p03_cassini_raw_likelihood_gate_formulated": (
-            p03["two_pn_discriminator"]["cassini_2pn_raw_likelihood_gate"][
-                "status"
-            ]
-            == "FORMULATED_REQUIRES_RAW_CASSINI_DOPPLER_DATA"
-            and p03["two_pn_discriminator"]["cassini_2pn_raw_likelihood_gate"][
-                "default_proxy_q_passes_conservative"
-            ]
+        "p03b_s6_solar_scale_claim_gate_pass": (
+            p03b["stress_structure_status"]
+            == "PASS_S6_COMPLETION_SOLAR_STRESS_STRUCTURE"
+            and p03b["scale_status"] == "PASS_S6_SOLAR_SCALE_SUPPRESSION"
+            and "ODE" in p03b["open_requirement"]
+            and any("q_2PN=10" in item for item in p03b["do_not_claim"])
         ),
         "p03_preferred_frame_velocity_risk_present": (
             p03["preferred_frame_velocity_risk"]["status"]
@@ -629,8 +615,6 @@ def first_article_machine_check(status=None):
         "p05_strong_field_gate_registered": (
             p05["status"] == "STRONG_FIELD_PROGRAM_REGISTERED_NOT_PROMOTED"
             and p05["compact_export_gate"] == "NOT_READY_FOR_RG_THEORY_EXPORT"
-            and p05["screening_minimum"]["status"]
-            == "NO_COMPRESSED_CASSINI_SCREENING_FORCED_BY_DEFAULT_PROXY"
         ),
         "p08_same_input_consistency_identity": (
             p08["same_matter_inheritance"]["machine_check"] == "PASS"
@@ -695,17 +679,62 @@ def first_article_machine_check(status=None):
         ),
         "branch_extended_global_completion_closed": (
             branch["article_status"]["global_branch"]
-            == "EXTENDED_COMPLETION_CLOSED_BACKGROUND_AND_1PN"
+            == "EXTENDED_COMPLETION_BACKGROUND_AND_SOLAR_1PN_COMPATIBILITY"
+        ),
+    }
+
+    diagnostics = {
+        "p03_q10_branch_optical_observables_derived": (
+            p03["two_pn_discriminator"]["q2pn_general_optical_observables"]["status"]
+            == "DERIVED_GENERAL_Q2PN_OPTICAL_OBSERVABLES"
+            and _zero(
+                p03["two_pn_discriminator"]["q2pn_general_optical_observables"][
+                    "checks"
+                ]["q10_shapiro_coefficient"]
+                - sp.Rational(33, 4) * sp.pi
+            )
+            and _zero(
+                p03["two_pn_discriminator"]["q2pn_general_optical_observables"][
+                    "checks"
+                ]["q10_bending_ratio"]
+                - sp.Rational(16, 5)
+            )
+        ),
+        "p03_q10_branch_observational_proxy_recorded_not_main": (
+            p03["two_pn_discriminator"]["q2pn_observational_scale"]["status"]
+            == "NEAR_CASSINI_SENSITIVITY_REQUIRES_FULL_2PN_FIT"
+            and p03["two_pn_discriminator"]["cassini_2pn_tracking_proxy"]["status"]
+            == "PASS_CASSINI_2PN_TRACKING_PROXY_DEFAULT_GEOMETRY"
+            and p03["two_pn_discriminator"]["cassini_2pn_raw_likelihood_gate"][
+                "status"
+            ]
+            == "FORMULATED_REQUIRES_RAW_CASSINI_DOPPLER_DATA"
+        ),
+        "p03_q10_branch_observational_table_recorded": (
+            p03["two_pn_discriminator"]["q2pn_observational_table"]["status"]
+            == "PASS_Q2PN_OBSERVATIONAL_TABLE"
+            and len(p03["two_pn_discriminator"]["q2pn_observational_table"]["rows"])
+            >= 3
+        ),
+        "p05_screening_proxy_recorded_not_article_rescue": (
+            p05["screening_minimum"]["status"]
+            == "NO_COMPRESSED_CASSINI_SCREENING_FORCED_BY_DEFAULT_PROXY"
+        ),
+        "article_reading": (
+            "q10/Cassini entries are diagnostic branch records only; "
+            "the calibrated S=6 Solar status is supplied by p03b as "
+            "q_2PN=7/4+O(1e-35), with full exterior ODE still open."
         ),
     }
 
     return {
         "status": "PASS" if all(checks.values()) else "CHECK",
         "checks": checks,
+        "diagnostics": diagnostics,
         "scope": (
             "machine check of exact article-facing algebra under stated branch "
-            "assumptions; not a certification of observational fits or global "
-            "nonlinear completion"
+            "assumptions; q10/Cassini proxy and screening entries are diagnostic "
+            "branch records, not main article predictions or rescue mechanisms"
         ),
     }
 
@@ -735,13 +764,22 @@ def first_article_status_summary():
         "core": status["p01_core"]["article_status"],
         "cosmology": status["p02_cosmo"]["article_status"],
         "dynamic_phase_clock": status["p02c_dynamic_phase_clock"]["article_status"],
-        "solar": status["p03_solar"]["article_status"],
+        "solar": {
+            "one_pn": status["p03_solar"]["article_status"]["one_pn"],
+            "preferred_frame_alpha_i": status["p03_solar"]["article_status"][
+                "preferred_frame_alpha_i_closure_chain"
+            ],
+            "minimal_isotropic_2pn_branch": "DIAGNOSTIC_NOT_MAIN_PREDICTION",
+            "calibrated_s6_2pn": (
+                "GR_COMPATIBLE_SCALE_RESULT_q_2PN_7_4_PLUS_O_1e_MINUS_35__"
+                "FULL_ODE_OPEN"
+            ),
+        },
+        "s6_solar_exterior": status["p03b_s6_solar_exterior"],
         "gw": status["p04_gw"]["article_status"],
         "strong_field": {
             "status": status["p05_compact"]["status"],
-            "screening_minimum": status["p05_compact"]["screening_minimum"][
-                "status"
-            ],
+            "screening_proxy": "DIAGNOSTIC_NOT_ARTICLE_RESCUE",
             "compact_export_gate": status["p05_compact"]["compact_export_gate"],
         },
         "cmb": status["p08_cmb"]["article_status"],
@@ -750,6 +788,7 @@ def first_article_status_summary():
             "status": machine_check["status"],
             **machine_check["checks"],
         },
+        "diagnostics_not_main_predictions": machine_check["diagnostics"],
     }
     return _normalize_status_text(summary)
 
