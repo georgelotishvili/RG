@@ -644,6 +644,69 @@ def rg_external_field_effect_closure():
     }
 
 
+def mond_transition_short_path_certificate() -> dict[str, object]:
+    """
+    Compact MOND transition certificate.
+
+    The long ledger keeps a0, the two-channel closure, AQUAL equivalence, stress
+    translation, and BTFR in separate blocks.  This short path checks the common
+    algebraic spine in one place.
+    """
+    a0 = rg_hubble_coherence_a0_derivation()
+    closure = rg_two_channel_mond_closure()
+    stress = rg_delta_p_mond_bridge()
+    aqual = rg_aqual_equivalence_closure()
+    btfr = rg_a0_vortex_emergence()
+
+    x = sp.Symbol("x", positive=True)
+    mu_identity = sp.simplify(closure["mu_of_x"].rhs - x / (1 + x)) == 0
+    h_sym = next(
+        symbol for symbol in a0["a0_definition"].rhs.free_symbols
+        if symbol.name == "H"
+    )
+    hz_sym = next(
+        symbol for symbol in a0["a0_redshift"].rhs.free_symbols
+        if symbol.name == "H_z"
+    )
+    a0_identity = (
+        sp.simplify(
+            a0["a0_definition"].rhs
+            - a0["a0_redshift"].rhs.subs(hz_sym, h_sym)
+        )
+        == 0
+    )
+    btfr_identity = (
+        sp.simplify(stress["deep_Delta_p"].rhs - btfr["BTFR_exact_closure"].rhs)
+        == 0
+    )
+
+    status = (
+        "PASS_MOND_TRANSITION_SHORT_PATH"
+        if a0_identity
+        and closure["status"] == "ALGEBRAIC_CONSEQUENCE_OF_PRIMARY_VORTEX_CLOSURE"
+        and stress["status"] == "EXACT_BRIDGE_IF_g_h_EQUALS_2Delta_p_OVER_rrho"
+        and aqual["status"] == "CONDITIONAL_AQUAL_EQUIVALENCE"
+        and mu_identity
+        and btfr_identity
+        else "CHECK_MOND_TRANSITION_SHORT_PATH"
+    )
+
+    return {
+        "status": status,
+        "a0_status": a0["status"],
+        "closure_status": closure["status"],
+        "stress_status": stress["status"],
+        "aqual_status": aqual["status"],
+        "a0_identity": a0_identity,
+        "mu_identity": mu_identity,
+        "btfr_identity": btfr_identity,
+        "short_reading": (
+            "a0 coherence scale plus two-channel loading gives mu=x/(1+x); "
+            "the same stress bridge gives AQUAL and the deep-MOND BTFR identity."
+        ),
+    }
+
+
 def rg_mond_derivation_ledger() -> list[str]:
     return [
         "coherence-scale postulate: lambda_H=2*pi*c/H -> a0=cH/(2*pi)",
@@ -1146,6 +1209,11 @@ def main() -> None:
         print("\n3c. RG two-channel MOND closure — closure => mu(x)")
         two_channel = rg_two_channel_mond_closure()
         for k, v in two_channel.items():
+            print(f"  {k:28s}: {v}")
+
+        print("\n3c-short. MOND transition short path")
+        short_path = mond_transition_short_path_certificate()
+        for k, v in short_path.items():
             print(f"  {k:28s}: {v}")
 
         print("\n3d. RG Delta_p bridge — MOND-ის stress ფორმა")

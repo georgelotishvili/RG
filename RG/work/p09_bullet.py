@@ -583,6 +583,42 @@ def galaxy_peak_dominance_theorem():
     }
 
 
+def bullet_frozen_memory_short_path_certificate():
+    """
+    Compact Bullet mechanism certificate.
+
+    The long benchmark keeps the mass tables and robustness grid.  The short
+    route is the actual mechanism: tau_rel/tau_cross is huge, the positive
+    screened kernel is decreasing away from the collisionless source, and the
+    galaxy+memory component dominates the gas at the peak.
+    """
+    times = step3_bullet_cluster_timescales()
+    locking = helmholtz_peak_locking_theorem()
+    dominance = galaxy_peak_dominance_theorem()
+    mass = bullet_mass_budget_consistency_gate()
+
+    status = (
+        "PASS_BULLET_FROZEN_MEMORY_SHORT_PATH"
+        if times["tau_rel_over_tau_cross"] > 1000.0
+        and locking["d_kernel_dx_right_of_source"].is_negative
+        and dominance["benchmark_status"] == "PASS_CONDITIONAL_DOMINANCE"
+        and mass["status"] == "PASS_MASS_LEDGER_CONSISTENT"
+        else "CHECK_BULLET_FROZEN_MEMORY_SHORT_PATH"
+    )
+
+    return {
+        "status": status,
+        "tau_rel_over_tau_cross": times["tau_rel_over_tau_cross"],
+        "peak_locking_derivative": locking["d_kernel_dx_right_of_source"],
+        "dominance_status": dominance["benchmark_status"],
+        "mass_ledger_status": mass["status"],
+        "short_reading": (
+            "tau_rel >> tau_cross freezes the memory channel, and a positive "
+            "decreasing kernel locks the dominant peak to collisionless galaxies."
+        ),
+    }
+
+
 def bullet_threshold_and_robustness():
     """
     Old benchmark robustness grid, compressed into data.
@@ -916,6 +952,11 @@ if __name__ == "__main__":
     print("\n--- ნაბიჯი 4b-3: gas-vs-galaxy dominance theorem ---")
     dominance = galaxy_peak_dominance_theorem()
     for k, v in dominance.items():
+        print(f"  {k:34s}: {v}")
+
+    print("\n--- ნაბიჯი 4b-4: Bullet frozen-memory short path ---")
+    short_path = bullet_frozen_memory_short_path_certificate()
+    for k, v in short_path.items():
         print(f"  {k:34s}: {v}")
 
     print("\n--- ნაბიჯი 4c: threshold და robustness grid ---")

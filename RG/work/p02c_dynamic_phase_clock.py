@@ -724,6 +724,45 @@ def s6_lcdm_solar_short_path_certificate():
     }
 
 
+def dark_energy_balance_short_path_certificate():
+    """
+    Short certificate for the dark-energy balance branch.
+
+    The detailed ledger keeps the explicit coefficient relations and numerical
+    scale check.  This compact form records the decisive point: the balanced
+    zero-current branch gives a constant metric background exactly, while the
+    dynamic observables are kept in one place for epoch-drift fits.
+    """
+    exact = exact_lcdm_zero_current_background_theorem()
+    scale = dark_energy_scale_calibration_example()
+    observables = dynamic_background_observables()
+
+    status = (
+        "PASS_DARK_ENERGY_BALANCE_SHORT_PATH"
+        if exact["status"] == "PASS_EXACT_LCDM_BACKGROUND_ZERO_CURRENT_BRANCH"
+        and exact["w_minus_minus_one_residual"] == 0
+        and exact["E2_residual"] == 0
+        and scale["status"] == "PASS_DARK_ENERGY_SCALE_CALIBRATION_EXAMPLE"
+        and scale["relative_reconstruction_error"] < 1.0e-12
+        and observables["status"] == "BACKGROUND_OBSERVABLES_READY_FOR_NUMERICAL_FIT"
+        else "CHECK_DARK_ENERGY_BALANCE_SHORT_PATH"
+    )
+
+    return {
+        "status": status,
+        "exact_background_status": exact["status"],
+        "w_minus_minus_one_residual": exact["w_minus_minus_one_residual"],
+        "E2_residual": exact["E2_residual"],
+        "scale_status": scale["status"],
+        "relative_reconstruction_error": scale["relative_reconstruction_error"],
+        "observable_status": observables["status"],
+        "short_reading": (
+            "balanced branch: exact constant metric background; dynamic "
+            "observables remain the compact channel for epoch-drift fits"
+        ),
+    }
+
+
 def completion_branch_local_perturbation_theorem():
     """
     Local perturbation theorem for the S/Z completion branch.
@@ -1144,6 +1183,7 @@ def module_status():
         "dynamic_branch": dynamic_phase_clock_branch(),
         "late_zero_current_candidate": late_zero_current_candidate(),
         "s6_lcdm_solar_short_path": s6_lcdm_solar_short_path_certificate(),
+        "dark_energy_balance_short_path": dark_energy_balance_short_path_certificate(),
         "early_scaling_after_zero_current": early_scaling_after_zero_current(),
         "process_time_match_gate": process_time_match_gate(),
         "export_status": "NOT_READY_FOR_RG_THEORY_EXPORT",
@@ -1169,6 +1209,7 @@ def article_dynamic_phase_clock_theorem():
     lcdm_residuals = compressed_lcdm_background_residual_check()
     global_completion = global_lcdm_solar_completion_theorem()
     s6_short_path = s6_lcdm_solar_short_path_certificate()
+    dark_energy_short_path = dark_energy_balance_short_path_certificate()
     completion_origin_audit = completion_origin_and_operator_audit()
     completion_perturbations = completion_branch_local_perturbation_theorem()
     z_sign_audit = completion_z_sign_and_degeneracy_audit()
@@ -1206,6 +1247,7 @@ def article_dynamic_phase_clock_theorem():
         "compressed_lcdm_background_residual_check": lcdm_residuals,
         "global_lcdm_solar_completion": global_completion,
         "s6_lcdm_solar_short_path": s6_short_path,
+        "dark_energy_balance_short_path": dark_energy_short_path,
         "completion_origin_and_operator_audit": completion_origin_audit,
         "completion_branch_local_perturbations": completion_perturbations,
         "completion_z_sign_and_degeneracy_audit": z_sign_audit,
@@ -1235,6 +1277,7 @@ def article_dynamic_phase_clock_theorem():
             "compressed_background_residuals": lcdm_residuals["status"],
             "global_lcdm_solar_completion": global_completion["status"],
             "s6_lcdm_solar_short_path": s6_short_path["status"],
+            "dark_energy_balance_short_path": dark_energy_short_path["status"],
             "completion_origin_and_operator_audit": completion_origin_audit["status"],
             "completion_local_perturbations": completion_perturbations["status"],
             "completion_z_sign_and_degeneracy": z_sign_audit["status"],
@@ -1291,3 +1334,10 @@ if __name__ == "__main__":
     print("target:", match["p02b_target"])
     print("general match:", match["general_match_condition"])
     print("guardrail:", match["metric_branch_guardrail"])
+
+    short_path = dark_energy_balance_short_path_certificate()
+    print("\n6. Dark-energy balance short path")
+    print("status:", short_path["status"])
+    print("background:", short_path["exact_background_status"])
+    print("scale:", short_path["scale_status"])
+    print("observables:", short_path["observable_status"])

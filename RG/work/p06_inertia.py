@@ -516,6 +516,49 @@ def zero_drag_uniform_motion():
     }
 
 
+def inertia_noether_short_path_certificate():
+    """
+    Compact inertia certificate.
+
+    One localized dressed energy E0 gives the Noether inertial mass E0/c^2 and
+    the same zero-frequency source mass.  Thus free fall cancels the mass, and
+    retarded/radiative dressing is a correction to the response, not the origin
+    of the F=Ma coefficient.
+    """
+    collective = collective_coordinate_inertia_theorem()
+    noether = noether_four_momentum_closure()
+    gravity = gravitational_mass_from_zero_frequency_source()
+    free_fall = geodesic_mass_cancellation()
+    radiation = radiation_reaction_power_counting()
+
+    same_mass_identity = (
+        sp.simplify(noether["mass_from_invariant"].rhs - gravity["M_source"].rhs)
+        == 0
+    )
+
+    status = (
+        "PASS_INERTIA_NOETHER_SHORT_PATH"
+        if collective["momentum_minus_gammaMv"] == 0
+        and same_mass_identity
+        and free_fall["mass_cancellation"] == 0
+        else "CHECK_INERTIA_NOETHER_SHORT_PATH"
+    )
+
+    return {
+        "status": status,
+        "collective_momentum_residual": collective["momentum_minus_gammaMv"],
+        "mass_from_invariant": noether["mass_from_invariant"],
+        "gravitational_source_mass": gravity["M_source"],
+        "same_mass_identity": same_mass_identity,
+        "mass_cancellation": free_fall["mass_cancellation"],
+        "radiation_correction": radiation["slow_motion_limit"],
+        "short_reading": (
+            "one Noether energy E0 gives both inertial mass and the far-zone "
+            "gravitational charge; radiation reaction is a higher-order response."
+        ),
+    }
+
+
 def retarded_dressing_audit():
     """
     Keep the old retarded-field mechanism, but classify it correctly.
@@ -682,6 +725,7 @@ def stage_a5_inertia_status():
 
 def inertia_central_claim_gate():
     """One-place export gate for p06_inertia.py."""
+    short_path = inertia_noether_short_path_certificate()
     ward = lorentz_ward_zero_mode_norm_gate()
     derivation = rg_action_to_inertia_derivation_gate()
     firewall = pressure_force_firewall_and_observation_gate()
@@ -689,6 +733,7 @@ def inertia_central_claim_gate():
     laue = laue_stress_condition_gate()
     return {
         "file_export_status": "NOT_READY_FOR_FINAL_THEORY_EXPORT",
+        "inertia_short_path": short_path["status"],
         "leading_inertia_status": ward["gate_status"],
         "integrated_boost_status": boost["closure_status"],
         "Laue_balance_status": laue["gate_status"],
@@ -723,6 +768,7 @@ def main() -> None:
         ("14. Uniform motion: zero drag", zero_drag_uniform_motion()),
         ("15. Retarded dressing audit", retarded_dressing_audit()),
         ("16. Radiation-reaction power counting", radiation_reaction_power_counting()),
+        ("16b. Inertia Noether short path", inertia_noether_short_path_certificate()),
         ("17. STAGE A5 old retarded self-field drain", stage_a5_old17_retarded_self_field_drain()),
         ("18. STAGE A5 Mach/unified rarefaction ledger", stage_a5_mach_and_unified_rarefaction_ledger()),
         ("19. STAGE A5 migration status", stage_a5_inertia_status()),

@@ -1674,6 +1674,46 @@ def pressure_variable_unification_audit() -> dict[str, Any]:
     }
 
 
+def bernoulli_tov_source_short_path_certificate() -> dict[str, Any]:
+    """
+    Short certificate for the p10 Bernoulli / TOV source bridge.
+
+    This is the compact answer to the quadratic-vs-linear pressure issue:
+    p10 gives a quadratic Bernoulli pressure function Pi_B(h,h'), while the
+    TOV/Bianchi equation uses the linear source Pi_B'.  The response density
+    rho_B=Pi_B'/(c^2 h') is the EoS/source link that makes both descriptions
+    the same radial channel.
+    """
+    eos = bernoulli_tov_eos_source_closure()
+    source_ledger = pressure_variable_unification_audit()
+    identities = (
+        eos["rho_formula_identity"],
+        eos["tov_identity"],
+        source_ledger["local_bernoulli_identity"],
+        source_ledger["vortex_identity"],
+        source_ledger["two_channel_source_identity"],
+    )
+
+    status = (
+        "PASS_BERNOULLI_TOV_SOURCE_SHORT_PATH"
+        if eos["status"] == "PASS_BERNOULLI_TOV_RESPONSE_EOS_EXTERIOR"
+        and source_ledger["status"] == "PASS_ACTIVE_STRESS_SOURCE_LEDGER"
+        and all(identities)
+        else "CHECK_BERNOULLI_TOV_SOURCE_SHORT_PATH"
+    )
+
+    return {
+        "status": status,
+        "eos_status": eos["status"],
+        "source_ledger_status": source_ledger["status"],
+        "identities": identities,
+        "short_reading": (
+            "p10's quadratic Bernoulli pressure enters the linear TOV source "
+            "through Pi_B' and the response density rho_B."
+        ),
+    }
+
+
 def weak_anisotropic_stress_projection_to_h() -> dict[str, Any]:
     """
     Weak stress projection from anisotropic medium equilibrium to h_eff'.
@@ -2160,6 +2200,7 @@ def refractive_gravity_weak_field_chain_theorem() -> dict[str, Any]:
     selector = p07_vortex_loading_branch_selector()
     full_transition = full_transition_active_source_selector()
     pressure_unification = pressure_variable_unification_audit()
+    bernoulli_tov_short = bernoulli_tov_source_short_path_certificate()
     master = master_refractive_stress_bridge()
     matter_action = minimal_point_particle_action_bridge()
     short_refractive = refractive_source_short_path_theorem()
@@ -2214,6 +2255,7 @@ def refractive_gravity_weak_field_chain_theorem() -> dict[str, Any]:
         full_transition["deep_mond_limit_identity"],
         full_transition["vortex_suppression_identity"],
         full_transition["deep_point_plateau_identity"],
+        bernoulli_tov_short["status"] == "PASS_BERNOULLI_TOV_SOURCE_SHORT_PATH",
         pressure_unification["local_bernoulli_identity"],
         pressure_unification["vortex_identity"],
         pressure_unification["two_channel_source_identity"],
@@ -2253,6 +2295,7 @@ def refractive_gravity_weak_field_chain_theorem() -> dict[str, Any]:
             external["status"],
             selector["status"],
             full_transition["status"],
+            bernoulli_tov_short["status"],
             pressure_unification["status"],
             master["status"],
             matter_action["status"],
@@ -2829,6 +2872,7 @@ def p13_refractive_force_status() -> dict[str, Any]:
     master_bridge = master_refractive_stress_bridge()
     weak_stress_projection = weak_anisotropic_stress_projection_to_h()
     bernoulli_eos = bernoulli_tov_eos_source_closure()
+    bernoulli_tov_short = bernoulli_tov_source_short_path_certificate()
     scalar_no_go = local_algebraic_scalar_no_go()
     two_channel = two_channel_refractive_stress_ledger()
     pressure_unification = pressure_variable_unification_audit()
@@ -2919,6 +2963,7 @@ def p13_refractive_force_status() -> dict[str, Any]:
         weak_stress_projection["p07_bridge_identity"],
         bernoulli_eos["rho_formula_identity"],
         bernoulli_eos["tov_identity"],
+        bernoulli_tov_short["status"] == "PASS_BERNOULLI_TOV_SOURCE_SHORT_PATH",
         scalar_no_go["no_go_check"],
         pressure_unification["local_bernoulli_identity"],
         pressure_unification["vortex_identity"],
@@ -2966,6 +3011,7 @@ def p13_refractive_force_status() -> dict[str, Any]:
         "master_refractive_stress_bridge": master_bridge,
         "weak_anisotropic_stress_projection": weak_stress_projection,
         "bernoulli_tov_eos_source": bernoulli_eos,
+        "bernoulli_tov_source_short_path": bernoulli_tov_short,
         "local_algebraic_scalar_no_go": scalar_no_go,
         "two_channel_refractive_stress": two_channel,
         "pressure_variable_unification": pressure_unification,
@@ -3012,6 +3058,7 @@ if __name__ == "__main__":
     print("master_refractive_stress_bridge:", status["master_refractive_stress_bridge"]["status"])
     print("weak_anisotropic_stress_projection:", status["weak_anisotropic_stress_projection"]["status"])
     print("bernoulli_tov_eos_source:", status["bernoulli_tov_eos_source"]["status"])
+    print("bernoulli_tov_source_short_path:", status["bernoulli_tov_source_short_path"]["status"])
     print("local_algebraic_scalar_no_go:", status["local_algebraic_scalar_no_go"]["status"])
     print("two_channel_refractive_stress:", status["two_channel_refractive_stress"]["status"])
     print("pressure_variable_unification:", status["pressure_variable_unification"]["status"])
