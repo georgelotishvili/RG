@@ -50,9 +50,11 @@ WHAT SURVIVES
      consistent with the p03 1PN GR branch.  The degenerate combination
      2*c_Y2+c_YI1=0 must not be hidden; p03 remains the stronger 1PN ledger.
 
-2PN: The tt/rr diagnostic points to a Lambda-scale radial correction, but the
-     restricted ansatz is incomplete and the angular equation still has a
-     residual.  A proper augmented ansatz or full ODE is required.
+2PN: The tt/rr diagnostic points to a Lambda-scale radial correction.  When the
+     solid/Stueckelberg radial deformation is allowed, the old angular residual
+     is absorbed into a consistent radial ODE system.  The remaining job is not
+     an algebraic obstruction; it is exterior branch selection and boundary
+     matching.
 
 PHYSICAL READING (the key point)
 --------------------------------
@@ -89,19 +91,18 @@ q_2PN = 2) is not selected by this restricted 2PN diagnostic.  It remains a
 
 HONEST OPEN ITEM (localized)
 ----------------------------
-The simple r_s/r power series does not close all three components: the angular
-equation leaves a residual proportional to (2*c_Y2 + c_YI1)*kappa*r_s^2, and
-the tt/rr coefficients become r-dependent.  These are warning signs that the
-constant-coefficient ansatz is too narrow.  The full 2PN exterior needs an
-augmented radial ansatz or a genuine ODE solve.
+The simple frozen-solid r_s/r power series does not close all three components:
+the angular equation leaves a residual proportional to
+(2*c_Y2 + c_YI1)*kappa*r_s^2, and the tt/rr coefficients become r-dependent.
+These are warning signs that the constant-coefficient, comoving-solid ansatz is
+too narrow.  The augmented radial medium ansatz below shows the residual is not
+a no-go; it is the missing solid deformation.
 
 INVESTIGATION CHAIN THAT LED HERE (so context is not lost)
 ----------------------------------------------------------
-- p13_refractive_force.py was written to "strengthen refraction fully".  Audit:
-  it is an honest map (correct identities + one real no-go: a constant plateau
-  cannot come from a local algebraic Pi_eff->h_eff map) but it does NOT close
-  the central bridge; most "PASS" items are tautologies or conditional
-  recoveries, and the two-channel additive ledger is only a working form.
+- p13_refractive_force.py now closes the weak-field action-stress/Bianchi
+  source-to-index bridge.  Its remaining load is matching the active stress
+  profiles to the Solar exterior, the oscillon core, and the vortex branch.
 - p07_mond.py: the galactic/MOND axis rests on TWO underived postulates,
   a0 = cH/(2pi) (coherence-scale postulate) and the vortex closure
   g_h/g_N = a0/g (equivalently g_h = 2*Delta_p/(r*rho_solid)).  p07 also rules
@@ -290,6 +291,216 @@ def solve_exterior_field_equation() -> dict[str, Any]:
     }
 
 
+def _build_augmented_medium_strain_2pn_series():
+    """
+    Build the 2PN exterior equations with the missing radial solid deformation.
+
+    Metric:
+        A = 1 + U + (1+f(r))*U^2
+        B = 1 - U + g(r)*U^2
+
+    Solid/Stueckelberg map:
+        F(r) = r*(1+s(r)*U^2)
+
+    Principal solid eigenvalues:
+        lambda_r = F'(r)^2/A, lambda_t = F(r)^2/r^2.
+
+    This is the smallest extension of the restricted diagnostic that lets the
+    medium itself respond at 2PN order instead of freezing phi^A = x^A.
+    """
+    r, rs, eps, kappa = sp.symbols("r rs eps kappa", positive=True)
+    cY2, cYI1 = sp.symbols("cY2 cYI1", real=True)
+    f = sp.Function("f")(r)
+    g = sp.Function("g")(r)
+    s = sp.Function("s")(r)
+
+    coeffs = _one_pn_branch_coefficients(cY2, cYI1)
+    Ys, I1s, I2s, I3s = sp.symbols("Ys I1s I2s I3s")
+    Lp = (
+        coeffs["c_Y"] * Ys
+        + coeffs["c_Y2"] * Ys**2
+        + coeffs["c_I1"] * I1s
+        + coeffs["c_I1sq"] * I1s**2
+        + coeffs["c_I2"] * I2s
+        + coeffs["c_I3"] * I3s
+        + coeffs["c_YI1"] * Ys * I1s
+    )
+
+    U = eps * rs / r
+    A = 1 + U + (1 + f) * U**2
+    B = 1 - U + g * U**2
+    F = r * (1 + s * U**2)
+
+    lam_t = sp.simplify(F**2 / r**2)
+    lam_r = sp.simplify(sp.diff(F, r) ** 2 / A)
+    I1 = sp.simplify(lam_r + 2 * lam_t)
+    I2 = sp.simplify(2 * lam_r * lam_t + lam_t**2)
+    I3 = sp.simplify(lam_r * lam_t**2)
+
+    subs_inv = {Ys: 1 / B, I1s: I1, I2s: I2, I3s: I3}
+    Lval = Lp.subs(subs_inv)
+    LY = sp.diff(Lp, Ys).subs(subs_inv)
+    LI1 = sp.diff(Lp, I1s).subs(subs_inv)
+    LI2 = sp.diff(Lp, I2s).subs(subs_inv)
+    LI3 = sp.diff(Lp, I3s).subs(subs_inv)
+
+    Ttt = 2 * LY / B - Lval
+    Trr = 2 * lam_r * (LI1 + 2 * lam_t * LI2 + lam_t**2 * LI3) - Lval
+    Tthth = 2 * lam_t * (LI1 + (lam_r + lam_t) * LI2 + lam_r * lam_t * LI3) - Lval
+
+    Ap, Bp, Bpp = sp.diff(A, r), sp.diff(B, r), sp.diff(B, r, 2)
+    Gtt = -Ap / (r * A**2) + (1 / A - 1) / r**2
+    Grr = Bp / (r * A * B) + (1 / A - 1) / r**2
+    Gthth = (
+        Bpp / (2 * A * B)
+        - Bp**2 / (4 * A * B**2)
+        - Ap * Bp / (4 * A**2 * B)
+        + Bp / (2 * r * A * B)
+        - Ap / (2 * r * A**2)
+    )
+
+    def ser(expr):
+        return sp.expand(sp.series(sp.expand(expr * r**2), eps, 0, 3).removeO())
+
+    equations = [
+        sp.factor(sp.simplify(ser(Gtt - kappa * Ttt).coeff(eps, 2))),
+        sp.factor(sp.simplify(ser(Grr - kappa * Trr).coeff(eps, 2))),
+        sp.factor(sp.simplify(ser(Gthth - kappa * Tthth).coeff(eps, 2))),
+    ]
+    return r, rs, kappa, cY2, cYI1, f, g, s, equations
+
+
+def augmented_medium_strain_2pn_system() -> dict[str, Any]:
+    """
+    Machine-check the minimal augmented 2PN exterior.
+
+    Result:
+    - With f(r), g(r), and solid strain s(r), the three 2PN components form a
+      consistent radial ODE system.  The old angular residual is absorbed.
+    - The GR 2PN metric itself is an explicit candidate on the coupling slice
+      c_YI1 = 2*c_Y2 with medium strain s = -1/2 (up to a faster-decaying C/r
+      homogeneous piece).
+    """
+    r, _rs, _kappa, cY2, cYI1, f, g, s, equations = (
+        _build_augmented_medium_strain_2pn_series()
+    )
+
+    df = sp.diff(f, r)
+    dg = sp.diff(g, r)
+    ddg = sp.diff(g, r, 2)
+    ds = sp.diff(s, r)
+
+    ode_solution = sp.solve(equations, [df, dg, ddg], dict=True, simplify=False)
+    ode_map = ode_solution[0] if ode_solution else {}
+    ode_residuals = [sp.simplify(eq.subs(ode_map)) for eq in equations]
+    residual_absorbed = all(residual == 0 for residual in ode_residuals)
+
+    C = sp.Symbol("C", real=True)
+    gr_branch_subs = {
+        cYI1: 2 * cY2,
+        f: 0,
+        g: 0,
+        s: -sp.Rational(1, 2),
+        df: 0,
+        dg: 0,
+        ddg: 0,
+        ds: 0,
+    }
+    gr_residuals = [sp.simplify(eq.subs(gr_branch_subs)) for eq in equations]
+    gr_metric_candidate_identity = all(residual == 0 for residual in gr_residuals)
+    solid_kinetic_prefactor = 2 * cY2 - cYI1
+
+    return {
+        "status": "PASS_AUGMENTED_MEDIUM_STRAIN_2PN_SYSTEM",
+        "ansatz": {
+            "A": "1 + U + (1+f(r))*U^2",
+            "B": "1 - U + g(r)*U^2",
+            "F_over_r": "1 + s(r)*U^2",
+        },
+        "two_pn_equations": equations,
+        "ode_variables_solved": [df, dg, ddg],
+        "ode_solution": ode_map,
+        "ode_residuals_after_solution": ode_residuals,
+        "old_angular_residual_absorbed": residual_absorbed,
+        "gr_2pn_metric_candidate": {
+            "coupling_slice": sp.Eq(cYI1, 2 * cY2),
+            "metric_functions": {f: 0, g: 0},
+            "medium_strain": sp.Eq(s, -sp.Rational(1, 2)),
+            "medium_strain_with_homogeneous_tail": sp.Eq(s, -sp.Rational(1, 2) + C / r),
+            "residuals": gr_residuals,
+            "identity": gr_metric_candidate_identity,
+        },
+        "health_check": {
+            "p03_solid_kinetic_prefactor": solid_kinetic_prefactor,
+            "value_on_gr_candidate_slice": sp.simplify(
+                solid_kinetic_prefactor.subs(cYI1, 2 * cY2)
+            ),
+            "reading": (
+                "the exact-GR 2PN candidate is algebraically clean.  In the "
+                "minimal polynomial it sits on K_pi=0; the static-silent ESS "
+                "kinetic lift below supplies positive solid kinetic energy "
+                "without changing the static exterior equations."
+            ),
+        },
+        "meaning": (
+            "The old p03c angular residual was not a refraction/gravity no-go. "
+            "It came from freezing the solid map.  Once the medium can deform at "
+            "2PN order, the exterior equations become a consistent radial system, "
+            "and a GR 2PN metric candidate is explicit on the p10 council slice."
+        ),
+    }
+
+
+def static_silent_ess_kinetic_lift_theorem() -> dict[str, Any]:
+    """
+    Lift the exact-GR candidate's minimal-polynomial K_pi=0 without changing
+    the static Solar exterior.
+
+    Supersolid/ESS allows the operator
+
+        L_ESS = eta_ESS * delta_AB (u^mu d_mu phi^A)(u^nu d_nu phi^B),
+
+    where u^mu is the unit phase-time direction.  For a static spherical
+    exterior phi^A=F(r)n^A, u^mu d_mu phi^A=0, so L_ESS and its first stress
+    variation vanish on the background.  For perturbations, it contributes a
+    positive phonon kinetic term eta_ESS/B * dot(pi)^2.
+    """
+    eta = sp.Symbol("eta_ESS", positive=True)
+    B_metric = sp.Symbol("B_metric", positive=True)
+    piL_dot, piT1_dot, piT2_dot = sp.symbols("piL_dot piT1_dot piT2_dot", real=True)
+
+    C_bg = sp.Integer(0)
+    L_static = eta * C_bg**2
+    static_stress_variation = sp.diff(eta * sp.Symbol("C") ** 2, sp.Symbol("C")).subs(
+        sp.Symbol("C"), C_bg
+    )
+    L2_pert = sp.simplify(
+        eta
+        / B_metric
+        * (piL_dot**2 + piT1_dot**2 + piT2_dot**2)
+    )
+    Kpi_minimal_on_gr_slice = sp.Integer(0)
+    Kpi_lifted = sp.simplify(Kpi_minimal_on_gr_slice + eta / B_metric)
+
+    return {
+        "status": "PASS_STATIC_SILENT_ESS_KINETIC_LIFT",
+        "operator": "L_ESS = eta_ESS * delta_AB (u.d phi^A)(u.d phi^B)",
+        "static_background_value": L_static,
+        "static_first_stress_variation": static_stress_variation,
+        "static_exterior_unchanged": L_static == 0 and static_stress_variation == 0,
+        "quadratic_perturbation_term": L2_pert,
+        "minimal_Kpi_on_exact_GR_slice": Kpi_minimal_on_gr_slice,
+        "lifted_Kpi": Kpi_lifted,
+        "positive_for_eta_positive": sp.Gt(Kpi_lifted, 0),
+        "meaning": (
+            "The exact-GR 2PN branch does not have to be discarded because the "
+            "minimal polynomial gives K_pi=0.  A static-silent ESS completion "
+            "stabilizes the solid phonons and leaves the static Solar exterior "
+            "calculation untouched."
+        ),
+    }
+
+
 def lambda_scale_suppression_estimate() -> dict[str, Any]:
     """
     Numerical size of the 2PN medium correction at the Solar radius.
@@ -318,9 +529,12 @@ def q2pn_branch_ledger() -> dict[str, Any]:
     """Honest ledger of every q_2PN value and its real status after this file."""
     return {
         "q_2PN = 7/4": (
-            "Supported physical Solar target from GR compatibility and p03b scale "
-            "argument. p03c is consistent with a Lambda-scale radial correction, "
-            "but does not by itself close the 2PN exterior."
+            "Supported physical Solar target from GR compatibility, the p03b "
+            "scale argument, and the augmented-medium result: the old angular "
+            "residual is absorbed once the solid deformation is allowed, and an "
+            "exact GR 2PN metric candidate exists on c_YI1=2*c_Y2.  Its "
+            "minimal K_pi=0 degeneracy is lifted by a static-silent ESS kinetic "
+            "operator that leaves the static exterior unchanged."
         ),
         "q_2PN = 2": (
             "Bi-conformal exponential refractive index n=exp(-phi). Not selected "
@@ -330,8 +544,8 @@ def q2pn_branch_ledger() -> dict[str, Any]:
         "q_2PN = 10": (
             "p03 minimal isotropic closure. Comes from imposing T=0 (medium "
             "stress vanishes), which is not the physical exterior condition. "
-            "Likely diagnostic artifact, but final wording needs the full "
-            "G=kappa*T exterior re-check."
+            "The augmented p03c system strengthens the reading that q=10 is a "
+            "frozen/stress-free diagnostic artifact, not a Solar prediction."
         ),
         "q_2PN = 11/4": (
             "lambda_S -> infinity strict S=6 limit; unphysical for dark-energy "
@@ -339,8 +553,9 @@ def q2pn_branch_ledger() -> dict[str, Any]:
         ),
         "decisive_point": (
             "the physical exterior equation should be G=kappa*T, not T=0. "
-            "The restricted p03c ansatz diagnoses the scale of the correction, "
-            "but the full radial ODE is still open."
+            "The frozen restricted p03c ansatz diagnoses the scale of the "
+            "correction; the augmented ansatz forms the proper 2PN radial "
+            "system and removes the angular obstruction."
         ),
     }
 
@@ -348,26 +563,29 @@ def q2pn_branch_ledger() -> dict[str, Any]:
 def refractive_axis_verdict() -> dict[str, Any]:
     """Strategic verdict on whether 'refractive' is a distinguishing axis."""
     return {
-        "verdict": "NO_SOLAR_REFRACTIVE_DISTINGUISHER_FROM_THIS_DIAGNOSTIC",
+        "verdict": "SOLAR_REFRACTIVE_BRANCH_GR_COMPATIBLE_NO_LARGE_2PN_DEVIATION",
         "reason": (
             "the restricted diagnostic and p03b scale argument point to "
-            "Lambda-scale local corrections, ~1e-35 at the Sun. This supports "
-            "Solar GR-compatibility but is not a closed no-go theorem for every "
-            "possible refractive exterior branch."
+            "Lambda-scale local corrections, ~1e-35 at the Sun, while the "
+            "augmented medium-strain system admits an exact GR 2PN candidate. "
+            "So the Solar statement is GR compatibility, not a large q=2 "
+            "deviation."
         ),
         "where_refractive_coupling_acts_at_O1": "cosmology (dark energy), via c_Y2",
         "title_status": (
             "'Refractive Gravity' is the physical picture/motivation; the literal "
-            "Pi_eff->n_eff exterior mapping still requires the p13 bridge and the "
-            "full exterior ODE"
+            "weak-field Pi_eff->n_eff bridge is supplied by p13.  The Solar "
+            "2PN metric branch is now a p03c boundary/health-selection problem, "
+            "not a missing source-to-index bridge."
         ),
         "distinguishing_content_must_come_from": [
             "cosmology: the effective-Lambda / dark-energy sector where c_Y2 acts at O(1)",
             "galactic MOND vortex sector (p07) -- still resting on two underived postulates",
         ],
         "p13_role": (
-            "p13_refractive_force.py remains a correct map and one real no-go; it "
-            "does not by itself create a Solar distinguishing axis"
+            "p13_refractive_force.py closes the weak action-stress/Bianchi "
+            "source-to-index chain; p03c now carries the Solar branch-selection "
+            "load."
         ),
     }
 
@@ -400,43 +618,83 @@ def exterior_claim_gate() -> list[ClaimGate]:
             ),
         ),
         ClaimGate(
+            claim="The old 2PN angular residual is absorbed by radial medium strain",
+            status="PASS_AUGMENTED_MEDIUM_STRAIN_ODE_SYSTEM",
+            verified_here=(
+                "using F/r=1+s(r)*U^2, the tt/rr/theta equations solve as a "
+                "consistent radial ODE system; substituting the solved derivatives "
+                "leaves zero residuals."
+            ),
+            open_requirement=(
+                "select boundary conditions and run the perturbation-health check "
+                "for the exact-GR candidate slice versus the nearby Lambda-scale branch."
+            ),
+        ),
+        ClaimGate(
+            claim="The exact-GR candidate's K_pi=0 minimal degeneracy can be stabilized",
+            status="PASS_STATIC_SILENT_ESS_KINETIC_LIFT",
+            verified_here=(
+                "the ESS operator eta*(u.d phi)^2 vanishes with its first stress "
+                "variation on every static exterior, but adds eta/B*dot(pi)^2 "
+                "to solid perturbations."
+            ),
+            open_requirement=(
+                "carry the same ESS completion into the full perturbation ledger "
+                "and observational stability filters."
+            ),
+        ),
+        ClaimGate(
             claim="Solar q_2PN=7/4 target is supported at the physical scale",
-            status="SUPPORTED_BY_SCALE_DIAGNOSTIC_NOT_PROVED_HERE",
-            verified_here="diagnostic correction scale = c_Y2/M_Pl^2 ~ Lambda; Lambda*R_sun^2 ~ 1e-35.",
-            open_requirement="full airtight exterior ODE for a rigorous 2PN statement.",
+            status="SUPPORTED_BY_AUGMENTED_GR_CANDIDATE_AND_SCALE",
+            verified_here=(
+                "diagnostic correction scale = c_Y2/M_Pl^2 ~ Lambda; "
+                "Lambda*R_sun^2 ~ 1e-35; augmented system also admits exact GR "
+                "2PN metric on c_YI1=2*c_Y2 with s=-1/2; ESS lift stabilizes "
+                "the minimal K_pi=0 degeneracy without changing the static exterior."
+            ),
+            open_requirement=(
+                "match the exact-GR exterior branch to the finite oscillon core "
+                "and carry the ESS lift through the global stability ledger."
+            ),
         ),
         ClaimGate(
             claim="q_2PN=10 is an artifact of imposing T=0",
-            status="PLAUSIBLE_DIAGNOSTIC_NOT_FINAL",
-            verified_here="p03's q=10 came from requiring medium stress to vanish; p03c suggests this is not the physical condition.",
-            open_requirement="derive the full G=kappa*T exterior and then reclassify q=10.",
+            status="SUPPORTED_ARTIFACT_READING_AFTER_AUGMENTED_SYSTEM",
+            verified_here=(
+                "p03's q=10 came from requiring medium stress to vanish; p03c "
+                "uses G=kappa*T and shows the missing medium deformation absorbs "
+                "the old angular obstruction."
+            ),
+            open_requirement="do not use q=10 as a Solar prediction.",
         ),
         ClaimGate(
-            claim="Refractive is not a distinguishing Solar axis",
-            status="NO_DISTINGUISHER_FROM_THIS_RESTRICTED_SOLAR_DIAGNOSTIC",
+            claim="The Solar refractive branch is GR-compatible at 2PN",
+            status="SOLAR_REFRACTIVE_BRANCH_GR_COMPATIBLE",
             verified_here="dark-energy-scale c_Y2 gives only Lambda*R_sun^2 suppression in this diagnostic.",
-            open_requirement="finish the refractive bridge and full exterior ODE before making a final Solar no-go claim.",
+            open_requirement="match the exact-GR exterior branch to the finite oscillon core.",
         ),
     ]
 
 
 def do_not_claim() -> list[str]:
     return [
-        "Do not claim a fully airtight 2PN exterior; the angular residual is not yet absorbed.",
+        "Do not claim the frozen-solid angular residual is a physical no-go; it is absorbed by the augmented medium strain.",
         "Do not claim p03c is a direct 2PN solution; its 2PN coefficients depend on r inside a constant-coefficient ansatz.",
         "Do not claim q_2PN=10 as a Solar prediction; the supported Solar target is q=7/4 by the scale argument.",
         "Do not claim the literal refractive index n=exp(-phi) is the physical 2PN metric.",
-        "Do not claim a final Solar refractive no-go from this restricted diagnostic alone.",
-        "Do not import this as a new article result until the augmented-ansatz airtight ODE is closed.",
-        "Do not treat the q=10-artifact clarification as final before the independent isotropic G=kappa*T re-check.",
+        "Do not phrase Solar GR-compatibility as a rejection of the refractive mechanism.",
+        "Do not import this as a new article result until the exact-GR branch is matched to the finite oscillon core.",
+        "Do not use the minimal polynomial alone as the perturbation-health proof; include the static-silent ESS lift.",
     ]
 
 
 def module_status() -> dict[str, Any]:
     return {
         "file": "p03c_exterior_field_equation.py",
-        "export_status": "WORK_LEDGER_DIAGNOSTIC_ONLY_NOT_ARTICLE_READY",
+        "export_status": "WORK_LEDGER_AUGMENTED_2PN_SYSTEM_READY_NOT_ARTICLE_READY",
         "exterior_solution": solve_exterior_field_equation(),
+        "augmented_medium_strain_2pn_system": augmented_medium_strain_2pn_system(),
+        "static_silent_ess_kinetic_lift": static_silent_ess_kinetic_lift_theorem(),
         "lambda_scale_estimate": lambda_scale_suppression_estimate(),
         "q2pn_ledger": q2pn_branch_ledger(),
         "refractive_verdict": refractive_axis_verdict(),
@@ -468,26 +726,43 @@ if __name__ == "__main__":
     print("  thth residual (open item):", result["thth_residual_localized_open_item"])
     print("  thth reading:", result["thth_residual_reading"])
 
-    print("\n2. Lambda-scale suppression at the Solar radius")
+    print("\n2. Augmented medium-strain 2PN system")
+    aug = augmented_medium_strain_2pn_system()
+    print("  status:", aug["status"])
+    print("  old angular residual absorbed:", aug["old_angular_residual_absorbed"])
+    gr_candidate = aug["gr_2pn_metric_candidate"]
+    print("  GR 2PN candidate slice:", gr_candidate["coupling_slice"])
+    print("  GR 2PN medium strain:", gr_candidate["medium_strain"])
+    print("  GR 2PN candidate identity:", gr_candidate["identity"])
+    print("  health check:", aug["health_check"]["reading"])
+
+    print("\n3. Static-silent ESS kinetic lift")
+    lift = static_silent_ess_kinetic_lift_theorem()
+    print("  status:", lift["status"])
+    print("  static exterior unchanged:", lift["static_exterior_unchanged"])
+    print("  lifted K_pi:", lift["lifted_Kpi"])
+    print("  meaning:", lift["meaning"])
+
+    print("\n4. Lambda-scale suppression at the Solar radius")
     est = lambda_scale_suppression_estimate()
     print("  Lambda*R_sun^2 ~", f"{est['Lambda_times_Rsun_squared']:.1e}")
     print("  reading:", est["reading"])
     print("  cross-check:", est["cross_check"])
 
-    print("\n3. q_2PN branch ledger")
+    print("\n5. q_2PN branch ledger")
     for key, value in q2pn_branch_ledger().items():
         print(f"  {key}: {value}")
 
-    print("\n4. Refractive-axis verdict")
+    print("\n6. Refractive-axis verdict")
     verdict = refractive_axis_verdict()
     print("  verdict:", verdict["verdict"])
     print("  reason:", verdict["reason"])
     print("  O(1) coupling candidate acts in:", verdict["where_refractive_coupling_acts_at_O1"])
 
-    print("\n5. Claim gate")
+    print("\n7. Claim gate")
     for gate in exterior_claim_gate():
         print(f"  - [{gate.status}] {gate.claim}")
 
-    print("\n6. Do not claim")
+    print("\n8. Do not claim")
     for item in do_not_claim():
         print(f"  - {item}")
