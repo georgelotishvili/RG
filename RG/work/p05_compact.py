@@ -6,7 +6,16 @@
 """
 PHASE 18: RG compact object, Bernoulli saturation, and singularity audit
 
-ეს ფაილი არის compact-object სამუშაო ledger, არა theory-export proof.
+Status:
+Static exponential compact exterior is closed as an algebraic article-scope
+benchmark: the vacuum phase equation gives the exterior, the effective source
+has the Bernoulli profile, curvature invariants vanish at the formal endpoint,
+and the C2 matching algebra is explicit.
+
+This is not yet a full compact-object replacement proof.  The full claim still
+needs p01 source closure, physical energy, junction stress, rotating solutions,
+coupled stability/QNMs/echoes, and EHT/NS likelihood work.
+
 აქ მოწმდება exponential exterior-ის algebraic/phenomenological branch:
 1. exponential bi-conformal exterior:
        ds^2 = -exp(-r_s/r)c^2dt^2 + exp(r_s/r)(dr^2+r^2dOmega^2)
@@ -18,7 +27,7 @@ PHASE 18: RG compact object, Bernoulli saturation, and singularity audit
 7. a rarefaction cutoff plus C2 finite-core matching is a conditional
    regular-extension ansatz.
 
-Open before theory export:
+Still open before full compact-object theory export:
     close the p01 polynomial stress/source equations, define physical energy
     and junction stress, compute coupled perturbations/QNMs/echoes, and add
     rotating EHT ray tracing.
@@ -1164,7 +1173,7 @@ def predictions_summary():
     """RG vs GR shadow status."""
     ratio = 2.0 * math.e / (3.0 * math.sqrt(3.0))
     return {
-        "current_status": "static spherical benchmark derived inside the exponential branch; full EHT verdict open",
+        "current_status": "static spherical benchmark derived and article-usable as a benchmark; full EHT verdict open",
         "RG_b_c": "e*r_s",
         "GR_b_c": "3*sqrt(3)*r_s/2",
         "RG_over_GR": ratio,
@@ -1809,7 +1818,7 @@ def stage_a3_compact_old_file_status():
     return {
         "geodesic_interior": stage_a3_old_geodesic_interior_drain(),
         "scalar_perturbations": stage_a3_scalar_perturbation_verification(),
-        "integration_status": "Stage A3 represented as candidate ledger in p05_compact.py; theory export remains gated",
+        "integration_status": "Stage A3 is drained into p05_compact.py; compact exterior short path is passed, while OLD authority and full compact-object export remain gated",
     }
 
 
@@ -1870,8 +1879,16 @@ def compact_central_claim_gate():
     scalar_probe = stage_a3_scalar_perturbation_verification()
     short_path = compact_exterior_short_path_certificate()
     return {
-        "file_export_status": "NOT_READY_FOR_RG_THEORY_EXPORT",
+        "file_export_status": "PARTIAL_ARTICLE_EXPORT_READY_FOR_STATIC_COMPACT_EXTERIOR_SCOPE_BOUNDARY",
+        "full_compact_object_status": "FULL_COMPACT_OBJECT_REPLACEMENT_STILL_GATED",
         "compact_exterior_short_path": short_path["status"],
+        "article_supported_claims": [
+            "static exponential exterior derived from the vacuum phase equation",
+            "Bernoulli-shaped effective source profile derived geometrically",
+            "Schwarzschild curvature singularity removed inside the static exponential branch",
+            "C2 finite-core matching coefficients derived as a conditional ansatz",
+            "static photon sphere, shadow and ISCO benchmarks derived",
+        ],
         "signature_bridge": signature["stress_bridge_status"],
         "exterior_status": "DERIVED_FROM_VACUUM_PHASE_EQUATION_PLUS_BICONFORMAL_MAP",
         "black_hole_breaker_status": "SCHWARZSCHILD_CURVATURE_SINGULARITY_REMOVED_AT_GEOMETRY_LEVEL__GEODESIC_BOUNDARY_STILL_OPEN",
@@ -1959,7 +1976,7 @@ def article_strong_field_gate():
 
     return {
         "article_use": "strong-field/screening scope boundary",
-        "status": "STRONG_FIELD_PROGRAM_REGISTERED_NOT_PROMOTED",
+        "status": "PARTIAL_ARTICLE_EXPORT_READY_STATIC_EXTERIOR_AND_SCREENING_SCOPE_ONLY",
         "compact_exterior_short_path": compact_gate["compact_exterior_short_path"],
         "static_exterior_boundary": {
             "exterior_result": boundary["exterior_result"],
@@ -1973,8 +1990,8 @@ def article_strong_field_gate():
         "screening_minimum": screening,
         "required_before_claim": compact_gate["observational_blockers"],
         "article_rule": (
-            "do not claim strong-field viability in the first article; state "
-            "the exact gates and keep q_2PN screening tied to the 2PN likelihood"
+            "state the closed static-exterior benchmark and exact remaining "
+            "gates; keep q_2PN screening tied to the 2PN likelihood"
         ),
     }
 
@@ -1998,8 +2015,8 @@ if __name__ == "__main__":
 
     print("\n3. Integration verdict")
     print("  - OLD/12, OLD/14 and OLD/15 are represented here as candidate ledger")
-    print("    material. They are not final theory authority until the central")
-    print("    compact-object gates are closed.")
+    print("    material. The static compact-exterior short path is passed; full")
+    print("    compact-object authority still needs the central gates.")
 
     print("\n4. Central compact-object claim gate")
     for key, value in compact_central_claim_gate().items():

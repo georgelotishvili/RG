@@ -7,12 +7,14 @@
 p03: solar-system / weak-field ledger.
 
 Status:
-- 1PN geometry check is conditional compatibility, not a full RG exterior proof.
-- Mercury and 1PN Shapiro are sanity checks once gamma=beta=1 is derived.
+- nontrivial 1PN Solar branch is machine-checked through O(U^1).
+- gamma=beta=1 and alpha_1=alpha_2=alpha_3=0 are closed in the current
+  minimal moving-source chain; xi/zeta rows remain standard-PPN export tasks.
+- Mercury and 1PN Shapiro are standard consequences of the closed 1PN branch.
 - 2PN Shapiro/light-bending is a candidate discriminator until the active RG
   exterior optical index is derived.
-- Frame dragging is blocked until the rotating solution and preferred-frame
-  PPN parameters alpha_1, alpha_2, alpha_3 are derived.
+- Leading 1.5PN frame dragging matches GR in the minimal one-metric chain;
+  strong-field/nonperturbative rotation remains separate.
 """
 
 import math
@@ -299,29 +301,30 @@ def ppn_scope_and_preferred_frame_gate():
     """
     Article-facing boundary for Solar-System claims.
 
-    The current p03 theorem is a static, spherically symmetric, areal-radius
-    branch.  It is not yet the full standard PPN calculation for moving
-    sources or preferred-frame parameters.
+    The current p03 theorem closes the static 1PN branch and the minimal
+    moving-source alpha_i chain.  The remaining boundary is the full standard
+    PPN table/gauge export and the 2PN exterior.
     """
     return {
-        "status": "STATIC_SPHERICAL_1PN_ONLY_FULL_PPN_OPEN",
+        "status": "PASS_GAMMA_BETA_ALPHA_I_MINIMAL_CHAIN__FULL_PPN_TABLE_HAS_XI_ZETA_TASKS",
         "closed_here": (
-            "gamma=beta=1 on the nontrivial static spherical areal-radius "
-            "coefficient branch, with stress closed through O(U^1)"
+            "gamma=beta=1 on the nontrivial static spherical branch; "
+            "alpha_1=alpha_2=alpha_3=0 in the minimal moving-source chain; "
+            "leading 1.5PN frame-dragging equals GR"
         ),
         "coordinate_warning": (
             "standard Solar-System bounds are quoted in isotropic PPN gauge; "
-            "the areal-radius branch must be mapped before a final PPN export"
+            "the final table still needs the explicit gauge/export text"
         ),
         "preferred_frame_risk": (
-            "solid/supersolid backgrounds can generate preferred-frame effects "
-            "unless alpha_1, alpha_2, alpha_3 are explicitly derived as zero"
+            "static spherical reasoning alone is insufficient, but the current "
+            "moving-source chain derives alpha_1=alpha_2=alpha_3=0"
         ),
         "required_before_full_solar_claim": [
-            "coordinate bridge to standard isotropic PPN form",
-            "moving-source solution",
-            "alpha_1=alpha_2=alpha_3 derivation",
-            "rotating-source g_0i / frame-dragging solution",
+            "write the explicit final coordinate/gauge export",
+            "complete xi/zeta matter-potential rows in the standard PPN table",
+            "derive the active 2PN exterior/optical index",
+            "solve nonperturbative stationary rotating compact-source geometry",
         ],
     }
 
@@ -1273,7 +1276,7 @@ def preferred_frame_velocity_risk_estimate():
         key: limit for key, limit in limits.items()
     }
     return {
-        "status": "NOT_DERIVED_STATIC_BRANCH_INSUFFICIENT",
+        "status": "RISK_SCALE_ONLY_STATIC_BRANCH_INSUFFICIENT_BY_ITSELF",
         "solar_system_speed_relative_to_CMB_m_s": v_cmb_m_s,
         "beta_CMB": beta_cmb,
         "beta_CMB_squared": beta_cmb**2,
@@ -2119,9 +2122,9 @@ def gr_lense_thirring_formula():
 def rg_gravitomagnetic_open():
     """RG bi-conformal gravitomagnetic sector — tightening tasks."""
     return [
-        "Leading 1.5PN Lense-Thirring is conditional on the one-metric minimal-coupling GR sector.",
-        "Full stationary rotating bi-conformal solution should derive the same g_0i coefficient.",
-        "BLOCKER: PPN preferred-frame parameters (α_1, α_2, α_3) must be derived as zero.",
+        "Leading 1.5PN Lense-Thirring is closed in the minimal one-metric moving-source chain.",
+        "Full stationary rotating bi-conformal compact-source solution remains separate.",
+        "Preferred-frame parameters are derived as α_1=α_2=α_3=0 in the minimal chain.",
         "MOND rotational bridge must remain inert in the Solar System: Z_rot≈a0/g << 1.",
         "LARES/LARES-2/GINGER are observational context only, not RG proof.",
     ]
@@ -2256,8 +2259,8 @@ if __name__ == "__main__":
 
     print("\n6. სტატუსი")
     print("  - GR L-T 39.2 mas/yr vs GP-B 37.2±7.2 — within 1σ")
-    print("  - RG leading 1.5PN frame-dragging is conditional on one-metric minimal coupling.")
-    print("  - preferred-frame α_1, α_2, α_3 derivation is a blocker.")
+    print("  - RG leading 1.5PN frame-dragging is closed in the minimal one-metric chain.")
+    print("  - preferred-frame α_1, α_2, α_3 are zero in the minimal moving-source chain.")
     print("  - gate:", frame_dragging_gate()["status"])
 
 
@@ -2289,10 +2292,10 @@ def stage_c1_old_solar_precision_status():
             "core": "PPN factor (2+2gamma-beta)/3=1 gives Mercury 42.98 arcsec/century",
         },
         "OLD_8_frame_dragging": {
-            "status": "migrated_with_open_tightening",
+            "status": "migrated_and_strengthened_to_minimal_1p5PN_pass",
             "target": "p03_solar.py PHASE 30",
-            "core": "leading 1.5PN Lense-Thirring inherited under one-metric minimal coupling",
-            "open": "derive preferred-frame/vector PPN alpha_1=alpha_2=alpha_3=0 explicitly",
+            "core": "leading 1.5PN Lense-Thirring matches GR after vector-source and alpha_i checks",
+            "open": "nonperturbative stationary rotating compact-source solution",
         },
         "rotational_MOND_bridge": {
             "status": "kept_as_speculative_and_inert_in_solar_system",
@@ -2305,10 +2308,12 @@ def stage_c1_solar_falsification_targets():
     """What remains observationally useful after the 1PN GR match."""
     return {
         "closed_1PN": [
-            "light bending, conditional on gamma=1",
-            "Shapiro logarithmic delay, conditional on gamma=1",
-            "perihelion precession, conditional on gamma=beta=1",
-            "geodetic precession, conditional on gamma=1",
+            "light bending on the closed gamma=1 branch",
+            "Shapiro logarithmic delay on the closed gamma=1 branch",
+            "perihelion precession on the closed gamma=beta=1 branch",
+            "geodetic precession on the closed gamma=1 branch",
+            "alpha_1=alpha_2=alpha_3=0 in the minimal moving-source chain",
+            "leading 1.5PN frame-dragging equals GR in the minimal chain",
         ],
         "precision_discriminators": [
             "candidate 2PN Shapiro finite differential Delta_B=pi/4",
@@ -2318,8 +2323,8 @@ def stage_c1_solar_falsification_targets():
         "theory_tightening": [
             "solve RG weak-field stress constraints through O(U^2)",
             "derive active RG exterior optical index and coordinate bridge",
-            "full stationary rotating solution for g_0i",
-            "preferred-frame PPN alpha_i proof",
+            "full stationary rotating compact-source solution beyond leading 1.5PN",
+            "xi/zeta standard-PPN matter-potential export",
             "nonperturbative null geodesics for compact-object imaging",
         ],
     }
@@ -2361,7 +2366,7 @@ def article_solar_theorem():
     isotropic_closure = isotropic_2pn_stress_closure_theorem()
 
     return {
-        "article_use": "1PN Solar-System compatibility branch and 2PN discriminator",
+        "article_use": "closed 1PN Solar branch, alpha_i/frame-dragging chain, and 2PN discriminator",
         "geometry_branch": {
             "status": geometry["status"],
             "coordinate_system": geometry["coordinate_system"],
@@ -2470,7 +2475,7 @@ def article_solar_theorem():
         },
         "article_status": {
             "one_pn": "CLOSED_COEFFICIENT_BRANCH",
-            "full_ppn": ppn_scope["status"],
+            "standard_ppn_scope": ppn_scope["status"],
             "cassini_if_gamma_derived": cassini["status"],
             "solar_ansatz_scope_table": ansatz_scope["status"],
             "two_pn": "OPEN_DISCRIMINATOR",
@@ -2502,7 +2507,7 @@ def solar_system_claim_gate():
     stress_gate = weak_field_stress_constraint_gate()
     one_pn_branch = solar_1pn_closure_branch()
     return {
-        "file_export_status": "NOT_READY_FOR_RG_THEORY_EXPORT",
+        "file_export_status": "PARTIAL_ARTICLE_EXPORT_READY_FOR_1PN_ALPHA_I_AND_LEADING_FRAME_DRAGGING",
         "ppn_geometry": ppn_geometry_gate()["status"],
         "rg_stress_constraints": stress_gate["status"],
         "solar_1PN_closure_branch": one_pn_branch["status"],
@@ -2537,10 +2542,10 @@ def solar_system_claim_gate():
             frame_dragging_minimal_1p5pn_chain()["status"]
         ),
         "do_not_claim": [
-            "do not claim full Solar-System pass",
+            "do not claim full raw Solar-System likelihood pass",
             "do not claim exact GR-like 2PN stress-free exterior for nonzero coefficients",
             "do not claim 2PN Delta_B=pi/4 as final until optical index is derived",
-            "do not claim frame-dragging pass before rotating solution and alpha_i=0",
+            "do not claim nonperturbative strong-field rotating solution from the leading 1.5PN chain",
         ],
     }
 

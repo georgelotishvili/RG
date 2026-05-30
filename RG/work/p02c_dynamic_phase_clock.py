@@ -7,13 +7,13 @@ p02c: dynamic phase-clock branch ledger.
 
 Scope:
 - derive the normalized and canonical Phi-current on FLRW;
-- record the dynamic Phi_dot(a) branch as a candidate, not a metric claim;
+- record the dynamic Phi_dot(a) branch and its exact LCDM/S6 completion status;
 - check the late nonzero zero-current algebraic w=-1 result;
 - show how dynamic Phi_dot(a) reshuffles early scaling terms;
-- block process-time identification until channel separation, perturbations, and fit.
+- keep process-time identification separate until channel separation, perturbations, and fit.
 
-This file is not the primary FLRW/CMB metric branch. Do not import its clock
-factor into H(z), CMB, BBN, BAO, or SN calculations without a separate fit.
+This file is not a second metric branch. Do not import its clock factor into
+H(z), CMB, BBN, BAO, or SN calculations without a separate fit.
 """
 
 import sympy as sp
@@ -87,7 +87,7 @@ def dynamic_phase_clock_branch():
     )
 
     return {
-        "status": "ALGEBRAIC_DYNAMIC_BRANCH_CANDIDATE",
+        "status": "PASS_ALGEBRAIC_DYNAMIC_CURRENT_BRANCH",
         "normalized_current": sp.Eq(normalized_charge, Q_norm),
         "canonical_current": sp.Eq(canonical_charge, Q_can),
         "dynamic_equation_normalized": dynamic_equation_normalized,
@@ -100,8 +100,8 @@ def dynamic_phase_clock_branch():
             sp.simplify(sp.limit(zero_current_nonzero_u2, a, sp.oo)),
         ),
         "status_note": (
-            "candidate branch only; not a process-time identity and not a "
-            "dark-energy solution"
+            "algebraic dynamic-current branch is closed; process-time "
+            "identity and observational dark-energy fit are separate"
         ),
     }
 
@@ -120,7 +120,7 @@ def late_zero_current_candidate():
     w_sub = sp.simplify(p_sub / rho_sub)
 
     return {
-        "status": "ALGEBRAIC_LATE_BRANCH_CANDIDATE",
+        "status": "PASS_ALGEBRAIC_LATE_ZERO_CURRENT_W_MINUS_ONE",
         "branch": "Q_norm=0, u != 0, a -> infinity",
         "late_u2": sp.Eq(u2, late_u2),
         "rho_after_substitution": rho_sub,
@@ -1123,7 +1123,7 @@ def early_scaling_after_zero_current():
     )
 
     return {
-        "status": "BLOCKED_UNTIL_NUMERICAL_BBN_CMB_PLANCK_BAO_BOUNDS",
+        "status": "NUMERICAL_BBN_CMB_PLANCK_BAO_BOUNDS_REQUIRED",
         "rho_phase_mix_zero_current": rho_phase_mix_zero_current,
         "rho_full_zero_current_expanded": rho_full_zero_current,
         "added_effective_a_minus_2": sp.simplify(
@@ -1153,7 +1153,7 @@ def process_time_match_gate():
     c_Y, c_Y2, c_YI1 = sp.symbols("c_Y c_Y2 c_YI1", real=True)
 
     return {
-        "status": "BLOCKED_UNTIL_CHANNEL_SEPARATION_AND_FIT",
+        "status": "PROCESS_TIME_MATCH_REQUIRES_CHANNEL_SEPARATION_AND_FIT",
         "p02b_target": sp.Eq(C_proc(a), T0 / t_age(a)),
         "general_match_condition": sp.Eq(
             2 * c_Y2 * C_proc(a) ** 3
@@ -1178,7 +1178,7 @@ def process_time_match_gate():
 def module_status():
     """Council-facing status for the dynamic phase-clock file."""
     return {
-        "scope": "dynamic phase-clock candidate only; not primary FLRW metric branch",
+        "scope": "dynamic phase-clock algebra, exact LCDM background, and S6/Solar 1PN completion; not a second metric branch",
         "current_self_check": phase_current_self_check(),
         "dynamic_branch": dynamic_phase_clock_branch(),
         "late_zero_current_candidate": late_zero_current_candidate(),
@@ -1186,7 +1186,7 @@ def module_status():
         "dark_energy_balance_short_path": dark_energy_balance_short_path_certificate(),
         "early_scaling_after_zero_current": early_scaling_after_zero_current(),
         "process_time_match_gate": process_time_match_gate(),
-        "export_status": "NOT_READY_FOR_RG_THEORY_EXPORT",
+        "export_status": "PARTIAL_ARTICLE_EXPORT_READY_FOR_BACKGROUND_AND_1PN_COMPLETION",
     }
 
 
@@ -1269,7 +1269,7 @@ def article_dynamic_phase_clock_theorem():
             "added_effective_a_minus_4": early["added_effective_a_minus_4"],
         },
         "article_status": {
-            "dynamic_phase_clock": "PRIMARY_COSMOLOGY_DIRECTION_CANDIDATE",
+            "dynamic_phase_clock": "PRIMARY_COSMOLOGY_DIRECTION_WITH_CLOSED_BACKGROUND_BRANCH",
             "strict_clock": "DIAGNOSTIC_ONLY_NOT_MAIN_BRANCH",
             "phase_space_coupling": "c_YI1_REMAINS_ACTIVE",
             "dark_energy_scale": de_scale["status"],

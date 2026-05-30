@@ -2269,6 +2269,7 @@ def refractive_gravity_weak_field_chain_theorem() -> dict[str, Any]:
 
     return {
         "status": "PASS_REFRACTIVE_GRAVITY_WEAK_FIELD_CHAIN" if all(checks) else "FAIL",
+        "scope_status": "CLOSED_WEAK_STATIC_COARSE_GRAINED_CHAIN__FULL_NONLINEAR_PDE_OPEN",
         "article_theorem": (
             "In the weak static/coarse-grained regime, RG active stresses "
             "generate a universal h_eff and n_eff=exp(h_eff). The same "
@@ -2302,6 +2303,13 @@ def refractive_gravity_weak_field_chain_theorem() -> dict[str, Any]:
         ),
         "closed_checks_count": len(checks),
         "all_checks_pass": all(checks),
+        "not_closed_by_this_theorem": (
+            "full nonlinear non-spherical PDE",
+            "disk/curl solutions and SPARC/RAR likelihood",
+            "cluster merger lensing/gas simulation",
+            "strong-core compact-object evolution",
+            "microscopic substrate value of G",
+        ),
         "next_theorem_target": (
             "derive the same chain from the full nonlinear p01/p10 PDE without symmetry reduction",
             "solve the vector PDE for disk/curl corrections with environmental boundary fields",
@@ -2313,8 +2321,8 @@ def refractive_gravity_weak_field_chain_theorem() -> dict[str, Any]:
 def refractive_force_claim_gate() -> dict[str, ClaimGate]:
     return {
         "weak_field_refractive_chain": ClaimGate(
-            claim="RG closes the weak-field refractive gravity chain from action stress to Newton and MOND.",
-            status="CLOSED_WEAK_FIELD_REFRACTIVE_CHAIN",
+            claim="RG closes the weak static/coarse-grained refractive gravity chain from action stress to Newton and MOND.",
+            status="CLOSED_WEAK_STATIC_COARSE_GRAINED_REFRACTIVE_CHAIN",
             verified_here=(
                 "p01 action stress supplies p_rad and Delta_p",
                 "p10 static spherical O(eps) equations select the bi-conformal sign a1=1",
@@ -2333,6 +2341,7 @@ def refractive_force_claim_gate() -> dict[str, ClaimGate]:
             ),
             do_not_claim=(
                 "Do not present this as a completed strong-field or non-spherical PDE theorem.",
+                "Do not present this as a SPARC/RAR, cluster, or Solar-System likelihood pass by itself.",
             ),
         ),
         "metric_optical_index": ClaimGate(
@@ -2839,6 +2848,7 @@ def refractive_do_not_claim() -> tuple[str, ...]:
         "Do not claim a single algebraic Pi_eff -> h_eff map; current work supports a differential bridge.",
         "Do not collapse p10 Pi_B and p07 Delta_p into one scalar; use the active source ledger.",
         "Do not treat the spherical transition selector as a completed disk/cluster solution.",
+        "Do not claim SPARC/RAR, Bullet, EHT, or Solar-System likelihood passes from p13 alone.",
     )
 
 
@@ -2979,9 +2989,33 @@ def p13_refractive_force_status() -> dict[str, Any]:
 
     return {
         "file": "p13_refractive_force.py",
-        "export_status": "REFRACTIVE_GRAVITY_WEAK_FIELD_CHAIN_READY",
+        "file_export_status": "PARTIAL_ARTICLE_EXPORT_READY_FOR_WEAK_STATIC_REFRACTIVE_CHAIN",
+        "export_status": "WEAK_STATIC_COARSE_GRAINED_REFRACTIVE_CHAIN_READY_FULL_PDE_OPEN",
+        "overall_status": (
+            "weak static/coarse-grained refractive chain is closed as an "
+            "identity ledger; full nonlinear non-spherical PDE and data "
+            "likelihoods remain open"
+        ),
         "closed_identity_status": "PASS" if all(closed_checks) else "FAIL",
         "weak_field_chain_theorem": weak_chain["status"],
+        "weak_field_chain_scope": weak_chain["scope_status"],
+        "article_ready_scope": (
+            "static metric-to-index identities",
+            "minimal one-metric weak point-particle action to n_eff",
+            "on-shell weak Bianchi/TOV stress source for h_eff",
+            "p10 first-order bi-conformal Newton branch and charge normalization",
+            "p01/p07 weak vortex/MOND stress identities and transition selector",
+            "finite coherence cutoff and external-field loading identities",
+            "single active weak stress ledger for p10 Bernoulli and p07 vortex channels",
+        ),
+        "not_article_ready_scope": (
+            "full nonlinear non-spherical PDE theorem",
+            "disk/curl vector-PDE solutions with realistic baryons",
+            "SPARC/RAR/galaxy-environment likelihood",
+            "Bullet/cluster merger simulation and lensing likelihood",
+            "strong-core compact-object evolution",
+            "microscopic substrate value of G",
+        ),
         "short_refractive_source_theorem": short_refractive,
         "short_newton_mond_transition_theorem": short_transition,
         "central_theorem_target": bridge["status"],

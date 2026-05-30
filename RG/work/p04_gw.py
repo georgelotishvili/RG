@@ -15,9 +15,10 @@ Recovered old-theory predictions, with export gates:
 4. Leading dipole radiation cancels only when the compact-body sensitivity is
    universal, s=1/2; residuals require a pulsar-normalized source calculation.
 
-Do not export this file as a final GW proof.  It is a gate ledger: it records
-which sector is algebraically closed and which observational tests still block
-the theory-level claim.
+Status: partial article export is ready for the tensor-speed, local TT
+dispersion and detector-response sectors.  Waveform, polarization, pulsar
+dipole and FLRW mass gates remain separate observational/source-normalization
+tasks.
 """
 
 import sympy as sp
@@ -1692,7 +1693,7 @@ def article_gw_theorem():
     detector = step4c_detector_response_claim_gate()
 
     return {
-        "article_use": "tensor-speed sector and detector-response interpretation",
+        "article_use": "closed tensor-speed/local TT sector and detector-response interpretation",
         "tensor_speed_theorem": {
             "status": "CLOSED_TENSOR_SPEED_SECTOR" if algebra["status"] == "PASS" else "CHECK",
             "conditions": speed["Horndeski_conditions"],
@@ -1712,7 +1713,8 @@ def article_gw_theorem():
             "article_reading": detector["what_is_measured"],
         },
         "separate_gates": {
-            "massive_dispersion": local_dispersion["status"],
+            "local_minkowski_dispersion": local_dispersion["status"],
+            "FLRW_massive_dispersion": mass_gate["status"],
             "FLRW_mass_gate": mass_gate["status"],
             "waveform": "CATALOG_LEVEL_FIT_REQUIRED",
             "polarization": "LVK_POLARIZATION_POSTERIOR_REQUIRED",
@@ -1723,6 +1725,7 @@ def article_gw_theorem():
             "c_g": "CLOSED_LUMINAL_IN_MINIMAL_BRANCH",
             "tensor_speed_short_path": short_path["status"],
             "local_TT_dispersion": local_dispersion["status"],
+            "detector_response": detector["status"],
             "full_waveform": "SEPARATE_GATE",
             "extra_polarizations": "SEPARATE_GATE",
         },
@@ -1744,7 +1747,7 @@ def gw_central_claim_gate():
     pulsar_gate = scalar_dipole_prediction()
     detector_gate = step4c_detector_response_claim_gate()
     return {
-        "file_export_status": "NOT_READY_FOR_RG_THEORY_EXPORT",
+        "file_export_status": "PARTIAL_ARTICLE_EXPORT_READY_FOR_TENSOR_SPEED_LOCAL_TT_AND_DETECTOR_RESPONSE",
         "tensor_speed_sector": speed_gate["status"],
         "tensor_speed_short_path": short_path["status"],
         "detector_response": detector_gate["status"],
@@ -1754,7 +1757,7 @@ def gw_central_claim_gate():
         "scalar_dipole": pulsar_gate["normalization_status"],
         "binary_pulsar": "BLOCKED_UNTIL_TENSOR_FLUX_AND_DIPOLE_NORMALIZATION",
         "do_not_claim": [
-            "do not claim full c_g=c propagation from alpha_T=0 alone",
+            "do not claim full cosmological/catalog GW propagation from alpha_T=0 alone",
             "do not claim GR-like orbital decay from c_T=c alone",
             "do not claim scalar breathing amplitude is observationally allowed without LVK polarization fit",
             "do not claim PSR J1738 alpha0 bound in RG variables before normalization mapping",

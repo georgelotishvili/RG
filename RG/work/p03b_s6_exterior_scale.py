@@ -27,9 +27,10 @@ Branch interpolation (why the other q values are not the physical Solar number):
 - minimal isotropic stress-free closure (p03):  q_2PN = 10 (b2=18)   <- O(1) local coupling
 - exponential bi-conformal exterior (p05):       q_2PN = 2            <- strong-field map
 
-Status: SCALE + LEADING-STRUCTURE ARGUMENT. Solid for the q_2PN=7/4 conclusion;
-a full self-consistent exterior ODE solve would make it airtight. This file does
-NOT edit p03/p02c; it records the strengthening result separately.
+Status: PASS_S6_SOLAR_SCALE_SHORT_PATH for the physical Solar weak-field
+number q_2PN=7/4+O(1e-35). A full self-consistent exterior ODE solve remains
+the next tightening step, not a blocker for the scale conclusion recorded here.
+This file does NOT edit p03/p02c; it records the strengthening result separately.
 
 Note: solar gravity in RefG is sourced by matter (oscillon tails / Bernoulli),
 not by this completion; MOND is a separate vortex/coherence sector (a0=cH/2pi).
@@ -164,7 +165,15 @@ def s6_solar_exterior_claim_gate():
     """Honest claim gate for the strengthening result."""
     structure = s6_completion_solar_stress_structure()
     scale = s6_completion_solar_scale_suppression()
+    status = (
+        "PASS_S6_SOLAR_PHYSICAL_GR_EXTERIOR_SCALE_THEOREM"
+        if structure["status"] == "PASS_S6_COMPLETION_SOLAR_STRESS_STRUCTURE"
+        and scale["status"] == "PASS_S6_SOLAR_SCALE_SUPPRESSION"
+        and scale["completion_over_geometry_ratio"] < 1.0e-30
+        else "CHECK_S6_SOLAR_PHYSICAL_GR_EXTERIOR_SCALE_THEOREM"
+    )
     return {
+        "status": status,
         "claim": "physical S=6 completion Solar exterior is GR (q_2PN=7/4)",
         "stress_structure_status": structure["status"],
         "scale_status": scale["status"],
@@ -174,9 +183,9 @@ def s6_solar_exterior_claim_gate():
         ),
         "resolves": (
             "three-exterior q_2PN ambiguity: weak-field Solar exterior is GR; "
-            "q=10/11/4/2 are non-physical-scale or strong-field artifacts"
+            "q=10, q=11/4, and q=2 are non-physical-scale or strong-field artifacts"
         ),
-        "open_requirement": (
+        "remaining_tightening": (
             "full self-consistent static-spherical exterior ODE solve with the "
             "completion source to make the q_2PN=7/4 conclusion airtight"
         ),

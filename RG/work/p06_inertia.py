@@ -6,6 +6,16 @@
 """
 PHASE 19: Inertia from oscillon collective coordinates and RG dressing.
 
+Status:
+The leading Noether inertia/equivalence short path is closed at theorem level
+and is article-ready as a scoped result: one localized dressed energy E0 gives
+the inertial mass, the zero-frequency gravitational source, free-fall mass
+cancellation, and zero uniform-motion drag.
+
+The direct RG action derivation is still a concrete work item: verify the
+p01/p10 Laue boundary condition and compute the translation zero-mode norm
+from the full dressed stress tensor.
+
 Old ISPG Appendix 17 used the correct physical intuition:
     acceleration -> retarded self-field -> fore/aft asymmetry -> reaction.
 
@@ -37,7 +47,7 @@ No new parameter is introduced.  Retarded self-field asymmetry becomes the
 mechanical explanation of how the medium reacts during acceleration; the
 collective-coordinate theorem is the clean derivation of the coefficient.
 
-Open before final theory export:
+Still open before direct p01/p10 derivation and full compact-body export:
     derive the localized dressed oscillon solution from the active RG action,
     compute its full Noether stress-energy including boundary/dressing terms,
     and verify that the translation zero-mode norm equals the total dressed
@@ -318,7 +328,7 @@ def rg_action_to_inertia_derivation_gate():
             "boundary/ADM terms for compact bodies",
             "full Lorentz/preferred-frame perturbation audit",
         ],
-        "export_status": "STRONG_THEOREM_GATE_NOT_FINAL_RG_DERIVATION",
+        "export_status": "THEOREM_GATE_CLOSED__DIRECT_P01_P10_ZERO_MODE_AND_LAUE_INTEGRAL_OPEN",
     }
 
 
@@ -617,9 +627,9 @@ def old_vs_new_inertia_assessment():
     return [
         "Old theory's best idea is retained: acceleration creates a retarded self-field asymmetry.",
         "Old theory's weak point is avoided: the leading coefficient no longer depends on assuming C_reg=1.",
-        "The full F=Ma coefficient is now fixed by the oscillon's translational collective coordinate.",
+        "The leading F=Ma coefficient is fixed by the oscillon's translational collective coordinate.",
         "No drag for uniform motion follows from Lorentz covariance/boosted solution, not from an ad hoc cancellation.",
-        "Equivalence principle is clean: m_i=m_g=E0/c^2.",
+        "Leading equivalence identity is clean: m_i=m_g=E0/c^2.",
         "Free-fall universality is explicit: M cancels between F_grav and F_inertia.",
         "Background pressure scaling preserves m_g/m_i=1 because both scale as exp(phi/2).",
         "Core and Bernoulli dressing are counted once as a single total zero-frequency energy E0.",
@@ -732,8 +742,17 @@ def inertia_central_claim_gate():
     boost = integrated_noether_boost_closure()
     laue = laue_stress_condition_gate()
     return {
-        "file_export_status": "NOT_READY_FOR_FINAL_THEORY_EXPORT",
+        "file_export_status": "PARTIAL_ARTICLE_EXPORT_READY_FOR_LEADING_NOETHER_INERTIA_AND_EQUIVALENCE",
+        "direct_RG_derivation_status": "DIRECT_P01_P10_ZERO_MODE_AND_LAUE_INTEGRAL_OPEN",
         "inertia_short_path": short_path["status"],
+        "article_supported_claims": [
+            "localized finite-energy Noether theorem gives the leading inertial mass E0/c^2",
+            "integrated boost gives p=gamma(E0/c^2)v when Laue/boundary localization holds",
+            "the same E0 supplies the zero-frequency gravitational source",
+            "free-fall mass cancellation follows in the leading dressed-oscillon branch",
+            "uniform Lorentz-boosted motion has no substrate drag",
+            "retarded dressing is the response mechanism, not a fitted inertia coefficient",
+        ],
         "leading_inertia_status": ward["gate_status"],
         "integrated_boost_status": boost["closure_status"],
         "Laue_balance_status": laue["gate_status"],
@@ -794,7 +813,8 @@ def main() -> None:
     print("\n--- დასკვნა ---")
     print("  RG-ში ინერცია ძველ self-force ტექსტზე ძლიერია:")
     print("  Integrated boost proof იძლევა p=gamma(E0/c^2)v-ს, თუ Laue stress balance სრულდება.")
-    print("  სრული RG derivation ჯერ ითხოვს p01/p10 Laue-boundary და zero-mode ინტეგრალს.")
+    print("  leading Noether inertia/equivalence short path დახურულია.")
+    print("  პირდაპირი RG derivation ითხოვს p01/p10 Laue-boundary და zero-mode ინტეგრალს.")
     print("  retarded asymmetry რჩება მექანიზმად, ხოლო pressure-gradient force matter-ზე აკრძალულია.")
 
 

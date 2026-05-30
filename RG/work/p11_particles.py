@@ -26,7 +26,8 @@ smallest to the electron gives
 
     1 : 14.37951 : 58.97010
 
-and therefore, with m proportional to nu^2, the charged-lepton masses.
+and therefore, if m proportional to nu^2 is accepted and the electron
+mass is used as the anchor, the conditional charged-lepton mass ratios.
 
 Important:
     p11_particles.py adds a candidate route:
@@ -1186,7 +1187,7 @@ def qft_parity_selection_rule():
     ამოწმებს პარიტეტის სიმეტრიას l=1 მოდისთვის.
     """
     return {
-        "resolution": "მიუონის მასა ამოხსნილია l=1 მოდით, რაც თავსებადია პარიტეტის დაცვასთან.",
+        "resolution": "legacy l=1 მინიჭება თავსებადია toy scalar parity overlap-თან; ეს არ არის მიუონის მასის გამოყვანა.",
         "decay_channel": "μ (l=1) -> e (l=0) + e (l=0)",
         "wigner_parity_condition": "l_i + l_j + l_k უნდა იყოს ლუწი (EVEN) სკალარული გადაფარვისას",
         "muon_parity_sum": "1 + 0 + 0 = 1 (ODD)",
@@ -1290,31 +1291,47 @@ def audit_radiative_decay_null(beta_val):
 
 def observational_survival_bias():
     """
-    აგენტთა საბჭოს და მთავარი ინტუიციის შედეგი:
-    შუალედური მოდები (n=2..13) მათემატიკურად არ იკრძალება. ისინი ჩნდებიან,
-    მაგრამ მათი სიცოცხლის ხანგრძლივობა (lifetime) იმდენად მცირეა, რომ დეტექტორებში
-    მხოლოდ ფონურ ხმაურად (background vacuum fluctuations) იკითხება.
+    Legacy radial-ladder hypothesis.
+
+    This is retained only as a comparison target.  The active charged-lepton
+    route is the C3/order-9 triplet; the radial n=14 lifetime story is not
+    derived by the overlap audits above.
     """
     return {
-        "mechanism": "Observational Survival Filter",
-        "n_2_to_13_status": "იბადებიან, მაგრამ იშლებიან მყისიერად. არ ტოვებენ ტრეკს ან მკაფიო რეზონანსულ პიკს.",
-        "n_14_muon_status": "გეომეტრიული ბალანსი უზრუნველყოფს 2.2 მიკროწამიან სიცოცხლეს. დეტექტორში ტოვებს ცხად ტრეკს.",
-        "conclusion": "ბუნება არ კრძალავს სხვა ოვერტონებს. ფიზიკოსები უბრალოდ ვერ ამჩნევენ მათ. "
-                      "ეს ხსნის 'გამოტოვებული' თაობების პრობლემას მორგების გარეშე."
+        "mechanism": "Legacy observational survival filter hypothesis",
+        "status": "LEGACY_HYPOTHESIS_NOT_ACTIVE_ARTICLE_CLAIM",
+        "n_2_to_13_status": (
+            "toy overlap checks do not prove a forbidden sector or a lifetime "
+            "hierarchy for the intermediate radial modes"
+        ),
+        "n_14_muon_status": (
+            "n=14 is not uniquely selected by the overlap audit; the 2.2 "
+            "microsecond lifetime is not derived in this radial route"
+        ),
+        "conclusion": (
+            "keep only as legacy comparison unless the radial ladder is "
+            "independently derived; do not use it as the main generation explanation"
+        ),
     }
 
 
 def nonlinear_mode_synchronization_hypothesis():
     """
-    მთავარი ინტუიციური მექანიზმი ოვერტონების სელექციისთვის (Mode Locking).
-    წრფივი ტალღური მექანიკის საზღვარი გადაილახა არაწრფივი დინამიკით.
+    Legacy intuition for radial-overtone selection.
+
+    This remains a possible future nonlinear mechanism, but the current file
+    does not derive it and the active charged-lepton route is C3/order-9.
     """
     return {
+        "status": "LEGACY_SPECULATIVE_MECHANISM_NOT_ACTIVE_CLAIM",
         "initial_state": "მაღალენერგიული მოვლენა (მაგ. ტაუ) აღაგზნებს მედიუმს. წარმოიქმნება მრავალი ტალღა.",
         "chaos_phase": "შუალედურ ოვერტონებზე (n=2..13) ტალღები ფაზაში ვერ ეწყობიან. ენერგია იფანტება ქაოსურად (დესტრუქციული რიტმი).",
         "resonance_lock": "n=14 ოვერტონზე ტალღების რიტმები გეომეტრიულად ემთხვევა. ხდება ფაზური სინქრონიზაცია და ენერგია დროებით იკეტება (მიუონი).",
         "eternal_dance": "საბოლოოდ ენერგია ეშვება ფუნდამენტურ n=1 მოდზე, სადაც რღვევა შეუძლებელია. ყალიბდება მარადიული, სტაბილური რიტმი (ელექტრონი).",
-        "conclusion": "თაობების სია (e, mu, tau) არ არის უბრალო წრფივი კიბე. ეს არის არაწრფივი მედიუმის იშვიათი სინქრონული გაჩერების წერტილები."
+        "conclusion": (
+            "use only as a future nonlinear-radial programme target; it is not "
+            "part of the present article-ready particle spine"
+        ),
     }
 
 
@@ -3630,13 +3647,36 @@ def p11_particle_sector_claim_gate():
     mass_bridge = mass_bridge_gate()
     mathieu_gate = mathieu_sign_stability_gate()
     short_path = particle_sector_route_short_path_certificate()
+    sigma_by_particle = {
+        row["particle"]: row["sigma_error"]
+        for row in precision["rows"]
+        if row["role"] == "non_anchor_test"
+    }
     return {
-        "overall_status": "STRONG_CANDIDATE_NOT_FINAL_PARTICLE_THEORY",
+        "file_export_status": "PARTIAL_ARTICLE_EXPORT_READY_AS_C3_ORDER9_STRUCTURAL_CANDIDATE",
+        "overall_status": "STRONG_C3_ORDER9_CANDIDATE_NOT_FINAL_PARTICLE_THEORY",
         "particle_route_short_path": short_path["status"],
         "closed_algebra": [
             "C3 triplet gives Koide K=2/3.",
             "I3=det(B) contains the C3 triaxial strain lock in principal-axis normal form.",
-            "theta=2/9 gives a strong charged-lepton relative mass-ratio compression.",
+            "theta=2/9 gives strong charged-lepton relative mass-ratio compression, not PDG-precision prediction.",
+        ],
+        "article_ready_scope": [
+            "C3 charged-lepton operator as a structural candidate",
+            "Koide identity from the C3 triplet",
+            "principal-axis C3 action lock through I3=det(B)",
+            "order-9 reduced closure-slot lattice language",
+            "legacy radial/Mathieu ladder demotion",
+            "PDG-residual gate showing the current precision limit",
+        ],
+        "not_article_ready_scope": [
+            "cyclic Z9 holonomy theorem",
+            "h=2 derivation from the full charged RG action",
+            "absolute electron mass derivation",
+            "m proportional to nu^2 from the oscillon energy functional",
+            "radiative protection of pole masses",
+            "full localized 3D particle/PDE stability proof",
+            "SM gauge-sector derivation",
         ],
         "hard_blockers": [
             z9_gate["needed_theorem"],
@@ -3649,6 +3689,8 @@ def p11_particle_sector_claim_gate():
         ],
         "pdg_precision_pass": precision["pdg_precision_pass"],
         "pdg_chi2_non_anchor": precision["chi2_non_anchor"],
+        "pdg_sigma_errors_non_anchor": sigma_by_particle,
+        "numerical_status": precision["allowed_claim"],
         "mathieu_gate": mathieu_gate,
         "do_not_claim": p11_do_not_claim(),
         "strongest_allowed_claim": strongest_defensible_claim(),
@@ -3660,10 +3702,12 @@ if __name__ == "__main__":
     print("P11 FINAL CLAIM GATE")
     print("=" * 72)
     gate = p11_particle_sector_claim_gate()
+    print(f"file_export_status: {gate['file_export_status']}")
     print(f"overall_status: {gate['overall_status']}")
     print(f"particle_route_short_path: {gate['particle_route_short_path']}")
     print(f"PDG precision pass: {gate['pdg_precision_pass']}")
     print(f"PDG chi2 non-anchor: {gate['pdg_chi2_non_anchor']:.3e}")
+    print(f"PDG sigma errors: {gate['pdg_sigma_errors_non_anchor']}")
     print("\nClosed algebra:")
     for item in gate["closed_algebra"]:
         print(f"  - {item}")

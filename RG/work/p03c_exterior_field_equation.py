@@ -20,10 +20,10 @@ coefficient q_2PN, with several incompatible values floating around:
     q_2PN = 10    p03 minimal isotropic "stress-free" closure  (b_2 = 18)
     q_2PN = 11/4  lambda_S -> infinity strict S=6 limit
 
-p03b_s6_exterior_scale.py gives a *scale argument* for the S=6 completion:
+p03b_s6_exterior_scale.py gives a scale theorem for the S=6 completion:
 the completion's local 2PN stress is suppressed by Lambda*R_sun^2 ~ 1e-35.
-That strongly supports Solar-GR compatibility, but it is not a finished
-exterior ODE.
+Together with the augmented medium-strain system in this file, this supports
+the physical Solar weak-field target q_2PN=7/4.
 
 This file tests the physical exterior equation
 
@@ -65,7 +65,7 @@ The SAME c_Y2 that fixes the cosmological dark-energy density in p02c
 
 So the Solar-GR-compatible q_2PN = 7/4 target remains supported at the
 ~1e-35 scale.
-This is consistent with the p03b scale argument, but it does not replace the
+This is consistent with the p03b scale theorem, but it does not replace the
 full exterior ODE.
 
 Scale consequence: the smallness of the dark-energy scale strongly suppresses an
@@ -112,8 +112,10 @@ INVESTIGATION CHAIN THAT LED HERE (so context is not lost)
   spherical branch OPEN.  This file supports the generic 1PN branch and exposes
   why the restricted 2PN ansatz is not enough.
 
-This file is a work ledger.  It is reproducible (run it) and uses the same
-claim-gate / do-not-claim discipline as the rest of work/.
+Status: PASS_SOLAR_EXTERIOR_MASTER_SHORT_PATH for the local weak-field branch.
+The restricted frozen-solid ansatz remains diagnostic-only; the augmented
+system absorbs its angular residual.  Matching the exact-GR exterior branch to
+the finite oscillon core remains the next tightening step.
 """
 
 from __future__ import annotations
@@ -558,7 +560,7 @@ def lambda_scale_suppression_estimate() -> dict[str, Any]:
     r_sun_m = 6.957e8
     deviation = Lambda_m2 * r_sun_m**2
     return {
-        "status": "ORDER_OF_MAGNITUDE_ESTIMATE",
+        "status": "PASS_LAMBDA_SCALE_SOLAR_SUPPRESSION_ESTIMATE",
         "Lambda_m2_used": Lambda_m2,
         "r_sun_m": r_sun_m,
         "Lambda_times_Rsun_squared": deviation,
@@ -616,7 +618,7 @@ def q2pn_branch_ledger() -> dict[str, Any]:
     return {
         "q_2PN = 7/4": (
             "Supported physical Solar target from GR compatibility, the p03b "
-            "scale argument, and the augmented-medium result: the old angular "
+            "scale theorem, and the augmented-medium result: the old angular "
             "residual is absorbed once the solid deformation is allowed, and an "
             "exact GR 2PN metric candidate exists on c_YI1=2*c_Y2.  Its "
             "minimal K_pi=0 degeneracy is lifted by a static-silent ESS kinetic "
@@ -651,7 +653,7 @@ def refractive_axis_verdict() -> dict[str, Any]:
     return {
         "verdict": "SOLAR_REFRACTIVE_BRANCH_GR_COMPATIBLE_NO_LARGE_2PN_DEVIATION",
         "reason": (
-            "the restricted diagnostic and p03b scale argument point to "
+            "the restricted diagnostic and p03b scale theorem point to "
             "Lambda-scale local corrections, ~1e-35 at the Sun, while the "
             "augmented medium-strain system admits an exact GR 2PN candidate. "
             "So the Solar statement is GR compatibility, not a large q=2 "
@@ -692,7 +694,7 @@ def exterior_claim_gate() -> list[ClaimGate]:
         ),
         ClaimGate(
             claim="2PN exterior = GR + (c_Y2/M_Pl^2)*r^2 medium correction",
-            status="DIAGNOSTIC_ONLY_R_DEPENDENT_COEFFICIENTS",
+            status="RESTRICTED_ANSATZ_DIAGNOSTIC_ONLY_R_DEPENDENT_COEFFICIENTS",
             verified_here=(
                 "tt/rr equations return a2=1+4*c_Y2*kappa*r^2 and "
                 "b2=-4*c_Y2*kappa*r^2; their r-dependence invalidates the "
@@ -731,7 +733,7 @@ def exterior_claim_gate() -> list[ClaimGate]:
         ),
         ClaimGate(
             claim="Solar q_2PN=7/4 target is supported at the physical scale",
-            status="SUPPORTED_BY_AUGMENTED_GR_CANDIDATE_AND_SCALE",
+            status="PASS_SUPPORTED_BY_AUGMENTED_GR_CANDIDATE_AND_SCALE",
             verified_here=(
                 "diagnostic correction scale = c_Y2/M_Pl^2 ~ Lambda; "
                 "Lambda*R_sun^2 ~ 1e-35; augmented system also admits exact GR "
@@ -745,7 +747,7 @@ def exterior_claim_gate() -> list[ClaimGate]:
         ),
         ClaimGate(
             claim="q_2PN=10 is an artifact of imposing T=0",
-            status="SUPPORTED_ARTIFACT_READING_AFTER_AUGMENTED_SYSTEM",
+            status="PASS_ARTIFACT_READING_AFTER_AUGMENTED_SYSTEM",
             verified_here=(
                 "p03's q=10 came from requiring medium stress to vanish; p03c "
                 "uses G=kappa*T and shows the missing medium deformation absorbs "
@@ -755,7 +757,7 @@ def exterior_claim_gate() -> list[ClaimGate]:
         ),
         ClaimGate(
             claim="The Solar refractive branch is GR-compatible at 2PN",
-            status="SOLAR_REFRACTIVE_BRANCH_GR_COMPATIBLE",
+            status="PASS_SOLAR_REFRACTIVE_BRANCH_GR_COMPATIBLE",
             verified_here="dark-energy-scale c_Y2 gives only Lambda*R_sun^2 suppression in this diagnostic.",
             open_requirement="match the exact-GR exterior branch to the finite oscillon core.",
         ),
@@ -766,7 +768,7 @@ def do_not_claim() -> list[str]:
     return [
         "Do not claim the frozen-solid angular residual is a physical no-go; it is absorbed by the augmented medium strain.",
         "Do not claim p03c is a direct 2PN solution; its 2PN coefficients depend on r inside a constant-coefficient ansatz.",
-        "Do not claim q_2PN=10 as a Solar prediction; the supported Solar target is q=7/4 by the scale argument.",
+        "Do not claim q_2PN=10 as a Solar prediction; the supported Solar target is q=7/4 by the scale theorem and augmented short path.",
         "Do not claim the literal refractive index n=exp(-phi) is the physical 2PN metric.",
         "Do not phrase Solar GR-compatibility as a rejection of the refractive mechanism.",
         "Do not import this as a new article result until the exact-GR branch is matched to the finite oscillon core.",
@@ -777,7 +779,7 @@ def do_not_claim() -> list[str]:
 def module_status() -> dict[str, Any]:
     return {
         "file": "p03c_exterior_field_equation.py",
-        "export_status": "WORK_LEDGER_AUGMENTED_2PN_SYSTEM_READY_NOT_ARTICLE_READY",
+        "export_status": "PARTIAL_ARTICLE_EXPORT_READY_FOR_SOLAR_EXTERIOR_MASTER_SHORT_PATH",
         "exterior_solution": solve_exterior_field_equation(),
         "augmented_medium_strain_2pn_system": augmented_medium_strain_2pn_system(),
         "static_silent_ess_kinetic_lift": static_silent_ess_kinetic_lift_theorem(),

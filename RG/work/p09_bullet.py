@@ -18,6 +18,12 @@ PHASE 20: Bullet Cluster - chi ველის მეხსიერების
     peak locking    -> lensing peaks stay with galaxies, not shocked gas
     threshold       -> O(0.3 M_sub) transported hysteretic mass is enough
 
+ცენტრალური სტატუსი:
+frozen-memory short path არის article-ready conditional benchmark:
+tau_rel/tau_cross ~ 2e3, positive screened kernel peak-locking,
+gas-vs-galaxy conditional dominance და corrected mass ledger ერთად აბრუნებს
+PASS_BULLET_FROZEN_MEMORY_SHORT_PATH-ს.
+
 ეს არ არის სრული N-body+gas+chi time-dependent simulation და არ აცხადებს
 pixel-level Clowe/Bradač shear-map likelihood-ს. მისი სწორი სტატუსია:
 conditional mechanism benchmark, not a completed Bullet Cluster proof.
@@ -185,6 +191,52 @@ def bullet_do_not_claim() -> list[str]:
         "Do not claim particle dark matter is ruled out by this file.",
         "Do not claim all MOND/TeVeS variants are refuted; the contrast is with standard local-baryon MOND/AQUAL expectations.",
     ]
+
+
+def bullet_central_claim_gate() -> dict[str, object]:
+    """One-place article/export gate for p09_bullet.py."""
+    short_path = bullet_frozen_memory_short_path_certificate()
+    mass = bullet_mass_budget_consistency_gate()
+    dominance = galaxy_peak_dominance_theorem()
+    validation = bullet_lensing_validation_requirements()
+    multi_cluster = multi_cluster_universality_gate()
+    chi_gate = chi_source_and_lensing_coupling_gate()
+    cluster_tasks = stage_b5_cluster_predictions_and_open_tasks()
+
+    return {
+        "file_export_status": "PARTIAL_ARTICLE_EXPORT_READY_FOR_CONDITIONAL_FROZEN_MEMORY_SNAPSHOT_BENCHMARK",
+        "bullet_frozen_memory_short_path": short_path["status"],
+        "full_bullet_solution_status": "FULL_NBODY_GAS_CHI_LENSING_LIKELIHOOD_OPEN",
+        "chi_source_and_lensing_coupling_status": chi_gate["source_status"],
+        "validation_pipeline_status": validation["status"],
+        "multi_cluster_status": multi_cluster["status"],
+        "cluster_residual_binding_status": cluster_tasks["status"],
+        "article_supported_claims": [
+            "fiducial Bullet-scale merger has tau_rel/tau_cross about 2.1e3 under tau_rel=c/g_vir",
+            "positive decreasing screened kernel locks frozen memory peaks to collisionless source centroids",
+            "benchmark gas-vs-galaxy dominance condition passes for the corrected aperture fractions",
+            "corrected mass ledger keeps gas+galaxy-associated and residual/chi components inside the total aperture mass",
+            "standard instantaneous local-baryon MOND gas-peak tension is avoided inside this frozen-memory snapshot benchmark",
+        ],
+        "direct_RG_derivation_open": [
+            "derive chi source from RG action/coarse-grained vortex dynamics",
+            "derive sign and normalization of chi contribution to Phi+Psi lensing",
+            "derive or universally calibrate L_chi and f_hyst",
+            "run time-dependent N-body + gas hydrodynamics + chi evolution",
+            "run pixel-level shear/kappa likelihood against Bullet data",
+            "validate the same law on Bullet, Abell 520, El Gordo, and MACS J0717 without per-cluster tuning",
+        ],
+        "numerical_checks": {
+            "tau_rel_over_tau_cross": short_path["tau_rel_over_tau_cross"],
+            "mass_ledger_status": mass["status"],
+            "main_fraction_sum": mass["main_fraction_sum"],
+            "sub_fraction_sum": mass["sub_fraction_sum"],
+            "dominance_status": dominance["benchmark_status"],
+            "main_fraction_margin": dominance["main_fraction_margin"],
+            "sub_fraction_margin": dominance["sub_fraction_margin"],
+        },
+        "do_not_claim": bullet_do_not_claim(),
+    }
 
 
 def _aperture_mass_breakdown(total_msun: float, fractions: dict[str, float]) -> dict[str, float | str]:
@@ -958,6 +1010,24 @@ if __name__ == "__main__":
     short_path = bullet_frozen_memory_short_path_certificate()
     for k, v in short_path.items():
         print(f"  {k:34s}: {v}")
+
+    print("\n--- ნაბიჯი 4b-5: central Bullet export gate ---")
+    central_gate = bullet_central_claim_gate()
+    for key in (
+        "file_export_status",
+        "bullet_frozen_memory_short_path",
+        "full_bullet_solution_status",
+        "chi_source_and_lensing_coupling_status",
+        "validation_pipeline_status",
+        "multi_cluster_status",
+    ):
+        print(f"  {key:42s}: {central_gate[key]}")
+    print("  article_supported_claims:")
+    for item in central_gate["article_supported_claims"]:
+        print(f"    - {item}")
+    print("  direct_RG_derivation_open:")
+    for item in central_gate["direct_RG_derivation_open"]:
+        print(f"    - {item}")
 
     print("\n--- ნაბიჯი 4c: threshold და robustness grid ---")
     robust = bullet_threshold_and_robustness()

@@ -4,6 +4,19 @@
 # Horndeski/EFT bridge only: X = -1/2 g^mn d_m Phi d_n Phi, so Y = -2X.
 # Active coefficient scheme: c_Y denotes the Y-scheme coefficient c_Y^(Y).
 
+"""
+p10 status:
+
+The article-ready part of this file is the symbolic oscillon-to-gravity short
+path: Bernoulli pressure identity, localized 1/r exterior source, asymptotic
+charge normalization, first-order bi-conformal exterior branch, leading
+light/redshift smoke tests, and the nu0 operational firewall.
+
+The full finite-energy nonlinear oscillon particle theorem, nonlinear exterior
+continuation, full PPN validation, microscopic G/nu0 selection, and particle
+spectrum matching remain open work targets.
+"""
+
 from __future__ import annotations
 
 import os
@@ -1347,8 +1360,29 @@ def p10_status_audit():
     """Compact status ledger for the whole file."""
     short_path = oscillon_gravity_short_path_certificate()
     return {
+        "file_export_status": "PARTIAL_ARTICLE_EXPORT_READY_FOR_OSCILLON_GRAVITY_SYMBOLIC_SHORT_PATH",
         "oscillon_gravity_short_path": short_path["status"],
-        "overall_status": "strong symbolic consistency ledger; not complete oscillon-to-gravity proof",
+        "overall_status": (
+            "symbolic oscillon-to-gravity short path is article-ready inside "
+            "its stated scope; complete finite-energy oscillon particle theorem "
+            "and full observational suite remain open"
+        ),
+        "article_ready_scope": [
+            "Bernoulli pressure identity for the static exterior scalar branch",
+            "localized source implies an exterior 1/r tail",
+            "asymptotic charge normalization gives the Newtonian coefficient",
+            "first-order p01 static spherical equations select the bi-conformal branch",
+            "leading weak-field light bending and Pound-Rebka checks",
+            "nu0 is operationally hidden from local dimensionless measurements",
+        ],
+        "not_article_ready_scope": [
+            "finite-energy nonlinear oscillon particle theorem",
+            "spectral/Floquet stability of the nonlinear solutions",
+            "second-order/full nonlinear exterior continuation",
+            "full PPN/Cassini/ephemeris/clock validation",
+            "microscopic derivation of G and nu0",
+            "particle mass/charge/spin spectrum matching",
+        ],
         "closed": [
             "Bernoulli pressure identity",
             "Poisson 1/r reconstruction for a supplied localized source",
@@ -1368,6 +1402,65 @@ def p10_status_audit():
             "full static spherical p01 solution",
             "PPN/Cassini/ephemeris validation",
             "microscopic substrate dynamics selecting G and nu0",
+            "particle mass/charge/spin matching",
+        ],
+    }
+
+
+def p10_central_claim_gate():
+    """Single-page status gate for article use."""
+    short_path = oscillon_gravity_short_path_certificate()
+    finite_gate = oscillon_finite_energy_gate()
+    energy_audit = oscillon_energy_status_audit()
+    branch = static_spherical_first_order_biconformal_branch()
+    normalization = poisson_to_newton_normalization_gate()
+    nu0 = step12_cosmological_nu0()
+    ppn = ppn_and_observation_gate()
+
+    article_ready = (
+        short_path["status"] == "PASS_OSCILLON_GRAVITY_SHORT_PATH"
+        and normalization["status"] == "PASS_ASYMPTOTIC_CHARGE_NORMALIZATION"
+        and branch["status"] == "PASS_STATIC_SPHERICAL_FIRST_ORDER_BICONFORMAL_BRANCH"
+        and branch["a1_identity"]
+        and branch["biconformal_identity"]
+        and branch["branch_residual_identity"]
+        and nu0["status"] == "PASS_SUBSTRATE_NU0_OPERATIONAL_FIREWALL"
+        and ppn["status"] == "PARTIAL_GR_WEAK_FIELD_SMOKE_TESTS_ONLY"
+        and finite_gate["status"] == "OPEN_PDE_EXISTENCE_AND_STABILITY"
+    )
+
+    return {
+        "status": (
+            "PARTIAL_ARTICLE_EXPORT_READY_FOR_OSCILLON_GRAVITY_SYMBOLIC_SHORT_PATH"
+            if article_ready
+            else "CHECK_P10_STATUS_BEFORE_ARTICLE_EXPORT"
+        ),
+        "central_article_claim": (
+            "p10 supports the symbolic oscillon-to-gravity spine in the stated "
+            "weak-field/static scope; it does not yet prove finite-energy "
+            "particles as stable nonlinear oscillons."
+        ),
+        "short_path_status": short_path["status"],
+        "normalization_status": normalization["status"],
+        "static_branch_status": branch["status"],
+        "finite_energy_particle_status": finite_gate["status"],
+        "trial_family_status": energy_audit["status"],
+        "ppn_status": ppn["status"],
+        "nu0_firewall_status": nu0["status"],
+        "article_supported_claims": [
+            "Bernoulli pressure identity is exact in the static exterior scalar branch",
+            "a localized source fixes an exterior 1/r tail",
+            "the asymptotic charge normalization reproduces the Newton coefficient",
+            "the first-order static spherical p01 branch is bi-conformal",
+            "leading light bending and Pound-Rebka checks match the weak-field target",
+            "nu0 remains a substrate rhythm outside direct local measurement",
+        ],
+        "open_work_targets": [
+            "global regular finite-energy nonlinear oscillon solutions",
+            "spectral/Floquet stability",
+            "second-order and full nonlinear exterior continuation",
+            "full PPN/Cassini/ephemeris/clock validation",
+            "microscopic G/nu0 selection",
             "particle mass/charge/spin matching",
         ],
     }
@@ -1535,6 +1628,11 @@ if __name__ == "__main__" and _should_run_main_section("gates"):
     print("\n--- Signature bridge ---")
     sig_gate = signature_bridge_gate()
     for key, value in sig_gate.items():
+        print(f"{key}: {value}")
+
+    print("\n--- Central p10 claim gate ---")
+    central_gate = p10_central_claim_gate()
+    for key, value in central_gate.items():
         print(f"{key}: {value}")
 
     print("\n--- Oscillon finite-energy gate ---")

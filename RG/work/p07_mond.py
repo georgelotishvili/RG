@@ -17,6 +17,13 @@ PHASE 33: SPARC ბრუნვის მრუდები — RG/AQUAL chi-squ
 g=g_N+g_h და g_h/g_N=a0/g, აქედან mu(x)=x/(1+x), AQUAL PDE,
 RG Delta_p სტრესი, BTFR და finite-radius ვორტექსული plateau.
 
+ცენტრალური სტატუსი:
+MOND transition short path არის დახურული პირობითი ალგებრული შედეგი:
+coherence-scale postulate + two-channel closure + acceleration/stress bridge
+იძლევა mu(x), AQUAL-equivalence-ს და BTFR identity-ს. პირდაპირი RG action
+derivation ჯერ ითხოვს vortex closure-ს, a0-ის 2*pi ნორმალიზაციას,
+external acceleration bridge-ს და finite-vortex plateau EOM-ს.
+
 მკაცრი სტატუსი:
 - mu(x), AQUAL და BTFR აქ გამოდის ალგებრულად იმ შემთხვევაში, თუ vortex
   transport closure უკვე მიღებულია.
@@ -62,7 +69,7 @@ SPARC_SUMMARY = {
     "n_galaxies": 175,
     "reference": "Lelli, McGaugh, Schombert 2016 (AJ 152:157)",
     "model_used_here": "AQUAL/Famaey-Binney mu(x)=x/(1+x)",
-    "rg_status": "conditional algebraic ledger; vortex closure and a0 mechanism still require RG derivation",
+    "rg_status": "conditional MOND transition short path passed; direct vortex/action derivation still open",
     "empirical_status": "local SPARC/RAR verdict is open until real rotmod data are present",
 }
 
@@ -216,6 +223,47 @@ def rg_mond_do_not_claim() -> list[str]:
         "Do not claim that chi_coupling != 1 is harmless; it weakens the closed-theory status.",
         "Do not claim Solar-System, cluster, Bullet, or no-particle-DM CMB/LSS closure from this file alone.",
     ]
+
+
+def mond_central_claim_gate() -> dict[str, object]:
+    """One-place article/export gate for p07_mond.py."""
+    short_path = mond_transition_short_path_certificate()
+    scaling = rg_theoretical_anisotropy_scaling()
+    finite_vortex = rg_finite_vortex_plateau_model()
+    curves, warnings = load_sparc_dataset()
+
+    return {
+        "file_export_status": "PARTIAL_ARTICLE_EXPORT_READY_FOR_CONDITIONAL_MOND_TRANSITION_ALGEBRA",
+        "mond_transition_short_path": short_path["status"],
+        "empirical_status": (
+            "LOCAL_SPARC_DATA_PRESENT_REQUIRES_FULL_FIT_REVIEW"
+            if curves
+            else "OPEN_NO_LOCAL_SPARC_DATA"
+        ),
+        "local_sparc_curves": len(curves),
+        "local_parse_warnings": len(warnings),
+        "article_supported_claims": [
+            "coherence-scale postulate gives a0=cH/(2*pi) algebraically",
+            "two-channel closure implies mu(x)=x/(1+x) exactly",
+            "stress bridge gives the deep-MOND BTFR identity conditionally",
+            "AQUAL equivalence follows under curl-free/collinear gradient control",
+            "rotation curves invert exactly to Delta_p after the acceleration bridge is assumed",
+            "static 1/r^2 anisotropy is ruled out as a flat-curve plateau source",
+            "finite-radius vortex plateau is a constructive profile with finite outer falloff",
+        ],
+        "direct_RG_derivation_open": [
+            "derive the coherence boundary and 2*pi normalization from RG dynamics",
+            "derive the primary vortex closure g_h/g_N=a0/g",
+            "derive the external acceleration bridge g_h=2*Delta_p/(r*rho_solid)",
+            "derive the finite-vortex plateau profile or allowed family from EOM",
+            "derive disk/aspherical curl-field control and total-gradient EFE response",
+            "run real SPARC/RAR likelihood with nuisance priors and residual diagnostics",
+        ],
+        "static_plateau_no_go": scaling["static_no_go"],
+        "finite_vortex_status": finite_vortex["status"],
+        "chi_coupling_status": "TEST_PARAMETER_UNTIL_FIXED_BY_THEORY",
+        "do_not_claim": rg_mond_do_not_claim(),
+    }
 
 
 def parse_numeric_row(line: str) -> list[float] | None:
@@ -1169,6 +1217,23 @@ def main() -> None:
         print(f"    verified_here: {gate.verified_here}")
         print(f"    open_requirement: {gate.open_requirement}")
 
+    print("\n0b. Central MOND export gate")
+    central_gate = mond_central_claim_gate()
+    for key in (
+        "file_export_status",
+        "mond_transition_short_path",
+        "empirical_status",
+        "local_sparc_curves",
+        "chi_coupling_status",
+    ):
+        print(f"  {key:28s}: {central_gate[key]}")
+    print("  article_supported_claims:")
+    for item in central_gate["article_supported_claims"]:
+        print(f"    - {item}")
+    print("  direct_RG_derivation_open:")
+    for item in central_gate["direct_RG_derivation_open"]:
+        print(f"    - {item}")
+
     print("\n1. SPARC scope")
     for key, value in SPARC_SUMMARY.items():
         print(f"  {key:18s}: {value}")
@@ -1321,10 +1386,14 @@ PHASE 11: MOND სექტორი — Bekenstein-Milgrom AQUAL ლაგრ�
 სტატუსი (გულახდილი):
 - ეს ფაილი იყენებს Bekenstein-Milgrom AQUAL ფარგლს χ ველისთვის.
 - L_χ-ის სრული ფორმა მითითებულია ნორმალიზაციით და dimensional analysis-ით.
-- mu(x) = x/(1+x) არის ფენომენოლოგიური არჩევანი (Famaey-Binney 2005).
-- a_0 = cH_0/(2π) რიცხობრივი დამთხვევაა; Λ_eff-დან გამოყვანა ცალკე ნაბიჯია.
-- BTFR-ის "გამოყვანა" deep-MOND ანზაცის ჩასმით — ალგებრული შედეგია.
-- SPARC ~175 გალაქტიკის χ² fit ცარიელია — ცალკე ცდა (phase33-ის კანდიდატი).
+- Phase33-ში mu(x)=x/(1+x) უკვე გამოდის ორარხიანი closure-იდან;
+  თვითონ closure-ის RG action-იდან გამოყვანა ჯერ ღიაა.
+- a_0 = cH_0/(2π) არის coherence-scale bridge; 2π მექანიზმისა და coupling-ის
+  RG derivation ცალკე ნაბიჯია.
+- BTFR არის დახურული პირობითი identity acceleration/stress bridge-ის შიგნით;
+  plateau-stress amplitude-ის EOM-დან გამოყვანა ჯერ ღიაა.
+- SPARC ~175 გალაქტიკის χ² fit-ის ფაიფლაინი Phase33-ში იმპლემენტირებულია;
+  რეალური verdict ლოკალური rotmod მონაცემების ჩატვირთვას ელოდება.
 
 ცენტრალური ფარგლები:
 1. χ-ის სრული AQUAL ლაგრანჟიანი:
@@ -1493,12 +1562,13 @@ def mu_derivation_audit():
         "candidate_F_y": F_y,
         "deep_mond_target": F_deep_target,
         "deep_mond_consistency": deep_mond_limit,
-        "rg_microphysical_derivation": "FAIL",
+        "rg_microphysical_derivation": "DIRECT_ACTION_DERIVATION_OPEN",
         "reason": (
-            "phase11 reconstructs a valid AQUAL F(y) for the chosen Famaey-Binney "
-            "mu, but no RG action or vortex-memory dynamics forces this function."
+            "phase11 reconstructs a valid AQUAL F(y). Phase33 derives the same "
+            "mu algebraically from the assumed two-channel vortex closure; the "
+            "remaining task is deriving that closure from RG action/coarse graining."
         ),
-        "status": "phenomenological AQUAL bridge, not an RG derivation",
+        "status": "AQUAL_FUNCTION_ALGEBRAICALLY_TIED_TO_PHASE33_CLOSURE__DIRECT_RG_ACTION_DERIVATION_OPEN",
     }
 
 
@@ -1540,24 +1610,24 @@ def a0_lambda_eff_audit():
     return {
         "rows": rows,
         "lambda_obs_m2": lambda_obs_m2,
-        "verdict": "NO_DERIVATION",
+        "verdict": "COHERENCE_BRIDGE_PRESENT__LAMBDA_ONLY_DERIVATION_OPEN",
         "reason": (
-            "Lambda_eff fixes a cosmological H-scale only after Friedmann dynamics; "
-            "it does not by itself derive the MOND interpolation, the coupling to "
-            "baryons, or the 2π normalization."
+            "Lambda_eff fixes a cosmological H-scale only after Friedmann dynamics. "
+            "Phase33 uses the Hubble coherence bridge a0=cH/(2*pi); the 2pi "
+            "normalization and baryonic/vortex coupling still need RG dynamics."
         ),
-        "status": "dimensional bridge / numerical coincidence, not a closed RG mechanism",
+        "status": "COHERENCE_SCALE_BRIDGE_NOT_FULL_ACTION_MECHANISM",
     }
 
 
 def open_tasks():
     """ცარიელი ცდები, რომელიც phase23+-ში გადადის."""
     return [
-        "μ(x) RG-დან გამოყვანა (ფენომენოლოგიური Famaey-Binney არ უდრის RG-დან გამოყვანას)",
-        "a_0 = c·H_0/(2π)-ის მექანიზმი Λ_eff-დან (ნუმეროლოგიური დამთხვევაა ჯერ)",
-        "SPARC ~175 გალაქტიკის χ^2 fit (phase33-ის კანდიდატი)",
+        "ორიარხიანი vortex closure-ის RG action/coarse-graining-დან გამოყვანა",
+        "a_0 = c·H_0/(2π)-ის 2π ნორმალიზაცია და baryonic/vortex coupling მექანიზმი",
+        "SPARC ~175 გალაქტიკის χ^2 fit რეალური rotmod მონაცემებით",
         "Bullet/Abell 520/El Gordo lensing შედარება (p09_bullet.py)",
-        "χ ლაგრანჟიანის RG-დან გამოყვანა (ჯერ ცალკე AQUAL-ის ჩასმაა)",
+        "χ/Route-B relaxation law-ის RG vortex dynamics-იდან გამოყვანა",
     ]
 
 
@@ -1630,10 +1700,10 @@ if __name__ == "__main__" and _should_run_main_section("phase11"):
 
     print("\n9. სტატუსი")
     print("  - AQUAL ფარგლი დაფიქსირებულია (Bekenstein-Milgrom 1984)")
-    print("  - μ(x) ფენომენოლოგიური არჩევანი, არა RG-დან გამოყვანა")
-    print("  - a_0 cH_0/(2π) რიცხობრივი დამთხვევაა (~10% ცდომილებით)")
-    print("  - BTFR ალგებრული ჩასმაა, ემპირიულ ფიტს ეყრდნობა")
-    print("  - SPARC შედარება, χ ლაგრანჟიანის RG-დან გამოყვანა — ღია")
+    print("  - Phase33-ში μ(x) ორარხიანი closure-ის ზუსტი შედეგია")
+    print("  - a_0 cH_0/(2π) coherence-scale bridge-ია; 2π მექანიზმი ღიაა")
+    print("  - BTFR არის პირობითი identity acceleration/stress bridge-ის შიგნით")
+    print("  - SPARC verdict და direct vortex-action derivation — ღია")
 
 
 # ===================== merged from p07_mond.py =====================

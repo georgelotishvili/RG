@@ -19,7 +19,9 @@ p02: FLRW კოსმოლოგიური ფონი.
 
 Process-time ledger გატანილია p02b_process_time_ledger.py-ში.
 Dynamic phase-clock ledger გატანილია p02c_dynamic_phase_clock.py-ში.
-ფაილი არის სამუშაო ledger და არა RG_Theory.md-ში პირდაპირ გადასატანი claim.
+ფაილიდან სტატიაში პირდაპირ გადადის მხოლოდ დახურული FLRW ალგებრა:
+stress tensor, Noether/Bianchi identity და strict-clock-ის პირობითი
+diagnostic. დაკვირვებითი dark-energy/early-universe claim მოითხოვს fit-ს.
 """
 
 import sympy as sp
@@ -378,7 +380,7 @@ def strict_clock_lambda_like_branch_theorem():
     w = sp.simplify(p / rho)
 
     return {
-        "status": "CONDITIONAL_DIAGNOSTIC",
+        "status": "PASS_CONDITIONAL_LAMBDA_LIKE_DIAGNOSTIC",
         "conditions": closure["generic_expanding_FLRW_closure"],
         "phase_no_ghost_after_closure": closure["phase_no_ghost_after_closure"],
         "late_rho_after_closure": rho,
@@ -402,7 +404,7 @@ def dynamic_phase_clock_external_status():
     """
     return {
         "status": "MOVED_TO_p02c_DYNAMIC_PHASE_CLOCK_LEDGER",
-        "export_gate": "BLOCKED_UNTIL_CHANNEL_SEPARATION_PERTURBATIONS_AND_FIT",
+        "export_gate": "P02_EXPORT_REQUIRES_p02c_CHANNEL_SEPARATION_PERTURBATIONS_AND_FIT",
         "reason": (
             "Phi_dot(t) contributes to the FLRW stress tensor, so any match to "
             "process-time C_proc(a) must be treated outside the primary metric "
@@ -524,8 +526,9 @@ def late_time_density_status(rho_solid):
         "rho_late_strict_clock": rho_strict,
         "Lambda_eff_strict_clock": sp.simplify(kappa * rho_strict),
         "naturalness_status": (
-            "BLOCKED_UNTIL_FULL_GRAVITY_AND_FIT: Lambda_eff strict-clock "
-            "diagnostic is not a derived dark-energy solution."
+            "CONDITIONAL_DIAGNOSTIC: Lambda_eff strict-clock branch is "
+            "algebraically defined; observed dark-energy status requires full "
+            "gravity closure and fit."
         ),
     }
 
@@ -544,8 +547,8 @@ def early_component_status():
             "as curvature-like, radiation-like, and stiff FLRW terms"
         ),
         "status": (
-            "BLOCKED_UNTIL_NUMERICAL_BBN_CMB_PLANCK_BAO_BOUNDS: no early-universe "
-            "compatibility claim before fitting c_I1, c_I1sq, c_I2, c_I3, "
+            "NUMERICAL_BBN_CMB_PLANCK_BAO_BOUNDS_REQUIRED: early-universe "
+            "compatibility is a fit question for c_I1, c_I1sq, c_I2, c_I3, "
             "c_YI1 and Phi(t)."
         ),
     }
@@ -569,7 +572,7 @@ def cosmology_claim_gate():
     scaling_theorem = early_scaling_theorem()
 
     return {
-        "file_export_status": "LEDGER_ONLY_NOT_READY_FOR_RG_THEORY_EXPORT",
+        "file_export_status": "PARTIAL_ARTICLE_EXPORT_READY_FOR_FLRW_ALGEBRA_ONLY",
         "stress_theorem": stress_theorem["status"],
         "stress_algebra": "PASS" if (
             stress_check["rho_full_match"] and stress_check["p_iso_full_match"]
@@ -580,7 +583,7 @@ def cosmology_claim_gate():
         "friedmann_GR_form": "BOOKKEEPING_ONLY",
         "strict_clock_obstruction": obstruction_theorem["status"],
         "strict_Phi_t": (
-            "CONDITIONAL_CLOSED" if strict_clock_closed else "NOT_CLOSED"
+            "PASS_CONDITIONAL_CLOSURE" if strict_clock_closed else "NOT_CLOSED"
         ),
         "strict_Phi_t_conditions": clock_closure["generic_expanding_FLRW_closure"],
         "lambda_like_branch_theorem": lambda_theorem["status"],
@@ -588,13 +591,13 @@ def cosmology_claim_gate():
         "dynamic_lambda_like_branch": "MOVED_TO_p02c_NOT_A_p02_CLAIM",
         "process_time_dynamic_clock_comparison": dynamic_external["export_gate"],
         "late_time_Lambda_eff": (
-            "CONDITIONAL_DIAGNOSTIC_ONLY: w=-1 on strict-clock closure, "
-            "but observed dark-energy claim needs coefficient fit, perturbations, "
+            "PASS_CONDITIONAL_DIAGNOSTIC: w=-1 on strict-clock closure; "
+            "observed dark-energy claim needs coefficient fit, perturbations, "
             "and full gravity closure"
         ),
         "early_scaling_theorem": scaling_theorem["status"],
         "early_universe_BBN_CMB_Planck": (
-            "BLOCKED_UNTIL_NUMERICAL_BBN_CMB_PLANCK_BAO_BOUNDS"
+            "NUMERICAL_BBN_CMB_PLANCK_BAO_BOUNDS_REQUIRED"
         ),
         "pressure_relaxation_interpretation": relaxation["status"],
         "process_time": "MOVED_TO_p02b_NOT_PRIMARY_FLRW_BRANCH",
@@ -630,7 +633,7 @@ def article_cosmology_theorem():
     claim_gate = cosmology_claim_gate()
 
     return {
-        "article_use": "FLRW stress algebra and Noether/Bianchi identity; strict-clock is diagnostic only",
+        "article_use": "FLRW stress algebra, Noether/Bianchi identity, and conditional strict-clock diagnostic",
         "flrw_stress": {
             "status": stress["status"],
             "rho": stress["rho_expected"],
@@ -688,7 +691,7 @@ def module_status():
 
     return {
         "scope": "FLRW stress/Friedmann-bookkeeping/conservation ledger only",
-        "export_status": "LEDGER_ONLY_NOT_READY_FOR_RG_THEORY_EXPORT",
+        "export_status": "PARTIAL_ARTICLE_EXPORT_READY_FOR_FLRW_ALGEBRA_ONLY",
         "stress_check": stress_check,
         "stress_theorem": flrw_stress_theorem(),
         "bianchi_ok": bianchi_ok,
@@ -715,7 +718,7 @@ if __name__ == "__main__":
     print("=" * 72)
     print("p02: FLRW კოსმოლოგიური ფონი")
     print("=" * 72)
-    print("ფაილის სტატუსი: LEDGER_ONLY_NOT_READY_FOR_RG_THEORY_EXPORT")
+    print("ფაილის სტატუსი: PARTIAL_ARTICLE_EXPORT_READY_FOR_FLRW_ALGEBRA_ONLY")
 
     f1, f2, a, t, rho_solid, p_iso_solid = get_friedmann_equations()
     rho, p_iso, _, result = get_flrw_pressures()

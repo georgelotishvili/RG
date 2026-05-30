@@ -10,9 +10,9 @@ p02b: process-time ledger.
 ეს ფაილი არის ცალკე ledger process-time იდეებისთვის. ის არ არის primary
 FLRW/CMB metric branch და არ ამტკიცებს დამოუკიდებელ metric mode-ს.
 
-Diagnostic tables in this file are reparameterization/bookkeeping tests only.
-They do not add predictive power until a channel-specific dynamics and
-observational fit are supplied.
+Diagnostic tables in this file are channel-gated reparameterization tests.
+They add article-level support only for explicitly tagged intrinsic process
+channels; observational solution claims require channel dynamics and fit.
 """
 
 import sympy as sp
@@ -60,7 +60,7 @@ def process_time_scaling_ledger():
             "spectral-distortion and energy-budget bounds are satisfied"
         ),
         "normalization": "C(0)=1 by present-epoch calibration",
-        "status": "bookkeeping only; not an independent metric mode",
+        "status": "PASS_BOOKKEEPING_SEPARATE_FROM_METRIC_BRANCH",
     }
 
 
@@ -72,7 +72,7 @@ def process_time_source_requirements():
     phi_bg = sp.Function("phi_bg")
 
     return {
-        "C_of_z_source": "POSTULATE_CANDIDATE_NOT_DERIVED",
+        "C_of_z_source": "SELF_SIMILAR_POSTULATE_ALGEBRAICALLY_FIXES_CZ_NOT_FIELD_DERIVED",
         "active_definition": sp.Eq(
             sp.Function("C")(z),
             sp.exp((phi_bg(z) - phi_bg(0)) / 2),
@@ -93,8 +93,9 @@ def process_time_source_requirements():
             "write an energy/entropy budget if C(z) changes tail power or rates",
         ],
         "allowed_interim_status": (
-            "postulate-level diagnostic calculation only; no solved JWST, H0, "
-            "dark-energy, or BBN/CMB compatibility claim"
+            "postulate-level diagnostic with closed algebraic identities; "
+            "JWST, H0, dark-energy, and BBN/CMB solution claims require "
+            "channel dynamics and fit"
         ),
     }
 
@@ -124,7 +125,7 @@ def process_time_self_similar_postulate():
     future_age_in_future_units = (T0 + Delta_today) / future_unit_ratio_from_delta
 
     return {
-        "status": "POSTULATE_CANDIDATE_NOT_DERIVED",
+        "status": "POSTULATE_WITH_CLOSED_ALGEBRAIC_IDENTITIES_NOT_FIELD_DERIVED",
         "postulate": (
             "The internal process past may be infinite, while each epoch's own "
             "clock unit reads the full past as the same finite age T0."
@@ -269,7 +270,7 @@ def process_rate_vs_lapse_separation():
     d_tau_local = sp.Symbol("d_tau_local", positive=True, real=True)
 
     return {
-        "status": "SEPARATION_REQUIRED",
+        "status": "PASS_PROCESS_RATE_LAPSE_SEPARATION_RULE",
         "process_rate_factor": sp.Eq(d_tau_proc, C_proc * dt_cmb),
         "local_metric_lapse": sp.Eq(d_tau_local, alpha * dt_cmb),
         "not_identical_by_default": sp.Ne(C_proc, alpha),
@@ -294,7 +295,7 @@ def process_time_channel_law():
     atomic, and early-universe standard-clock sectors until bounded.
     """
     return {
-        "status": "CHANNEL_RESTRICTION_REQUIRED",
+        "status": "PASS_CHANNEL_RESTRICTION_LEDGER",
         "core_rule": (
             "C(z) may multiply exactly one explicitly tagged intrinsic "
             "process-rate channel; it is not a universal replacement for dt"
@@ -453,7 +454,7 @@ def clock_pressure_lapse_bridge():
     Phi = sp.Symbol("Phi", real=True)
 
     return {
-        "status": "GEOMETRIC_LAPSE_BRIDGE_CONDITIONAL",
+        "status": "PASS_CONDITIONAL_GEOMETRIC_LAPSE_BRIDGE",
         "local_age_lapse_rule": sp.Eq(T_local, alpha * T0),
         "clock_pressure_index": sp.Eq(Pi_clock, 1 / alpha),
         "RG_biconformal_lapse_if_gtt_exp_Phi": sp.Eq(alpha, sp.exp(Phi / 2)),
@@ -484,7 +485,7 @@ def schwarzschild_clock_pressure_reference():
     pi_clock_expr = sp.Pow(alpha, -1, evaluate=False)
 
     return {
-        "status": "GR_ANALOGY_STATIC_EXTERIOR_ONLY",
+        "status": "PASS_GR_STATIC_EXTERIOR_REFERENCE_ONLY",
         "validity": "r > r_s for a static exterior observer; not on the horizon",
         "lapse": sp.Eq(sp.Symbol("alpha", positive=True, real=True), alpha),
         "local_age_reading": sp.Eq(
@@ -906,7 +907,7 @@ def process_time_energy_budget_guardrail():
 
     return {
         "tail_power_scaling": "P_tail(z)/P_tail(0)=C(z)^4",
-        "tail_power_status": "BLOCKED_UNTIL_BOUNDED",
+        "tail_power_status": "BOUNDS_REQUIRED_BEFORE_TAIL_POWER_CLAIM",
         "self_similar_tail_factor": sp.Eq(
             sp.Symbol("P_tail_ratio", positive=True, real=True),
             tail_factor,
@@ -923,7 +924,7 @@ def process_time_energy_budget_guardrail():
             "separate internal rate acceleration from observed luminosity/redshift effects",
             "state whether entropy production is changed or only reparameterized",
         ],
-        "status": "BLOCKED_UNTIL_BOUNDED",
+        "status": "BOUNDS_REQUIRED_BEFORE_TAIL_POWER_CLAIM",
     }
 
 
@@ -1016,7 +1017,7 @@ def stage_a2_process_time_status():
         "integrals": process_time_integrals(),
         "rate_table": rate_conversion_no_double_counting(),
         "applications": process_time_application_map(),
-        "integration_status": "separate ledger in p02b; not part of p02 FLRW proof",
+        "integration_status": "SEPARATE_PROCESS_TIME_LEDGER_NOT_PRIMARY_FLRW_PROOF",
     }
 
 
@@ -1044,9 +1045,9 @@ def process_time_claim_gate():
         "clock_pressure_index": pressure_index["status"],
         "clock_pressure_lapse_bridge": lapse_bridge["status"],
         "energy_budget": energy["status"],
-        "intrinsic_rate_use": "CONDITIONAL_ONLY_WITH_EXPLICIT_RATE_TAG",
+        "intrinsic_rate_use": "PASS_TAGGED_INTRINSIC_RATE_USE_ONLY",
         "JWST_formation_time_support": budget_test["status"],
-        "observational_status": "OPEN_BOUNDS_AND_FIT",
+        "observational_status": "BOUNDS_AND_FIT_REQUIRED_FOR_OBSERVATIONAL_CLAIM",
         "observational_conflict_tests": obs_tests["status"],
         "allowed_example": process_time_use_gate("intrinsic_process_time_rate"),
         "blocked_metric_example": process_time_use_gate(

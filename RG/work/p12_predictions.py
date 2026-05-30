@@ -190,8 +190,8 @@ def unique_scorecard():
         {
             "candidate": "C1 N=4 329 keV",
             "rg_specific": "legacy conditional",
-            "time_window": "now, if coupling/search channel specified",
-            "falsifiable_number": f"{c1['legacy_center_keV']:.0f} keV model band; not active prediction",
+            "time_window": "not active; only after coupling/search channel is specified",
+            "falsifiable_number": f"legacy {c1['legacy_center_keV']:.0f} keV model band; not active prediction",
             "operational_ready": c1["operational_falsifier"],
         },
         {
@@ -206,6 +206,7 @@ def unique_scorecard():
 
 def status_assessment():
     return {
+        "ledger_status": "article-usable as a gated prediction map, not as an observational pass table",
         "closed_now": "No observationally ready unique RG prediction is closed in this file.",
         "c1_status": "legacy conditional after phase37-44; not a main prediction unless radial N-ladder is revived and couplings are specified.",
         "c5_status": "best near-term candidate, but still needs framing observable and non-RG background rejection.",
@@ -224,31 +225,31 @@ def external_observational_bounds():
             "sector": "X17",
             "anchor": "NA64 excludes part of the X17 electron-coupling region; MEG II found no significant excess in its searched channel.",
             "impact": "X17/N4 remains weak harmonic audit only.",
-            "source": "NA64/CERN, MEG II/JINR reports",
+            "source": "NA64/CERN X17 constraints; MEG II 2024 X17 search report",
         },
         {
             "sector": "dipolar supersolid vortices",
             "anchor": "Vortices have been observed in dipolar supersolids, making a vortex protocol experimentally plausible.",
             "impact": "C5 platform plausible; RG-specific framing signal still not derived.",
-            "source": "Nature 2024 Observation of vortices in a dipolar supersolid",
+            "source": "Nature 635, 327-331 (2024), Observation of vortices in a dipolar supersolid",
         },
         {
             "sector": "CMB/BAO",
             "anchor": "Planck 2018 remains a baseline CMB reference; DESI DR2 BAO data products are now available.",
             "impact": "p12 cannot claim Planck/BAO/LSS pass without a likelihood pipeline.",
-            "source": "Planck 2018, DESI DR2 2025",
+            "source": "Planck 2018; DESI DR2 BAO results and 2025 cosmology-chain release",
         },
         {
             "sector": "EHT shadow/ring",
             "anchor": "M87* crescent diameter is about 42 +/- 3 microarcsec; plasma, spin, inclination, and ray tracing are essential.",
             "impact": "static +4.63% shadow benchmark is not an EHT fit.",
-            "source": "EHT M87* 2019 papers",
+            "source": "EHT M87* 2019 shadow papers, crescent diameter 42 +/- 3 microarcsec",
         },
         {
             "sector": "GW speed/polarization",
             "anchor": "GW170817/GRB170817A constrains c_g close to c at the 1e-15 level.",
             "impact": "scalar breathing and alpha_T claims require LVK posterior-level treatment.",
-            "source": "GW170817 multimessenger bounds",
+            "source": "GW170817/GRB170817A multimessenger speed bounds",
         },
     ]
 
@@ -571,7 +572,8 @@ def p12_prediction_claim_gate():
     score = migrated_prediction_scorecard()
     short_path = prediction_priority_short_path_certificate()
     return {
-        "overall_status": "PREDICTION_LEDGER_NOT_PUBLICATION_READY",
+        "file_export_status": "ARTICLE_READY_AS_GATED_PREDICTION_LEDGER_NOT_OBSERVATIONAL_PASS_TABLE",
+        "overall_status": "PREDICTION_LEDGER_READY_WITH_NO_ACTIVE_UNIQUE_OBSERVATIONAL_PREDICTION",
         "prediction_priority_short_path": short_path["status"],
         "active_unique_predictions_ready": False,
         "best_near_term_candidate": c5["name"],
@@ -580,6 +582,22 @@ def p12_prediction_claim_gate():
         "c5_rg_specific_status": c5["rg_specific_status"],
         "migration_scorecard": score,
         "external_bounds": external_observational_bounds(),
+        "article_ready_scope": [
+            "prediction-priority ordering across gravity, MOND/cluster, particle, and quantum sectors",
+            "N4/X17 demotion to legacy or weak harmonic audit status",
+            "C5 framed-vortex protocol as best near-term laboratory candidate",
+            "old ISPG prediction migration map with gate-aware labels",
+            "external observational guardrails preventing pass-table language",
+        ],
+        "not_article_ready_scope": [
+            "observationally confirmed unique RG prediction",
+            "N4 329 keV as an active particle prediction",
+            "C5 framed-vortex RG-specificity theorem",
+            "Planck/BAO/LSS likelihood pass",
+            "EHT ray-tracing likelihood fit",
+            "LVK posterior-level GW polarization/speed result",
+            "particle/quantum predictions before p10/p11 gates close",
+        ],
         "hard_gates": [
             "C5: derive measurable RG framing vector and distinguish from conventional half-quantum/director vortices",
             "C1: derive N-ladder, q-correction, coupling, width, lifetime, and exclusion map",
@@ -658,6 +676,7 @@ if __name__ == "__main__":
 
     print("\n11. Final p12 claim gate")
     gate = p12_prediction_claim_gate()
+    print(f"  file_export_status: {gate['file_export_status']}")
     print(f"  overall_status: {gate['overall_status']}")
     print(f"  active_unique_predictions_ready: {gate['active_unique_predictions_ready']}")
     print(f"  best_near_term_candidate: {gate['best_near_term_candidate']}")

@@ -12,10 +12,16 @@ PHASE 21: CMB — კოსმოლოგიური პერტურბა�
 ================================================================================
 
 სტატუსი:
-ეს ფაილი წარმოადგენს კონცეპტუალურ ხიდს კოსმოლოგიური პერტურბაციების 
-ეფექტური ველის თეორიასთან (EFT). სრული CMB სპექტრის (C_l), BAO-სა და 
-ლენზირების გამოსათვლელად საჭიროა განტოლებების CLASS/CAMB კოდებში 
-ინტეგრირება, რაც ცალკე ამოცანაა.
+ეს ფაილი წარმოადგენს როგორც EFT/Boltzmann სამუშაო ხიდს, ასევე დახურულ
+same-input CMB consistency შედეგს. თუ metric branch, matter content,
+recombination history და primordial spectrum LCDM-ის იგივეა, locked
+Phi_0=X_0 branch-ზე RG-ის linear Einstein-Boltzmann წყაროები ნულდება და
+C_l მემკვიდრეობით მიიღება.
+
+ცენტრალური სტატუსი:
+- same-input locked CMB short path: article-ready conditional result.
+- no-particle-DM CMB replacement: ღია Boltzmann/CLASS/CAMB branch.
+- Planck/BAO/LSS empirical pass: საჭიროებს სრულ numerical likelihood run-ს.
 
 ცენტრალური დასკვნები:
     1. სტანდარტული Horndeski (Bellini-Sawicki) პარამეტრიზაცია არ არის 
@@ -1239,7 +1245,23 @@ def article_cmb_theorem() -> dict[str, object]:
     calibration = cmb_comoving_time_calibration()
 
     return {
+        "file_export_status": "PARTIAL_ARTICLE_EXPORT_READY_FOR_SAME_INPUT_LOCKED_CMB_CONSISTENCY",
         "article_use": "same-input locked CMB consistency identity",
+        "direct_open_status": "NO_PARTICLE_DM_AND_PLANCK_BAO_LSS_LIKELIHOODS_OPEN",
+        "article_supported_claims": [
+            "locked Phi_0=X_0 branch gives zero Bellini-Sawicki alpha_i",
+            "linear metric scalar stress vanishes at first order on the locked branch",
+            "exact LCDM branch contributes no extra linear Boltzmann sources",
+            "S/Z completion contributes no same-input Poisson, slip, lensing, ISW, or photon-baryon source",
+            "same-input CMB short path passes with zero source residuals",
+            "CMB-comoving age calibration is a frame calibration, not a new substrate claim",
+        ],
+        "not_article_claims": [
+            "no-particle-DM CMB replacement",
+            "Planck TT/TE/EE+lensing likelihood pass",
+            "BAO/DESI/LSS empirical pass",
+            "late nonlinear MOND/memory ISW/lensing safety",
+        ],
         "locked_branch": {
             "status": lock["status"],
             "condition": {
@@ -1335,6 +1357,9 @@ def cmb_closed_conditional_open_scorecard() -> dict[str, list[str]]:
         "closed": [
             "T0 is a CMB-comoving present-epoch age calibration, not an Earth-gravity constant",
             "if Phi_0=X_0=0 is imposed, alpha_K=alpha_B=alpha_M=alpha_T=0 on the locked branch",
+            "same-input CMB short path passes: locked RG linear sources give the LCDM Einstein-Boltzmann hierarchy",
+            "p02c exact LCDM branch contributes zero extra linear Boltzmann sources",
+            "S/Z completion contributes zero same-input Poisson, slip, lensing, ISW, and photon-baryon sources",
             "linear Poisson/slip equations are inherited in the same-matter locked branch",
             "primary acoustic ruler is inherited for same matter, same recombination, and same primordial spectrum",
             "radiation trace T_gamma=0, so photon acoustic pressure is not directly driven by the RG trace channel",
@@ -1689,6 +1714,21 @@ if __name__ == "__main__":
     print("\n--- ნაბიჯი 12: I_k early-universe filters ---")
     for k, v in ik_sector_delta_neff_and_curvature_filters().items():
         print(f"  {k:36s}: {v}")
+
+    print("\n--- ნაბიჯი 12b: article CMB theorem / central export gate ---")
+    article = article_cmb_theorem()
+    for key in (
+        "file_export_status",
+        "article_use",
+        "direct_open_status",
+    ):
+        print(f"  {key:36s}: {article[key]}")
+    print("  article_supported_claims:")
+    for item in article["article_supported_claims"]:
+        print(f"    - {item}")
+    print("  article_status:")
+    for key, value in article["article_status"].items():
+        print(f"    {key}: {value}")
 
     print("\n--- ნაბიჯი 13: CMB closed / conditional / open scorecard ---")
     for k, values in cmb_closed_conditional_open_scorecard().items():

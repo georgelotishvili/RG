@@ -1865,7 +1865,7 @@ def numeric_hyperbolicity_cases():
 
 def status_assessment():
     return {
-        "minkowski": "det M(s)=0 computed; mixed-mode algebraic positivity criteria are explicit",
+        "minkowski": "det M(s)=0 computed; mixed-mode algebraic positivity criteria and one nonempty stable point are explicit",
         "flrw": "comoving det M(s)=0 computed; physical speed is a^2*s; same algebraic criteria apply after scaling",
         "schwarzschild": "local orthonormal determinant equals Minkowski; coordinate radial redshift added",
         "remaining": "global hyperbolicity and full curved-background perturbation system remain open",
@@ -1894,7 +1894,7 @@ def p01_proof_gap_register():
         },
         {
             "gap": "mixed_mode_stability",
-            "current_status": "local 2x2 principal-symbol algebraic criteria are now explicit",
+            "current_status": "local 2x2 principal-symbol algebraic criteria are explicit and have one nonempty stable coefficient point",
             "risk": "this closes the local homogeneous symbol, not the full curved/global Cauchy problem",
             "next_step": "extend to curved background perturbations and prove global hyperbolicity conditions",
         },
@@ -2190,7 +2190,7 @@ def article_core_theorem():
     c_Y, c_Y2, c_YI1 = sp.symbols("c_Y c_Y2 c_YI1", real=True)
 
     return {
-        "article_use": "core action, sign convention, and necessary local stability gate",
+        "article_use": "core action, sign convention, and explicit local stability gate",
         "postulate_boundary": (
             "Y=1, B^{AB}=delta^{AB} is the normalized effective background, "
             "not a polynomial-minimum derivation."
@@ -2248,9 +2248,9 @@ def article_core_theorem():
         "article_status": {
             "action": "CLOSED_MINIMAL_POLYNOMIAL",
             "sign_convention": "CLOSED_Y_TO_X_BRIDGE",
-            "no_ghost": "NECESSARY_LOCAL_WINDOW",
+            "no_ghost": "LOCAL_NO_GHOST_WINDOW_WITH_EXPLICIT_NONEMPTY_POINT",
             "eft_cutoff_power_counting": eft_power_counting["status"],
-            "mixed_modes": "LOCAL_PRINCIPAL_SYMBOL_CRITERIA_AVAILABLE",
+            "mixed_modes": "LOCAL_PRINCIPAL_SYMBOL_CRITERIA_WITH_EXPLICIT_STABLE_POINT",
             "local_stability_short_path": local_stability_short["status"],
             "global_stability": "SEPARATE_PROOF_TARGET",
             "dof_count": "CANDIDATE_LEDGER_ONLY",
@@ -2895,15 +2895,15 @@ def old_stability_gate():
     RG work file without promoting it to final theory.
     """
     return {
-        "hyperbolicity": "covered above by phase24 principal-symbol and well-posedness checks",
-        "no_ghost_window": "phase25 covers the phase-sector necessary window; full kinetic-gradient matrix remains required",
+        "hyperbolicity": "local homogeneous principal-symbol checks are covered above; global curved hyperbolicity remains separate",
+        "no_ghost_window": "phase25 covers the phase-sector window and the local short-path point; full curved kinetic-gradient system remains required",
         "lorentz_background_stress": "phase34 covers background stress under one boost; perturbation-sector Lorentz audit remains required",
         "constraint_reduction": old_constraint_dof_count(),
         "no_fifth_force": (
             "one-metric minimal coupling means matter follows g_mn geodesics; "
             "there is no independent matter-frame scalar force in the core theory"
         ),
-        "energy_caveat": (
+        "energy_status": (
             "wrong-sign energy channels are not claimed closed until the "
             "Dirac-bracket closure and EFT matter-channel audit are complete"
         ),
