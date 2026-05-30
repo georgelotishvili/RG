@@ -17,6 +17,10 @@ needs p01/F_min source closure, compact-source matching, physical energy,
 junction stress, rotating solutions, coupled stability/QNMs/echoes, and EHT/NS
 likelihood work.
 
+It is also not the Solar weak-field 2PN export.  p03b/p03c keep the physical
+Solar exterior on the q_2PN=7/4 branch; this file keeps the phase-vacuum
+exponential strong-field branch with internal q_2PN=2.
+
 აქ მოწმდება exponential exterior-ის algebraic/phenomenological branch:
 1. exponential bi-conformal exterior:
        ds^2 = -exp(-r_s/r)c^2dt^2 + exp(r_s/r)(dr^2+r^2dOmega^2)
@@ -1970,9 +1974,10 @@ def article_strong_field_gate():
     Article-facing strong-field and screening gate.
 
     The first article may use this as a scope boundary: the static compact
-    ledger contains useful benchmark algebra, but full strong-field viability
-    needs source closure, rotating solutions, QNM/echo stability, and EHT/NS
-    likelihoods.
+    ledger contains useful phase-branch geodesic algebra, but full strong-field
+    viability needs source closure, rotating solutions, QNM/echo stability, and
+    EHT/NS likelihoods.  The Solar weak-field 2PN branch stays in p03b/p03c and
+    must not be merged with the p05 q=2 phase branch.
     """
     boundary = analyze_horizon_throat_and_boundary()
     compact_gate = compact_central_claim_gate()
@@ -1992,10 +1997,17 @@ def article_strong_field_gate():
             "black_hole_breaker_status"
         ],
         "screening_minimum": screening,
+        "solar_vs_phase_branch_rule": (
+            "p03b/p03c: physical Solar weak-field exterior q_2PN=7/4; "
+            "p05: phase-vacuum exponential strong-field branch with internal "
+            "q_2PN=2.  These are separate regime statements in the current "
+            "work files."
+        ),
         "required_before_claim": compact_gate["observational_blockers"],
         "article_rule": (
-            "state the closed static-exterior benchmark and exact remaining "
-            "gates; keep q_2PN screening tied to the 2PN likelihood"
+            "state the closed phase-equation static strong-field result and "
+            "exact remaining gates; keep Solar q_2PN=7/4 in the p03b/p03c "
+            "weak-field branch and do not export p05 q=2 as the Solar metric"
         ),
     }
 

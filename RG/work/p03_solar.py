@@ -2521,6 +2521,9 @@ def solar_system_claim_gate():
             derive_general_q2pn_optical_observables()["status"]
         ),
         "cassini_2pn_tracking_proxy": cassini_2pn_tracking_proxy_theorem()["status"],
+        "solar_vs_exponential_branch": (
+            "SEPARATE_REGIMES__P03B_P03C_Q7_4_SOLAR__P05_Q2_PHASE_STRONG_FIELD"
+        ),
         "shapiro_2PN": calculate_shapiro_2pn_discriminator()["status"],
         "light_bending_2PN": calculate_light_deflection_2pn_discriminator()["status"],
         "frame_dragging": frame_dragging_gate()["status"],
@@ -2545,6 +2548,7 @@ def solar_system_claim_gate():
             "do not claim full raw Solar-System likelihood pass",
             "do not claim exact GR-like 2PN stress-free exterior for nonzero coefficients",
             "do not claim 2PN Delta_B=pi/4 as final until optical index is derived",
+            "do not merge the Solar weak-field q_2PN=7/4 branch with the p05 phase-vacuum q_2PN=2 strong-field branch",
             "do not claim nonperturbative strong-field rotating solution from the leading 1.5PN chain",
         ],
     }

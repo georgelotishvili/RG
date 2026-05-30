@@ -25,7 +25,7 @@ Branch interpolation (why the other q values are not the physical Solar number):
 - lambda_S -> 0 (soft / dark-energy scale):     q_2PN = 7/4   (GR)   <- physical
 - lambda_S -> infinity (exact S=6 constraint):  q_2PN = 11/4         <- unphysical
 - minimal isotropic stress-free closure (p03):  q_2PN = 10 (b2=18)   <- O(1) local coupling
-- exponential bi-conformal exterior (p05):       q_2PN = 2            <- strong-field map
+- exponential bi-conformal exterior (p05):       q_2PN = 2            <- phase-vacuum strong-field map
 
 Status: PASS_S6_SOLAR_SCALE_SHORT_PATH for the physical Solar weak-field
 number q_2PN=7/4+O(1e-35). A full self-consistent exterior ODE solve remains
@@ -154,8 +154,8 @@ def q2pn_branch_interpolation():
         },
         "exponential_exterior": {
             "q_2PN": sp.Integer(2),
-            "regime": "bi-conformal strong-field map e^{-r_s/r} (p05)",
-            "status": "STRONG_FIELD_CANDIDATE_NOT_THE_WEAK_FIELD_SOLAR_NUMBER",
+            "regime": "phase-vacuum bi-conformal strong-field map e^{-r_s/r} (p05)",
+            "status": "STRONG_FIELD_PHASE_BRANCH_NOT_THE_WEAK_FIELD_SOLAR_NUMBER",
         },
         "GR_reference": {"q_2PN": sp.Rational(7, 4)},
     }
@@ -183,7 +183,8 @@ def s6_solar_exterior_claim_gate():
         ),
         "resolves": (
             "three-exterior q_2PN ambiguity: weak-field Solar exterior is GR; "
-            "q=10, q=11/4, and q=2 are non-physical-scale or strong-field artifacts"
+            "q=10 and q=11/4 are non-physical-scale branches, while q=2 is the "
+            "separate p05 phase-vacuum strong-field branch"
         ),
         "remaining_tightening": (
             "full self-consistent static-spherical exterior ODE solve with the "
@@ -222,7 +223,9 @@ def s6_solar_scale_short_path_certificate():
         "physical_q_2PN": physical["q_2PN"],
         "short_reading": (
             "S=6 supplies cosmological stress; at Solar radius its local 2PN "
-            "weight is Lambda*R^2, so the physical weak-field exterior stays GR."
+            "weight is Lambda*R^2, so the physical weak-field exterior stays GR. "
+            "This does not erase the p05 phase-vacuum strong-field branch; it "
+            "separates it from the Solar weak-field exterior."
         ),
     }
 

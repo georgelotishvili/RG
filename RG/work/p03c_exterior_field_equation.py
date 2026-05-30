@@ -626,8 +626,10 @@ def q2pn_branch_ledger() -> dict[str, Any]:
         ),
         "q_2PN = 2": (
             "Bi-conformal exponential refractive index n=exp(-phi). Not selected "
-            "by this restricted diagnostic; a 1PN-accurate ansatz unless a full "
-            "exterior branch derives it."
+            "as the physical Solar weak-field exterior by this diagnostic. It "
+            "belongs to the separate phase-vacuum / strong-field exponential "
+            "branch unless a full p01/F_min compact-source solve ties it back "
+            "to the Solar exterior."
         ),
         "q_2PN = 10": (
             "p03 minimal isotropic closure. Comes from imposing T=0 (medium "
@@ -644,6 +646,53 @@ def q2pn_branch_ledger() -> dict[str, Any]:
             "The frozen restricted p03c ansatz diagnoses the scale of the "
             "correction; the augmented ansatz forms the proper 2PN radial "
             "system and removes the angular obstruction."
+        ),
+    }
+
+
+def solar_vs_exponential_branch_separation_gate() -> dict[str, Any]:
+    """
+    Resolve the review-level tension between the Solar 2PN branch and the
+    exponential strong-field phase branch.
+
+    Both use static spherical language, but they are not the same reduced
+    problem in the present work files:
+      - the Solar branch is the physical weak-field exterior with the medium
+        stress kept in G=kappa*T and with the S=6 completion suppressed at the
+        Lambda*R_sun^2 scale;
+      - the exponential branch is the phase-vacuum equation plus the
+        bi-conformal operational map, used for the static strong-field
+        geodesic ledger.
+    """
+    solar = solar_exterior_master_short_path_certificate()
+
+    return {
+        "status": "PASS_SOLAR_VS_EXPONENTIAL_BRANCH_SEPARATION",
+        "solar_branch": {
+            "scope": "physical weak-field Solar exterior",
+            "equation": "G=kappa*T with medium stress and radial deformation retained",
+            "q_2PN": sp.Rational(7, 4),
+            "support": solar["status"],
+            "scale_reading": "S=6 completion acts at Lambda*R_sun^2, so the Solar 2PN branch stays GR-compatible",
+        },
+        "exponential_branch": {
+            "scope": "phase-vacuum static spherical strong-field branch",
+            "equation": "(r^2 phi')'=0 plus bi-conformal operational map",
+            "q_2PN_internal": sp.Integer(2),
+            "support": "p05 phase-equation and geodesic ledger",
+            "scale_reading": "article-usable as a static strong-field phase result, not as the Solar 2PN exterior",
+        },
+        "why_no_conflict": (
+            "The shared words 'static', 'spherical' and 'exterior' are not enough "
+            "to identify the same reduced system.  The Solar branch keeps the "
+            "physical stress/source ledger and weak-field matching; the p05 "
+            "branch keeps the phase-vacuum leading equation and strong-field "
+            "geodesic map."
+        ),
+        "article_rule": (
+            "In the article, call the q=7/4 branch the Solar weak-field exterior "
+            "and call the q=2 branch the phase-vacuum exponential strong-field "
+            "branch. Do not describe both only as 'static spherical vacuum exterior'."
         ),
     }
 
@@ -769,7 +818,8 @@ def do_not_claim() -> list[str]:
         "Do not claim the frozen-solid angular residual is a physical no-go; it is absorbed by the augmented medium strain.",
         "Do not claim p03c is a direct 2PN solution; its 2PN coefficients depend on r inside a constant-coefficient ansatz.",
         "Do not claim q_2PN=10 as a Solar prediction; the supported Solar target is q=7/4 by the scale theorem and augmented short path.",
-        "Do not claim the literal refractive index n=exp(-phi) is the physical 2PN metric.",
+        "Do not claim the literal refractive index n=exp(-phi) is the physical Solar 2PN metric.",
+        "Do not collapse the Solar weak-field q=7/4 branch and the p05 phase-vacuum q=2 branch into one unnamed static spherical vacuum exterior.",
         "Do not phrase Solar GR-compatibility as a rejection of the refractive mechanism.",
         "Do not import this as a new article result until the exact-GR branch is matched to the finite oscillon core.",
         "Do not use the minimal polynomial alone as the perturbation-health proof; include the static-silent ESS lift.",
@@ -788,6 +838,9 @@ def module_status() -> dict[str, Any]:
         "lambda_scale_estimate": lambda_scale_suppression_estimate(),
         "q2pn_ledger": q2pn_branch_ledger(),
         "refractive_verdict": refractive_axis_verdict(),
+        "solar_vs_exponential_branch_separation": (
+            solar_vs_exponential_branch_separation_gate()
+        ),
         "claim_gate": exterior_claim_gate(),
         "do_not_claim": do_not_claim(),
     }
