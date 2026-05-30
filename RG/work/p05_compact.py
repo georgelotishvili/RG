@@ -7,14 +7,15 @@
 PHASE 18: RG compact object, Bernoulli saturation, and singularity audit
 
 Status:
-Static exponential compact exterior is closed as an algebraic article-scope
-benchmark: the vacuum phase equation gives the exterior, the effective source
-has the Bernoulli profile, curvature invariants vanish at the formal endpoint,
-and the C2 matching algebra is explicit.
+Static exponential compact exterior is closed at the phase-equation and
+geodesic-algebra level: the vacuum phase equation gives the exterior, the
+effective source has the Bernoulli profile, curvature invariants vanish at the
+formal endpoint, and the C2 matching algebra is explicit.
 
 This is not yet a full compact-object replacement proof.  The full claim still
-needs p01 source closure, physical energy, junction stress, rotating solutions,
-coupled stability/QNMs/echoes, and EHT/NS likelihood work.
+needs p01/F_min source closure, compact-source matching, physical energy,
+junction stress, rotating solutions, coupled stability/QNMs/echoes, and EHT/NS
+likelihood work.
 
 აქ მოწმდება exponential exterior-ის algebraic/phenomenological branch:
 1. exponential bi-conformal exterior:
@@ -25,12 +26,12 @@ coupled stability/QNMs/echoes, and EHT/NS likelihood work.
 5. areal throat, photon sphere, shadow radius, and golden-ratio ISCO follow;
 6. exterior-only geodesic incompleteness is kept explicit;
 7. a rarefaction cutoff plus C2 finite-core matching is a conditional
-   regular-extension ansatz.
+   regular-extension model.
 
 Still open before full compact-object theory export:
-    close the p01 polynomial stress/source equations, define physical energy
-    and junction stress, compute coupled perturbations/QNMs/echoes, and add
-    rotating EHT ray tracing.
+    close the p01/F_min stress/source equations, solve compact-source matching,
+    define physical energy and junction stress, compute coupled
+    perturbations/QNMs/echoes, and add rotating EHT ray tracing.
 """
 import sympy as sp
 from p01_core import get_polynomial_lagrangian
@@ -74,8 +75,9 @@ def derive_exponential_exterior_from_phase_equation():
     constant.  The bi-conformal operational map then gives
         B=e^phi, A=e^-phi.
 
-    This derives the static exponential exterior branch.  It does not yet prove
-    that the p01 polynomial medium stress alone supplies the required source.
+    This derives the static exponential exterior branch at the phase-equation
+    and operational-metric level.  It does not yet prove that the p01/F_min
+    medium stress and compact-source matching supply the required source.
     """
     r, r_s, C1, C2 = sp.symbols('r r_s C1 C2', positive=True, real=True)
     phi_fn = sp.Function('phi')
@@ -98,8 +100,9 @@ def derive_exponential_exterior_from_phase_equation():
         "biconformal_spatial_A": sp.Eq(sp.Symbol('A'), A_spatial),
         "weak_lapse": sp.Eq(sp.Symbol('B_weak'), weak_gtt_series),
         "weak_spatial": sp.Eq(sp.Symbol('A_weak'), weak_spatial_series),
-        "derivation_status": "DERIVED_FROM_VACUUM_PHASE_EQUATION_PLUS_BICONFORMAL_MAP",
-        "remaining_gate": "p01 polynomial stress/source closure and compact-source matching remain open",
+        "derivation_status": "PHASE_EQUATION_AND_BICONFORMAL_MAP_DERIVED",
+        "refg_fmin_source_status": "FULL_P01_FMIN_SOURCE_AND_MATCHING_OPEN",
+        "remaining_gate": "p01/F_min stress/source closure and compact-source matching remain open",
     }
 
 
@@ -127,7 +130,7 @@ def derive_exponential_effective_source_profile():
         "T_eff_if_G_eq_8piG_T": T_eff,
         "profile_match": sp.Eq(sp.Symbol('G^r_r/(8*pi*G)'), delta_p),
         "sign_note": "standard Einstein-sign reading gives T^t_t=-Delta_P and T^r_r=+Delta_P; physical energy interpretation is gated by the RG sign/source convention.",
-        "source_status": "EFFECTIVE_GEOMETRIC_SOURCE_PROFILE_DERIVED__PHYSICAL_MEDIUM_SOURCE_OPEN",
+        "source_status": "EFFECTIVE_GEOMETRIC_SOURCE_PROFILE_DERIVED__PHYSICAL_P01_FMIN_SOURCE_OPEN",
     }
 
 
@@ -1840,10 +1843,10 @@ def compact_exterior_short_path_certificate():
     status = (
         "PASS_COMPACT_EXTERIOR_SHORT_PATH"
         if exterior["derivation_status"]
-        == "DERIVED_FROM_VACUUM_PHASE_EQUATION_PLUS_BICONFORMAL_MAP"
+        == "PHASE_EQUATION_AND_BICONFORMAL_MAP_DERIVED"
         and exterior["laplace_residual_for_solution"] == 0
         and source["source_status"]
-        == "EFFECTIVE_GEOMETRIC_SOURCE_PROFILE_DERIVED__PHYSICAL_MEDIUM_SOURCE_OPEN"
+        == "EFFECTIVE_GEOMETRIC_SOURCE_PROFILE_DERIVED__PHYSICAL_P01_FMIN_SOURCE_OPEN"
         and breaker["lim_r_to_0_K_RG"] == 0
         and breaker["lim_r_to_0_DeltaP_RG"] == 0
         and breaker["geometry_verdict"]
@@ -1883,21 +1886,22 @@ def compact_central_claim_gate():
         "full_compact_object_status": "FULL_COMPACT_OBJECT_REPLACEMENT_STILL_GATED",
         "compact_exterior_short_path": short_path["status"],
         "article_supported_claims": [
-            "static exponential exterior derived from the vacuum phase equation",
+            "static exponential exterior derived at phase-equation and biconformal-map level",
             "Bernoulli-shaped effective source profile derived geometrically",
             "Schwarzschild curvature singularity removed inside the static exponential branch",
             "C2 finite-core matching coefficients derived as a conditional ansatz",
             "static photon sphere, shadow and ISCO benchmarks derived",
         ],
         "signature_bridge": signature["stress_bridge_status"],
-        "exterior_status": "DERIVED_FROM_VACUUM_PHASE_EQUATION_PLUS_BICONFORMAL_MAP",
+        "exterior_status": "PHASE_EQUATION_AND_BICONFORMAL_MAP_DERIVED",
+        "refg_fmin_source_status": "FULL_P01_FMIN_SOURCE_AND_MATCHING_OPEN",
         "black_hole_breaker_status": "SCHWARZSCHILD_CURVATURE_SINGULARITY_REMOVED_AT_GEOMETRY_LEVEL__GEODESIC_BOUNDARY_STILL_OPEN",
         "effective_source_status": "GEOMETRIC_SOURCE_PROFILE_MATCHES_BERNOULLI_DELTA_P",
         "p01_source_closure": "F_EQ_R_BRANCH_FAILS__LINEAR_NONTRIVIAL_F_R_BRANCH_DERIVED__EXACT_FULL_STRESS_SOLUTION_OPEN",
         "core_status": "C2_MATCHING_CONDITIONAL_ANSATZ__JUNCTION_STRESS_AND_STABILITY_OPEN",
         "energy_status": "COORDINATE_ENERGY_FINITE__PHYSICAL_PROPER_ADM_ENERGY_OPEN",
         "scalar_stability": scalar_probe["probe_verdict"],
-        "shadow_status": "STATIC_SPHERICAL_BENCHMARK_ONLY__ROTATION_PLASMA_RAYTRACING_OPEN",
+        "shadow_status": "STATIC_SPHERICAL_RESULT_ONLY__ROTATION_PLASMA_RAYTRACING_OPEN",
         "neutron_star_status": "TOY_POLYTROPE_AND_LAMBDA_PROXY_ONLY__EOS_LOVE_BAYESIAN_FIT_OPEN",
         "observational_blockers": [
             "rotating compact-object exterior",
@@ -1907,7 +1911,7 @@ def compact_central_claim_gate():
             "RG-derived neutron-star EOS/anisotropy and Love-number ODEs",
         ],
         "do_not_claim": [
-            "do not claim a derived RG black-hole replacement from the static ansatz alone",
+            "do not claim a derived RG black-hole replacement from the static exterior branch alone",
             "do not claim geodesic completion from C2 matching alone",
             "do not claim no-horizon observational viability before QNM/echo/surface tests",
             "do not claim EHT support from the static +4.63% benchmark alone",
