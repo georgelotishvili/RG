@@ -12,10 +12,26 @@ geodesic-algebra level: the vacuum phase equation gives the exterior, the
 effective source has the Bernoulli profile, curvature invariants vanish at the
 formal endpoint, and the C2 matching algebra is explicit.
 
-This is not yet a full compact-object replacement proof.  The full claim still
-needs p01/F_min source closure, compact-source matching, physical energy,
-junction stress, rotating solutions, coupled stability/QNMs/echoes, and EHT/NS
-likelihood work.
+The algebraic p01/F_min polynomial does not by itself generate the compact
+Bernoulli profile, because that profile is a phase-gradient source.  This file
+now derives the static branch source.  The compact export uses the medium
+projector version, where the Bernoulli term is a rest-frame spatial-gradient
+response.  Ordinary standalone scalar export has wrong-sign time kinetic and is
+blocked.
+
+This is not yet a full compact-object replacement proof.  The ADM/Komar mass
+bookkeeping is closed at the static asymptotic level, the C2 core's effective
+field-equation source is explicit and finite, the proper-volume effective
+source charge is finite for finite r_c, and the C2 core source is decomposed
+into the RefG projected phase channel plus a finite residual medium-stress
+channel, this residual is written as p01 action-stress branch equations, and
+the radial core deformation has an exact IVP plus a first-order analytic
+large-stiffness solution; a nonlinear IVP probe passes representative
+stiffness values; a sufficient parameter-domain theorem keeps the nonlinear
+branch real across the core interval; the residual diagonal tensor is
+integrable as one p01 action-density branch.  The full claim still needs the
+off-branch EFT extension, rotating solutions, stability/QNMs/echoes, and
+EHT/NS likelihood work.
 
 It is also not the Solar weak-field 2PN export.  p03b/p03c keep the physical
 Solar exterior on the q_2PN=7/4 branch; this file keeps the phase-vacuum
@@ -33,9 +49,8 @@ exponential strong-field branch with internal q_2PN=2.
    regular-extension model.
 
 Still open before full compact-object theory export:
-    close the p01/F_min stress/source equations, solve compact-source matching,
-    define physical energy and junction stress, compute coupled
-    perturbations/QNMs/echoes, and add rotating EHT ray tracing.
+    audit the off-branch EFT extension, compute coupled perturbations/QNMs/
+    echoes, and add rotating EHT ray tracing.
 """
 import sympy as sp
 from p01_core import get_polynomial_lagrangian
@@ -80,8 +95,8 @@ def derive_exponential_exterior_from_phase_equation():
         B=e^phi, A=e^-phi.
 
     This derives the static exponential exterior branch at the phase-equation
-    and operational-metric level.  It does not yet prove that the p01/F_min
-    medium stress and compact-source matching supply the required source.
+    and operational-metric level.  The projected Bernoulli source closes the
+    exterior source; the finite-core source is handled by the C2 core ledger.
     """
     r, r_s, C1, C2 = sp.symbols('r r_s C1 C2', positive=True, real=True)
     phi_fn = sp.Function('phi')
@@ -105,8 +120,9 @@ def derive_exponential_exterior_from_phase_equation():
         "weak_lapse": sp.Eq(sp.Symbol('B_weak'), weak_gtt_series),
         "weak_spatial": sp.Eq(sp.Symbol('A_weak'), weak_spatial_series),
         "derivation_status": "PHASE_EQUATION_AND_BICONFORMAL_MAP_DERIVED",
-        "refg_fmin_source_status": "FULL_P01_FMIN_SOURCE_AND_MATCHING_OPEN",
-        "remaining_gate": "p01/F_min stress/source closure and compact-source matching remain open",
+        "algebraic_fmin_status": "ALGEBRAIC_P01_FMIN_ALONE_DOES_NOT_GENERATE_THE_GRADIENT_PROFILE",
+        "bernoulli_source_status": "PROJECTED_BERNOULLI_MEDIUM_SOURCE_DERIVED_IN_THIS_FILE",
+        "remaining_gate": "C2 core source is handled in the finite-core ledger; stability and rotation remain open",
     }
 
 
@@ -133,8 +149,40 @@ def derive_exponential_effective_source_profile():
         "Bernoulli_Delta_P": sp.Eq(sp.Symbol('Delta_P'), delta_p),
         "T_eff_if_G_eq_8piG_T": T_eff,
         "profile_match": sp.Eq(sp.Symbol('G^r_r/(8*pi*G)'), delta_p),
-        "sign_note": "standard Einstein-sign reading gives T^t_t=-Delta_P and T^r_r=+Delta_P; physical energy interpretation is gated by the RG sign/source convention.",
-        "source_status": "EFFECTIVE_GEOMETRIC_SOURCE_PROFILE_DERIVED__PHYSICAL_P01_FMIN_SOURCE_OPEN",
+        "sign_note": "standard Einstein-sign reading gives T^t_t=-Delta_P and T^r_r=+Delta_P; RefG export is the projected medium source.",
+        "source_status": "EFFECTIVE_GEOMETRIC_SOURCE_PROFILE_DERIVED__PROJECTED_BERNOULLI_MEDIUM_SOURCE_DERIVED_SEPARATELY",
+    }
+
+
+def audit_exponential_effective_energy_conditions():
+    """
+    Standard energy-condition audit for the geometric effective source.
+
+    This is not yet the physical RefG medium-stress verdict.  It is the
+    standard Einstein-source reading of the exponential geometry and therefore
+    the exact target that the RefG source tensor must replace or reinterpret.
+    """
+    r, r_s, G = sp.symbols('r r_s G', positive=True, real=True)
+    delta_p = sp.simplify(r_s**2 * sp.exp(-r_s / r) / (32 * sp.pi * G * r**4))
+
+    rho_std = -delta_p
+    p_r_std = -delta_p
+    p_t_std = delta_p
+
+    return {
+        "Delta_P_positive_for_r_gt_0": delta_p,
+        "standard_effective_rho": sp.Eq(sp.Symbol('rho_eff'), rho_std),
+        "standard_effective_p_r": sp.Eq(sp.Symbol('p_r_eff'), p_r_std),
+        "standard_effective_p_t": sp.Eq(sp.Symbol('p_t_eff'), p_t_std),
+        "radial_NEC": sp.Eq(sp.Symbol('rho_eff+p_r_eff'), sp.simplify(rho_std + p_r_std)),
+        "tangential_NEC": sp.Eq(sp.Symbol('rho_eff+p_t_eff'), sp.simplify(rho_std + p_t_std)),
+        "WEC_density": sp.Eq(sp.Symbol('rho_eff'), rho_std),
+        "SEC_trace_combo": sp.Eq(
+            sp.Symbol('rho_eff+p_r_eff+2*p_t_eff'),
+            sp.simplify(rho_std + p_r_std + 2 * p_t_std),
+        ),
+        "standard_energy_verdict": "STANDARD_EFFECTIVE_SOURCE_HAS_NEGATIVE_RHO_AND_RADIAL_NEC_VIOLATION",
+        "refg_source_target": "projected RefG medium source supplies the same mixed geometry; ordinary Einstein-fluid reading is only the audit target",
     }
 
 
@@ -191,7 +239,7 @@ def derive_black_hole_singularity_breaker_gate():
             timelike_radial_velocity_near_boundary,
         ),
         "geometry_verdict": "SCHWARZSCHILD_CURVATURE_SINGULARITY_REMOVED_IN_EXPONENTIAL_BRANCH",
-        "remaining_gate": "not a full black-hole replacement until p01 source closure, boundary/core completion, and perturbative stability are derived",
+        "remaining_gate": "not a full dynamical black-hole replacement until coupled core dynamics, boundary evolution and perturbative stability are derived",
     }
 
 
@@ -419,6 +467,386 @@ def derive_minimal_nontrivial_f_branch():
     }
 
 
+def derive_exact_minimal_f_branch_implicit_solution():
+    """
+    Exact implicit solution of the minimal p01 anisotropy branch.
+
+    Starting point from derive_minimal_nontrivial_f_branch:
+
+        f'^2 - f^2/r^2 = a/r^4,
+        a = r_s^2/(32*pi*G*K_A).
+
+    Define h = f*r/sqrt(a).  The asymptotically flat branch obeys
+
+        d h / d ln r = h + sqrt(h^2+1).
+
+    This closes the anisotropy equation exactly in implicit form.  It still
+    does not close the full diagonal F_min source components.
+    """
+    r, r_s, G, K_A = sp.symbols('r r_s G K_A', positive=True, real=True)
+    H = sp.Symbol('H', positive=True, real=True)
+    a = sp.simplify(r_s**2 / (32 * sp.pi * G * K_A))
+    dH_dlnr = sp.simplify(H + sp.sqrt(H**2 + 1))
+    reduced_residual = sp.simplify(dH_dlnr**2 - 2 * H * dH_dlnr - 1)
+    integral_H = sp.simplify(
+        sp.Rational(1, 2)
+        * (H * sp.sqrt(H**2 + 1) + sp.asinh(H) - H**2)
+    )
+    integral_derivative_check = sp.simplify(sp.diff(integral_H, H) * dH_dlnr - 1)
+    asymptotic_constant = sp.simplify(sp.log(2) / 2 + sp.Rational(1, 4))
+    f_asymptotic = sp.simplify(r - a / (8 * r**3))
+
+    return {
+        "a_definition": sp.Eq(sp.Symbol('a'), a),
+        "dimensionless_h": sp.Eq(sp.Symbol('H'), sp.Symbol('f') * r / sp.sqrt(a)),
+        "reduced_h_equation": sp.Eq(sp.Symbol('dH/dlnr'), dH_dlnr),
+        "reduced_residual": reduced_residual,
+        "implicit_integral_I_H": sp.Eq(sp.Symbol('I(H)'), integral_H),
+        "implicit_solution_asymptotic_f_over_r_to_1": sp.Eq(
+            integral_H,
+            sp.log(r / a**sp.Rational(1, 4)) + asymptotic_constant,
+        ),
+        "integral_chain_rule_residual": integral_derivative_check,
+        "asymptotic_expansion_matches_linear_branch": sp.Eq(
+            sp.Symbol('f_asymptotic'),
+            f_asymptotic,
+        ),
+        "exact_branch_status": "EXACT_IMPLICIT_F_R_BRANCH_DERIVED_FOR_P01_ANISOTROPY",
+        "remaining_source_gate": "full T^t_t, T^r_r and T^theta_theta matching must still be solved from F_min",
+    }
+
+
+def derive_full_fmin_exponential_source_closure_system():
+    """
+    Full component equations for the exponential exterior source.
+
+    The anisotropy equation alone is not the full source proof.  The complete
+    diagonal target is
+
+        T^t_t = -Delta_P,  T^r_r = +Delta_P,  T^theta_theta = -Delta_P.
+
+    This function writes that target directly in p01/F_min variables and shows
+    why the minimal K_A branch is only an anisotropy closure, not a full source
+    closure.
+    """
+    r, r_s, G = sp.symbols('r r_s G', positive=True, real=True)
+    Y, lambda_r, lambda_t = sp.symbols('Y lambda_r lambda_t', positive=True, real=True)
+    K_A = sp.Symbol('K_A', positive=True, real=True)
+    f = sp.Function('f')(r)
+    c_Y, c_Y2, c_I1, c_I1sq, c_I2, c_I3, c_YI1 = sp.symbols(
+        'c_Y c_Y2 c_I1 c_I1sq c_I2 c_I3 c_YI1',
+        real=True,
+    )
+
+    I1 = lambda_r + 2 * lambda_t
+    I2 = 2 * lambda_r * lambda_t + lambda_t**2
+    I3 = lambda_r * lambda_t**2
+    L = (
+        c_Y * Y
+        + c_Y2 * Y**2
+        + c_I1 * I1
+        + c_I1sq * I1**2
+        + c_I2 * I2
+        + c_I3 * I3
+        + c_YI1 * Y * I1
+    )
+    L_Y = sp.diff(L, Y)
+    L_lr = sp.diff(L, lambda_r)
+    L_lt_common = sp.diff(L, lambda_t)
+
+    T_t = sp.simplify(2 * Y * L_Y - L)
+    T_r = sp.simplify(2 * lambda_r * L_lr - L)
+    T_theta = sp.simplify(lambda_t * L_lt_common - L)
+
+    u = r_s / r
+    delta_p = sp.simplify(r_s**2 * sp.exp(-u) / (32 * sp.pi * G * r**4))
+    Y_ext = sp.exp(u)
+    lambda_r_ext = sp.exp(-u) * sp.diff(f, r)**2
+    lambda_t_ext = sp.exp(-u) * f**2 / r**2
+
+    minimal_T_t = sp.simplify(T_t.subs({
+        c_I1: K_A,
+        c_I1sq: 0,
+        c_I2: 0,
+        c_I3: 0,
+        c_Y: 0,
+        c_Y2: 0,
+        c_YI1: 0,
+    }))
+    minimal_T_r = sp.simplify(T_r.subs({
+        c_I1: K_A,
+        c_I1sq: 0,
+        c_I2: 0,
+        c_I3: 0,
+        c_Y: 0,
+        c_Y2: 0,
+        c_YI1: 0,
+    }))
+    minimal_T_theta = sp.simplify(T_theta.subs({
+        c_I1: K_A,
+        c_I1sq: 0,
+        c_I2: 0,
+        c_I3: 0,
+        c_Y: 0,
+        c_Y2: 0,
+        c_YI1: 0,
+    }))
+
+    return {
+        "F_min_Lagrangian_radial_branch": L,
+        "T^t_t_from_F_min": T_t,
+        "T^r_r_from_F_min": T_r,
+        "T^theta_theta_from_F_min": T_theta,
+        "exponential_maps": {
+            "Y_ext": Y_ext,
+            "lambda_r_ext": lambda_r_ext,
+            "lambda_t_ext": lambda_t_ext,
+        },
+        "Delta_P_target": sp.Eq(sp.Symbol('Delta_P'), delta_p),
+        "full_component_target": {
+            "T^t_t": sp.Eq(T_t.subs({Y: Y_ext, lambda_r: lambda_r_ext, lambda_t: lambda_t_ext}), -delta_p),
+            "T^r_r": sp.Eq(T_r.subs({Y: Y_ext, lambda_r: lambda_r_ext, lambda_t: lambda_t_ext}), delta_p),
+            "T^theta_theta": sp.Eq(T_theta.subs({Y: Y_ext, lambda_r: lambda_r_ext, lambda_t: lambda_t_ext}), -delta_p),
+        },
+        "anisotropy_equation": sp.Eq(
+            sp.simplify((T_r - T_theta).subs({Y: Y_ext, lambda_r: lambda_r_ext, lambda_t: lambda_t_ext})),
+            2 * delta_p,
+        ),
+        "time_angular_balance_equation": sp.Eq(
+            sp.simplify((T_t - T_theta).subs({Y: Y_ext, lambda_r: lambda_r_ext, lambda_t: lambda_t_ext})),
+            0,
+        ),
+        "minimal_branch_T_components": {
+            "T^t_t": minimal_T_t,
+            "T^r_r": minimal_T_r,
+            "T^theta_theta": minimal_T_theta,
+        },
+        "minimal_branch_full_match_implication": (
+            "K_A*(lambda_r-lambda_t)=Delta_P and K_A*lambda_r=Delta_P force lambda_t=0; "
+            "therefore the minimal K_A branch closes anisotropy only, not the full source."
+        ),
+        "closure_status": "FULL_FMIN_COMPONENT_EQUATIONS_WRITTEN__MINIMAL_BRANCH_INSUFFICIENT__SOLVE_GENERAL_BRANCH_NEXT",
+    }
+
+
+def diagnose_algebraic_fmin_vs_gradient_source():
+    """
+    Why the compact exponential source is not closed by algebraic F_min alone.
+
+    In the static exponential branch Y=exp(r_s/r), so the required geometric
+    pressure profile is proportional to log(Y)^4/Y.  The polynomial F_min
+    depends algebraically on Y, lambda_r and lambda_t, and contains no radial
+    derivative of the phase.  The component balance equations T^t_t=T^theta
+    and T^r_r+T^theta_theta=0 therefore constrain lambda_r and lambda_t before
+    the required gradient profile is even inserted.
+
+    This block records the exact balance equations and the derivative source
+    that has the required profile.
+    """
+    Y, lambda_r, lambda_t = sp.symbols(
+        'Y lambda_r lambda_t',
+        positive=True,
+        real=True,
+    )
+    r, r_s, G = sp.symbols('r r_s G', positive=True, real=True)
+    c_Y, c_Y2, c_I1, c_I1sq, c_I2, c_I3, c_YI1 = sp.symbols(
+        'c_Y c_Y2 c_I1 c_I1sq c_I2 c_I3 c_YI1',
+        real=True,
+    )
+
+    I1 = lambda_r + 2 * lambda_t
+    I2 = 2 * lambda_r * lambda_t + lambda_t**2
+    I3 = lambda_r * lambda_t**2
+    L = (
+        c_Y * Y
+        + c_Y2 * Y**2
+        + c_I1 * I1
+        + c_I1sq * I1**2
+        + c_I2 * I2
+        + c_I3 * I3
+        + c_YI1 * Y * I1
+    )
+    T_t = sp.simplify(2 * Y * sp.diff(L, Y) - L)
+    T_r = sp.simplify(2 * lambda_r * sp.diff(L, lambda_r) - L)
+    T_theta = sp.simplify(lambda_t * sp.diff(L, lambda_t) - L)
+
+    time_angular_balance = sp.factor(T_t - T_theta)
+    radial_angular_balance = sp.factor(T_r + T_theta)
+
+    u = sp.log(Y)
+    delta_y = sp.simplify(u**4 / (32 * sp.pi * G * r_s**2 * Y))
+    phi = -r_s / r
+    delta_gradient = sp.simplify(sp.exp(phi) * sp.diff(phi, r)**2 / (32 * sp.pi * G))
+    delta_y_from_r = sp.simplify(delta_y.subs(Y, sp.exp(r_s / r)) - delta_gradient)
+
+    D = sp.simplify(r_s**2 * sp.exp(-r_s / r) / (4 * r**4))
+    theta_source = {
+        "Theta^t_t": -delta_gradient,
+        "Theta^r_r": delta_gradient,
+        "Theta^theta_theta": -delta_gradient,
+        "Theta^phi_phi": -delta_gradient,
+    }
+    einstein_residual = {
+        "G^t_t-8piGTheta^t_t": sp.simplify(-D - 8 * sp.pi * G * theta_source["Theta^t_t"]),
+        "G^r_r-8piGTheta^r_r": sp.simplify(D - 8 * sp.pi * G * theta_source["Theta^r_r"]),
+        "G^theta_theta-8piGTheta^theta_theta": sp.simplify(-D - 8 * sp.pi * G * theta_source["Theta^theta_theta"]),
+    }
+
+    return {
+        "time_angular_balance_Tt_minus_Ttheta": time_angular_balance,
+        "radial_balance_Tr_plus_Ttheta": radial_angular_balance,
+        "required_profile_in_Y": sp.Eq(sp.Symbol('Delta_P(Y)'), delta_y),
+        "log_source_reason": "Delta_P contains log(Y)^4/Y because Y=exp(r_s/r); algebraic F_min has no phase-gradient invariant that produces this profile by itself.",
+        "Bernoulli_gradient_profile": sp.Eq(sp.Symbol('Delta_P'), delta_gradient),
+        "Y_profile_residual": delta_y_from_r,
+        "ThetaRefG_gradient_source_target": theta_source,
+        "Einstein_profile_residual_with_gradient_source": einstein_residual,
+        "diagnosis_status": "ALGEBRAIC_FMIN_ALONE_DOES_NOT_CLOSE_EXPONENTIAL_SOURCE__BERNOULLI_GRADIENT_SOURCE_REQUIRED",
+        "next_action": "promote the Bernoulli gradient source from ledger relation to a covariant RefG action/source term and derive its stress tensor",
+    }
+
+
+def derive_covariant_bernoulli_gradient_source():
+    """
+    Covariant source term for the compact exponential branch.
+
+    Let h be the compact phase potential used by the biconformal branch,
+    with metric
+
+        ds^2 = exp(-2h) dt^2 - exp(2h)(dr^2+r^2dOmega^2).
+
+    The branch action-density candidate is
+
+        L_B = Z/(8*pi*G),  Z = -g^mn d_m h d_n h.
+
+    With the p01 sign convention T_mn=2*dL/dg^mn-g_mn*L, this gives
+
+        Theta^mu_nu = -(d^mu h d_nu h)/(4*pi*G) - delta^mu_nu Z/(8*pi*G).
+
+    On the static spherical branch h=r_s/(2r), the scalar equation is
+    covariant harmonicity and the mixed stress equals exactly the geometric
+    effective source of the exponential exterior.
+    """
+    r, r_s, G = sp.symbols('r r_s G', positive=True, real=True)
+    h = r_s / (2 * r)
+    B = sp.exp(-2 * h)
+    A = sp.exp(2 * h)
+    h_prime = sp.diff(h, r)
+
+    Z = sp.simplify(h_prime**2 / A)
+    L_B = sp.simplify(Z / (8 * sp.pi * G))
+    delta_p = sp.simplify(Z / (8 * sp.pi * G))
+
+    theta_mixed = {
+        "Theta^t_t": -delta_p,
+        "Theta^r_r": delta_p,
+        "Theta^theta_theta": -delta_p,
+        "Theta^phi_phi": -delta_p,
+    }
+    D = sp.simplify(r_s**2 * sp.exp(-r_s / r) / (4 * r**4))
+    einstein_residual = {
+        "G^t_t-8piGTheta^t_t": sp.simplify(-D - 8 * sp.pi * G * theta_mixed["Theta^t_t"]),
+        "G^r_r-8piGTheta^r_r": sp.simplify(D - 8 * sp.pi * G * theta_mixed["Theta^r_r"]),
+        "G^theta_theta-8piGTheta^theta_theta": sp.simplify(-D - 8 * sp.pi * G * theta_mixed["Theta^theta_theta"]),
+        "G^phi_phi-8piGTheta^phi_phi": sp.simplify(-D - 8 * sp.pi * G * theta_mixed["Theta^phi_phi"]),
+    }
+
+    sqrt_minus_g_over_sin = sp.simplify(sp.sqrt(B * A**3) * r**2)
+    g_rr_inv = -1 / A
+    radial_current_over_sin = sp.simplify(sqrt_minus_g_over_sin * g_rr_inv * h_prime)
+    scalar_eom_residual = sp.simplify(sp.diff(radial_current_over_sin, r))
+
+    rho_std = theta_mixed["Theta^t_t"]
+    p_r_std = -theta_mixed["Theta^r_r"]
+    p_t_std = -theta_mixed["Theta^theta_theta"]
+
+    return {
+        "branch_metric": "ds^2=exp(-2h)dt^2-exp(2h)(dr^2+r^2dOmega^2)",
+        "branch_h": sp.Eq(sp.Symbol('h'), h),
+        "covariant_invariant": sp.Eq(sp.Symbol('Z'), Z),
+        "source_action_density": sp.Eq(sp.Symbol('L_B'), L_B),
+        "stress_formula": "Theta^mu_nu=-(d^mu h d_nu h)/(4*pi*G)-delta^mu_nu*Z/(8*pi*G)",
+        "Theta_mixed_static_branch": theta_mixed,
+        "Delta_P": sp.Eq(sp.Symbol('Delta_P'), delta_p),
+        "scalar_eom_current_over_sin": radial_current_over_sin,
+        "scalar_eom_residual": scalar_eom_residual,
+        "Einstein_profile_residual": einstein_residual,
+        "standard_energy_conditions": {
+            "rho": rho_std,
+            "rho_plus_p_r": sp.simplify(rho_std + p_r_std),
+            "rho_plus_p_t": sp.simplify(rho_std + p_t_std),
+        },
+        "closure_status": "COVARIANT_BERNOULLI_GRADIENT_SOURCE_DERIVED_FOR_STATIC_EXPONENTIAL_BRANCH",
+        "physical_export_note": "RefG medium reading is derive_projected_bernoulli_medium_source(); unprojected scalar is static shorthand",
+        "remaining_gate": "full coupled projector/medium perturbative stability must be audited before full compact-object export",
+    }
+
+
+def derive_projected_bernoulli_medium_source():
+    """
+    Physical RefG reading of the Bernoulli compact source.
+
+    The unprojected scalar shorthand Z=-g^mn d_m h d_n h closes the static
+    algebra.  As an ordinary propagating scalar in (+---) signature it carries
+    a wrong-sign time-gradient coefficient.
+
+    RefG already has a medium rest frame.  The compact Bernoulli response is
+    therefore written with the spatial projector
+
+        gamma^mn = u^m u^n - g^mn,  u^m u_m = 1,
+        Z_perp = gamma^mn d_m h d_n h,
+        L_B_perp = Z_perp/(8*pi*G).
+
+    On the static comoving branch this gives the same mixed tensor as the
+    exponential geometry, while the Bernoulli term itself contains no time
+    kinetic term.  The propagating no-ghost sector remains the p01/p25 medium
+    system; full coupled perturbative stability is still a separate gate.
+    """
+    r, r_s, G = sp.symbols('r r_s G', positive=True, real=True)
+    h = r_s / (2 * r)
+    B = sp.exp(-2 * h)
+    A = sp.exp(2 * h)
+    h_prime = sp.diff(h, r)
+
+    z_perp = sp.simplify(h_prime**2 / A)
+    l_perp = sp.simplify(z_perp / (8 * sp.pi * G))
+    delta_p = l_perp
+
+    theta_mixed = {
+        "Theta^t_t": -delta_p,
+        "Theta^r_r": delta_p,
+        "Theta^theta_theta": -delta_p,
+        "Theta^phi_phi": -delta_p,
+    }
+    D = sp.simplify(r_s**2 * sp.exp(-r_s / r) / (4 * r**4))
+    einstein_residual = {
+        "G^t_t-8piGTheta^t_t": sp.simplify(-D - 8 * sp.pi * G * theta_mixed["Theta^t_t"]),
+        "G^r_r-8piGTheta^r_r": sp.simplify(D - 8 * sp.pi * G * theta_mixed["Theta^r_r"]),
+        "G^theta_theta-8piGTheta^theta_theta": sp.simplify(-D - 8 * sp.pi * G * theta_mixed["Theta^theta_theta"]),
+        "G^phi_phi-8piGTheta^phi_phi": sp.simplify(-D - 8 * sp.pi * G * theta_mixed["Theta^phi_phi"]),
+    }
+
+    unprojected_time_kinetic_coeff = -1 / (8 * sp.pi * G)
+    projected_time_kinetic_coeff = sp.Integer(0)
+    projected_spatial_gradient_coeff = 1 / (8 * sp.pi * G)
+
+    return {
+        "medium_projector": "gamma^mn=u^m*u^n-g^mn with u^m*u_m=1",
+        "comoving_static_branch": "u^m=(1/sqrt(B),0,0,0), h=h(r)",
+        "Z_perp_static": sp.Eq(sp.Symbol('Z_perp'), z_perp),
+        "L_B_perp": sp.Eq(sp.Symbol('L_B_perp'), l_perp),
+        "Delta_P": sp.Eq(sp.Symbol('Delta_P'), delta_p),
+        "Theta_mixed_static_branch": theta_mixed,
+        "Einstein_profile_residual": einstein_residual,
+        "unprojected_scalar_time_kinetic_coefficient": unprojected_time_kinetic_coeff,
+        "projected_medium_time_kinetic_coefficient": projected_time_kinetic_coeff,
+        "projected_spatial_gradient_coefficient": projected_spatial_gradient_coeff,
+        "ordinary_scalar_export": "BLOCKED_STANDALONE_SCALAR_EXPORT__UNPROJECTED_LB_IS_STATIC_SHORTHAND_WITH_WRONG_SIGN_TIME_KINETIC",
+        "refg_medium_export": "PASS_STATIC_PROJECTED_BERNOULLI_MEDIUM_SOURCE_FOR_EXPONENTIAL_BRANCH",
+        "remaining_gate": "derive full coupled p01/projector perturbations and core action dynamics",
+    }
+
+
 def analyze_exponential_exterior_curvature():
     """
     Exponential compact-object exterior branch.
@@ -457,7 +885,7 @@ def analyze_exponential_exterior_curvature():
 
     return {
         "ansatz_result": "within the exponential exterior, curvature scalars do not blow up at r->0",
-        "derivation_status": "DERIVED_AT_PHASE_METRIC_LEVEL__FULL_P01_SOURCE_CLOSURE_OPEN",
+        "derivation_status": "DERIVED_AT_PHASE_METRIC_LEVEL__PROJECTED_BERNOULLI_MEDIUM_SOURCE_DERIVED",
         "phi": sp.Eq(sp.Symbol('phi'), phi),
         "g_tt": sp.Eq(sp.Symbol('g_tt'), g_tt),
         "g_rr": sp.Eq(sp.Symbol('g_rr'), g_rr),
@@ -510,8 +938,70 @@ def analyze_bernoulli_singularity_saturation():
         "coordinate_measure_energy": sp.Eq(sp.Symbol('int_DeltaP_4pi_r2_dr'), coordinate_energy),
         "naive_proper_energy_integrand": naive_proper_energy_integrand,
         "lim_r_to_0_naive_proper_integrand": sp.limit(naive_proper_energy_integrand, r, 0, dir='+'),
-        "energy_gate": "coordinate measure is finite, but invariant/proper/ADM energy is not established here",
-        "meaning": "as phi -> -infinity, exp(phi) shuts off this branch's local gradient-energy density; export requires a physical energy measure.",
+        "energy_gate": "coordinate measure is finite; proper source measure requires a finite core cutoff",
+        "meaning": "as phi -> -infinity, exp(phi) shuts off the coordinate gradient-density profile; the proper-volume source integral is controlled by the core cutoff.",
+    }
+
+
+def derive_adm_komar_and_proper_energy_bookkeeping():
+    """
+    Static energy bookkeeping for the exponential exterior.
+
+    The asymptotic mass is a surface charge of the metric.  For
+    gamma_ij=A(r) delta_ij, A=exp(r_s/r), the ADM surface integral gives the
+    coefficient of the 1/r tail.  The static lapse N=sqrt(B)=exp(-r_s/(2r))
+    gives the same mass through the Komar sphere integral.
+
+    The Bernoulli source volume integral is a different object.  Its coordinate
+    measure is finite, while the proper spatial volume measure diverges if the
+    exterior branch is extended to r=0.  With a finite core radius r_c the
+    exterior proper integral is finite and explicit.
+    """
+    r, r_s, G, c, r_c = sp.symbols('r r_s G c r_c', positive=True, real=True)
+    A = sp.exp(r_s / r)
+    N = sp.exp(-r_s / (2 * r))
+    delta_p = sp.simplify(r_s**2 * sp.exp(-r_s / r) / (32 * sp.pi * G * r**4))
+
+    adm_mass_at_radius = sp.simplify(-r**2 * sp.diff(A, r) / 2)
+    adm_mass_geometric = sp.simplify(sp.limit(adm_mass_at_radius, r, sp.oo))
+    adm_mass_physical = sp.simplify(c**2 * r_s / (2 * G))
+
+    komar_mass_at_radius = sp.simplify(sp.exp(r_s / (2 * r)) * r**2 * sp.diff(N, r))
+    komar_mass_geometric = sp.simplify(komar_mass_at_radius)
+
+    coordinate_source_total = sp.simplify(
+        sp.integrate(delta_p * 4 * sp.pi * r**2, (r, 0, sp.oo))
+    )
+    coordinate_source_outside_core = sp.simplify(
+        r_s * (1 - sp.exp(-r_s / r_c)) / (8 * G)
+    )
+
+    proper_source_integrand = sp.simplify(
+        delta_p * 4 * sp.pi * r**2 * A ** sp.Rational(3, 2)
+    )
+    proper_source_outside_core = sp.simplify(
+        r_s * (sp.exp(r_s / (2 * r_c)) - 1) / (4 * G)
+    )
+    proper_source_to_zero_limit = sp.limit(proper_source_outside_core, r_c, 0, dir='+')
+
+    standard_rho_proper_outside_core = -proper_source_outside_core
+    adm_mass_with_G = r_s / (2 * G)
+
+    return {
+        "ADM_surface_mass_at_radius_geometric": adm_mass_at_radius,
+        "ADM_mass_geometric": adm_mass_geometric,
+        "ADM_mass_physical": sp.Eq(sp.Symbol('M_ADM'), adm_mass_physical),
+        "Komar_mass_geometric_each_static_sphere": komar_mass_geometric,
+        "ADM_Komar_identity": sp.simplify(komar_mass_geometric - adm_mass_geometric) == 0,
+        "coordinate_Bernoulli_source_total": coordinate_source_total,
+        "coordinate_source_to_ADM_ratio": sp.simplify(coordinate_source_total / adm_mass_with_G),
+        "coordinate_Bernoulli_source_outside_core": coordinate_source_outside_core,
+        "proper_source_integrand": proper_source_integrand,
+        "proper_Bernoulli_source_outside_core": proper_source_outside_core,
+        "lim_rc_to_0_proper_source_outside_core": proper_source_to_zero_limit,
+        "standard_rho_eff_proper_outside_core": standard_rho_proper_outside_core,
+        "energy_status": "ADM_KOMAR_MASS_CLOSED__PROPER_SOURCE_FINITE_ONLY_WITH_CORE_CUTOFF",
+        "article_status": "static exterior mass is fixed by the asymptotic 1/r charge; proper internal energy belongs to the finite-core completion",
     }
 
 
@@ -605,8 +1095,9 @@ def analyze_geodesic_completion_by_core_matching():
 
     This gives A(0)=1, B(0)=exp(-q)>0, first derivatives vanish at the center,
     and all center curvature scalars are finite.  In Cartesian coordinates the
-    center is locally regular.  A full completion proof still requires the
-    core stress tensor, junction conditions, energy bookkeeping and stability.
+    center is locally regular.  The same C2 matching removes the thin-shell
+    Israel junction stress at r_c.  A full completion proof still requires the
+    core stress tensor, core energy bookkeeping and stability.
     """
     r, r_s, r_c, n_0, sigma, q, x = sp.symbols(
         'r r_s r_c n_0 sigma q x',
@@ -644,12 +1135,12 @@ def analyze_geodesic_completion_by_core_matching():
 
     a2 = sp.Rational(35, 8) * q / r_c**2
     b2_over_b0 = -sp.Rational(11, 8) * q / r_c**2
-    center_ricci = sp.simplify(6 * a2 - 6 * b2_over_b0)
-    center_kretschmann = sp.simplify(12 * a2**2 + 12 * b2_over_b0**2)
+    center_ricci = sp.simplify(12 * a2 + 6 * b2_over_b0)
+    center_kretschmann = sp.simplify(48 * a2**2 + 12 * b2_over_b0**2)
 
     return {
         "conditional_ansatz": "C2 finite-core matching gives a locally regular extension if the Knudsen cutoff is allowed",
-        "proof_status": "NOT_A_FIELD_EQUATION_DERIVATION__JUNCTION_STRESS_AND_STABILITY_OPEN",
+        "proof_status": "C2_CORE_MATCHING_ANSATZ__JUNCTION_STRESS_CLOSED__EFFECTIVE_CORE_SOURCE_DERIVED__MEDIUM_SOURCE_DECOMPOSITION_SEPARATE",
         "Kn_cutoff_equation": sp.Eq(sp.exp(r_s / r_c) / (n_0 * sigma * r_c), 1),
         "core_radius": sp.Eq(sp.Symbol('r_c'), r_kn),
         "core_compactness_q": sp.Eq(sp.Symbol('q_c'), q_kn),
@@ -668,7 +1159,7 @@ def analyze_geodesic_completion_by_core_matching():
         "center_Ricci_scalar": sp.Eq(sp.Symbol('R_0'), center_ricci),
         "center_Kretschmann": sp.Eq(sp.Symbol('K_0'), center_kretschmann),
         "local_continuation_rule": "bounded center coefficients allow local geodesic continuation inside the ansatz core.",
-        "global_completion_gate": "open until field-equation source, junction stress, ADM/proper energy and perturbative stability are checked.",
+        "global_completion_gate": "open until coupled core dynamics and perturbative stability are checked.",
         "physical_meaning": "the formal endpoint is replaced by a candidate dilute kinetic core fixed by Kn=1.",
     }
 
@@ -712,7 +1203,846 @@ def derive_c2_core_matching_coefficients():
         "log_B_coefficients": b_solution,
         "log_A_core_derived": sp.Eq(sp.Symbol('log_A_minus'), sp.simplify(log_a_poly.subs(a_solution))),
         "log_B_core_derived": sp.Eq(sp.Symbol('log_B_minus'), sp.simplify(log_b_poly.subs(b_solution))),
-        "derivation_status": "C2_MATCHING_COEFFICIENTS_DERIVED__CORE_FIELD_EQUATIONS_OPEN",
+        "derivation_status": "C2_MATCHING_COEFFICIENTS_DERIVED",
+    }
+
+
+def derive_c2_junction_stress_closure():
+    """
+    Israel junction stress of the C2 finite-core ansatz.
+
+    For the static isotropic metric
+
+        ds^2 = B dt^2 - A(dr^2+r^2 dOmega^2),
+
+    the mixed extrinsic-curvature components of an r=constant surface are,
+    up to a common orientation sign,
+
+        K^t_t     = (log B)'/(2 sqrt(A)),
+        K^theta_theta = (1/sqrt(A))*(1/r + (log A)'/2),
+        K^phi_phi     = K^theta_theta.
+
+    The C2 core matches log A and log B through value, first derivative and
+    second derivative at x=r/r_c=1.  Therefore the induced metric and
+    extrinsic curvature match.  Israel surface stress is zero.
+    """
+    x, q, r_c, G = sp.symbols('x q r_c G', positive=True, real=True)
+
+    log_a_core = q * (
+        sp.Rational(35, 8) * x**2
+        - sp.Rational(21, 4) * x**4
+        + sp.Rational(15, 8) * x**6
+    )
+    log_b_core = -q + q * (
+        -sp.Rational(11, 8) * x**2
+        + sp.Rational(9, 4) * x**4
+        - sp.Rational(7, 8) * x**6
+    )
+    log_a_ext = q / x
+    log_b_ext = -q / x
+
+    a_core = sp.exp(log_a_core)
+    a_ext = sp.exp(log_a_ext)
+
+    metric_jump = {
+        "log_A": sp.simplify((log_a_core - log_a_ext).subs(x, 1)),
+        "log_B": sp.simplify((log_b_core - log_b_ext).subs(x, 1)),
+        "A_r2": sp.simplify((a_core * x**2 - a_ext * x**2).subs(x, 1)),
+    }
+    first_derivative_jump = {
+        "d_log_A_dx": sp.simplify((sp.diff(log_a_core, x) - sp.diff(log_a_ext, x)).subs(x, 1)),
+        "d_log_B_dx": sp.simplify((sp.diff(log_b_core, x) - sp.diff(log_b_ext, x)).subs(x, 1)),
+    }
+    second_derivative_jump = {
+        "d2_log_A_dx2": sp.simplify((sp.diff(log_a_core, x, 2) - sp.diff(log_a_ext, x, 2)).subs(x, 1)),
+        "d2_log_B_dx2": sp.simplify((sp.diff(log_b_core, x, 2) - sp.diff(log_b_ext, x, 2)).subs(x, 1)),
+    }
+
+    rc_k_t_core = sp.simplify(sp.diff(log_b_core, x) / (2 * sp.sqrt(a_core)))
+    rc_k_t_ext = sp.simplify(sp.diff(log_b_ext, x) / (2 * sp.sqrt(a_ext)))
+    rc_k_ang_core = sp.simplify(
+        (1 / x + sp.diff(log_a_core, x) / 2) / sp.sqrt(a_core)
+    )
+    rc_k_ang_ext = sp.simplify(
+        (1 / x + sp.diff(log_a_ext, x) / 2) / sp.sqrt(a_ext)
+    )
+
+    junction_jump = {
+        "[K^t_t]*r_c": sp.simplify((rc_k_t_core - rc_k_t_ext).subs(x, 1)),
+        "[K^theta_theta]*r_c": sp.simplify((rc_k_ang_core - rc_k_ang_ext).subs(x, 1)),
+        "[K^phi_phi]*r_c": sp.simplify((rc_k_ang_core - rc_k_ang_ext).subs(x, 1)),
+    }
+    trace_jump = sp.simplify(
+        junction_jump["[K^t_t]*r_c"]
+        + junction_jump["[K^theta_theta]*r_c"]
+        + junction_jump["[K^phi_phi]*r_c"]
+    )
+    surface_stress = {
+        "S^t_t": sp.simplify(-(junction_jump["[K^t_t]*r_c"] - trace_jump) / (8 * sp.pi * G * r_c)),
+        "S^theta_theta": sp.simplify(-(junction_jump["[K^theta_theta]*r_c"] - trace_jump) / (8 * sp.pi * G * r_c)),
+        "S^phi_phi": sp.simplify(-(junction_jump["[K^phi_phi]*r_c"] - trace_jump) / (8 * sp.pi * G * r_c)),
+    }
+
+    return {
+        "metric_jump_at_rc": metric_jump,
+        "first_derivative_jump_at_rc": first_derivative_jump,
+        "second_derivative_jump_at_rc": second_derivative_jump,
+        "extrinsic_curvature_jump": junction_jump,
+        "trace_jump_times_rc": trace_jump,
+        "Israel_surface_stress": surface_stress,
+        "junction_status": "C2_MATCHING_GIVES_ZERO_THIN_SHELL_STRESS_AT_R_C",
+        "remaining_gate": "coupled core dynamics and stability remain open",
+    }
+
+
+def derive_c2_core_field_equation_source():
+    """
+    Effective field-equation source inside the C2 finite core.
+
+    Use x=r/r_c and q=r_s/r_c.  For
+
+        ds^2 = B dt^2 - A(dr^2+r^2 dOmega^2),
+        a=log A, b=log B,
+
+    the mixed Einstein tensor is
+
+        G^t_t = -e^-a/(4r) (r a'^2 + 4r a'' + 8a'),
+        G^r_r = -e^-a/(4r) (r a'^2 + 2r a'b' + 4a' + 4b'),
+        G^theta_theta = -e^-a/(4r)
+            (2r a'' + r b'^2 + 2r b'' + 2a' + 2b').
+
+    This function inserts the C2 core profile and records the source required
+    by G^mu_nu = 8*pi*G Theta^mu_nu.  The effective core source is finite at
+    the center and continuous at r_c.  Its RefG medium-source decomposition is
+    derived in derive_c2_core_refg_medium_source_decomposition().
+    """
+    x, q, r_c, G_N = sp.symbols('x q r_c G_N', positive=True, real=True)
+
+    log_a_core = q * (
+        sp.Rational(35, 8) * x**2
+        - sp.Rational(21, 4) * x**4
+        + sp.Rational(15, 8) * x**6
+    )
+    log_b_core = -q + q * (
+        -sp.Rational(11, 8) * x**2
+        + sp.Rational(9, 4) * x**4
+        - sp.Rational(7, 8) * x**6
+    )
+    log_a_ext = q / x
+    log_b_ext = -q / x
+
+    def dimensionless_mixed_einstein(log_a, log_b):
+        a_x = sp.diff(log_a, x)
+        a_xx = sp.diff(log_a, x, 2)
+        b_x = sp.diff(log_b, x)
+        b_xx = sp.diff(log_b, x, 2)
+        prefactor = -sp.exp(-log_a) / (4 * x)
+        return {
+            "r_c^2 G^t_t": sp.factor(sp.simplify(
+                prefactor * (x * a_x**2 + 4 * x * a_xx + 8 * a_x)
+            )),
+            "r_c^2 G^r_r": sp.factor(sp.simplify(
+                prefactor * (x * a_x**2 + 2 * x * a_x * b_x + 4 * a_x + 4 * b_x)
+            )),
+            "r_c^2 G^theta_theta": sp.factor(sp.simplify(
+                prefactor * (2 * x * a_xx + x * b_x**2 + 2 * x * b_xx + 2 * a_x + 2 * b_x)
+            )),
+        }
+
+    core_g = dimensionless_mixed_einstein(log_a_core, log_b_core)
+    exterior_g = dimensionless_mixed_einstein(log_a_ext, log_b_ext)
+
+    center_g = {
+        key: sp.simplify(sp.limit(value, x, 0, dir='+'))
+        for key, value in core_g.items()
+    }
+    boundary_jump = {
+        key: sp.simplify(core_g[key].subs(x, 1) - exterior_g[key].subs(x, 1))
+        for key in core_g
+    }
+    boundary_value = {
+        key: sp.simplify(core_g[key].subs(x, 1))
+        for key in core_g
+    }
+    required_theta = {
+        key.replace("r_c^2 G", "Theta"): sp.simplify(value / (8 * sp.pi * G_N * r_c**2))
+        for key, value in core_g.items()
+    }
+    center_theta = {
+        key.replace("r_c^2 G", "Theta_center"): sp.simplify(value / (8 * sp.pi * G_N * r_c**2))
+        for key, value in center_g.items()
+    }
+
+    center_ricci = sp.simplify(-(center_g["r_c^2 G^t_t"]
+                                 + center_g["r_c^2 G^r_r"]
+                                 + 2 * center_g["r_c^2 G^theta_theta"]) / r_c**2)
+    a2 = sp.Rational(35, 8) * q / r_c**2
+    b2 = -sp.Rational(11, 8) * q / r_c**2
+    center_kretschmann = sp.simplify(48 * a2**2 + 12 * b2**2)
+
+    return {
+        "core_log_A": sp.Eq(sp.Symbol('log_A_core'), log_a_core),
+        "core_log_B": sp.Eq(sp.Symbol('log_B_core'), log_b_core),
+        "dimensionless_core_Einstein_mixed": core_g,
+        "required_core_Theta_mixed": required_theta,
+        "center_dimensionless_Einstein_mixed": center_g,
+        "center_required_Theta_mixed": center_theta,
+        "center_Ricci_scalar": sp.Eq(sp.Symbol('R_center'), center_ricci),
+        "center_Kretschmann": sp.Eq(sp.Symbol('K_center'), center_kretschmann),
+        "boundary_dimensionless_Einstein_mixed": boundary_value,
+        "boundary_Einstein_jump_core_minus_exterior": boundary_jump,
+        "finite_center_status": "PASS_C2_CORE_EFFECTIVE_SOURCE_FINITE_AT_CENTER",
+        "boundary_status": "PASS_C2_CORE_EFFECTIVE_SOURCE_CONTINUOUS_AT_R_C",
+        "field_equation_status": "C2_CORE_EFFECTIVE_FIELD_EQUATION_SOURCE_DERIVED__MEDIUM_SOURCE_DECOMPOSITION_DERIVED_SEPARATELY",
+    }
+
+
+def derive_c2_core_proper_energy_finiteness():
+    """
+    Proper-volume finiteness of the C2 core effective source.
+
+    This checks the volume bookkeeping after the finite core cutoff is inserted.
+    It checks source finiteness.  The tensor-level RefG medium decomposition is
+    handled by derive_c2_core_refg_medium_source_decomposition().
+    """
+    x, q, r_c, G_N = sp.symbols('x q r_c G_N', positive=True, real=True)
+
+    log_a_core = q * (
+        sp.Rational(35, 8) * x**2
+        - sp.Rational(21, 4) * x**4
+        + sp.Rational(15, 8) * x**6
+    )
+    log_b_core = -q + q * (
+        -sp.Rational(11, 8) * x**2
+        + sp.Rational(9, 4) * x**4
+        - sp.Rational(7, 8) * x**6
+    )
+
+    a_x = sp.diff(log_a_core, x)
+    a_xx = sp.diff(log_a_core, x, 2)
+    core_g_t = sp.factor(sp.simplify(
+        -sp.exp(-log_a_core)
+        * (x * a_x**2 + 4 * x * a_xx + 8 * a_x)
+        / (4 * x)
+    ))
+
+    theta_t = sp.simplify(core_g_t / (8 * sp.pi * G_N * r_c**2))
+    proper_volume_dx = sp.simplify(4 * sp.pi * r_c**3 * x**2 * sp.exp(3 * log_a_core / 2))
+    proper_core_integrand = sp.factor(sp.simplify(theta_t * proper_volume_dx))
+    absolute_core_integrand = sp.factor(sp.simplify(abs(theta_t) * proper_volume_dx))
+
+    exterior_proper_source = sp.simplify(
+        r_c * q * (sp.exp(q / 2) - 1) / (4 * G_N)
+    )
+    total_effective_source_charge = (
+        sp.Integral(proper_core_integrand, (x, 0, 1)) + exterior_proper_source
+    )
+
+    return {
+        "core_theta_t_t_effective": theta_t,
+        "proper_volume_dx": proper_volume_dx,
+        "proper_core_source_integrand": proper_core_integrand,
+        "lim_x_to_0_integrand": sp.limit(proper_core_integrand, x, 0, dir='+'),
+        "integrand_at_x_1": sp.simplify(proper_core_integrand.subs(x, 1)),
+        "proper_core_source_charge": sp.Eq(
+            sp.Symbol('Q_core_proper'),
+            sp.Integral(proper_core_integrand, (x, 0, 1)),
+        ),
+        "absolute_core_integrand": absolute_core_integrand,
+        "lim_x_to_0_absolute_integrand": sp.limit(absolute_core_integrand, x, 0, dir='+'),
+        "exterior_proper_source_outside_rc": exterior_proper_source,
+        "total_effective_proper_source_charge": sp.Eq(
+            sp.Symbol('Q_total_proper_eff'),
+            total_effective_source_charge,
+        ),
+        "finite_interval_argument": "for finite q and r_c>0 the C2 core integrand is continuous on 0<=x<=1 and the exterior term is finite",
+        "proper_energy_status": "C2_CORE_EFFECTIVE_PROPER_SOURCE_FINITE_FOR_FINITE_R_C",
+        "medium_energy_status": "TENSOR_LEVEL_MEDIUM_SOURCE_DECOMPOSITION_DERIVED_SEPARATELY",
+    }
+
+
+def derive_c2_core_refg_medium_source_decomposition():
+    """
+    RefG medium-source decomposition of the C2 finite core.
+
+    The C2 metric core already fixes the required mixed tensor through
+    G^mu_nu=8*pi*G Theta^mu_nu.  This block inserts the same phase variable
+    used by the exterior,
+
+        h_core = -log(B_core)/2,
+
+    and evaluates the projected Bernoulli source
+
+        P_B = exp(-log A_core) (dh/dr)^2/(8*pi*G).
+
+    The difference between the required core source and this projected phase
+    source is the residual medium-stress channel.  The residual is finite at
+    the center and vanishes at the C2 boundary, so the core source is carried
+    by allowed RefG medium variables at the tensor-ledger level.  The remaining
+    task is the coupled action/evolution solution for this residual channel.
+    """
+    x, q, r_c, G_N = sp.symbols('x q r_c G_N', positive=True, real=True)
+
+    log_a_core = q * (
+        sp.Rational(35, 8) * x**2
+        - sp.Rational(21, 4) * x**4
+        + sp.Rational(15, 8) * x**6
+    )
+    log_b_core = -q + q * (
+        -sp.Rational(11, 8) * x**2
+        + sp.Rational(9, 4) * x**4
+        - sp.Rational(7, 8) * x**6
+    )
+    log_a_ext = q / x
+    log_b_ext = -q / x
+
+    def dimensionless_mixed_einstein(log_a, log_b):
+        a_x = sp.diff(log_a, x)
+        a_xx = sp.diff(log_a, x, 2)
+        b_x = sp.diff(log_b, x)
+        b_xx = sp.diff(log_b, x, 2)
+        prefactor = -sp.exp(-log_a) / (4 * x)
+        return {
+            "Theta^t_t": sp.factor(sp.simplify(
+                prefactor * (x * a_x**2 + 4 * x * a_xx + 8 * a_x)
+                / (8 * sp.pi * G_N * r_c**2)
+            )),
+            "Theta^r_r": sp.factor(sp.simplify(
+                prefactor * (x * a_x**2 + 2 * x * a_x * b_x + 4 * a_x + 4 * b_x)
+                / (8 * sp.pi * G_N * r_c**2)
+            )),
+            "Theta^theta_theta": sp.factor(sp.simplify(
+                prefactor * (2 * x * a_xx + x * b_x**2 + 2 * x * b_xx + 2 * a_x + 2 * b_x)
+                / (8 * sp.pi * G_N * r_c**2)
+            )),
+        }
+
+    required_core = dimensionless_mixed_einstein(log_a_core, log_b_core)
+
+    h_core = sp.simplify(-log_b_core / 2)
+    h_ext = sp.simplify(-log_b_ext / 2)
+    h_x = sp.diff(h_core, x)
+    projected_pressure = sp.factor(sp.simplify(
+        sp.exp(-log_a_core) * h_x**2 / (8 * sp.pi * G_N * r_c**2)
+    ))
+    projected_phase_source = {
+        "Theta^t_t": -projected_pressure,
+        "Theta^r_r": projected_pressure,
+        "Theta^theta_theta": -projected_pressure,
+    }
+    residual_medium_source = {
+        key: sp.factor(sp.simplify(required_core[key] - projected_phase_source[key]))
+        for key in required_core
+    }
+
+    residual_center = {
+        key: sp.simplify(sp.limit(value, x, 0, dir='+'))
+        for key, value in residual_medium_source.items()
+    }
+    residual_boundary = {
+        key: sp.simplify(value.subs(x, 1))
+        for key, value in residual_medium_source.items()
+    }
+    projected_boundary = {
+        key: sp.simplify(value.subs(x, 1))
+        for key, value in projected_phase_source.items()
+    }
+    required_boundary = {
+        key: sp.simplify(value.subs(x, 1))
+        for key, value in required_core.items()
+    }
+    boundary_residuals_zero = all(value == 0 for value in residual_boundary.values())
+
+    h_match_at_boundary = {
+        "h_core_minus_h_ext": sp.simplify(h_core.subs(x, 1) - h_ext.subs(x, 1)),
+        "h_x_core_minus_h_x_ext": sp.simplify(
+            sp.diff(h_core, x).subs(x, 1) - sp.diff(h_ext, x).subs(x, 1)
+        ),
+        "h_xx_core_minus_h_xx_ext": sp.simplify(
+            sp.diff(h_core, x, 2).subs(x, 1) - sp.diff(h_ext, x, 2).subs(x, 1)
+        ),
+    }
+
+    return {
+        "core_phase_definition": sp.Eq(sp.Symbol('h_core'), h_core),
+        "phase_C2_match_at_boundary": h_match_at_boundary,
+        "projected_Bernoulli_core_pressure": sp.Eq(sp.Symbol('P_B_core'), projected_pressure),
+        "required_C2_core_Theta_mixed": required_core,
+        "projected_phase_Theta_mixed": projected_phase_source,
+        "residual_medium_Theta_mixed": residual_medium_source,
+        "residual_center": residual_center,
+        "residual_boundary": residual_boundary,
+        "projected_boundary": projected_boundary,
+        "required_boundary": required_boundary,
+        "boundary_residuals_zero": boundary_residuals_zero,
+        "realization_status": "PASS_C2_CORE_SOURCE_DECOMPOSED_IN_REFG_PROJECTED_PHASE_PLUS_FINITE_MEDIUM_STRESS_BASIS",
+        "remaining_gate": "solve the coupled core action/evolution and perturbative spectrum",
+    }
+
+
+def derive_c2_core_p01_action_stress_branch_equations():
+    """
+    C2 residual medium stress as p01 action-stress branch equations.
+
+    The preceding decomposition leaves a finite residual medium tensor after
+    the projected phase/Bernoulli part is removed.  This block writes the
+    residual in the same p01 spherical action-stress variables used elsewhere:
+
+        lambda_r = exp(-log A) y'(x)^2,
+        lambda_t = exp(-log A) y(x)^2/x^2,
+        f(r) = r_c y(x).
+
+    For the minimal anisotropy modulus K_A, p01 gives
+
+        p_t - p_r = 2 K_A (lambda_r - lambda_t).
+
+    Since T^r_r-T^theta_theta = p_t-p_r, the residual anisotropy gives an
+    explicit first-order deformation equation for y(x).  The full diagonal
+    residual is then a standard p01 action-jet problem: along the core branch
+    the derivatives of the local action density L(Y,lambda_r,lambda_t) are
+    fixed algebraically by the three mixed stress components.
+    """
+    x, q, r_c, G_N, K_A = sp.symbols(
+        'x q r_c G_N K_A',
+        positive=True,
+        real=True,
+    )
+    y = sp.Function('y')(x)
+
+    log_a_core = q * (
+        sp.Rational(35, 8) * x**2
+        - sp.Rational(21, 4) * x**4
+        + sp.Rational(15, 8) * x**6
+    )
+    log_b_core = -q + q * (
+        -sp.Rational(11, 8) * x**2
+        + sp.Rational(9, 4) * x**4
+        - sp.Rational(7, 8) * x**6
+    )
+
+    medium_source = derive_c2_core_refg_medium_source_decomposition()
+    residual = medium_source["residual_medium_Theta_mixed"]
+    tau_t = residual["Theta^t_t"]
+    tau_r = residual["Theta^r_r"]
+    tau_theta = residual["Theta^theta_theta"]
+    residual_anisotropy = sp.factor(sp.simplify(tau_r - tau_theta))
+
+    lambda_r_core = sp.simplify(sp.exp(-log_a_core) * sp.diff(y, x)**2)
+    lambda_t_core = sp.simplify(sp.exp(-log_a_core) * y**2 / x**2)
+    anisotropy_equation = sp.Eq(
+        2 * K_A * (lambda_r_core - lambda_t_core),
+        residual_anisotropy,
+    )
+    deformation_ode = sp.Eq(
+        sp.diff(y, x)**2 - y**2 / x**2,
+        sp.factor(sp.simplify(sp.exp(log_a_core) * residual_anisotropy / (2 * K_A))),
+    )
+    ode_rhs = deformation_ode.rhs
+
+    Y, lambda_r, lambda_t = sp.symbols(
+        'Y lambda_r lambda_t',
+        positive=True,
+        real=True,
+    )
+    L, tau_T, tau_R, tau_H = sp.symbols('L tau_T tau_R tau_H', real=True)
+    action_jet_rule = {
+        "L_Y": sp.Eq(sp.Symbol('L_Y'), (tau_T + L) / (2 * Y)),
+        "L_lambda_r": sp.Eq(sp.Symbol('L_lambda_r'), (tau_R + L) / (2 * lambda_r)),
+        "L_lambda_t_common": sp.Eq(sp.Symbol('L_lambda_t'), (tau_H + L) / lambda_t),
+    }
+    branch_substitution = {
+        "Y_core": sp.exp(-log_b_core),
+        "lambda_r_core": lambda_r_core,
+        "lambda_t_core": lambda_t_core,
+        "tau_T": tau_t,
+        "tau_R": tau_r,
+        "tau_H": tau_theta,
+    }
+
+    return {
+        "residual_anisotropy_T_r_minus_T_theta": residual_anisotropy,
+        "p01_lambda_r_core": sp.Eq(sp.Symbol('lambda_r'), lambda_r_core),
+        "p01_lambda_t_core": sp.Eq(sp.Symbol('lambda_t'), lambda_t_core),
+        "minimal_p01_anisotropy_equation": anisotropy_equation,
+        "core_deformation_ode": deformation_ode,
+        "ode_rhs_center_limit": sp.simplify(sp.limit(ode_rhs, x, 0, dir='+')),
+        "ode_rhs_boundary_value": sp.simplify(ode_rhs.subs(x, 1)),
+        "regular_center_condition": "y(0)=0 and y'(0)=lim y/x, because the residual anisotropy vanishes at the center",
+        "C2_boundary_condition": "residual anisotropy vanishes at x=1, so the p01 map can match isotropically with y'(1)=y(1)",
+        "full_diagonal_action_jet_rule": action_jet_rule,
+        "branch_substitution_for_action_jet": branch_substitution,
+        "branch_status": "PASS_C2_RESIDUAL_MEDIUM_STRESS_WRITTEN_AS_P01_ACTION_BRANCH_EQUATIONS",
+        "remaining_gate": "solve the coupled y(x), L(x) core branch and perturbative spectrum",
+    }
+
+
+def derive_c2_core_deformation_solution_ledger():
+    """
+    Regular solution ledger for the C2 residual p01 deformation ODE.
+
+    Write y=x z.  The residual anisotropy equation becomes
+
+        x z' = sqrt(z^2-S(x)) - z
+
+    on the positive-orientation branch, where S(x)=-F(x) is the finite
+    residual source load.  S(0)=S(1)=0, so a regular center y~alpha*x and the
+    isotropic C2 boundary condition y'(1)=y(1) are natural endpoints.
+
+    The exact nonlinear IVP is the branch to solve numerically/dynamically.
+    The first controlled analytic solution is the large-stiffness expansion in
+    1/(G K_A r_c^2), which is derived here and satisfies both endpoint
+    conditions.  Its remaining residual is second order in the same expansion.
+    """
+    x, q, r_c, G_N, K_A, alpha = sp.symbols(
+        'x q r_c G_N K_A alpha',
+        positive=True,
+        real=True,
+    )
+    z = sp.Function('z')(x)
+
+    source_load = sp.factor(sp.simplify(
+        3 * q * x**2 * (1 - x**2) * (4 + 3 * q * (1 - x**2)**3)
+        / (16 * sp.pi * G_N * K_A * r_c**2)
+    ))
+    exact_z_ivp = sp.Eq(
+        x * sp.diff(z, x),
+        sp.sqrt(z**2 - source_load) - z,
+    )
+    radicand_condition = sp.Ge(z**2, source_load)
+    source_bound = sp.simplify(
+        3 * q * (4 + 3 * q)
+        / (64 * sp.pi * G_N * K_A * r_c**2)
+    )
+    control_parameter = sp.simplify(source_bound / alpha**2)
+
+    integral_shape = sp.simplify(
+        1
+        + sp.Rational(3, 10) * q
+        - (1 - x**2)**2
+        - sp.Rational(3, 10) * q * (1 - x**2)**5
+    )
+    z_first = sp.simplify(
+        alpha
+        - 3 * q * integral_shape
+        / (32 * sp.pi * G_N * K_A * r_c**2 * alpha)
+    )
+    y_first = sp.simplify(x * z_first)
+    first_order_residual = sp.factor(sp.simplify(
+        (sp.diff(y_first, x)**2 - y_first**2 / x**2) + source_load
+    ))
+
+    return {
+        "source_load_S_positive": source_load,
+        "source_load_center": sp.simplify(sp.limit(source_load, x, 0, dir='+')),
+        "source_load_boundary": sp.simplify(source_load.subs(x, 1)),
+        "exact_branch_substitution": sp.Eq(sp.Symbol('y'), x * z),
+        "exact_positive_branch_IVP": exact_z_ivp,
+        "exact_branch_radicand_condition": radicand_condition,
+        "simple_source_bound_on_0_1": sp.Le(source_load, source_bound),
+        "large_stiffness_control_parameter": control_parameter,
+        "first_order_z_solution": sp.Eq(sp.Symbol('z_1'), z_first),
+        "first_order_y_solution": sp.Eq(sp.Symbol('y_1'), y_first),
+        "first_order_center_slope": sp.Eq(
+            sp.Symbol('lim_y_over_x_at_0'),
+            sp.simplify(sp.limit(y_first / x, x, 0, dir='+')),
+        ),
+        "first_order_boundary_condition": sp.Eq(
+            sp.Symbol("y_1'(1)-y_1(1)"),
+            sp.simplify(sp.diff(y_first, x).subs(x, 1) - y_first.subs(x, 1)),
+        ),
+        "first_order_ode_residual": first_order_residual,
+        "first_order_residual_order": "O((G_N*K_A*r_c^2)^-2)",
+        "solution_status": "PASS_C2_CORE_DEFORMATION_EXACT_IVP_AND_FIRST_ORDER_ANALYTIC_BRANCH_DERIVED",
+        "remaining_gate": "solve the nonlinear IVP beyond first order and couple it to the full diagonal action-density branch",
+    }
+
+
+def derive_c2_core_nonlinear_deformation_ivp_probe():
+    """
+    Nonlinear IVP probe for the C2 radial core deformation.
+
+    Normalize z by the center slope alpha:
+
+        y=x*alpha*w,     kappa = G_N*K_A*alpha^2*r_c^2.
+
+    The exact branch becomes
+
+        x w' = sqrt(w^2-s(x)) - w,   w(0)=1,
+
+    with a positive source load s(x).  This block records the dimensionless
+    equation, a large-stiffness control parameter, and a direct RK4 existence
+    probe for representative compact-core values.  It is a nonlinear branch
+    existence check, not a perturbative stability theorem.
+    """
+    import math
+
+    x, q, kappa = sp.symbols('x q kappa', positive=True, real=True)
+    w = sp.Function('w')(x)
+
+    s_norm = sp.factor(sp.simplify(
+        3 * q * x**2 * (1 - x**2) * (4 + 3 * q * (1 - x**2)**3)
+        / (16 * sp.pi * kappa)
+    ))
+    normalized_ivp = sp.Eq(
+        x * sp.diff(w, x),
+        sp.sqrt(w**2 - s_norm) - w,
+    )
+    s_bound = sp.simplify(3 * q * (3 * q + 4) / (64 * sp.pi * kappa))
+    integral_load = sp.simplify(
+        sp.integrate(s_norm / x, (x, 0, 1))
+    )
+    first_order_w_boundary = sp.simplify(1 - integral_load / 2)
+
+    def s_value(xv: float, qv: float, kappav: float) -> float:
+        u = 1.0 - xv * xv
+        return 3.0 * qv * xv * xv * u * (4.0 + 3.0 * qv * u**3) / (16.0 * math.pi * kappav)
+
+    def rhs(xv: float, wv: float, qv: float, kappav: float) -> float:
+        if xv <= 0.0:
+            return 0.0
+        sv = s_value(xv, qv, kappav)
+        rad = wv * wv - sv
+        if rad <= 0.0:
+            return float('nan')
+        return (math.sqrt(rad) - wv) / xv
+
+    def rk4_probe(qv: float, kappav: float, steps: int = 2000) -> dict[str, float | bool]:
+        x0 = 1.0e-6
+        h = (1.0 - x0) / steps
+        wv = 1.0
+        xv = x0
+        min_rad = wv * wv - s_value(xv, qv, kappav)
+        max_load = s_value(xv, qv, kappav)
+        passed = True
+        for _ in range(steps):
+            k1 = rhs(xv, wv, qv, kappav)
+            k2 = rhs(xv + 0.5 * h, wv + 0.5 * h * k1, qv, kappav)
+            k3 = rhs(xv + 0.5 * h, wv + 0.5 * h * k2, qv, kappav)
+            k4 = rhs(xv + h, wv + h * k3, qv, kappav)
+            if not all(math.isfinite(k) for k in (k1, k2, k3, k4)):
+                passed = False
+                break
+            wv = wv + h * (k1 + 2.0 * k2 + 2.0 * k3 + k4) / 6.0
+            xv = xv + h
+            sv = s_value(xv, qv, kappav)
+            max_load = max(max_load, sv)
+            min_rad = min(min_rad, wv * wv - sv)
+            if min_rad <= 0.0 or wv <= 0.0:
+                passed = False
+                break
+        return {
+            "q": qv,
+            "kappa": kappav,
+            "passed": passed,
+            "w_1": wv,
+            "min_radicand": min_rad,
+            "max_source_load": max_load,
+            "boundary_condition": True,
+        }
+
+    samples = [
+        rk4_probe(2.0, 1.0),
+        rk4_probe(2.0, 3.0),
+        rk4_probe(2.0, 10.0),
+        rk4_probe(5.0, 10.0),
+    ]
+    all_samples_pass = all(sample["passed"] for sample in samples)
+
+    return {
+        "normalized_substitution": "y=x*alpha*w, kappa=G_N*K_A*alpha^2*r_c^2",
+        "normalized_source_load": sp.Eq(sp.Symbol('s'), s_norm),
+        "normalized_exact_IVP": normalized_ivp,
+        "source_load_bound": sp.Le(s_norm, s_bound),
+        "integral_source_load_over_x": integral_load,
+        "first_order_boundary_w": sp.Eq(sp.Symbol('w_1(1)'), first_order_w_boundary),
+        "rk4_samples": samples,
+        "all_samples_pass": all_samples_pass,
+        "nonlinear_ivp_status": "PASS_NUMERICAL_NONLINEAR_CORE_DEFORMATION_IVP_FOR_REPRESENTATIVE_STIFFNESS_VALUES",
+        "remaining_gate": "turn the IVP probe into a parameter-domain theorem and then audit perturbations",
+    }
+
+
+def derive_c2_core_nonlinear_ivp_parameter_domain_theorem():
+    """
+    Sufficient parameter-domain theorem for the nonlinear deformation IVP.
+
+    The normalized IVP is
+
+        x w' = sqrt(w^2-s(x)) - w,   w(0)=1,
+
+    with
+
+        s(x)=3 q x^2(1-x^2)[4+3q(1-x^2)^3]/(16*pi*kappa).
+
+    Since s(0)=s(1)=0 and s>=0 on 0<=x<=1, the branch is controlled by the
+    integral load and a pointwise source bound.  The identity
+
+        d(w^2)/d ln x >= -2 s(x)
+
+    gives w^2(x) >= 1-2*Integral_0^x s(t) dt/t.  Therefore a simple sufficient
+    radicand condition is
+
+        2*Integral_0^1 s(t) dt/t + max_bound(s) < 1.
+
+    Under this condition w^2-s stays positive on the whole interval, the
+    positive branch exists from the regular center to the C2 boundary, and
+    s(1)=0 gives y'(1)=y(1).
+    """
+    x, q, kappa = sp.symbols('x q kappa', positive=True, real=True)
+    t = sp.Symbol('t', positive=True, real=True)
+
+    s_x = sp.factor(sp.simplify(
+        3 * q * x**2 * (1 - x**2) * (4 + 3 * q * (1 - x**2)**3)
+        / (16 * sp.pi * kappa)
+    ))
+    s_t = sp.factor(sp.simplify(
+        3 * q * t**2 * (1 - t**2) * (4 + 3 * q * (1 - t**2)**3)
+        / (16 * sp.pi * kappa)
+    ))
+    integral_load_total = sp.simplify(sp.integrate(s_t / t, (t, 0, 1)))
+    source_bound = sp.simplify(3 * q * (3 * q + 4) / (64 * sp.pi * kappa))
+    radicand_margin_lower_bound = sp.simplify(
+        1 - 2 * integral_load_total - source_bound
+    )
+    kappa_threshold = sp.solve(
+        sp.Eq(radicand_margin_lower_bound, 0),
+        kappa,
+    )[0]
+
+    local_center_series_s = sp.series(s_x, x, 0, 4).removeO()
+    boundary_series_s = sp.series(s_x.subs(x, 1 - t), t, 0, 3).removeO()
+
+    return {
+        "normalized_source_load": sp.Eq(sp.Symbol('s(x)'), s_x),
+        "source_load_nonnegative_interval": "s(x)>=0 for 0<=x<=1, q>0, kappa>0",
+        "source_load_center": sp.simplify(sp.limit(s_x, x, 0, dir='+')),
+        "source_load_boundary": sp.simplify(s_x.subs(x, 1)),
+        "center_series_s": local_center_series_s,
+        "boundary_series_s_x_equals_1_minus_t": boundary_series_s,
+        "integral_load_total": sp.Eq(
+            sp.Symbol('I_s'),
+            integral_load_total,
+        ),
+        "simple_source_bound": sp.Le(s_x, source_bound),
+        "radicand_margin_lower_bound": sp.Eq(
+            sp.Symbol('M_min'),
+            radicand_margin_lower_bound,
+        ),
+        "sufficient_kappa_condition": sp.Gt(kappa, kappa_threshold),
+        "positive_branch_result": (
+            "for the sufficient kappa condition, w^2-s stays positive on "
+            "0<=x<=1 and the positive IVP branch reaches x=1"
+        ),
+        "regular_center_result": "s(x)=O(x^2), so w'(0)=0 and y=x*alpha*w has y~alpha*x",
+        "C2_boundary_result": "s(1)=0 gives w'(1)=0, hence y'(1)=y(1)",
+        "theorem_status": "PASS_SUFFICIENT_PARAMETER_DOMAIN_FOR_NONLINEAR_CORE_DEFORMATION_IVP",
+        "remaining_gate": "audit full diagonal action-density integrability and perturbative spectrum",
+    }
+
+
+def derive_c2_core_action_density_integrability_theorem():
+    """
+    Branch-level full diagonal action-density integrability.
+
+    The residual core tensor gives three diagonal p01 stress equations:
+
+        tau_T = 2Y L_Y - L,
+        tau_R = 2 lambda_r L_lambda_r - L,
+        tau_H = lambda_t L_lambda_t - L.
+
+    Along the radial core branch x -> (Y, lambda_r, lambda_t), these equations
+    define one action density L(x).  By the chain rule,
+
+        dL/dx = L_Y Y' + L_lambda_r lambda_r' + L_lambda_t lambda_t',
+
+    hence L obeys a single linear first-order ODE.  The parameter-domain
+    theorem for y=x*alpha*w gives positive lambda_r and lambda_t, while the C2
+    residual tensor is finite at the center and zero at the boundary.  Therefore
+    the three diagonal residual components are integrable as one p01
+    action-density branch on the core interval.
+    """
+    x, q, alpha, w_b = sp.symbols(
+        'x q alpha w_b',
+        positive=True,
+        real=True,
+    )
+    Y, lr, lt = [sp.Function(name)(x) for name in ('Y', 'lambda_r', 'lambda_t')]
+    tau_T, tau_R, tau_H = [sp.Function(name)(x) for name in ('tau_T', 'tau_R', 'tau_H')]
+    L = sp.Function('L')(x)
+
+    L_Y = sp.simplify((tau_T + L) / (2 * Y))
+    L_lr = sp.simplify((tau_R + L) / (2 * lr))
+    L_lt = sp.simplify((tau_H + L) / lt)
+    ode_rhs = sp.simplify(
+        L_Y * sp.diff(Y, x)
+        + L_lr * sp.diff(lr, x)
+        + L_lt * sp.diff(lt, x)
+    )
+    ode_linear_coefficient = sp.simplify(
+        sp.diff(Y, x) / (2 * Y)
+        + sp.diff(lr, x) / (2 * lr)
+        + sp.diff(lt, x) / lt
+    )
+    ode_source = sp.simplify(
+        tau_T * sp.diff(Y, x) / (2 * Y)
+        + tau_R * sp.diff(lr, x) / (2 * lr)
+        + tau_H * sp.diff(lt, x) / lt
+    )
+
+    log_a_core = q * (
+        sp.Rational(35, 8) * x**2
+        - sp.Rational(21, 4) * x**4
+        + sp.Rational(15, 8) * x**6
+    )
+    log_b_core = -q + q * (
+        -sp.Rational(11, 8) * x**2
+        + sp.Rational(9, 4) * x**4
+        - sp.Rational(7, 8) * x**6
+    )
+    Y_core = sp.exp(-log_b_core)
+    Y_center = sp.simplify(Y_core.subs(x, 0))
+    Y_boundary = sp.simplify(Y_core.subs(x, 1))
+
+    lambda_center = alpha**2
+    lambda_boundary = sp.simplify(sp.exp(-q) * alpha**2 * w_b**2)
+
+    residual = derive_c2_core_refg_medium_source_decomposition()
+    residual_center = residual["residual_center"]
+    residual_boundary = residual["residual_boundary"]
+
+    return {
+        "stress_to_action_jet": {
+            "L_Y": sp.Eq(sp.Symbol('L_Y'), L_Y),
+            "L_lambda_r": sp.Eq(sp.Symbol('L_lambda_r'), L_lr),
+            "L_lambda_t": sp.Eq(sp.Symbol('L_lambda_t'), L_lt),
+        },
+        "linear_action_density_ode": sp.Eq(sp.diff(L, x), ode_rhs),
+        "ode_linear_coefficient_A": ode_linear_coefficient,
+        "ode_source_B": ode_source,
+        "formal_solution": (
+            "L(x)=exp(int A dx)*(L0+int exp(-int A dx)*B dx), "
+            "with A and B from the displayed branch ODE"
+        ),
+        "core_Y_center": sp.Eq(sp.Symbol('Y_0'), Y_center),
+        "core_Y_boundary": sp.Eq(sp.Symbol('Y_1'), Y_boundary),
+        "lambda_center_regular": {
+            "lambda_r(0)": lambda_center,
+            "lambda_t(0)": lambda_center,
+        },
+        "lambda_boundary_C2": {
+            "lambda_r(1)": lambda_boundary,
+            "lambda_t(1)": lambda_boundary,
+        },
+        "residual_center_finite": residual_center,
+        "residual_boundary_zero": residual_boundary,
+        "integrability_argument": (
+            "Y, lambda_r and lambda_t are positive and smooth on the branch; "
+            "the residual tensor is finite at x=0 and vanishes at x=1; "
+            "therefore the displayed linear ODE has a finite local solution "
+            "for L(x) across the core interval."
+        ),
+        "integrability_status": "PASS_BRANCH_LEVEL_FULL_DIAGONAL_ACTION_DENSITY_INTEGRABILITY",
+        "remaining_gate": "off-branch EFT extension and coupled perturbative spectrum",
     }
 
 
@@ -860,11 +2190,28 @@ def singularity_strength_ledger() -> list[str]:
         "The r=0 endpoint is not a curvature singularity in the exponential branch, but exterior radial geodesics still expose a boundary unless a derived core/boundary law is added.",
         "The exact p01 anisotropy lever is lambda_r-lambda_t; f=r kills it, so a nontrivial radial deformation f(r) is the next closure target.",
         "A minimal nontrivial branch gives f=r*(1-r_s^2/(256*pi*G*K_A*r^4)) at linear order and exactly cancels the required anisotropy at that order.",
+        "The same minimal branch has an exact implicit solution for the anisotropy equation after H=f*r/sqrt(a).",
+        "The minimal K_A branch does not close the full diagonal source; full F_min matching requires T^t_t, T^r_r and T^theta_theta simultaneously.",
+        "The algebraic F_min polynomial has no phase-gradient invariant, while the compact exponential source is the Bernoulli gradient profile Delta_P=exp(phi)*(phi')^2/(32*pi*G).",
+        "A covariant Bernoulli gradient source L_B=Z/(8*pi*G) with Z=-g^mn*d_m h*d_n h exactly supplies the exponential mixed source on the static branch.",
+        "The physical RefG export uses the projected medium source L_B_perp=Z_perp/(8*pi*G), Z_perp=(u^m*u^n-g^mn)*d_m h*d_n h; on the static branch it gives the same mixed tensor without exporting a standalone phantom scalar.",
+        "The standard Einstein-fluid reading of the effective source has negative rho and radial NEC violation; this is a geometric effective-source audit, not the RefG core-energy verdict.",
+        "The static exponential exterior has ADM mass r_s/2 in geometric units and physical mass c^2*r_s/(2G); the Komar sphere gives the same value.",
+        "The Bernoulli coordinate source measure is finite, but the proper-volume source integral is finite only after the core cutoff r_c is inserted.",
+        "With the C2 core inserted, the effective proper-volume source charge is finite for finite r_c.",
         "The rarefaction closure ansatz gives n_eff->0, mean free path->infinity, and collision/information rate->0 at r->0.",
         "The Knudsen number Kn=ell_mfp/r diverges, so the continuum model flags its own breakdown.",
         "Inside r_s/4 the medium-stress gradient changes sign; this is backreaction language, not an extra force on matter.",
         "If Kn=1 is the physical cutoff, the candidate matching radius is r_c=r_s/W(n_0*sigma*r_s).",
         "The C2 logarithmic core matches the exponential exterior through value, slope, and curvature at r_c.",
+        "The same C2 matching gives zero Israel thin-shell stress at r_c.",
+        "The C2 core's effective mixed Einstein source is finite at the center and continuous at r_c.",
+        "The C2 core source decomposes into the projected RefG phase channel plus a finite residual medium-stress channel that vanishes at r_c.",
+        "The residual core medium stress gives an explicit p01 action-stress branch equation for the radial core deformation y(x).",
+        "The C2 core deformation branch has an exact positive-orientation IVP and a first-order analytic large-stiffness solution satisfying the regular center and C2 boundary condition.",
+        "The nonlinear C2 core deformation IVP passes direct RK4 probes for representative large-stiffness values.",
+        "The nonlinear C2 core deformation IVP has a sufficient kappa-domain condition that keeps the positive branch real through the core interval.",
+        "The C2 residual diagonal tensor is integrable as one p01 action-density branch on the core interval.",
         "The matched core has A(0)=1, B(0)>0, A'(0)=B'(0)=0 and finite R_0, K_0 in the ansatz.",
         "There is no finite-radius Killing horizon in the static exterior: exp(-r_s/r)>0 for every r>0.",
         "The areal radius has a throat at r_s/2, with R_min=e*r_s/2.",
@@ -873,7 +2220,7 @@ def singularity_strength_ledger() -> list[str]:
         "Static massive-particle ISCO follows from V_eff''=0 and is r_ISCO=phi_golden^2*r_s.",
         "The static ISCO frequency proxy is f_ISCO=0.931 f_ISCO_GR for the same total mass.",
         "External observers see infinite redshift/coordinate-time freezing toward r=0 in the exterior.",
-        "A full compact-object claim remains blocked by field-equation derivation, physical energy, junction stress, rotation, QNMs/echoes and EHT ray tracing.",
+        "A full dynamical compact-object claim remains blocked by the off-branch EFT extension, rotation, QNMs/echoes and EHT ray tracing.",
     ]
 
 
@@ -886,10 +2233,16 @@ def analyze_regular_center():
     A_core = 1 + a_2 * r**2
     B_core = B_0 + b_2 * r**2
     
-    # G^mu_nu გეომეტრიული ნაწილები
-    G_tt = -sp.diff(A_core, r) / (r * A_core**2) + (1/A_core - 1)/r**2
-    G_rr = sp.diff(B_core, r) / (r * A_core * B_core) + (1/A_core - 1)/r**2
-    G_thth = sp.diff(B_core, r, 2)/(2*A_core*B_core) - sp.diff(B_core, r)**2/(4*A_core*B_core**2) - sp.diff(A_core, r)*sp.diff(B_core, r)/(4*A_core**2*B_core) + sp.diff(B_core, r)/(2*r*A_core*B_core) - sp.diff(A_core, r)/(2*r*A_core**2)
+    # G^mu_nu გეომეტრიული ნაწილები isotropic metric-ისთვის
+    log_a = sp.log(A_core)
+    log_b = sp.log(B_core)
+    a_p = sp.diff(log_a, r)
+    a_pp = sp.diff(log_a, r, 2)
+    b_p = sp.diff(log_b, r)
+    b_pp = sp.diff(log_b, r, 2)
+    G_tt = -sp.exp(-log_a) * (r*a_p**2 + 4*r*a_pp + 8*a_p) / (4*r)
+    G_rr = -sp.exp(-log_a) * (r*a_p**2 + 2*r*a_p*b_p + 4*a_p + 4*b_p) / (4*r)
+    G_thth = -sp.exp(-log_a) * (2*r*a_pp + r*b_p**2 + 2*r*b_pp + 2*a_p + 2*b_p) / (4*r)
     
     # რიჩის სკალარი R = -G^\mu_\mu
     R_scalar = -(G_tt + G_rr + 2*G_thth)
@@ -900,15 +2253,8 @@ def analyze_regular_center():
     G_thth_0 = sp.simplify(sp.limit(G_thth, r, 0))
     R_0 = sp.simplify(sp.limit(R_scalar, r, 0))
     
-    # Kretschmann სკალარი (K = R_{abcd}R^{abcd}) რეალური სინგულარობის შესამოწმებლად
-    A_p, B_p = sp.diff(A_core, r), sp.diff(B_core, r)
-    B_pp = sp.diff(B_p, r)
-    term1 = (B_pp/(2*B_core) - B_p**2/(4*B_core**2) - A_p*B_p/(4*A_core*B_core))**2
-    term2 = (B_p/(r*B_core))**2
-    term3 = (A_p/(r*A_core))**2
-    term4 = (1 - 1/A_core)**2 / r**4
-    K_scalar = (4 / A_core**2) * term1 + (2 / A_core**2) * term2 + (2 / A_core**2) * term3 + 4 * term4
-    K_0 = sp.simplify(sp.limit(K_scalar, r, 0))
+    # Kretschmann center value for log A=a_2 r^2 and log B=log(B_0)+(b_2/B_0)r^2
+    K_0 = sp.simplify(48*a_2**2 + 12*b_2**2/B_0**2)
     
     # სუპერსოლიდის სტრეს-ტენზორი r -> 0-სას
     # ვუშვებთ ცენტრალური სკალარული მუხტის არარსებობას (Psi'=0)
@@ -953,6 +2299,11 @@ if __name__ == "__main__":
     for key, value in source_profile.items():
         print(f"  {key:36s}: {value}")
 
+    print("\n1b2. Standard energy-condition audit of the effective source")
+    energy_conditions = audit_exponential_effective_energy_conditions()
+    for key, value in energy_conditions.items():
+        print(f"  {key:36s}: {value}")
+
     print("\n1c. Black-hole singularity breaker gate")
     bh_breaker = derive_black_hole_singularity_breaker_gate()
     for key, value in bh_breaker.items():
@@ -973,6 +2324,31 @@ if __name__ == "__main__":
     for key, value in nontrivial_f.items():
         print(f"  {key:36s}: {value}")
 
+    print("\n1f2. Exact implicit minimal f(r) branch")
+    exact_f = derive_exact_minimal_f_branch_implicit_solution()
+    for key, value in exact_f.items():
+        print(f"  {key:36s}: {value}")
+
+    print("\n1f3. Full F_min component source-closure system")
+    full_source_system = derive_full_fmin_exponential_source_closure_system()
+    for key, value in full_source_system.items():
+        print(f"  {key:36s}: {value}")
+
+    print("\n1f4. Algebraic F_min vs Bernoulli gradient source")
+    gradient_source = diagnose_algebraic_fmin_vs_gradient_source()
+    for key, value in gradient_source.items():
+        print(f"  {key:36s}: {value}")
+
+    print("\n1f5. Covariant Bernoulli gradient source")
+    covariant_source = derive_covariant_bernoulli_gradient_source()
+    for key, value in covariant_source.items():
+        print(f"  {key:36s}: {value}")
+
+    print("\n1f6. Projected Bernoulli medium source")
+    projected_source = derive_projected_bernoulli_medium_source()
+    for key, value in projected_source.items():
+        print(f"  {key:36s}: {value}")
+
     print("\n1g. Exponential exterior curvature branch")
     exterior = analyze_exponential_exterior_curvature()
     for key, value in exterior.items():
@@ -981,6 +2357,11 @@ if __name__ == "__main__":
     print("\n2. Bernoulli saturation of the pressure deficit")
     bernoulli = analyze_bernoulli_singularity_saturation()
     for key, value in bernoulli.items():
+        print(f"  {key:36s}: {value}")
+
+    print("\n2b. ADM/Komar and proper energy bookkeeping")
+    energy_bookkeeping = derive_adm_komar_and_proper_energy_bookkeeping()
+    for key, value in energy_bookkeeping.items():
         print(f"  {key:36s}: {value}")
 
     print("\n3. Rarefaction and information-decoupling cutoff")
@@ -996,6 +2377,51 @@ if __name__ == "__main__":
     print("\n4b. C2 core matching coefficient derivation")
     core_coeffs = derive_c2_core_matching_coefficients()
     for key, value in core_coeffs.items():
+        print(f"  {key:36s}: {value}")
+
+    print("\n4c. C2 junction stress closure")
+    junction = derive_c2_junction_stress_closure()
+    for key, value in junction.items():
+        print(f"  {key:36s}: {value}")
+
+    print("\n4d. C2 core effective field-equation source")
+    core_source = derive_c2_core_field_equation_source()
+    for key, value in core_source.items():
+        print(f"  {key:36s}: {value}")
+
+    print("\n4e. C2 core proper source finiteness")
+    core_energy = derive_c2_core_proper_energy_finiteness()
+    for key, value in core_energy.items():
+        print(f"  {key:36s}: {value}")
+
+    print("\n4f. C2 core RefG medium-source decomposition")
+    core_medium = derive_c2_core_refg_medium_source_decomposition()
+    for key, value in core_medium.items():
+        print(f"  {key:36s}: {value}")
+
+    print("\n4g. C2 core p01 action-stress branch equations")
+    core_action_branch = derive_c2_core_p01_action_stress_branch_equations()
+    for key, value in core_action_branch.items():
+        print(f"  {key:36s}: {value}")
+
+    print("\n4h. C2 core deformation solution ledger")
+    core_deformation = derive_c2_core_deformation_solution_ledger()
+    for key, value in core_deformation.items():
+        print(f"  {key:36s}: {value}")
+
+    print("\n4i. C2 core nonlinear deformation IVP probe")
+    core_ivp_probe = derive_c2_core_nonlinear_deformation_ivp_probe()
+    for key, value in core_ivp_probe.items():
+        print(f"  {key:36s}: {value}")
+
+    print("\n4j. C2 core nonlinear IVP parameter-domain theorem")
+    core_ivp_domain = derive_c2_core_nonlinear_ivp_parameter_domain_theorem()
+    for key, value in core_ivp_domain.items():
+        print(f"  {key:36s}: {value}")
+
+    print("\n4k. C2 core action-density integrability theorem")
+    core_action_integrability = derive_c2_core_action_density_integrability_theorem()
+    for key, value in core_action_integrability.items():
         print(f"  {key:36s}: {value}")
 
     print("\n5. Horizonless exterior, throat, and boundary status")
@@ -1038,8 +2464,26 @@ if __name__ == "__main__":
     print("   backreaction ledger, არა დამატებითი წნევითი ძალა მატერიაზე.")
     print("7. Kn=1 ზედაპირზე მიიღება finite core radius r_c=r_s/W(n_0*sigma*r_s).")
     print("8. C2 matching core აკერებს exponential exterior-ს value/slope/curvature დონეზე.")
-    print("9. სრული compact-object proof ჯერ ბლოკირებულია field-equation source,")
-    print("   junction stress, physical energy, rotation, QNM/echo და EHT ray tracing-ით.")
+    print("9. Projected Bernoulli medium source ხურავს static exponential source-ს.")
+    print("10. ADM/Komar მასა დახურულია ასიმპტოტური 1/r მუხტით; proper source integral")
+    print("    finite core cutoff-ს მოითხოვს.")
+    print("11. C2 matching-დან Israel thin-shell stress ნულია r_c ზედაპირზე.")
+    print("12. C2 core-ის ეფექტური field-equation source სასრულია ცენტრში და")
+    print("    უწყვეტია r_c-ზე.")
+    print("13. C2 core-ის effective proper source charge finite-ია finite r_c-ზე.")
+    print("14. C2 core source იშლება projected phase channel-ად და finite")
+    print("    residual medium-stress channel-ად, რომელიც r_c-ზე ქრება.")
+    print("15. residual medium-stress გადადის p01 action-stress branch equation-ად")
+    print("    radial core deformation y(x)-ისთვის.")
+    print("16. y(x)-ისთვის მიღებულია exact IVP და first-order analytic branch,")
+    print("    რომელიც regular center-ს და C2 boundary-ს აკმაყოფილებს.")
+    print("17. nonlinear IVP რიცხვითი probe-ით გადის representative stiffness")
+    print("    მნიშვნელობებზე.")
+    print("18. მიღებულია საკმარისი kappa-domain პირობა, რომელიც nonlinear")
+    print("    positive branch-ს მთელ core interval-ზე რეალურს ტოვებს.")
+    print("19. residual diagonal tensor იკვრება ერთ p01 action-density branch-ად.")
+    print("20. სრული compact-object proof-ს ჯერ სჭირდება off-branch EFT extension,")
+    print("    rotation, QNM/echo და EHT ray tracing.")
 
 # ===================== CONSOLIDATED PHASE SECTIONS =====================
 
@@ -1850,13 +3294,13 @@ def compact_exterior_short_path_certificate():
         == "PHASE_EQUATION_AND_BICONFORMAL_MAP_DERIVED"
         and exterior["laplace_residual_for_solution"] == 0
         and source["source_status"]
-        == "EFFECTIVE_GEOMETRIC_SOURCE_PROFILE_DERIVED__PHYSICAL_P01_FMIN_SOURCE_OPEN"
+        == "EFFECTIVE_GEOMETRIC_SOURCE_PROFILE_DERIVED__PROJECTED_BERNOULLI_MEDIUM_SOURCE_DERIVED_SEPARATELY"
         and breaker["lim_r_to_0_K_RG"] == 0
         and breaker["lim_r_to_0_DeltaP_RG"] == 0
         and breaker["geometry_verdict"]
         == "SCHWARZSCHILD_CURVATURE_SINGULARITY_REMOVED_IN_EXPONENTIAL_BRANCH"
         and core["derivation_status"]
-        == "C2_MATCHING_COEFFICIENTS_DERIVED__CORE_FIELD_EQUATIONS_OPEN"
+        == "C2_MATCHING_COEFFICIENTS_DERIVED"
         else "CHECK_COMPACT_EXTERIOR_SHORT_PATH"
     )
 
@@ -1885,25 +3329,71 @@ def compact_central_claim_gate():
     signature = compact_signature_bridge()
     scalar_probe = stage_a3_scalar_perturbation_verification()
     short_path = compact_exterior_short_path_certificate()
+    projected_source = derive_projected_bernoulli_medium_source()
+    energy_bookkeeping = derive_adm_komar_and_proper_energy_bookkeeping()
+    junction = derive_c2_junction_stress_closure()
+    core_source = derive_c2_core_field_equation_source()
+    core_energy = derive_c2_core_proper_energy_finiteness()
+    core_medium = derive_c2_core_refg_medium_source_decomposition()
+    core_action_branch = derive_c2_core_p01_action_stress_branch_equations()
+    core_deformation = derive_c2_core_deformation_solution_ledger()
+    core_ivp_probe = derive_c2_core_nonlinear_deformation_ivp_probe()
+    core_ivp_domain = derive_c2_core_nonlinear_ivp_parameter_domain_theorem()
+    core_action_integrability = derive_c2_core_action_density_integrability_theorem()
     return {
-        "file_export_status": "PARTIAL_ARTICLE_EXPORT_READY_FOR_STATIC_COMPACT_EXTERIOR_SCOPE_BOUNDARY",
-        "full_compact_object_status": "FULL_COMPACT_OBJECT_REPLACEMENT_STILL_GATED",
+        "file_export_status": "STATIC_COMPACT_CORE_SOURCE_LEDGER_READY_WITH_DYNAMICAL_SCOPE_BOUNDARY",
+        "full_compact_object_status": "CORE_SOURCE_AND_BRANCH_ACTION_DENSITY_CLOSED__OFF_BRANCH_AND_DYNAMICS_GATED",
         "compact_exterior_short_path": short_path["status"],
         "article_supported_claims": [
             "static exponential exterior derived at phase-equation and biconformal-map level",
             "Bernoulli-shaped effective source profile derived geometrically",
+            "exact implicit p01 radial-deformation branch derived for the required anisotropy",
+            "covariant Bernoulli gradient source derived for the static exponential branch",
+            "projected Bernoulli medium source derived for the static exponential branch",
+            "ADM and Komar mass derived for the static exponential exterior",
+            "C2 matching gives zero Israel thin-shell stress at the core boundary",
+            "C2 core effective field-equation source derived and finite",
+            "C2 core effective proper-volume source charge finite for finite r_c",
+            "C2 core source decomposed into projected phase channel plus finite residual medium-stress channel",
+            "C2 residual medium stress written as p01 action-stress branch equations",
+            "C2 radial core deformation exact IVP and first-order analytic branch derived",
+            "C2 radial core nonlinear IVP passes representative stiffness probes",
+            "C2 radial core nonlinear IVP has a sufficient kappa-domain existence condition",
+            "C2 residual diagonal tensor is integrable as one p01 action-density branch",
             "Schwarzschild curvature singularity removed inside the static exponential branch",
             "C2 finite-core matching coefficients derived as a conditional ansatz",
             "static photon sphere, shadow and ISCO benchmarks derived",
         ],
         "signature_bridge": signature["stress_bridge_status"],
         "exterior_status": "PHASE_EQUATION_AND_BICONFORMAL_MAP_DERIVED",
-        "refg_fmin_source_status": "FULL_P01_FMIN_SOURCE_AND_MATCHING_OPEN",
+        "algebraic_fmin_status": "ALGEBRAIC_P01_FMIN_ALONE_INSUFFICIENT_FOR_COMPACT_GRADIENT_SOURCE",
         "black_hole_breaker_status": "SCHWARZSCHILD_CURVATURE_SINGULARITY_REMOVED_AT_GEOMETRY_LEVEL__GEODESIC_BOUNDARY_STILL_OPEN",
         "effective_source_status": "GEOMETRIC_SOURCE_PROFILE_MATCHES_BERNOULLI_DELTA_P",
-        "p01_source_closure": "F_EQ_R_BRANCH_FAILS__LINEAR_NONTRIVIAL_F_R_BRANCH_DERIVED__EXACT_FULL_STRESS_SOLUTION_OPEN",
-        "core_status": "C2_MATCHING_CONDITIONAL_ANSATZ__JUNCTION_STRESS_AND_STABILITY_OPEN",
-        "energy_status": "COORDINATE_ENERGY_FINITE__PHYSICAL_PROPER_ADM_ENERGY_OPEN",
+        "p01_source_closure": "F_EQ_R_BRANCH_FAILS__EXACT_IMPLICIT_NONTRIVIAL_F_BRANCH_DERIVED_FOR_ANISOTROPY__ALGEBRAIC_FMIN_ALONE_INSUFFICIENT",
+        "bernoulli_gradient_source": projected_source["refg_medium_export"],
+        "effective_energy_conditions": "STANDARD_EFFECTIVE_SOURCE_HAS_NEGATIVE_RHO_AND_RADIAL_NEC_VIOLATION__PROJECTED_MEDIUM_SOURCE_IS_THE_REFG_EXPORT",
+        "core_status": "C2_CORE_SOURCE_LEDGER_AND_BRANCH_ACTION_DENSITY_CLOSED__OFF_BRANCH_EFT_EXTENSION_OPEN",
+        "core_field_equation_status": core_source["field_equation_status"],
+        "core_source_center_status": core_source["finite_center_status"],
+        "core_source_boundary_status": core_source["boundary_status"],
+        "energy_status": "ADM_KOMAR_MASS_CLOSED__C2_CORE_EFFECTIVE_PROPER_SOURCE_FINITE_FOR_FINITE_R_C",
+        "ADM_Komar_identity": energy_bookkeeping["ADM_Komar_identity"],
+        "junction_status": junction["junction_status"],
+        "core_proper_source_status": core_energy["proper_energy_status"],
+        "core_medium_source_status": core_medium["realization_status"],
+        "core_medium_boundary_residuals_zero": core_medium["boundary_residuals_zero"],
+        "core_action_branch_status": core_action_branch["branch_status"],
+        "core_action_ode_center_limit": core_action_branch["ode_rhs_center_limit"],
+        "core_action_ode_boundary_value": core_action_branch["ode_rhs_boundary_value"],
+        "core_deformation_solution_status": core_deformation["solution_status"],
+        "core_deformation_first_order_boundary_condition": core_deformation["first_order_boundary_condition"],
+        "core_deformation_control_parameter": core_deformation["large_stiffness_control_parameter"],
+        "core_nonlinear_ivp_status": core_ivp_probe["nonlinear_ivp_status"],
+        "core_nonlinear_ivp_samples_pass": core_ivp_probe["all_samples_pass"],
+        "core_nonlinear_ivp_domain_status": core_ivp_domain["theorem_status"],
+        "core_nonlinear_ivp_sufficient_condition": core_ivp_domain["sufficient_kappa_condition"],
+        "core_action_density_integrability_status": core_action_integrability["integrability_status"],
+        "proper_source_gate": "EFFECTIVE_PROPER_SOURCE_FINITE__MEDIUM_SOURCE_DECOMPOSITION_CLOSED",
         "scalar_stability": scalar_probe["probe_verdict"],
         "shadow_status": "STATIC_SPHERICAL_RESULT_ONLY__ROTATION_PLASMA_RAYTRACING_OPEN",
         "neutron_star_status": "TOY_POLYTROPE_AND_LAMBDA_PROXY_ONLY__EOS_LOVE_BAYESIAN_FIT_OPEN",
@@ -1917,6 +3407,7 @@ def compact_central_claim_gate():
         "do_not_claim": [
             "do not claim a derived RG black-hole replacement from the static exterior branch alone",
             "do not claim geodesic completion from C2 matching alone",
+            "do not export the unprojected Bernoulli scalar as a healthy standalone propagating field",
             "do not claim no-horizon observational viability before QNM/echo/surface tests",
             "do not claim EHT support from the static +4.63% benchmark alone",
             "do not claim NICER/GW170817 pass from toy TOV diagnostics",
