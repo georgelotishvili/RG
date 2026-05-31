@@ -10,6 +10,7 @@ RG/RG_Theory 1.md
 RG/work/*.md
 artikle/*
 !artikle/article_ge.md
+!artikle/article_en.tex
 
 # Python caches and test/build artifacts
 __pycache__/
