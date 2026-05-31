@@ -2132,7 +2132,10 @@ def run_variable_profile_matrix_radial_system_gate():
             "decoupled branches, while eps=1 activates controlled off-diagonal "
             "channel transfer."
         ),
-        "next_gate": "embed the variable-profile transfer into the complex QNM pole condition",
+        "next_gate": (
+            "continue in p05c_complex_qnm.py: embed the variable-profile "
+            "transfer into the complex QNM pole condition"
+        ),
     }
 
 
@@ -2263,7 +2266,10 @@ def p05b_central_spectrum_gate():
             "min_eps1_offblock": variable_profile_matrix["min_eps1_offblock_max_abs"],
         },
         "next_gates": [
-            "embed the variable-profile transfer into the complex QNM pole condition",
+            (
+                "p05c_complex_qnm.py embeds the variable-profile transfer into "
+                "the complex QNM pole condition"
+            ),
             "add rotating exterior and ray tracing",
         ],
     }
