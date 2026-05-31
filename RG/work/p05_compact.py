@@ -53,7 +53,7 @@ Still open before full compact-object theory export:
     echoes, and add rotating EHT ray tracing.
 """
 import sympy as sp
-from p01_core import get_polynomial_lagrangian
+from p01_core import get_polynomial_lagrangian, local_stability_short_path_certificate
 
 
 def compact_signature_bridge():
@@ -2046,6 +2046,54 @@ def derive_c2_core_action_density_integrability_theorem():
     }
 
 
+def derive_c2_core_local_stability_interface():
+    """
+    Local-stability interface between the compact C2 branch and p01.
+
+    The compact ledger now derives a finite residual stress, writes it as p01
+    action-stress equations, solves the radial deformation branch, and shows
+    that the diagonal residual tensor is integrable as one action-density
+    branch.  p01_core.py already proves that the same local action sector has a
+    nonempty no-ghost and mixed-mode principal-symbol region.
+
+    This function records that interface.  It is a local principal-symbol
+    compatibility gate, not a QNM/ringdown theorem and not a rotating compact
+    solution.
+    """
+    action_integrability = derive_c2_core_action_density_integrability_theorem()
+    ivp_domain = derive_c2_core_nonlinear_ivp_parameter_domain_theorem()
+    p01_local = local_stability_short_path_certificate()
+
+    checks = p01_local["checks"]
+    all_checks_pass = all(bool(value) for value in checks.values())
+
+    status = (
+        "PASS_COMPACT_CORE_P01_LOCAL_STABILITY_INTERFACE"
+        if action_integrability["integrability_status"]
+        == "PASS_BRANCH_LEVEL_FULL_DIAGONAL_ACTION_DENSITY_INTEGRABILITY"
+        and ivp_domain["theorem_status"]
+        == "PASS_SUFFICIENT_PARAMETER_DOMAIN_FOR_NONLINEAR_CORE_DEFORMATION_IVP"
+        and p01_local["status"] == "PASS_LOCAL_STABILITY_SHORT_PATH"
+        and all_checks_pass
+        else "CHECK_COMPACT_CORE_P01_LOCAL_STABILITY_INTERFACE"
+    )
+
+    return {
+        "interface_status": status,
+        "core_action_density_status": action_integrability["integrability_status"],
+        "core_ivp_domain_status": ivp_domain["theorem_status"],
+        "p01_local_stability_status": p01_local["status"],
+        "p01_explicit_stable_point": p01_local["point"],
+        "p01_checks": checks,
+        "compact_reading": (
+            "the compact C2 branch reaches the p01 action-density level, and "
+            "the p01 principal-symbol sector has an explicit local no-ghost "
+            "and mixed-mode stable point."
+        ),
+        "remaining_gate": "background-dependent coupled compact-core spectrum, QNMs, echoes, rotation and ray tracing",
+    }
+
+
 def analyze_horizon_throat_and_boundary():
     """
     Horizonless exterior-only boundary ledger.
@@ -2424,6 +2472,11 @@ if __name__ == "__main__":
     for key, value in core_action_integrability.items():
         print(f"  {key:36s}: {value}")
 
+    print("\n4l. C2 core local-stability interface")
+    core_local_stability = derive_c2_core_local_stability_interface()
+    for key, value in core_local_stability.items():
+        print(f"  {key:36s}: {value}")
+
     print("\n5. Horizonless exterior, throat, and boundary status")
     boundary = analyze_horizon_throat_and_boundary()
     for key, value in boundary.items():
@@ -2482,7 +2535,8 @@ if __name__ == "__main__":
     print("18. მიღებულია საკმარისი kappa-domain პირობა, რომელიც nonlinear")
     print("    positive branch-ს მთელ core interval-ზე რეალურს ტოვებს.")
     print("19. residual diagonal tensor იკვრება ერთ p01 action-density branch-ად.")
-    print("20. სრული compact-object proof-ს ჯერ სჭირდება off-branch EFT extension,")
+    print("20. compact core მიდის p01 local no-ghost/mixed-mode stability interface-მდე.")
+    print("21. სრული compact-object proof-ს ჯერ სჭირდება off-branch EFT extension,")
     print("    rotation, QNM/echo და EHT ray tracing.")
 
 # ===================== CONSOLIDATED PHASE SECTIONS =====================
@@ -3340,6 +3394,7 @@ def compact_central_claim_gate():
     core_ivp_probe = derive_c2_core_nonlinear_deformation_ivp_probe()
     core_ivp_domain = derive_c2_core_nonlinear_ivp_parameter_domain_theorem()
     core_action_integrability = derive_c2_core_action_density_integrability_theorem()
+    core_local_stability = derive_c2_core_local_stability_interface()
     return {
         "file_export_status": "STATIC_COMPACT_CORE_SOURCE_LEDGER_READY_WITH_DYNAMICAL_SCOPE_BOUNDARY",
         "full_compact_object_status": "CORE_SOURCE_AND_BRANCH_ACTION_DENSITY_CLOSED__OFF_BRANCH_AND_DYNAMICS_GATED",
@@ -3360,6 +3415,7 @@ def compact_central_claim_gate():
             "C2 radial core nonlinear IVP passes representative stiffness probes",
             "C2 radial core nonlinear IVP has a sufficient kappa-domain existence condition",
             "C2 residual diagonal tensor is integrable as one p01 action-density branch",
+            "C2 compact core reaches the p01 local no-ghost and mixed-mode stability interface",
             "Schwarzschild curvature singularity removed inside the static exponential branch",
             "C2 finite-core matching coefficients derived as a conditional ansatz",
             "static photon sphere, shadow and ISCO benchmarks derived",
@@ -3393,6 +3449,7 @@ def compact_central_claim_gate():
         "core_nonlinear_ivp_domain_status": core_ivp_domain["theorem_status"],
         "core_nonlinear_ivp_sufficient_condition": core_ivp_domain["sufficient_kappa_condition"],
         "core_action_density_integrability_status": core_action_integrability["integrability_status"],
+        "core_local_stability_interface_status": core_local_stability["interface_status"],
         "proper_source_gate": "EFFECTIVE_PROPER_SOURCE_FINITE__MEDIUM_SOURCE_DECOMPOSITION_CLOSED",
         "scalar_stability": scalar_probe["probe_verdict"],
         "shadow_status": "STATIC_SPHERICAL_RESULT_ONLY__ROTATION_PLASMA_RAYTRACING_OPEN",
