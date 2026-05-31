@@ -10,6 +10,9 @@ Status:
 - nontrivial 1PN Solar branch is machine-checked through O(U^1).
 - gamma=beta=1 and alpha_1=alpha_2=alpha_3=0 are closed in the current
   minimal moving-source chain; xi/zeta rows remain standard-PPN export tasks.
+- the areal-radius time-coefficient convention is separated from the standard
+  isotropic PPN beta convention; on the gamma=1 Solar branch the two beta
+  readings coincide.
 - Mercury and 1PN Shapiro are standard consequences of the closed 1PN branch.
 - 2PN Shapiro/light-bending is a candidate discriminator until the active RG
   exterior optical index is derived.
@@ -33,7 +36,10 @@ def analyze_ppn():
     gamma, beta, a2 = sp.symbols('gamma beta a2', real=True)
     kappa = sp.Symbol('kappa', real=True)
     
-    # Standard Schwarzschild-like PPN coordinates
+    # Schwarzschild-like areal-radius working coordinates.
+    # Here beta is the areal time-coefficient parameter beta_A.  The standard
+    # isotropic PPN beta is related by beta_PPN = gamma + beta_A - 1, so on
+    # the gamma=1 Solar branch beta_PPN=beta_A.
     # B არის g_tt, A არის -g_rr
     A = 1 + 2*gamma*U_expr + a2*U_expr**2
     B = 1 - 2*U_expr + 2*(beta - 1)*U_expr**2
@@ -84,6 +90,65 @@ def analyze_ppn():
     return U, gamma, beta, a2, G_tt_scaled, G_rr_scaled, G_thth_scaled, T_tt_series, T_rr_series, T_thth_series
 
 
+def ppn_time_coefficient_convention_bridge():
+    """
+    Bridge the p03 areal-radius time coefficient to standard isotropic PPN.
+
+    The p03 local Einstein-tensor block uses an areal-radius expansion
+
+        g_tt = 1 - 2u + 2(beta_A - 1)u^2,
+
+    where u=GM/R.  Standard PPN uses an isotropic radial coordinate rho and
+
+        g_tt = 1 - 2U + 2 beta_PPN U^2,
+
+    with U=GM/rho.  To second order the areal and isotropic radii obey
+    R=rho*(1+gamma*U+O(U^2)), hence u=U-gamma*U^2+O(U^3).  Therefore
+
+        beta_PPN = gamma + beta_A - 1.
+
+    On the Solar gamma=1 branch the p03 beta_A=1 result is exactly the
+    standard beta_PPN=1 result.  The compact exponential metric written in
+    isotropic form has exp(-2U)=1-2U+2U^2+..., so it also has beta_PPN=1,
+    not beta_PPN=2.
+    """
+    U, gamma, beta_A, beta_PPN = sp.symbols(
+        "U gamma beta_A beta_PPN", real=True
+    )
+
+    u_areal = sp.series(U / (1 + gamma * U), U, 0, 3).removeO()
+    gtt_areal = 1 - 2 * u_areal + 2 * (beta_A - 1) * u_areal**2
+    gtt_isotropic_series = sp.series(gtt_areal, U, 0, 3).removeO()
+    beta_ppn_from_areal = sp.simplify(coeff_U(gtt_isotropic_series, U, 2) / 2)
+
+    exp_series = sp.series(sp.exp(-2 * U), U, 0, 3).removeO()
+    exp_beta_ppn = sp.simplify(coeff_U(exp_series, U, 2) / 2)
+
+    status = (
+        "PASS_AREAL_TO_STANDARD_PPN_BETA_BRIDGE"
+        if sp.simplify(beta_ppn_from_areal - (gamma + beta_A - 1)) == 0
+        and exp_beta_ppn == 1
+        else "CHECK_AREAL_TO_STANDARD_PPN_BETA_BRIDGE"
+    )
+
+    return {
+        "status": status,
+        "p03_areal_time_metric": "g_tt = 1 - 2u + 2*(beta_A - 1)*u^2",
+        "standard_ppn_time_metric": "g_tt = 1 - 2U + 2*beta_PPN*U^2",
+        "radius_bridge": "R = rho*(1 + gamma*U + O(U^2)); u = U - gamma*U^2 + O(U^3)",
+        "areal_metric_reexpanded_in_isotropic_U": gtt_isotropic_series,
+        "beta_bridge": sp.Eq(beta_PPN, beta_ppn_from_areal),
+        "solar_gamma_1_reading": sp.Eq(beta_PPN, beta_A),
+        "exponential_isotropic_series": exp_series,
+        "exponential_beta_PPN": exp_beta_ppn,
+        "referee_reading": (
+            "Reading exp(-2U)=1-2U+2U^2 with the p03 areal formula "
+            "2*(beta_A-1) is a convention error; in standard PPN it gives "
+            "beta_PPN=1."
+        ),
+    }
+
+
 def ppn_geometry_gate():
     """
     Geometry-only Schwarzschild-like PPN compatibility check.
@@ -105,7 +170,8 @@ def ppn_geometry_gate():
 
     return {
         "status": "CONDITIONAL_GEOMETRIC_VACUUM_COMPATIBILITY",
-        "coordinate_system": "Schwarzschild-like / areal-radius PPN",
+        "coordinate_system": "Schwarzschild-like / areal-radius working expansion",
+        "standard_ppn_convention_bridge": ppn_time_coefficient_convention_bridge(),
         "gamma_condition": [
             sp.Eq(G_rr_O1, 0),
             sp.Eq(G_thth_O1, 0),
@@ -333,10 +399,14 @@ if __name__ == "__main__":
     U, gamma, beta, a2, G_tt_s, G_rr_s, G_thth_s, T_tt_s, T_rr_s, T_thth_s = res
     
     print("--- PPN ექსპანსია და აინშტაინის განტოლებები ---")
-    print("გამოყენებულია სტანდარტული სფერული (Schwarzschild-like) PPN კოორდინატები:")
-    print("g_tt = B(r) = 1 - 2U + 2(beta-1)U^2")
-    print("g_rr = -A(r) = -(1 + 2*gamma*U + a2*U^2)")
+    print("გამოყენებულია სფერული Schwarzschild-like areal-radius სამუშაო კოორდინატი:")
+    print("g_tt = B(r) = 1 - 2u + 2(beta_A-1)u^2")
+    print("g_rr = -A(r) = -(1 + 2*gamma*u + a2*u^2)")
     print("g_thth = -r^2\n")
+    ppn_bridge = ppn_time_coefficient_convention_bridge()
+    print("standard isotropic PPN bridge:", ppn_bridge["beta_bridge"])
+    print("gamma=1 branch reading:", ppn_bridge["solar_gamma_1_reading"])
+    print("exponential isotropic beta_PPN:", ppn_bridge["exponential_beta_PPN"])
 
     print("განზომილებათა აცდენა:")
     print("G^mu_nu ტენზორის კომპონენტები შეიცავენ 1/r^2 ფაქტორს. რადგან U = GM/r, 1/r^2 = U^2/(GM)^2.")
@@ -396,7 +466,7 @@ if __name__ == "__main__":
     print("2. A=1/B წინასწარ აღარ იდება. გამოყვანილია დამოუკიდებელი a2 პარამეტრით G^t_t=0 პირობიდან.")
     print("3. beta=1 დგინდება G^r_r=0 და G^th_th=0 განტოლებებიდან a2=4 ჩასმის შემდეგ.")
     print("4. G^th_th კომპონენტიც დაემატა; corrected O(U), O(U^2) კოეფიციენტებით სისტემა უკვე შეიძლება ერთობლივად შემოწმდეს.")
-    print("5. კოორდინატები ცხადად გამოცხადდა როგორც Standard Schwarzschild PPN (არა isotropic).")
+    print("5. კოორდინატები ცხადად გამოცხადდა როგორც Schwarzschild-like areal სამუშაო ფორმა; standard isotropic PPN bridge ცალკეა.")
     print("6. 1PN stress closure არსებობს, მაგრამ 2PN exact-GR stress-free closure ტრივიალიზდება.")
     print("geometry gate:", geometry_gate["status"])
     print("1PN closure branch:", solar_1pn_closure_branch()["status"])
@@ -2339,6 +2409,7 @@ def article_solar_theorem():
     that becomes the next discriminator.
     """
     geometry = ppn_geometry_gate()
+    ppn_convention = ppn_time_coefficient_convention_bridge()
     stress = weak_field_stress_constraint_gate()
     one_pn = solar_1pn_closure_branch()
     one_pn_derivation = solar_1pn_branch_derivation_theorem()
@@ -2370,6 +2441,7 @@ def article_solar_theorem():
         "geometry_branch": {
             "status": geometry["status"],
             "coordinate_system": geometry["coordinate_system"],
+            "standard_ppn_convention_bridge": ppn_convention,
             "residuals_after_geometry_conditions": geometry["residuals_after_geometry_conditions"],
         },
         "nontrivial_1PN_branch": {
@@ -2475,6 +2547,7 @@ def article_solar_theorem():
         },
         "article_status": {
             "one_pn": "CLOSED_COEFFICIENT_BRANCH",
+            "ppn_time_coefficient_convention": ppn_convention["status"],
             "standard_ppn_scope": ppn_scope["status"],
             "cassini_if_gamma_derived": cassini["status"],
             "solar_ansatz_scope_table": ansatz_scope["status"],
@@ -2508,6 +2581,9 @@ def solar_system_claim_gate():
     one_pn_branch = solar_1pn_closure_branch()
     return {
         "file_export_status": "PARTIAL_ARTICLE_EXPORT_READY_FOR_1PN_ALPHA_I_AND_LEADING_FRAME_DRAGGING",
+        "ppn_time_coefficient_convention": (
+            ppn_time_coefficient_convention_bridge()["status"]
+        ),
         "ppn_geometry": ppn_geometry_gate()["status"],
         "rg_stress_constraints": stress_gate["status"],
         "solar_1PN_closure_branch": one_pn_branch["status"],

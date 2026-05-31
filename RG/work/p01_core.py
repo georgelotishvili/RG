@@ -1635,11 +1635,13 @@ def mixed_mode_numeric_condition_check():
 
 def article_nonempty_stability_example():
     """
-    Exact nonempty local-stability example used by the article.
+    Exact local-stability and mixed-speed example used by the article.
 
-    This is not a fit.  It proves that the no-ghost plus local mixed-mode
-    principal-symbol inequalities have at least one explicit point compatible
-    with the p03 static 1PN coefficient branch.
+    This is not a fit.  It gives one explicit point on the p03 static 1PN
+    coefficient family where the no-ghost inequalities hold and the two
+    phase-longitudinal mixed characteristics are luminal.  This replaces the
+    older t=-6/5 diagnostic point, which proved hyperbolicity but left one
+    formal mixed root above 1.
     """
     c_Y, c_Y2, c_I1, c_I1sq, c_I2, c_I3, c_YI1 = sp.symbols(
         "c_Y c_Y2 c_I1 c_I1sq c_I2 c_I3 c_YI1", real=True
@@ -1649,17 +1651,28 @@ def article_nonempty_stability_example():
     poly = conditions["mixed_polynomial_coefficients"]
     point = {
         c_Y2: sp.Integer(1),
-        c_YI1: -sp.Rational(6, 5),
-        c_Y: -sp.Rational(8, 5),
-        c_I1: sp.Rational(8, 5),
+        c_YI1: -sp.Integer(1),
+        c_Y: -sp.Integer(2),
+        c_I1: sp.Integer(2),
         c_I1sq: sp.Integer(1),
-        c_I2: -sp.Rational(32, 5),
-        c_I3: sp.Rational(16, 5),
+        c_I2: -sp.Integer(7),
+        c_I3: sp.Integer(4),
     }
     values = {
         key: sp.simplify(value.subs(point))
         for key, value in poly.items()
     }
+    s = sp.Symbol("s", real=True)
+    mixed_poly = sp.factor(
+        values["p2"] * s**2 + values["p1"] * s + values["p0"]
+    )
+    mixed_roots_with_multiplicity = {
+        sp.simplify(root): multiplicity
+        for root, multiplicity in sp.roots(mixed_poly, s).items()
+    }
+    mixed_roots_expanded = []
+    for root, multiplicity in mixed_roots_with_multiplicity.items():
+        mixed_roots_expanded.extend([root] * multiplicity)
     no_ghost_combo = sp.simplify((c_Y + 3 * c_YI1).subs(point))
     checks = {
         "c_Y2_positive": sp.simplify(point[c_Y2] > 0),
@@ -1669,16 +1682,146 @@ def article_nonempty_stability_example():
         "p1_negative": sp.simplify(values["p1"] < 0),
         "p0_positive": sp.simplify(values["p0"] > 0),
         "discriminant_nonnegative": sp.simplify(values["discriminant"] >= 0),
+        "mixed_speeds_positive": all(
+            bool(sp.simplify(root > 0)) for root in mixed_roots_expanded
+        ),
+        "mixed_speeds_subluminal": all(
+            bool(sp.simplify(root <= 1)) for root in mixed_roots_expanded
+        ),
     }
     return {
-        "status": "PASS_EXPLICIT_NONEMPTY_LOCAL_STABILITY_POINT",
+        "status": "PASS_EXPLICIT_LUMINAL_MIXED_LOCAL_STABILITY_POINT",
         "point": point,
         "no_ghost_combo_cY_plus_3cYI1": no_ghost_combo,
         "principal_symbol_values": values,
+        "mixed_polynomial": mixed_poly,
+        "mixed_roots_s_omega2_over_k2": mixed_roots_expanded,
+        "mixed_roots_with_multiplicity": mixed_roots_with_multiplicity,
         "checks": checks,
         "article_use": (
-            "shows the local no-ghost plus mixed-mode principal-symbol region "
-            "is nonempty; it is not an observational fit"
+            "shows an explicit Solar-family point with no ghosts and luminal "
+            "phase-longitudinal mixed characteristics; it is not an "
+            "observational fit"
+        ),
+    }
+
+
+def c6_z_completion_scalar_speed_gate():
+    """
+    Scalar-longitudinal speed gate for the C6/Z completion used in the article.
+
+    The completion is
+        L2 = lambda_6 (delta C_6)^2 + c_Z Z,
+    with
+        delta C_6 = 2(chi_dot + div pi),
+        Z = (pi_dot_i - partial_i chi)^2.
+
+    In the longitudinal Fourier block this gives
+        det M = 4 c_Z lambda_6 (omega^2-k^2)^2,
+    hence the physical scalar-longitudinal characteristics have c_s^2=1.
+    """
+    omega, k, chi, pi_L = sp.symbols("omega k chi pi_L", real=True)
+    lambda_6, c_Z = sp.symbols("lambda_6 c_Z", positive=True)
+    s = sp.Symbol("s", real=True)
+
+    scalar_longitudinal_symbol_L2 = sp.expand(
+        4 * lambda_6 * (omega * chi - k * pi_L) ** 2
+        + c_Z * (omega * pi_L - k * chi) ** 2
+    )
+    principal_matrix = sp.Matrix(
+        [
+            [
+                sp.simplify(
+                    sp.diff(scalar_longitudinal_symbol_L2, left, right) / 2
+                )
+                for right in (chi, pi_L)
+            ]
+            for left in (chi, pi_L)
+        ]
+    )
+    determinant = sp.factor(principal_matrix.det())
+    determinant_in_s = sp.factor(
+        sp.expand(determinant).subs(omega**2, s * k**2) / k**4
+    )
+    expected = 4 * c_Z * lambda_6 * (omega**2 - k**2) ** 2
+    expected_in_s = 4 * c_Z * lambda_6 * (s - 1) ** 2
+
+    status = (
+        "PASS_C6_Z_COMPLETION_SCALAR_SPEEDS_LUMINAL"
+        if sp.simplify(determinant - expected) == 0
+        and sp.factor(determinant_in_s - expected_in_s) == 0
+        else "CHECK_C6_Z_COMPLETION_SCALAR_SPEEDS"
+    )
+
+    return {
+        "status": status,
+        "quadratic_lagrangian": (
+            "lambda_6*(delta C_6)^2 + c_Z*Z, with "
+            "delta C_6=2(chi_dot+div pi)"
+        ),
+        "principal_matrix": principal_matrix,
+        "determinant": determinant,
+        "determinant_in_s": determinant_in_s,
+        "scalar_longitudinal_roots_c_s2": [sp.Integer(1), sp.Integer(1)],
+        "no_ghost_conditions": [sp.Gt(lambda_6, 0), sp.Gt(c_Z, 0)],
+        "reading": (
+            "the C6/Z completion has luminal scalar-longitudinal "
+            "characteristics; the repeated root is the +/- light-cone "
+            "characteristic, not a superluminal mode"
+        ),
+    }
+
+
+def scalar_speed_referee_audit():
+    """
+    Referee-facing audit of the scalar-speed objection.
+
+    The old t=-6/5 point is recorded as a hyperbolicity diagnostic only.  The
+    article export uses the t=-1 Solar-family point for the mixed F_min block
+    and the C6/Z completion for the scalar-longitudinal physical speed gate.
+    """
+    c_Y, c_Y2, c_I1, c_I1sq, c_I2, c_I3, c_YI1 = sp.symbols(
+        "c_Y c_Y2 c_I1 c_I1sq c_I2 c_I3 c_YI1", real=True
+    )
+    coeffs, s, det, _roots = minkowski_principal_symbol()
+
+    old_point = {
+        c_Y2: sp.Integer(1),
+        c_YI1: -sp.Rational(6, 5),
+        c_Y: -sp.Rational(8, 5),
+        c_I1: sp.Rational(8, 5),
+        c_I1sq: sp.Integer(1),
+        c_I2: -sp.Rational(32, 5),
+        c_I3: sp.Rational(16, 5),
+    }
+    old_poly = sp.Poly(sp.factor(det.subs(old_point)), s)
+    old_roots = [sp.N(root, 12) for root in sp.nroots(old_poly)]
+
+    mixed = article_nonempty_stability_example()
+    completion = c6_z_completion_scalar_speed_gate()
+
+    status = (
+        "PASS_SCALAR_SPEED_AUDIT_ARTICLE_POINT_SUBLUMINAL"
+        if mixed["status"] == "PASS_EXPLICIT_LUMINAL_MIXED_LOCAL_STABILITY_POINT"
+        and completion["status"] == "PASS_C6_Z_COMPLETION_SCALAR_SPEEDS_LUMINAL"
+        else "CHECK_SCALAR_SPEED_AUDIT"
+    )
+
+    return {
+        "status": status,
+        "old_t_minus_6_over_5_roots": old_roots,
+        "old_point_status": (
+            "formal hyperbolicity diagnostic only; not the article scalar-speed "
+            "certificate"
+        ),
+        "article_mixed_point": mixed["point"],
+        "article_mixed_roots_c_s2": mixed["mixed_roots_s_omega2_over_k2"],
+        "completion_scalar_roots_c_s2": completion[
+            "scalar_longitudinal_roots_c_s2"
+        ],
+        "article_export": (
+            "Use the t=-1 Solar-family point and the C6/Z completion gate.  Do "
+            "not export the old t=-6/5 point as a scalar-speed bound."
         ),
     }
 
@@ -1696,7 +1839,7 @@ def local_stability_short_path_certificate():
 
     status = (
         "PASS_LOCAL_STABILITY_SHORT_PATH"
-        if example["status"] == "PASS_EXPLICIT_NONEMPTY_LOCAL_STABILITY_POINT"
+        if example["status"] == "PASS_EXPLICIT_LUMINAL_MIXED_LOCAL_STABILITY_POINT"
         and all(bool(value) for value in checks.values())
         else "CHECK_LOCAL_STABILITY_SHORT_PATH"
     )
@@ -1706,9 +1849,12 @@ def local_stability_short_path_certificate():
         "example_status": example["status"],
         "point": example["point"],
         "checks": checks,
+        "mixed_roots_s_omega2_over_k2": example[
+            "mixed_roots_s_omega2_over_k2"
+        ],
         "short_reading": (
-            "one explicit coefficient point satisfies the local no-ghost and "
-            "mixed principal-symbol inequalities."
+            "one explicit coefficient point satisfies the local no-ghost "
+            "conditions and has luminal phase-longitudinal mixed speeds."
         ),
     }
 
@@ -1865,10 +2011,11 @@ def numeric_hyperbolicity_cases():
 
 def status_assessment():
     return {
-        "minkowski": "det M(s)=0 computed; mixed-mode algebraic positivity criteria and one nonempty stable point are explicit",
+        "minkowski": "det M(s)=0 computed; mixed-mode algebraic positivity criteria and one luminal Solar-family point are explicit",
         "flrw": "comoving det M(s)=0 computed; physical speed is a^2*s; same algebraic criteria apply after scaling",
         "schwarzschild": "local orthonormal determinant equals Minkowski; coordinate radial redshift added",
-        "remaining": "global hyperbolicity and full curved-background perturbation system remain open",
+        "scalar_speed": "old t=-6/5 point is diagnostic only; article point has mixed c_s^2=1 and C6/Z scalar-longitudinal c_s^2=1",
+        "remaining": "global curved-background perturbation system remains open",
     }
 
 
@@ -1894,8 +2041,8 @@ def p01_proof_gap_register():
         },
         {
             "gap": "mixed_mode_stability",
-            "current_status": "local 2x2 principal-symbol algebraic criteria are explicit and have one nonempty stable coefficient point",
-            "risk": "this closes the local homogeneous symbol, not the full curved/global Cauchy problem",
+            "current_status": "local 2x2 principal-symbol algebraic criteria are explicit and have one luminal Solar-family coefficient point",
+            "risk": "this closes the local homogeneous scalar-speed gate, not the full curved/global Cauchy problem",
             "next_step": "extend to curved background perturbations and prove global hyperbolicity conditions",
         },
         {
@@ -2186,6 +2333,7 @@ def article_core_theorem():
     mixed_conditions = mixed_mode_stability_conditions(coeffs_m)
     nonempty_stability = article_nonempty_stability_example()
     local_stability_short = local_stability_short_path_certificate()
+    scalar_speed_audit = scalar_speed_referee_audit()
 
     c_Y, c_Y2, c_YI1 = sp.symbols("c_Y c_Y2 c_YI1", real=True)
 
@@ -2244,13 +2392,15 @@ def article_core_theorem():
         },
         "mixed_mode_gate": mixed_conditions,
         "nonempty_local_stability_example": nonempty_stability,
+        "scalar_speed_referee_audit": scalar_speed_audit,
         "local_stability_short_path": local_stability_short,
         "article_status": {
             "action": "CLOSED_MINIMAL_POLYNOMIAL",
             "sign_convention": "CLOSED_Y_TO_X_BRIDGE",
             "no_ghost": "LOCAL_NO_GHOST_WINDOW_WITH_EXPLICIT_NONEMPTY_POINT",
             "eft_cutoff_power_counting": eft_power_counting["status"],
-            "mixed_modes": "LOCAL_PRINCIPAL_SYMBOL_CRITERIA_WITH_EXPLICIT_STABLE_POINT",
+            "mixed_modes": "LOCAL_PRINCIPAL_SYMBOL_CRITERIA_WITH_EXPLICIT_LUMINAL_POINT",
+            "scalar_speed": scalar_speed_audit["status"],
             "local_stability_short_path": local_stability_short["status"],
             "global_stability": "SEPARATE_PROOF_TARGET",
             "dof_count": "CANDIDATE_LEDGER_ONLY",
@@ -2321,6 +2471,14 @@ if __name__ == "__main__" and _should_run_main_section("hyperbolicity"):
             f"p0={row['p0']:.4g}, disc={row['discriminant']:.4g} -> "
             f"{row['mixed_algebraic_status']} (roots: {row['root_status']})"
         )
+
+    print("\n5c. Article scalar-speed audit")
+    speed_audit = scalar_speed_referee_audit()
+    print(f"  status: {speed_audit['status']}")
+    print(f"  old t=-6/5 roots: {speed_audit['old_t_minus_6_over_5_roots']}")
+    print(f"  article mixed roots c_s^2: {speed_audit['article_mixed_roots_c_s2']}")
+    print(f"  C6/Z scalar roots c_s^2: {speed_audit['completion_scalar_roots_c_s2']}")
+    print(f"  export: {speed_audit['article_export']}")
 
     print("\n6. Status")
     for key, value in status_assessment().items():

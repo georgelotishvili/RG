@@ -697,6 +697,109 @@ def solar_vs_exponential_branch_separation_gate() -> dict[str, Any]:
     }
 
 
+def branch_selection_criterion_gate() -> dict[str, Any]:
+    """
+    Computational branch-selection gate for the Solar and compact static
+    spherical branches.
+
+    The selector is not the word "compact" by itself.  The branch is fixed by
+    three concrete entries:
+
+      1. compactness / weak-field size of the source;
+      2. exterior source weight: diffuse medium stress retained vs projected
+         phase Bernoulli source;
+      3. boundary matching: Solar weak exterior vs compact C2 exterior match.
+
+    The Solar side is supplied by p03c.  The compact side is supplied by the
+    p05g projected-source EOM gate and the p05 C2 junction gate.
+    """
+    solar = solar_exterior_master_short_path_certificate()
+
+    from p05_compact import derive_c2_junction_stress_closure
+    from p05g_exponential_source_eom import p05g_central_exponential_source_gate
+
+    compact = p05g_central_exponential_source_gate()
+    junction = derive_c2_junction_stress_closure()
+
+    compact_residuals_zero = all(
+        sp.simplify(value) == 0
+        for value in compact["field_equation_residuals"].values()
+    )
+    compact_source_pass = (
+        compact["projected_source_eom"]
+        == "PASS_PROJECTED_BERNOULLI_SOURCE_SOLVES_STATIC_EXPONENTIAL_EOM"
+        and compact["fmin_vs_refg_source"]
+        == "PASS_FMIN_ALONE_REJECTED_AND_REFG_PROJECTED_SOURCE_CLOSES_EXTERIOR"
+        and compact["RefG_compact_source_closes_exponential_exterior"]
+        and compact_residuals_zero
+    )
+    junction_pass = (
+        junction["junction_status"]
+        == "C2_MATCHING_GIVES_ZERO_THIN_SHELL_STRESS_AT_R_C"
+    )
+    solar_pass = solar["status"] == "PASS_SOLAR_EXTERIOR_MASTER_SHORT_PATH"
+
+    status = (
+        "PASS_BRANCH_SELECTION_CRITERION_SOLAR_AND_COMPACT"
+        if solar_pass and compact_source_pass and junction_pass
+        else "CHECK_BRANCH_SELECTION_CRITERION"
+    )
+
+    return {
+        "status": status,
+        "selector_variables": {
+            "compactness": "C=r_s/R_source",
+            "exterior_source_weight": (
+                "W_ext = diffuse medium stress retained or projected phase "
+                "Bernoulli source retained"
+            ),
+            "boundary_matching": (
+                "Solar weak exterior matching or compact C2 exterior/core "
+                "matching"
+            ),
+        },
+        "solar_diffuse_branch": {
+            "selection_conditions": [
+                "C << 1",
+                "weak external field",
+                "diffuse medium stress retained in G=kappa*T",
+                "radial medium deformation kept in the 2PN exterior balance",
+            ],
+            "source_equation": "G=kappa*T with medium stress and radial deformation",
+            "q_2PN": sp.Rational(7, 4),
+            "support": solar["status"],
+            "scale_gate": solar["lambda_scale_status"],
+        },
+        "compact_phase_branch": {
+            "selection_conditions": [
+                "C = O(1) compact exterior matching",
+                "diffuse Solar exterior stress channel is not the exterior load",
+                "phase equation (r^2 phi')'=0 fixes the exterior phase",
+                "projected Bernoulli source solves the static exponential EOM",
+                "C2 matching gives zero thin-shell stress at the compact boundary",
+            ],
+            "source_equation": (
+                "(r^2 phi')'=0 plus biconformal map plus L_B_perp projected "
+                "Bernoulli source"
+            ),
+            "q_2PN_internal": sp.Integer(2),
+            "projected_source_status": compact["projected_source_eom"],
+            "field_equation_residuals": compact["field_equation_residuals"],
+            "junction_status": junction["junction_status"],
+        },
+        "decision_rule": (
+            "A diffuse weak exterior keeps the p03c Solar stress ledger and "
+            "selects q_2PN=7/4.  A compact phase-dominated exterior with "
+            "zero projected-source residuals and C2 boundary matching selects "
+            "the p05 exponential branch."
+        ),
+        "article_use": (
+            "Use this as the article's branch criterion: compactness, exterior "
+            "source weight, and boundary matching select the reduced system."
+        ),
+    }
+
+
 def refractive_axis_verdict() -> dict[str, Any]:
     """Strategic verdict on whether 'refractive' is a distinguishing axis."""
     return {
@@ -841,6 +944,7 @@ def module_status() -> dict[str, Any]:
         "solar_vs_exponential_branch_separation": (
             solar_vs_exponential_branch_separation_gate()
         ),
+        "branch_selection_criterion": branch_selection_criterion_gate(),
         "claim_gate": exterior_claim_gate(),
         "do_not_claim": do_not_claim(),
     }
