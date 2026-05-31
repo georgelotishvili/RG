@@ -2270,7 +2270,10 @@ def p05b_central_spectrum_gate():
                 "p05c_complex_qnm.py embeds the variable-profile transfer into "
                 "the complex QNM pole condition"
             ),
-            "add rotating exterior and ray tracing",
+            (
+                "p05d_rotating_rays.py adds the static ray baseline and "
+                "first-order rotating compact edge"
+            ),
         ],
     }
 

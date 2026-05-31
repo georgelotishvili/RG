@@ -485,7 +485,10 @@ def compute_variable_profile_matrix_pole_gate():
             "roots, while eps=1 keeps the two roots in the lower half-plane and "
             "activates a nonzero channel-mixing round trip."
         ),
-        "next_gate": "add rotating exterior and ray tracing",
+        "next_gate": (
+            "continue in p05d_rotating_rays.py: static ray baseline and "
+            "first-order rotating compact edge"
+        ),
     }
 
 
@@ -508,7 +511,10 @@ def p05c_central_qnm_gate(pole_gate=None):
             "max_eps1_roundtrip_offdiag_abs"
         ],
         "next_gates": [
-            "add rotating exterior and ray tracing",
+            (
+                "p05d_rotating_rays.py adds the static ray baseline and "
+                "first-order rotating compact edge"
+            ),
         ],
     }
 
