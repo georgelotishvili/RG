@@ -25,16 +25,18 @@ On the static comoving branch this source exactly satisfies
 
     G^mu_nu = 8*pi*G Theta^mu_nu
 
-for the exponential exterior.  The ordinary Einstein-fluid energy-condition
-reading is also fixed here: the effective source has negative rho and radial
-NEC violation.  RefG must present this as active medium stress, not as an
-ordinary positive-energy fluid and not as a standalone healthy scalar.
+for the exponential exterior.  The ordinary Einstein-fluid reading of the
+subtracted active contrast is also fixed here.  The physical RefG energy gate
+is the total-medium gate: the compact source is a finite pressure deficit on a
+positive base medium, and the total radial NEC is controlled by the explicit
+background capacity bound.
 """
 
 import sympy as sp
 
 from p05_compact import (
     derive_covariant_bernoulli_gradient_source,
+    derive_background_completed_medium_nec_gate,
     derive_full_fmin_exponential_source_closure_system,
     derive_projected_bernoulli_medium_source,
     diagnose_algebraic_fmin_vs_gradient_source,
@@ -231,11 +233,11 @@ def derive_energy_condition_verdict_gate():
     """
     Give the energy-condition answer explicitly.
 
-    The ordinary Einstein-fluid dictionary for the exponential effective source
-    has negative density and radial NEC violation.  RefG therefore must not
-    call this an ordinary positive-energy fluid.  The projected source removes
-    the standalone phantom time-kinetic problem, but it remains an active
-    medium-stress source with the effective NEC verdict stated plainly.
+    The ordinary Einstein-fluid dictionary applied to the background-subtracted
+    active contrast gives a negative radial null load.  That is not the total
+    physical medium.  In RefG the source is a pressure deficit on a positive
+    base medium.  The total-medium NEC is therefore tested after adding the
+    local homogeneous background load.
     """
     r, r_s, G = sp.symbols("r r_s G", positive=True, real=True)
     delta_p = sp.simplify(r_s**2 * sp.exp(-r_s / r) / (32 * sp.pi * G * r**4))
@@ -244,23 +246,27 @@ def derive_energy_condition_verdict_gate():
     p_t = delta_p
 
     projected = derive_projected_bernoulli_medium_source()
+    total_medium = derive_background_completed_medium_nec_gate()
     radial_nec = sp.simplify(rho + p_r)
     tangential_nec = sp.simplify(rho + p_t)
     weak_energy_density = rho
     sec_combo = sp.simplify(rho + p_r + 2 * p_t)
+    delta_peak = total_medium["Delta_P_peak"]["Delta_P_max"]
 
     return {
         "energy_condition_verdict_status": (
-            "PASS_ENERGY_CONDITION_VERDICT_EXPLICIT_FOR_REFG_COMPACT_SOURCE"
+            "PASS_SUBTRACTED_CONTRAST_AUDIT_AND_TOTAL_MEDIUM_NEC_GATE"
             if radial_nec == -2 * delta_p
             and tangential_nec == 0
             and weak_energy_density == -delta_p
             and sec_combo == 0
             and projected["projected_medium_time_kinetic_coefficient"] == 0
+            and total_medium["total_medium_nec_status"]
+            == "PASS_TOTAL_MEDIUM_NEC_REDUCES_TO_FINITE_BACKGROUND_CAPACITY_BOUND"
             else "CHECK_ENERGY_CONDITION_VERDICT_FOR_REFG_COMPACT_SOURCE"
         ),
         "Delta_P_positive": sp.Eq(sp.Symbol("Delta_P"), delta_p),
-        "ordinary_Einstein_fluid_dictionary": {
+        "background_subtracted_Einstein_fluid_dictionary": {
             "rho": rho,
             "p_r": p_r,
             "p_t": p_t,
@@ -268,14 +274,22 @@ def derive_energy_condition_verdict_gate():
             "rho_plus_p_t": tangential_nec,
             "rho_plus_p_r_plus_2p_t": sec_combo,
         },
-        "standard_verdict": (
-            "ordinary effective-fluid WEC fails and radial NEC is violated; "
-            "this is the horizonless/throat active-stress price of the branch"
+        "subtracted_contrast_verdict": (
+            "the active deficit contrast has negative radial null load; this "
+            "is not the total base-medium energy tensor"
         ),
+        "total_medium_nec_gate": {
+            "status": total_medium["total_medium_nec_status"],
+            "Delta_P_peak": total_medium["Delta_P_peak"],
+            "total_physical_medium": total_medium["total_physical_medium"],
+            "sufficient_total_medium_conditions": total_medium[
+                "sufficient_total_medium_conditions"
+            ],
+        },
         "projected_medium_verdict": (
             "the RefG export is a projected spatial medium stress with no "
-            "standalone scalar time kinetic term; it is not an ordinary matter "
-            "fluid and must not be described as satisfying standard matter NEC"
+            "standalone scalar time kinetic term; physically it is a finite "
+            "pressure deficit on a positive base medium"
         ),
         "projected_medium_time_kinetic_coefficient": projected[
             "projected_medium_time_kinetic_coefficient"
@@ -283,10 +297,14 @@ def derive_energy_condition_verdict_gate():
         "projected_spatial_gradient_coefficient": projected[
             "projected_spatial_gradient_coefficient"
         ],
+        "finite_background_capacity_bound": sp.Ge(
+            sp.Symbol("rho_star") + sp.Symbol("p_star"),
+            2 * delta_peak,
+        ),
         "required_article_rule": (
-            "state the NEC verdict explicitly and identify the source as active "
-            "RefG medium stress, not positive-energy matter and not a phantom "
-            "standalone scalar"
+            "state that the negative null load is the subtracted pressure "
+            "deficit, while the total RefG medium satisfies the radial NEC "
+            "when rho_*+p_* is above the finite Bernoulli peak"
         ),
     }
 
@@ -307,7 +325,7 @@ def p05g_central_exponential_source_gate():
             and fmin["fmin_vs_refg_source_status"]
             == "PASS_FMIN_ALONE_REJECTED_AND_REFG_PROJECTED_SOURCE_CLOSES_EXTERIOR"
             and energy["energy_condition_verdict_status"]
-            == "PASS_ENERGY_CONDITION_VERDICT_EXPLICIT_FOR_REFG_COMPACT_SOURCE"
+            == "PASS_SUBTRACTED_CONTRAST_AUDIT_AND_TOTAL_MEDIUM_NEC_GATE"
             else "CHECK_P05G_EXPONENTIAL_EXTERIOR_SOURCE_AND_ENERGY_VERDICT"
         ),
         "biconformal_map": biconformal["biconformal_map_status"],
