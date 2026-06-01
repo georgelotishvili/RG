@@ -2063,9 +2063,13 @@ def solar_branch_static_silent_dynamic_operator_gate():
     This is a relative phase-normal velocity.  It is useful, but by itself it
     ties the longitudinal medium velocity to the phase tilt.  The independent
     response channel is the material-frame velocity with the phase tilt
-    separated:
+    separated.  Define the material-frame phase tilt by the covariant
+    scalar-vector
 
-        Q^A = D_perp^A Phi,        Q_L = grad_L(chi),
+        Q^A = -g^mu nu partial_mu phi^A partial_nu Phi,
+
+    whose scalar-longitudinal linearization is Q_L=grad_L(chi).  Then
+
         W^A = U^A + Q^A,           W_L = dot(pi_L).
 
     A static source has dot(pi_L)=0, hence W^A=0 even when grad(chi) is
@@ -2186,7 +2190,8 @@ def solar_branch_static_silent_dynamic_operator_gate():
         "status": status,
         "covariant_operator": (
             "Delta L_dyn = epsilon_B W_A W^A + 2 epsilon_M W_A Q^A, "
-            "with U^A=u^mu partial_mu phi^A, Q^A=D_perp^A Phi, "
+            "with U^A=u^mu partial_mu phi^A, "
+            "Q^A=-g^mu nu partial_mu phi^A partial_nu Phi, "
             "and W^A=U^A+Q^A"
         ),
         "linear_dictionary": {
@@ -2217,6 +2222,115 @@ def solar_branch_static_silent_dynamic_operator_gate():
             "symbol level; full curved-background hyperbolicity remains the "
             "next technical layer"
         ),
+    }
+
+
+def solar_branch_dynamic_channel_admissible_region():
+    """
+    Finite repaired scalar-speed window in the (epsilon_B, epsilon_M) plane.
+
+    On the representative Solar slice used in the article,
+
+        c_Y2=1, lambda_6=1/4, c_Z=1,
+
+    the repaired principal determinant is
+
+        det(s) = 5(1+epsilon_B)s^2
+               + [26+epsilon_B-(6+epsilon_M)^2]s
+               + 5.
+
+    Let M2=(6+epsilon_M)^2.  For epsilon_B>0 the two roots are real, positive,
+    distinct and strictly subluminal whenever
+
+        26+epsilon_B+10*sqrt(1+epsilon_B) < M2 < 36+6*epsilon_B.
+
+    The interval has width
+
+        5*(sqrt(1+epsilon_B)-1)^2,
+
+    so the window is finite for every epsilon_B>0 and collapses only at
+    epsilon_B=0.  This proves a finite open region, not a single tuned point.
+    """
+    s = sp.Symbol("s", real=True)
+    epsilon_B, epsilon_M = sp.symbols(
+        "epsilon_B epsilon_M", positive=True, real=True
+    )
+    M2 = (6 + epsilon_M) ** 2
+    det = sp.expand(5 * (1 + epsilon_B) * s**2 + (26 + epsilon_B - M2) * s + 5)
+    p2 = 5 * (1 + epsilon_B)
+    p1 = 26 + epsilon_B - M2
+    p0 = sp.Integer(5)
+    discriminant = sp.factor(p1**2 - 4 * p2 * p0)
+    det_at_light = sp.factor(det.subs(s, 1))
+    lower_M2 = 26 + epsilon_B + 10 * sp.sqrt(1 + epsilon_B)
+    upper_M2 = 36 + 6 * epsilon_B
+    window_width_M2 = sp.factor(sp.simplify(upper_M2 - lower_M2))
+    expected_width = 5 * (sp.sqrt(1 + epsilon_B) - 1) ** 2
+    epsilon_M_interval = (
+        sp.sqrt(lower_M2) - 6,
+        sp.sqrt(upper_M2) - 6,
+    )
+
+    witness = {
+        epsilon_B: sp.Integer(1),
+        epsilon_M: sp.sqrt(sp.Rational(83, 2)) - sp.Integer(6),
+    }
+    witness_det = sp.factor(det.subs(witness))
+    witness_lower = sp.N(lower_M2.subs(witness), 16)
+    witness_upper = sp.N(upper_M2.subs(witness), 16)
+    witness_M2 = sp.N(M2.subs(witness), 16)
+    witness_roots_exact = []
+    for root, multiplicity in sp.roots(witness_det, s).items():
+        witness_roots_exact.extend([sp.simplify(root)] * multiplicity)
+    witness_roots = [sp.N(root, 16) for root in witness_roots_exact]
+    witness_checks = {
+        "width_identity": sp.simplify(window_width_M2 - expected_width) == 0,
+        "witness_inside_window": bool(witness_lower < witness_M2 < witness_upper),
+        "witness_det_matches": sp.simplify(
+            witness_det - (20 * s**2 - 29 * s + 10) / 2
+        )
+        == 0,
+        "witness_roots_strictly_subluminal": all(
+            0 < float(sp.re(root)) < 1 for root in witness_roots
+        ),
+    }
+    status = (
+        "PASS_REPAIRED_DYNAMIC_CHANNEL_HAS_FINITE_SUBLUMINAL_REGION"
+        if all(bool(value) for value in witness_checks.values())
+        else "CHECK_REPAIRED_DYNAMIC_CHANNEL_REGION"
+    )
+
+    return {
+        "status": status,
+        "slice": {"c_Y2": 1, "lambda_6": sp.Rational(1, 4), "c_Z": 1},
+        "determinant": det,
+        "polynomial_coefficients": {
+            "p2": p2,
+            "p1": p1,
+            "p0": p0,
+            "discriminant": discriminant,
+            "det_at_s_equals_1": det_at_light,
+        },
+        "M2": M2,
+        "finite_window_M2": {
+            "lower": lower_M2,
+            "upper": upper_M2,
+            "width": window_width_M2,
+            "positive_for": "epsilon_B > 0",
+        },
+        "epsilon_M_interval": epsilon_M_interval,
+        "root_conditions": (
+            "epsilon_B>0 and lower<M2<upper imply p2>0, p0>0, p1<0, "
+            "positive discriminant, det(1)>0, and p0/p2<1; hence the two "
+            "roots are real, positive, distinct and strictly below one"
+        ),
+        "witness_point": witness,
+        "witness_M2": witness_M2,
+        "witness_window_M2": {"lower": witness_lower, "upper": witness_upper},
+        "witness_det": witness_det,
+        "witness_roots_exact_s": witness_roots_exact,
+        "witness_roots_s": witness_roots,
+        "checks": witness_checks,
     }
 
 
@@ -2301,6 +2415,7 @@ def solar_branch_dynamic_channel_repair_gate():
         else "CHECK_STATIC_SILENT_DYNAMIC_CHANNEL_REPAIR"
     )
     operator_gate = solar_branch_static_silent_dynamic_operator_gate()
+    admissible_region = solar_branch_dynamic_channel_admissible_region()
 
     return {
         "status": status,
@@ -2339,12 +2454,16 @@ def solar_branch_dynamic_channel_repair_gate():
         "witness_checks": witness_checks,
         "operator_status": operator_gate["status"],
         "covariant_operator_gate": operator_gate,
+        "admissible_region_status": admissible_region["status"],
+        "admissible_region": admissible_region,
         "reading": (
             "The p0=p2 constraint is removed by giving the longitudinal medium its "
             "own dynamic response and by separating the phase-spatial lag from "
             "the C6/Z constraint.  The witness has two distinct real subluminal roots "
             "and leaves the static gradient coefficients untouched.  The local "
-            "operator is Delta L_dyn=epsilon_B W_A W^A+2 epsilon_M W_A Q^A."
+            "operator is Delta L_dyn=epsilon_B W_A W^A+2 epsilon_M W_A Q^A, "
+            "and the repaired Solar slice has a finite open subluminal region "
+            "for epsilon_B>0."
         ),
     }
 
@@ -2379,6 +2498,7 @@ def scalar_speed_referee_audit():
     channel_independence = phase_spatial_channel_independence_audit()
     dynamic_channel_repair = solar_branch_dynamic_channel_repair_gate()
     dynamic_operator_gate = solar_branch_static_silent_dynamic_operator_gate()
+    admissible_region = solar_branch_dynamic_channel_admissible_region()
 
     status = (
         "PASS_SCALAR_SPEED_AUDIT_SOLAR_COMBINED_SUBLUMINAL"
@@ -2390,6 +2510,8 @@ def scalar_speed_referee_audit():
         == "PASS_STATIC_SILENT_DYNAMIC_CHANNEL_SUBLUMINAL_WINDOW"
         and dynamic_operator_gate["status"]
         == "PASS_COVARIANT_STATIC_SILENT_DYNAMIC_OPERATOR_EXPANDS_TO_REPAIR"
+        and admissible_region["status"]
+        == "PASS_REPAIRED_DYNAMIC_CHANNEL_HAS_FINITE_SUBLUMINAL_REGION"
         else "CHECK_OLD_C6_Z_OVERCONSTRAINED__DYNAMIC_CHANNEL_REPAIR_TARGET_AVAILABLE"
         if solar_combined["status"]
         == "BOUNDARY_LUMINAL_DOUBLE_ROOT_DEFECTIVE_IN_CURRENT_COMPLETION"
@@ -2432,14 +2554,17 @@ def scalar_speed_referee_audit():
             "operator_status"
         ],
         "dynamic_channel_operator_gate": dynamic_operator_gate,
+        "dynamic_channel_admissible_region": admissible_region,
         "article_export": (
             "The current combined Solar F_min plus C6/Z determinant is a "
             "defective overconstrained completion, not a subluminal open-region "
             "proof.  The covariant static-silent operator "
             "Delta L_dyn=epsilon_B W_A W^A+2 epsilon_M W_A Q^A separates the "
             "longitudinal dynamic channel and the phase-spatial lag while "
-            "leaving static gradient coefficients unchanged.  The remaining "
-            "layer is full curved-background hyperbolicity."
+            "leaving static gradient coefficients unchanged.  On the Solar "
+            "representative slice the repaired determinant has a finite open "
+            "subluminal region in (epsilon_B, epsilon_M).  The remaining layer "
+            "is full curved-background hyperbolicity."
         ),
     }
 
