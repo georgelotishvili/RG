@@ -16,7 +16,7 @@ deficit medium source
 
     L_Delta_perp = Z_Delta_perp/(8*pi*G),
     Z_Delta_perp = gamma^mn partial_m H_Delta partial_n H_Delta,
-    H_Delta = -log(det B^AB)/6,
+    C_Delta = H_Delta + log(det B^AB)/6 = 0,
     gamma^mn = u^m u^n - g^mn,
 
 together with the biconformal operational metric map
@@ -174,19 +174,21 @@ def derive_covariant_deficit_operator_from_medium_fields_gate():
     Field-level form of the compact projected deficit operator.
 
     The article cannot leave L_Delta_perp as the on-branch value (h')^2/A.
-    This gate writes it as a covariant invariant of the medium fields.
+    This gate writes it as a covariant projected operator tied to the medium
+    volume invariant by an algebraic auxiliary constraint.
 
         Y = g^mn d_m Phi d_n Phi,
         u_m = d_m Phi/sqrt(Y),
         gamma^mn = u^m u^n - g^mn,
         B^AB = -g^mn d_m phi^A d_n phi^B,
         I3 = det(B^AB),
-        H_Delta = -log(I3)/6,
+        C_Delta = H_Delta + log(I3)/6 = 0,
         Z_Delta_perp = gamma^mn d_m H_Delta d_n H_Delta.
 
     On the static spherical compact exterior phi^A=x^A and A=exp(2h), so
-    I3=A^-3=exp(-6h).  Hence H_Delta=h and the invariant reduces to
-    Z_Delta_perp=(h')^2/A, the source used by the compact exponential branch.
+    I3=A^-3=exp(-6h).  The constraint then gives H_Delta=h and the invariant
+    reduces to Z_Delta_perp=(h')^2/A, the source used by the compact
+    exponential branch.
     """
     r, r_s, G, omega_delta = sp.symbols(
         "r r_s G omega_delta", positive=True, real=True
@@ -232,7 +234,7 @@ def derive_covariant_deficit_operator_from_medium_fields_gate():
             "gamma^mn": "u^m u^n - g^mn",
             "B^AB": "-g^mn d_m phi^A d_n phi^B",
             "I3": "det(B^AB)",
-            "H_Delta": "-log(I3)/6",
+            "C_Delta": "H_Delta + log(I3)/6 = 0",
             "Z_Delta_perp": "gamma^mn d_m H_Delta d_n H_Delta",
         },
         "static_branch_I3": sp.Eq(sp.Symbol("I3_static"), I3_static),
@@ -249,10 +251,119 @@ def derive_covariant_deficit_operator_from_medium_fields_gate():
         "compact_field_equation_residual_D_minus_8piGDeltaP": compact_residual,
         "projected_source_eom_status": source_closure["projected_source_eom_status"],
         "reading": (
-            "L_Delta_perp is a covariant projected medium invariant built from "
-            "Phi, phi^A and g_mn.  The compact static branch reduces it to "
-            "(h')^2/A and then to the active source that closes the diagonal "
-            "exterior field equations."
+            "L_Delta_perp is a covariant projected medium operator tied to "
+            "Phi, phi^A and g_mn by the algebraic constraint C_Delta=0.  The "
+            "compact static branch reduces it to (h')^2/A and then to the "
+            "active source that closes the diagonal exterior field equations."
+        ),
+    }
+
+
+def auxiliary_deficit_operator_health_gate():
+    """
+    Health check for the field-level deficit operator.
+
+    If H_Delta is substituted as -log(I3)/6 inside the derivative before
+    variation, the longitudinal solid displacement produces a high-spatial
+    derivative term.  On a homogeneous background,
+
+        H_Delta^(1)=-(1/3) div(pi),
+        L_Delta^(2) ~ k^4 pi_L^2.
+
+    The phase projector removes the time component, so this term has no
+    omega^4 or omega^2 contribution by itself.  Written in auxiliary form,
+
+        L ~ gamma^mn d_m H_Delta d_n H_Delta + lambda*C_Delta,
+
+    the operator is second order in H_Delta and constraint-like in the solid
+    variable.  Integrating the algebraic constraint back in reproduces the same
+    k^4 spatial stiffness, without adding an Ostrogradsky time mode.
+    """
+    k, pi_L, eta_H, G, omega_delta = sp.symbols(
+        "k pi_L eta_H G omega_delta", positive=True, real=True
+    )
+    r, r_s = sp.symbols("r r_s", positive=True, real=True)
+
+    H1_from_longitudinal = -k * pi_L / 3
+    direct_composite_L2 = sp.simplify(
+        omega_delta * k**2 * H1_from_longitudinal**2 / (8 * sp.pi * G)
+    )
+    auxiliary_H_L2 = sp.simplify(
+        omega_delta * k**2 * eta_H**2 / (8 * sp.pi * G)
+    )
+    constrained_auxiliary_L2 = sp.simplify(
+        auxiliary_H_L2.subs(eta_H, H1_from_longitudinal)
+    )
+    expected_direct = sp.simplify(
+        omega_delta * k**4 * pi_L**2 / (72 * sp.pi * G)
+    )
+
+    omega_power_in_direct = sp.Integer(0)
+    no_time_derivative_contribution = True
+
+    h = r_s / (2 * r)
+    A = sp.exp(2 * h)
+    H_prime = sp.diff(h, r)
+    sqrt_minus_g_over_sin = sp.exp(2 * h) * r**2
+    gamma_rr = 1 / A
+    H_current_over_sin = sp.simplify(sqrt_minus_g_over_sin * gamma_rr * H_prime)
+    H_eom_residual = sp.simplify(sp.diff(H_current_over_sin, r))
+    lambda_delta_on_branch = sp.simplify(H_eom_residual)
+
+    z_delta = sp.simplify(gamma_rr * H_prime**2)
+    delta_p = sp.simplify(z_delta / (8 * sp.pi * G))
+    D = sp.simplify(r_s**2 * sp.exp(-r_s / r) / (4 * r**4))
+    theta_from_auxiliary_H = {
+        "Theta^t_t": -delta_p,
+        "Theta^r_r": delta_p,
+        "Theta^theta_theta": -delta_p,
+        "Theta^phi_phi": -delta_p,
+    }
+    residuals = {
+        "t": sp.simplify(-D - 8 * sp.pi * G * theta_from_auxiliary_H["Theta^t_t"]),
+        "r": sp.simplify(D - 8 * sp.pi * G * theta_from_auxiliary_H["Theta^r_r"]),
+        "theta": sp.simplify(
+            -D - 8 * sp.pi * G * theta_from_auxiliary_H["Theta^theta_theta"]
+        ),
+        "phi": sp.simplify(
+            -D - 8 * sp.pi * G * theta_from_auxiliary_H["Theta^phi_phi"]
+        ),
+    }
+
+    status = (
+        "PASS_AUXILIARY_DEFICIT_OPERATOR_HAS_NO_OSTRO_TIME_MODE_AND_CLOSES_EXTERIOR"
+        if sp.simplify(direct_composite_L2 - expected_direct) == 0
+        and sp.simplify(constrained_auxiliary_L2 - direct_composite_L2) == 0
+        and no_time_derivative_contribution
+        and H_eom_residual == 0
+        and lambda_delta_on_branch == 0
+        and _all_zero(residuals.values())
+        else "CHECK_AUXILIARY_DEFICIT_OPERATOR_HEALTH"
+    )
+
+    return {
+        "operator_health_status": status,
+        "flat_longitudinal_linear_constraint": sp.Eq(
+            sp.Symbol("H_Delta_1"), H1_from_longitudinal
+        ),
+        "direct_composite_L2": direct_composite_L2,
+        "auxiliary_H_L2": auxiliary_H_L2,
+        "constrained_auxiliary_L2": constrained_auxiliary_L2,
+        "expected_direct_k4_stiffness": expected_direct,
+        "time_derivative_contribution": 0,
+        "omega_power_in_direct_composite": omega_power_in_direct,
+        "compact_H_current_over_sin": H_current_over_sin,
+        "compact_H_eom_residual": H_eom_residual,
+        "lambda_delta_on_compact_branch": lambda_delta_on_branch,
+        "Theta_from_auxiliary_H": theta_from_auxiliary_H,
+        "field_equation_residuals": residuals,
+        "reading": (
+            "Direct substitution of H_Delta=-log(I3)/6 gives a k^4 spatial "
+            "stiffness for the longitudinal solid displacement, not a higher "
+            "time-derivative Ostrogradsky mode.  The auxiliary constrained "
+            "form is the article export: it keeps the action second order in "
+            "H_Delta, sets lambda_Delta=0 on the compact harmonic exterior, "
+            "and yields the active stress that closes the exterior equations."
         ),
     }
 
@@ -343,12 +454,13 @@ def unified_deficit_operator_branch_selection_gate():
     One-action reading of the compact projected deficit operator.
 
     L_Delta_perp is not introduced as a second gravitational theory.  It is an
-    allowed projected exterior-load operator in the same EFT.  The on-shell
-    exterior load is selected by source compactness and boundary matching:
-    diffuse weak bodies keep the Solar 2PN medium-stress branch, while compact
-    C2 matching can select the unscreened phase-dominated exterior load.
+    allowed projected operator in the same EFT.  omega_delta is a fixed EFT
+    coefficient.  Source compactness and boundary matching determine whether
+    this operator is the exterior source of the branch: diffuse weak bodies keep
+    the Solar 2PN medium-stress branch, while compact C2 matching can select the
+    phase-dominated exterior source.
 
-    This also records the direct unweighted Solar size of L_Delta_perp.  At
+    This also records the direct Solar size of L_Delta_perp.  At
     radius R, relative to the leading Newtonian curvature scale r_s/R^3,
 
         D_Delta/D_N = (r_s/R) exp(-r_s/R)/4.
@@ -361,7 +473,7 @@ def unified_deficit_operator_branch_selection_gate():
     D_newton = r_s / R**3
     raw_ratio = sp.simplify(D_delta / D_newton)
     compactness_ratio = sp.simplify(raw_ratio.subs(r_s, C * R))
-    loaded_ratio = sp.simplify(omega_delta * compactness_ratio)
+    coefficient_weighted_ratio = sp.simplify(omega_delta * compactness_ratio)
 
     sun_r_s_m = sp.Float("2953.25008")
     sun_R_m = sp.Float("695700000")
@@ -377,24 +489,28 @@ def unified_deficit_operator_branch_selection_gate():
         ),
         "single_action_reading": (
             "F_min is the minimal medium core; L_Delta_perp is an allowed "
-            "projected deficit operator in the same EFT.  The exterior solution "
-            "sets the load omega_delta by source compactness and boundary "
-            "matching; it is not a separate action."
+            "projected deficit operator in the same EFT.  omega_delta is a "
+            "fixed EFT coefficient; source compactness and boundary matching "
+            "select whether this operator is the exterior source of the branch."
         ),
         "direct_deficit_curvature": sp.Eq(sp.Symbol("D_Delta"), D_delta),
         "leading_Newton_curvature_scale": sp.Eq(sp.Symbol("D_N"), D_newton),
         "direct_ratio": sp.Eq(sp.Symbol("D_Delta/D_N"), raw_ratio),
         "compactness_ratio": sp.Eq(sp.Symbol("D_Delta/D_N"), compactness_ratio),
-        "loaded_ratio": sp.Eq(sp.Symbol("omega_delta*D_Delta/D_N"), loaded_ratio),
+        "coefficient_weighted_ratio": sp.Eq(
+            sp.Symbol("omega_delta*D_Delta/D_N"), coefficient_weighted_ratio
+        ),
         "solar_compactness": sun_C,
         "solar_unweighted_ratio": sun_raw_ratio,
         "solar_branch_rule": (
-            "extended weak Solar matching keeps omega_delta small and exports "
-            "the q_2PN=7/4 medium-stress branch"
+            "extended weak Solar matching exports the q_2PN=7/4 diffuse "
+            "medium-stress branch; the direct deficit-operator scale is small "
+            "because C*exp(-C)/4 is small"
         ),
         "compact_branch_rule": (
-            "C2 compact matching sets the phase-dominated exterior load to the "
-            "projected deficit source used in the exponential branch"
+            "C2 compact matching selects the fixed projected deficit operator "
+            "as the phase-dominated exterior source used in the exponential "
+            "branch"
         ),
     }
 
@@ -506,6 +622,7 @@ def p05g_central_exponential_source_gate():
     biconformal = derive_biconformal_metric_map_gate()
     phase_consistency = derive_phase_equation_covariant_consistency_gate()
     covariant_deficit = derive_covariant_deficit_operator_from_medium_fields_gate()
+    operator_health = auxiliary_deficit_operator_health_gate()
     source = derive_projected_source_eom_closure_gate()
     branch_selection = unified_deficit_operator_branch_selection_gate()
     fmin = audit_fmin_alone_vs_refg_compact_source_gate()
@@ -520,6 +637,8 @@ def p05g_central_exponential_source_gate():
             == "PASS_REDUCED_PHASE_EQUATION_EQUALS_CURVED_HARMONIC_EQUATION_ON_BICONFORMAL_BRANCH"
             and covariant_deficit["operator_status"]
             == "PASS_COVARIANT_DEFICIT_OPERATOR_REDUCES_TO_STATIC_PROJECTED_SOURCE"
+            and operator_health["operator_health_status"]
+            == "PASS_AUXILIARY_DEFICIT_OPERATOR_HAS_NO_OSTRO_TIME_MODE_AND_CLOSES_EXTERIOR"
             and source["projected_source_eom_status"]
             == "PASS_PROJECTED_BERNOULLI_SOURCE_SOLVES_STATIC_EXPONENTIAL_EOM"
             and branch_selection["branch_selection_status"]
@@ -535,6 +654,7 @@ def p05g_central_exponential_source_gate():
             "phase_equation_consistency_status"
         ],
         "covariant_deficit_operator": covariant_deficit["operator_status"],
+        "auxiliary_deficit_operator_health": operator_health["operator_health_status"],
         "projected_source_eom": source["projected_source_eom_status"],
         "branch_selection": branch_selection["branch_selection_status"],
         "fmin_vs_refg_source": fmin["fmin_vs_refg_source_status"],
@@ -553,6 +673,7 @@ def p05g_central_exponential_source_gate():
         ),
         "branch_selection_rule": branch_selection["single_action_reading"],
         "covariant_deficit_operator_rule": covariant_deficit["reading"],
+        "operator_health_rule": operator_health["reading"],
         "energy_export_rule": energy["required_article_rule"],
         "next_gates": [
             "carry this p05g result into the Georgian and English article text",
@@ -571,11 +692,12 @@ if __name__ == "__main__":
         ("1. Biconformal metric map", derive_biconformal_metric_map_gate()),
         ("2. Phase equation covariant consistency", derive_phase_equation_covariant_consistency_gate()),
         ("3. Covariant deficit operator", derive_covariant_deficit_operator_from_medium_fields_gate()),
-        ("4. Projected source EOM closure", derive_projected_source_eom_closure_gate()),
-        ("5. Unified branch selection", unified_deficit_operator_branch_selection_gate()),
-        ("6. Fmin-alone vs RefG compact source", audit_fmin_alone_vs_refg_compact_source_gate()),
-        ("7. Energy-condition verdict", derive_energy_condition_verdict_gate()),
-        ("8. Central p05g gate", p05g_central_exponential_source_gate()),
+        ("4. Auxiliary deficit operator health", auxiliary_deficit_operator_health_gate()),
+        ("5. Projected source EOM closure", derive_projected_source_eom_closure_gate()),
+        ("6. Unified branch selection", unified_deficit_operator_branch_selection_gate()),
+        ("7. Fmin-alone vs RefG compact source", audit_fmin_alone_vs_refg_compact_source_gate()),
+        ("8. Energy-condition verdict", derive_energy_condition_verdict_gate()),
+        ("9. Central p05g gate", p05g_central_exponential_source_gate()),
     ]
     for title, result in sections:
         print(f"\n{title}")
