@@ -30,6 +30,11 @@ and therefore, if m proportional to nu^2 is accepted and the electron
 mass is used as the anchor, the conditional charged-lepton mass ratios.
 
 Important:
+    One base medium supports separate particle-sector normal forms.
+    Charged-lepton, framing, strain, resonance and gauge-like channels are
+    coupled only when the RG action or an explicit normal-form theorem supplies
+    the coupling.
+
     p11_particles.py adds a candidate route:
     theta = 2/9 from an order-9 reduced framed-holonomy candidate
     (C3 axes x C3 phase/braid sectors, spinorial index h=2).
@@ -1340,7 +1345,7 @@ def c3_operator_replacement_candidate():
     Alternative to radial overtone selection.
 
     Instead of explaining why the l=1,n=14 mode is selected while n=2..13
-    are skipped, phase37 treats the charged leptons as a C3 triplet of one
+    are skipped, phase37 organizes the charged leptons as a C3 triplet of one
     internal cyclic operator.
     """
     if prediction_table is None:
@@ -3455,7 +3460,7 @@ def stage_d2_frequency_to_mass_old_status():
             "neutrinos are outside the charged massive oscillon ladder",
         ],
         "promoted_new_route": (
-            "charged leptons are treated as one C3/order-9 candidate triplet with theta=2/9; "
+            "charged leptons are organized as a C3/order-9 candidate triplet with theta=2/9; "
             "the old N=5,72,295 / n=14 ladder is retained as legacy audit only"
         ),
         "still_useful_legacy": [
@@ -3487,7 +3492,7 @@ def stage_d3_em_charge_spin_program_status():
             "needed_theorem": "derive Maxwell equations, U(1) gauge redundancy, and Coulomb 1/r^2 from the medium variables",
         },
         "charge_quantization": {
-            "old_idea": "charge tied to framed/winding topology and Calugareanu-Fuller Lk=Wr+Tw",
+            "old_idea": "charge connected to framed/winding topology and Calugareanu-Fuller Lk=Wr+Tw",
             "RG_status": "candidate topological current/operator programme",
             "fractional_charges": "Z3/color-orbifold route for 1/3 and 2/3 remains open",
         },
@@ -3616,6 +3621,11 @@ def particle_sector_route_short_path_certificate():
         "koide_exact": mass["koide_exact"],
         "relative_compression_ok": mass["relative_compression_ok"],
         "legacy_route_demoted": legacy_demoted,
+        "one_medium_many_particle_channels_rule": (
+            "one base medium supports separate particle-sector normal forms; "
+            "C3 strain, framing, resonance and gauge-like channels are coupled "
+            "only where the action or a normal-form theorem supplies the coupling"
+        ),
         "short_reading": (
             "active particle spine is C3/order-9 charged-lepton algebra; the "
             "radial/Mathieu ladder is kept only as legacy audit material."
@@ -3656,6 +3666,9 @@ def p11_particle_sector_claim_gate():
         "file_export_status": "PARTIAL_ARTICLE_EXPORT_READY_AS_C3_ORDER9_STRUCTURAL_CANDIDATE",
         "overall_status": "STRONG_C3_ORDER9_CANDIDATE_NOT_FINAL_PARTICLE_THEORY",
         "particle_route_short_path": short_path["status"],
+        "one_medium_many_particle_channels_rule": short_path[
+            "one_medium_many_particle_channels_rule"
+        ],
         "closed_algebra": [
             "C3 triplet gives Koide K=2/3.",
             "I3=det(B) contains the C3 triaxial strain lock in principal-axis normal form.",

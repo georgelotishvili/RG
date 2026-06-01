@@ -58,8 +58,10 @@ WHAT SURVIVES
 
 PHYSICAL READING (the key point)
 --------------------------------
-The SAME c_Y2 that fixes the cosmological dark-energy density in p02c
-(M_*^4 * 16/25 = rho_DE) sets this correction amplitude.  Therefore
+The invariant coefficient c_Y2 entering this branch is calibrated in p02c by
+the cosmological dark-energy density (M_*^4 * 16/25 = rho_DE).  That coefficient
+sets the correction amplitude here as an action-level coupling scale; the
+medium response channels remain independent.  Therefore
 
     (c_Y2 / M_Pl^2) * r^2  ~  Lambda * r^2  ~  1e-35   at the Solar radius.
 
@@ -684,7 +686,7 @@ def solar_vs_exponential_branch_separation_gate() -> dict[str, Any]:
         },
         "why_no_conflict": (
             "The shared words 'static', 'spherical' and 'exterior' are not enough "
-            "to identify the same reduced system.  The Solar branch keeps the "
+            "to make one reduced system.  The Solar branch keeps the "
             "physical stress/source ledger and weak-field matching; the p05 "
             "branch keeps the phase-vacuum leading equation and strong-field "
             "geodesic map."

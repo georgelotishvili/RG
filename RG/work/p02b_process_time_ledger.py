@@ -275,12 +275,16 @@ def process_rate_vs_lapse_separation():
         "local_metric_lapse": sp.Eq(d_tau_local, alpha * dt_cmb),
         "not_identical_by_default": sp.Ne(C_proc, alpha),
         "identification_allowed_only_if": (
-            "a separate stress/lapse/substrate bridge proves that the same RG "
-            "field controls both the intrinsic process clock and the local lapse"
+            "a separate stress/lapse/substrate bridge derives the coupling "
+            "between the intrinsic process-clock channel and the local lapse"
         ),
         "double_counting_rule": (
             "never apply both C_proc and alpha to the same observed time "
             "interval unless the variables and clock channel are explicitly distinct"
+        ),
+        "one_medium_many_channels_rule": (
+            "one base medium does not make process-rate and lapse identical; "
+            "their relation is a derived coupling rather than a starting equality"
         ),
     }
 
@@ -979,8 +983,8 @@ def process_time_application_map():
             "არ გაამრავლო Bullet/cluster crossing times C(z)-ზე"
         ),
         "CMB": (
-            "primary CMB იყენებს locked FLRW branch-ს; C(z) არ არის დამატებითი "
-            "background metric mode"
+            "primary CMB იყენებს same-input FLRW branch-ს; C(z) არ არის "
+            "დამატებითი background metric mode და არ ამტკიცებს არხების იდენტობას"
         ),
         "BBN_atomic_clocks": (
             "standard nuclear/atomic clocks are blocked channels unless a "

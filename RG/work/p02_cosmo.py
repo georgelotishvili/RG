@@ -411,7 +411,7 @@ def dynamic_phase_clock_external_status():
             "branch until perturbations and numerical bounds are checked."
         ),
         "do_not_claim_here": [
-            "do not identify Phi_dot(a) with p02b C_proc(a) in p02",
+            "keep Phi_dot(a) and p02b C_proc(a) as separate channels in p02",
             "do not import process-time into H(z), CMB, BBN, BAO, or SN fits",
             "do not claim the dynamic branch solves dark energy from this file",
         ],
@@ -606,7 +606,7 @@ def cosmology_claim_gate():
             "do not claim dark-energy solution",
             "do not claim BBN/CMB/Planck compatibility",
             "do not use process-time as second metric mode",
-            "do not identify Phi_dot(a) with p02b C(z) in the p02 metric branch",
+            "keep Phi_dot(a) and p02b C(z) separated in the p02 metric branch",
             "do not claim expansion is replaced by shrinking rods without observational bridge",
             "do not treat pressure-relaxation interpretation as a new H(z) fit",
         ],

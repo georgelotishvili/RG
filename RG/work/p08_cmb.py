@@ -14,12 +14,12 @@ PHASE 21: CMB — კოსმოლოგიური პერტურბა�
 სტატუსი:
 ეს ფაილი წარმოადგენს როგორც EFT/Boltzmann სამუშაო ხიდს, ასევე დახურულ
 same-input CMB consistency შედეგს. თუ metric branch, matter content,
-recombination history და primordial spectrum LCDM-ის იგივეა, locked
+recombination history და primordial spectrum LCDM-ის იგივეა, same-input
 Phi_0=X_0 branch-ზე RG-ის linear Einstein-Boltzmann წყაროები ნულდება და
 C_l მემკვიდრეობით მიიღება.
 
 ცენტრალური სტატუსი:
-- same-input locked CMB short path: article-ready conditional result.
+- same-input CMB short path: article-ready conditional result.
 - no-particle-DM CMB replacement: ღია Boltzmann/CLASS/CAMB branch.
 - Planck/BAO/LSS empirical pass: საჭიროებს სრულ numerical likelihood run-ს.
 
@@ -85,8 +85,8 @@ class RGAlphaModel:
     hi_class/CLASS bridge parameterization:
         alpha_i(a) = alpha_i0 * Omega_DE(a)/Omega_DE0.
 
-    The default alpha_i0=0 branch is not a fit. It is the analytic locked-FLRW
-    CMB branch: Phi_0=X_0=0, so alpha_K=alpha_B=alpha_M=alpha_T=0.
+    The default alpha_i0=0 branch is not a fit. It is the analytic same-input
+    FLRW CMB branch: Phi_0=X_0=0, so alpha_K=alpha_B=alpha_M=alpha_T=0.
     Nonzero alpha_i0 values are off-branch phenomenological probes.
     """
 
@@ -137,7 +137,7 @@ def cmb_claim_gate() -> list[ClaimGate]:
     """Hard boundary between closed CMB inheritance and open CMB replacement."""
     return [
         ClaimGate(
-            claim="same-matter locked FLRW CMB",
+            claim="same-matter same-input FLRW CMB",
             status="ANALYTICALLY_CLOSED_CONDITIONAL_BRANCH",
             verified_here=(
                 "If Phi_0=X_0=0 and the matter content, recombination history, "
@@ -145,20 +145,20 @@ def cmb_claim_gate() -> list[ClaimGate]:
                 "Einstein-Boltzmann hierarchy is unchanged."
             ),
             open_requirement=(
-                "derive or explicitly postulate the locked branch before exporting it "
+                "derive or explicitly postulate the same-input branch before exporting it "
                 "as dynamics; do not use it to claim dark-matter replacement"
             ),
         ),
         ClaimGate(
             claim="Phi_0=0 / X_0=0 branch",
-            status="BRANCH_LOCK_NOT_EOM_DERIVED_HERE",
-            verified_here="The consequences of the lock are computed algebraically.",
-            open_requirement="derive the lock from p01/p02 equations or keep it as a named branch assumption",
+            status="SAME_INPUT_BRANCH_NOT_EOM_DERIVED_HERE",
+            verified_here="The consequences of the branch condition are computed algebraically.",
+            open_requirement="derive the branch from p01/p02 equations or keep it as a named branch assumption",
         ),
         ClaimGate(
             claim="Bellini-Sawicki alpha_i",
-            status="Y_SECTOR_ONLY_PLUS_LOCKED_BRANCH",
-            verified_here="alpha_T=alpha_M=alpha_B=0 in the minimal Y/Horndeski sector; alpha_K=0 on the locked branch.",
+            status="Y_SECTOR_ONLY_PLUS_SAME_INPUT_BRANCH",
+            verified_here="alpha_T=alpha_M=alpha_B=0 in the minimal Y/Horndeski sector; alpha_K=0 on the same-input branch.",
             open_requirement="derive the ESS solid-sector perturbation action and eigenmode stability",
         ),
         ClaimGate(
@@ -197,6 +197,7 @@ def cmb_do_not_claim() -> list[str]:
         "Do not import process-time C(z) into H(z) or the primary CMB branch.",
         "Do not export a bare c_Y<0 condition without Y/X scheme labels.",
         "Do not claim late ISW/lensing safety after MOND/memory activation without line-of-sight modeling.",
+        "Treat the same-input Phi_0=X_0 branch as a branch condition only; phase-spatial medium channels remain separate.",
     ]
 
 
@@ -413,35 +414,41 @@ def compute_alpha_K():
     return alpha_K, G2_X, G2_XX
 
 
-def flrw_metric_sector_locking_theorem():
+def flrw_metric_sector_same_input_theorem():
     """
     Old-theory CMB core, translated to RG notation.
 
     In the physical matter-clock FLRW frame, g_tt = 1 (signature +---).
     The static RG/bi-conformal time factor is g_tt = exp(Phi_0).
-    Imposing both on the homogeneous cosmological background locks:
+    Imposing both on the homogeneous cosmological background selects the
+    same-input condition:
 
         exp(Phi_0) = 1  ->  Phi_0 = 0  ->  dot(Phi_0)=0  ->  X_0=0.
 
     Therefore, on this named branch, the scalar carries no homogeneous
     stress-energy in the metric sector and the background Friedmann equations
     are inherited from GR for the same matter/radiation content. This function
-    proves the consequence of the branch lock; it does not prove that the full
-    p01/p02 dynamics forces the lock.
+    proves the consequence of the branch condition; it does not prove that the
+    full p01/p02 dynamics forces that condition. The phase-spatial medium
+    channels remain separate.
     """
     Phi0, H, M_Pl, rho, p = symbols("Phi0 H M_Pl rho p", real=True)
 
     return {
-        "cosmic_time_lock": sp.Eq(sp.exp(Phi0), 1),
+        "cosmic_time_condition": sp.Eq(sp.exp(Phi0), 1),
         "homogeneous_solution": sp.Eq(Phi0, 0),
         "Phi0_dot": sp.Integer(0),
         "X0": sp.Integer(0),
         "tau_phi_background": sp.Integer(0),
         "friedmann_1": sp.Eq(3 * M_Pl**2 * H**2, rho),
         "friedmann_2": sp.Eq(2 * M_Pl**2 * sp.Symbol("Hdot", real=True), -(rho + p)),
-        "status": "CONDITIONAL_BRANCH_LOCK_NOT_EOM_DERIVED_HERE",
+        "status": "CONDITIONAL_SAME_INPUT_BRANCH_NOT_EOM_DERIVED_HERE",
         "consequence": "GR background inherited in the same-matter metric-sector limit",
         "open_requirement": "derive Phi_0=0 dynamically from p01/p02 or keep it as a branch assumption",
+        "one_medium_many_channels_rule": (
+            "Phi_0=X_0 is a same-input CMB branch condition, not a general "
+            "phase-spatial channel merger"
+        ),
     }
 
 
@@ -449,10 +456,11 @@ def bellini_sawicki_zero_alpha_theorem():
     """
     Strong CMB compatibility branch.
 
-    If G4 is constant, G3=G5=0, and the FLRW scalar is locked to Phi_0=0,
+    If G4 is constant, G3=G5=0, and the FLRW scalar is on the Phi_0=0
+    same-input branch,
     every Bellini-Sawicki alpha that can shift primary CMB peaks vanishes.
     The no-ghost inequality belongs to off-branch/dynamical scalar perturbations;
-    on this locked branch X0=0 and the scalar stress starts at quadratic order.
+    on this same-input branch X0=0 and the scalar stress starts at quadratic order.
     """
     return {
         "condition_G4": "G4 = M_Pl^2/2 = const",
@@ -504,7 +512,7 @@ def acoustic_ruler_inheritance():
         "delta_sound_horizon_same_matter": sp.Integer(0),
         "delta_theta_star_same_matter": sp.Integer(0),
         "peak_phase_shift_same_matter": sp.Integer(0),
-        "status": "primary acoustic peak locations are inherited on the locked branch",
+        "status": "primary acoustic peak locations are inherited on the same-input branch",
     }
 
 
@@ -569,14 +577,14 @@ def is_memory_freezing_cmb_estimate():
 def cmb_consistency_check():
     return {
         'CMB_comoving_calibration': 'T0 is calibrated in the CMB-comoving cosmic rest frame',
-        'locked_FLRW_branch': 'Phi_0=0, X_0=0 is a named same-matter branch lock',
-        'alpha_T': '0 on the locked branch; full solid-sector tensors still obey phase9 mass/speed filter',
+        'same_input_FLRW_branch': 'Phi_0=0, X_0=0 is a named same-matter branch condition',
+        'alpha_T': '0 on the same-input branch; full solid-sector tensors still obey phase9 mass/speed filter',
         'alpha_M': '0 because G4=M_Pl^2/2 is constant',
         'alpha_B': '0 because G3=0 and G4 has no Phi-dependence',
-        'alpha_K': '0 on the locked branch; no-ghost window applies to off-branch propagating scalar/ESS modes',
+        'alpha_K': '0 on the same-input branch; no-ghost window applies to off-branch propagating scalar/ESS modes',
         'metric_potentials': 'Poisson and slip equations are GR-identical at linear order',
         'CMB_spectrum': 'C_l inherited from LCDM for same matter content and initial conditions',
-        'BAO_lensing_BBN': 'conditional: same matter, locked branch, and I_k early filters passed',
+        'BAO_lensing_BBN': 'conditional: same matter, same-input branch, and I_k early filters passed',
         'open_extension': 'no-particle-DM/IS-memory Boltzmann validation remains the full-code branch of phase21',
     }
 
@@ -586,7 +594,7 @@ def old_to_rg_cmb_migration_audit():
         "old_core": "alpha_K=alpha_B=alpha_M=alpha_T=0 on Phi_0=0 FLRW branch",
         "migrated_here": [
             "CMB-comoving T0 calibration",
-            "matter-clock FLRW locking theorem",
+            "matter-clock FLRW same-input branch theorem",
             "zero-alpha Bellini-Sawicki theorem",
             "linear scalar stress decoupling",
             "acoustic-ruler inheritance",
@@ -689,7 +697,7 @@ def alpha_table_text(model: RGAlphaModel) -> str:
         "# RG EFT alpha table",
         "# columns: a z alpha_K alpha_B alpha_M alpha_T",
         "# alpha_i(a)=alpha_i0*Omega_DE(a)/Omega_DE0",
-        "# default alpha_i0=0 is the locked-FLRW same-matter CMB branch",
+        "# default alpha_i0=0 is the same-input FLRW same-matter CMB branch",
     ]
     for row in alpha_table(model):
         lines.append(
@@ -712,7 +720,7 @@ def boltzmann_stability_filters(model: RGAlphaModel) -> dict[str, object]:
     """
     Minimal EFT stability filters for the computational bridge.
 
-    alpha_K=0 is acceptable only on the locked zero-background-kinetic CMB
+    alpha_K=0 is acceptable only on the same-input zero-background-kinetic CMB
     branch. Off that branch the scalar/ESS sector must pass alpha_K_total > 0
     plus the sound-speed/vector/longitudinal checks of the full perturbation
     action.
@@ -722,7 +730,7 @@ def boltzmann_stability_filters(model: RGAlphaModel) -> dict[str, object]:
     max_abs_alpha_t = max(abs(row["alpha_T"]) for row in rows)
     max_abs_alpha_b = max(abs(row["alpha_B"]) for row in rows)
     max_abs_alpha_m = max(abs(row["alpha_M"]) for row in rows)
-    locked_branch = (
+    same_input_branch = (
         abs(min_alpha_k) < 1.0e-30
         and max_abs_alpha_t < 1.0e-30
         and max_abs_alpha_b < 1.0e-30
@@ -730,12 +738,12 @@ def boltzmann_stability_filters(model: RGAlphaModel) -> dict[str, object]:
     )
     return {
         "alpha_K_min": min_alpha_k,
-        "alpha_K_no_ghost": "LOCKED_BRANCH_NO_PROPAGATING_LINEAR_SCALAR" if locked_branch else min_alpha_k > 0.0,
+        "alpha_K_no_ghost": "SAME_INPUT_BRANCH_NO_PROPAGATING_LINEAR_SCALAR" if same_input_branch else min_alpha_k > 0.0,
         "alpha_T_max_abs": max_abs_alpha_t,
         "GW170817_alpha_T_pass": max_abs_alpha_t < 1.0e-15,
-        "locked_FLRW_branch": locked_branch,
+        "same_input_FLRW_branch": same_input_branch,
         "note": (
-            "alpha_K=0 is only the locked CMB branch; off-branch ESS propagation "
+            "alpha_K=0 is only the same-input CMB branch; off-branch ESS propagation "
             "requires alpha_K_total > 0 and sound-speed checks"
         ),
     }
@@ -766,7 +774,7 @@ def einstein_boltzmann_inheritance_theorem() -> dict[str, object]:
     """
     Stronger form of the CMB claim.
 
-    The locked branch does not merely set alpha_i=0. It leaves the complete
+    The same-input branch does not merely set alpha_i=0. It leaves the complete
     linear Einstein-Boltzmann hierarchy unchanged, provided the matter content,
     recombination history, and primordial initial conditions are the same.
     """
@@ -816,7 +824,7 @@ def same_input_cmb_identity_theorem() -> dict[str, object]:
     those inputs the metric EFT alphas vanish and the linear hierarchy is the
     LCDM one.
     """
-    lock = flrw_metric_sector_locking_theorem()
+    same_input_branch = flrw_metric_sector_same_input_theorem()
     zero_alpha = bellini_sawicki_zero_alpha_theorem()
     linear = linear_metric_decoupling_theorem()
     acoustic = acoustic_ruler_inheritance()
@@ -829,7 +837,7 @@ def same_input_cmb_identity_theorem() -> dict[str, object]:
         zero_alpha["alpha_T"],
     ]
     residuals = [
-        lock["X0"],
+        same_input_branch["X0"],
         linear["linear_scalar_stress"],
         acoustic["delta_sound_horizon_same_matter"],
         acoustic["delta_theta_star_same_matter"],
@@ -846,8 +854,8 @@ def same_input_cmb_identity_theorem() -> dict[str, object]:
             else "CHECK"
         ),
         "branch_conditions": {
-            "Phi0": lock["homogeneous_solution"],
-            "X0": lock["X0"],
+            "Phi0": same_input_branch["homogeneous_solution"],
+            "X0": same_input_branch["X0"],
             "same_inputs": [
                 "same H(a)",
                 "same matter content",
@@ -870,7 +878,7 @@ def same_input_cmb_identity_theorem() -> dict[str, object]:
             "delta_ISW_source": lensing["delta_ISW_source"],
         },
         "conclusion": (
-            "C_ell^RG = C_ell^LCDM in the locked same-input linear branch; "
+            "C_ell^RG = C_ell^LCDM in the same-input linear branch; "
             "this is a consistency/health check, not a new CMB fit"
         ),
         "not_claimed": "no-particle-dark-matter CMB fit or Planck likelihood pass",
@@ -968,7 +976,8 @@ def s_completion_same_input_boltzmann_source_theorem() -> dict[str, object]:
 
     The p02c completion closes the background with S=6 and supplies a healthy
     local scalar-longitudinal symbol.  For the same-input CMB branch the
-    completion perturbation is locked, delta S=0, and Z has no linear
+    completion perturbation is set to the same-input condition delta S=0,
+    and Z has no linear
     background value.  Then the completion contributes only the homogeneous
     Lambda stress and no linear Poisson, slip, lensing, ISW, or photon-baryon
     force source.
@@ -997,7 +1006,7 @@ def s_completion_same_input_boltzmann_source_theorem() -> dict[str, object]:
         "delta_L_S": 2 * lambda_S * delta_S,
         "delta_Z_linear": delta_Z_linear,
     }
-    locked_completion_constraints = {
+    same_input_completion_constraints = {
         delta_S: sp.Integer(0),
         delta_Z_linear: sp.Integer(0),
     }
@@ -1028,16 +1037,16 @@ def s_completion_same_input_boltzmann_source_theorem() -> dict[str, object]:
         photon_baryon_extra_force,
         lensing_extra_source,
         isw_extra_source,
-        linear_completion_variations["delta_L_S"].subs(locked_completion_constraints),
+        linear_completion_variations["delta_L_S"].subs(same_input_completion_constraints),
         linear_completion_variations["delta_Z_linear"].subs(
-            locked_completion_constraints
+            same_input_completion_constraints
         ),
     ]
 
     status = (
         "PASS_S_COMPLETION_SAME_INPUT_BOLTZMANN_SOURCES_ZERO"
         if completion["status"] == "PASS_GLOBAL_LCDM_SOLAR_1PN_COMPLETION"
-        and perturbations["status"] == "PASS_COMPLETION_LOCAL_PERTURBATION_SYMBOL"
+        and perturbations.get("raw_symbol_status") == "PASS_COMPLETION_LOCAL_PERTURBATION_SYMBOL"
         and all(simplify(value) == 0 for value in residuals)
         else "CHECK_S_COMPLETION_SAME_INPUT_BOLTZMANN_SOURCES"
     )
@@ -1046,7 +1055,7 @@ def s_completion_same_input_boltzmann_source_theorem() -> dict[str, object]:
         "status": status,
         "completion_status": completion["status"],
         "local_perturbation_status": perturbations["status"],
-        "locked_completion_constraints": {
+        "same_input_completion_constraints": {
             "delta_S": sp.Eq(delta_S, 0),
             "delta_Z_linear": sp.Eq(delta_Z_linear, 0),
         },
@@ -1079,7 +1088,7 @@ def s_completion_same_input_boltzmann_source_theorem() -> dict[str, object]:
             ),
         },
         "conclusion": (
-            "on the locked S=6 same-input branch, the S/Z completion behaves as "
+            "on the S=6 same-input branch, the S/Z completion behaves as "
             "a cosmological constant in the linear Einstein-Boltzmann sources"
         ),
         "scope": (
@@ -1095,7 +1104,7 @@ def cmb_same_input_short_path_certificate() -> dict[str, object]:
 
     The detailed CMB ledger remains below.  This function is the short path:
     when H(a), matter content, recombination history and primordial spectrum
-    are the LCDM inputs, the locked RG metric/EFT sources and the S/Z completion
+    are the LCDM inputs, the same-input RG metric/EFT sources and the S/Z completion
     sources all vanish at linear order.
     """
     same_input = same_input_cmb_identity_theorem()
@@ -1121,7 +1130,7 @@ def cmb_same_input_short_path_certificate() -> dict[str, object]:
         "s_completion_status": s_completion["status"],
         "zero_source_residuals": zero_source_residuals,
         "short_reading": (
-            "same H(a), same matter, same recombination and locked RG linear "
+            "same H(a), same matter, same recombination and same-input RG linear "
             "sources give the LCDM Einstein-Boltzmann hierarchy."
         ),
     }
@@ -1227,11 +1236,11 @@ def article_cmb_theorem() -> dict[str, object]:
     """
     Article-facing CMB ledger.
 
-    Exports the same-input locked-branch result: RG does not shift the linear
+    Exports the same-input branch result: RG does not shift the linear
     Einstein-Boltzmann hierarchy when the metric branch, matter content,
     recombination history, and initial spectrum are inherited.
     """
-    lock = flrw_metric_sector_locking_theorem()
+    same_input_branch = flrw_metric_sector_same_input_theorem()
     zero_alpha = bellini_sawicki_zero_alpha_theorem()
     same_matter = same_matter_cmb_inheritance_audit()
     hierarchy = einstein_boltzmann_inheritance_theorem()
@@ -1245,12 +1254,12 @@ def article_cmb_theorem() -> dict[str, object]:
     calibration = cmb_comoving_time_calibration()
 
     return {
-        "file_export_status": "PARTIAL_ARTICLE_EXPORT_READY_FOR_SAME_INPUT_LOCKED_CMB_CONSISTENCY",
-        "article_use": "same-input locked CMB consistency identity",
+        "file_export_status": "PARTIAL_ARTICLE_EXPORT_READY_FOR_SAME_INPUT_CMB_CONSISTENCY",
+        "article_use": "same-input CMB consistency identity",
         "direct_open_status": "NO_PARTICLE_DM_AND_PLANCK_BAO_LSS_LIKELIHOODS_OPEN",
         "article_supported_claims": [
-            "locked Phi_0=X_0 branch gives zero Bellini-Sawicki alpha_i",
-            "linear metric scalar stress vanishes at first order on the locked branch",
+            "same-input Phi_0=X_0 branch gives zero Bellini-Sawicki alpha_i",
+            "linear metric scalar stress vanishes at first order on the same-input branch",
             "exact LCDM branch contributes no extra linear Boltzmann sources",
             "S/Z completion contributes no same-input Poisson, slip, lensing, ISW, or photon-baryon source",
             "same-input CMB short path passes with zero source residuals",
@@ -1262,17 +1271,18 @@ def article_cmb_theorem() -> dict[str, object]:
             "BAO/DESI/LSS empirical pass",
             "late nonlinear MOND/memory ISW/lensing safety",
         ],
-        "locked_branch": {
-            "status": lock["status"],
+        "same_input_branch": {
+            "status": same_input_branch["status"],
             "condition": {
-                "cosmic_time_lock": lock["cosmic_time_lock"],
-                "homogeneous_solution": lock["homogeneous_solution"],
-                "X0": lock["X0"],
+                "cosmic_time_condition": same_input_branch["cosmic_time_condition"],
+                "homogeneous_solution": same_input_branch["homogeneous_solution"],
+                "X0": same_input_branch["X0"],
             },
-            "consequence": lock["consequence"],
+            "consequence": same_input_branch["consequence"],
+            "one_medium_many_channels_rule": same_input_branch["one_medium_many_channels_rule"],
         },
         "bellini_sawicki_alphas": {
-            "status": "CLOSED_ZERO_ALPHA_ON_LOCKED_BRANCH",
+            "status": "CLOSED_ZERO_ALPHA_ON_SAME_INPUT_BRANCH",
             "alpha_K": zero_alpha["alpha_K"],
             "alpha_B": zero_alpha["alpha_B"],
             "alpha_M": zero_alpha["alpha_M"],
@@ -1348,7 +1358,7 @@ def ik_sector_delta_neff_and_curvature_filters() -> dict[str, object]:
         "stiff_BBN_bound": sp.Le(sp.Abs(stiff_ratio_bbn), epsilon_bbn),
         "curvature_like_ratio_at_recombination": curvature_ratio_star,
         "curvature_geometry_bound": sp.Le(sp.Abs(curvature_ratio_star), epsilon_curv),
-        "meaning": "I_k coefficients must be on the locked/suppressed branch or satisfy these early-universe filters with p02 active rho signs",
+        "meaning": "I_k coefficients must be on the same-input/suppressed branch or satisfy these early-universe filters with p02 active rho signs",
     }
 
 
@@ -1356,11 +1366,11 @@ def cmb_closed_conditional_open_scorecard() -> dict[str, list[str]]:
     return {
         "closed": [
             "T0 is a CMB-comoving present-epoch age calibration, not an Earth-gravity constant",
-            "if Phi_0=X_0=0 is imposed, alpha_K=alpha_B=alpha_M=alpha_T=0 on the locked branch",
-            "same-input CMB short path passes: locked RG linear sources give the LCDM Einstein-Boltzmann hierarchy",
+            "if Phi_0=X_0=0 is imposed, alpha_K=alpha_B=alpha_M=alpha_T=0 on the same-input branch",
+            "same-input CMB short path passes: same-input RG linear sources give the LCDM Einstein-Boltzmann hierarchy",
             "p02c exact LCDM branch contributes zero extra linear Boltzmann sources",
             "S/Z completion contributes zero same-input Poisson, slip, lensing, ISW, and photon-baryon sources",
-            "linear Poisson/slip equations are inherited in the same-matter locked branch",
+            "linear Poisson/slip equations are inherited in the same-matter same-input branch",
             "primary acoustic ruler is inherited for same matter, same recombination, and same primordial spectrum",
             "radiation trace T_gamma=0, so photon acoustic pressure is not directly driven by the RG trace channel",
         ],
@@ -1369,7 +1379,7 @@ def cmb_closed_conditional_open_scorecard() -> dict[str, list[str]]:
             "I_k background terms must pass Delta N_eff, stiff-fluid, and curvature-like filters",
             "late lensing/ISW remains identical only while the nonlinear MOND/memory response is not active in the line-of-sight model",
             "off-branch scalar/ESS perturbations require no-ghost and sound-speed checks",
-            "identifying CMB with the deeper RG substrate requires a separate bridge, not assumed here",
+            "reading CMB as the deeper RG substrate requires a separate bridge, not assumed here",
             "coefficient signs must always state Y-scheme vs X-scheme",
         ],
         "open": [
@@ -1555,8 +1565,8 @@ def stage_c3_old_cmb_status() -> dict[str, object]:
         "migrated": True,
         "closed_conditional_same_matter_branch": [
             "CMB-comoving frame calibrates T0; 13.8 Gyr is a fitted present-epoch value",
-            "if matter-clock FLRW locking Phi_0=0 and X_0=0 is imposed",
-            "Bellini-Sawicki alpha_K=alpha_B=alpha_M=alpha_T=0 follows on the locked branch",
+            "if matter-clock FLRW same-input condition Phi_0=0 and X_0=0 is imposed",
+            "Bellini-Sawicki alpha_K=alpha_B=alpha_M=alpha_T=0 follows on the same-input branch",
             "linear scalar stress is quadratic and does not shift metric potentials at first order",
             "Einstein-Boltzmann hierarchy is inherited for same matter and same primordial spectrum",
             "linear CMB lensing/ISW sources are unchanged in the same-matter branch",
@@ -1579,7 +1589,7 @@ def stage_c3_cmb_deletion_gate_scorecard() -> dict[str, str]:
     return {
         "OLD_9_status": "safe as migrated for conditional same-matter linear-CMB claims",
         "not_claimed": "no-particle-DM CMB solution is still future work",
-        "article_use": "for the first gravity article, cite only the conditional locked-branch inheritance result",
+        "article_use": "for the first gravity article, cite only the conditional same-input-branch inheritance result",
         "program_use": "keep no-particle-DM branch as a later CLASS/CAMB paper target",
     }
 
@@ -1641,8 +1651,8 @@ if __name__ == "__main__":
     print("  bare c_Y<0 აღარ არის exportable claim; უნდა მიეთითოს Y/X scheme.")
 
     print("\n--- ნაბიჯი 4b: ძველი CMB ბირთვის RG-ში გადმოტანა ---")
-    lock = flrw_metric_sector_locking_theorem()
-    for k, v in lock.items():
+    same_input_branch = flrw_metric_sector_same_input_theorem()
+    for k, v in same_input_branch.items():
         print(f"  {k:30s}: {v}")
 
     print("\n--- ნაბიჯი 4c: zero-alpha theorem ---")
@@ -1775,7 +1785,7 @@ if __name__ == "__main__":
     print("   ამიტომ export პირობა არის scheme-labeled alpha_K_total > 0.")
     print("3. Bellini-Sawicki პარამეტრიზაციის არასრულფასოვნება RG-სთვის აღიარებულია.")
     print("   ელასტიური სექტორისთვის აუცილებელია 'EFT of Solid Inflation' (ESS) ჩარჩო.")
-    print("4. ძველი CMB ბირთვი გადმოტანილია conditional result-ად: locked FLRW branch")
+    print("4. ძველი CMB ბირთვი გადმოტანილია conditional result-ად: same-input FLRW branch")
     print("   -> alpha_i=0 -> GR-identical linear metric equations -> inherited acoustic ruler.")
     print("5. Einstein-Boltzmann hierarchy, linear lensing და ISW same-matter ლიმიტში უცვლელია.")
     print("6. I_k სექტორის early-universe ფილტრები ცხადად ჩაიწერა: Delta N_eff, stiff, curvature.")

@@ -781,8 +781,10 @@ def completion_branch_local_perturbation_theorem():
     amplitude convention div(pi) -> -k*pi_L.  Therefore the same invariant
     expansion is represented by delta S -> 2*(omega*chi - k*pi_L).
 
-    Thus the scalar-longitudinal principal symbol is fixed exactly by the two
-    positive coefficients lambda_S and c_Z.
+    Thus the isolated S/Z scalar-longitudinal principal symbol is fixed by the
+    two positive coefficients lambda_S and c_Z.  This is a local completion
+    diagnostic only.  In the full Solar branch the phase-clock channel and the
+    spatial medium channel stay separate unless the coupling is derived.
     """
     omega, k = sp.symbols("omega k", real=True)
     lambda_S, c_Z = sp.symbols("lambda_S c_Z", positive=True)
@@ -847,7 +849,17 @@ def completion_branch_local_perturbation_theorem():
     )
 
     return {
-        "status": status,
+        "status": (
+            "PASS_ISOLATED_COMPLETION_LOCAL_SYMBOL_NOT_FULL_SOLAR_GATE"
+            if status == "PASS_COMPLETION_LOCAL_PERTURBATION_SYMBOL"
+            else status
+        ),
+        "raw_symbol_status": status,
+        "one_medium_many_channels_rule": (
+            "S/Z is an isolated technical completion channel.  The full theory "
+            "keeps phase, pressure, longitudinal, transverse, rotational and "
+            "resonant responses independent unless a coupling is derived."
+        ),
         "stueckelberg_convention": "phi^A=x^A+pi^A",
         "delta_Y_linear": delta_Y_linear,
         "delta_I1_linear": delta_I1_linear,
@@ -867,15 +879,17 @@ def completion_branch_local_perturbation_theorem():
         "degeneracy_interpretation": (
             "the square in s=omega^2/k^2 represents the two luminal "
             "characteristics omega=+k and omega=-k in the scalar-longitudinal "
-            "block; it is not a separate nonluminal speed"
+            "isolated S/Z block; it is not a proof of a full Solar kinetic "
+            "open region"
         ),
         "transverse_symbol": transverse_symbol,
         "transverse_status": (
             "POSITIVE_KINETIC_ZERO_LEADING_GRADIENT_IN_SCALAR_COMPLETION"
         ),
         "article_use": (
-            "local no-ghost and scalar-longitudinal principal-symbol check for "
-            "the S/Z global completion branch"
+            "local no-ghost diagnostic for the isolated S/Z completion; combine "
+            "with F_min and the independent dynamic-channel repair before using "
+            "it as a Solar scalar-speed gate"
         ),
     }
 
@@ -956,8 +970,9 @@ def completion_z_sign_and_degeneracy_audit():
         "nullspace_at_omega_minus_k": nullspace_minus,
         "interpretation": (
             "each luminal direction has a one-dimensional scalar-longitudinal "
-            "nullspace; the repeated root in s is a compact way of writing the "
-            "two signs of the luminal characteristic"
+            "nullspace in the isolated S/Z block.  This is a diagnostic of that "
+            "completion, not a full strong-hyperbolicity certificate for the "
+            "combined Solar F_min+C6/Z system."
         ),
     }
 

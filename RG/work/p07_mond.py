@@ -539,6 +539,10 @@ def rg_two_channel_mond_closure():
         g = g_N + g_h
         g_h/g_N = a0/g
 
+    ეს არის არხებს შორის coupling კანონი, არა მათი იდენტობა. ერთი ფუძე
+    ატარებს Newton/Bernoulli და vortex/halo პასუხებს, მაგრამ მათი შეფარდება
+    ცალკე closure-ით უნდა გამოვიდეს.
+
     closure-ის მიღების შემდეგ ზუსტად:
         g_N = g/(1+a0/g)
         mu(g/a0) = g_N/g = x/(1+x)
@@ -559,6 +563,10 @@ def rg_two_channel_mond_closure():
     return {
         "claim": "two-channel closure implies the simple MOND interpolating function",
         "status": "ALGEBRAIC_CONSEQUENCE_OF_PRIMARY_VORTEX_CLOSURE",
+        "one_medium_many_channels_rule": (
+            "Newton/Bernoulli and vortex/halo are independent response channels "
+            "inside one medium; g_h/g_N=a0/g is a closure law between distinct channels"
+        ),
         "force_split": force_split,
         "transport_ratio": transport_ratio,
         "self_consistency": closed_split,
@@ -577,7 +585,7 @@ def rg_two_channel_mond_closure():
         "deep_acceleration": sp.Eq(g, deep_g),
         "proof_result": "vortex არხის თანაფარდობა g_h/g_N=a0/g საკმარისია "
                         "mu(x)=x/(1+x)-ის ზუსტად გამოსაყვანად.",
-        "open_requirement": "derive g_h/g_N=a0/g from RG action/coarse-grained vortex transport.",
+        "open_requirement": "derive the coupling g_h/g_N=a0/g from RG action/coarse-grained vortex transport.",
     }
 
 
@@ -588,7 +596,7 @@ def rg_delta_p_mond_bridge():
     RG-ში vortex/halo არხი არის:
         g_h = 2*Delta_p/(r*rho_solid)
 
-    ძველი MOND closure ამბობს:
+    closure ამბობს:
         g_h = (a0/g)*g_N
 
     ამიტომ:
@@ -1901,7 +1909,7 @@ def stage_b3_mond_uniqueness_and_open_programme():
             "finite-radius vortex plateau as a constructive profile avoiding an infinite-energy tail",
         ],
         "selection_logic": (
-            "the simple mu is tied to the mature two-channel vortex closure, "
+            "the simple mu follows from the mature two-channel vortex closure, "
             "but the closure itself is not yet derived. The theorem-level task "
             "is the action-to-vortex coarse-graining that selects that closure "
             "and fixes a0/Delta_p normalization uniquely."

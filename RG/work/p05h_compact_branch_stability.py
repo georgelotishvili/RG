@@ -188,6 +188,7 @@ def derive_compact_branch_minimal_stability_gate():
         "projected_variation": variation["projected_bernoulli_variation_status"],
         "projected_principal_symbol": principal["principal_symbol_status"],
         "p01_local_stability": p01_local["status"],
+        "p01_local_stability_scope": p01_local["scope"],
         "c2_core_local_interface": c2_interface["interface_status"],
         "article_supported_claim": (
             "the static compact phase branch has source closure, total-medium "

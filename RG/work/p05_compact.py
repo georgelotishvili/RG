@@ -1551,8 +1551,8 @@ def derive_c2_core_refg_medium_source_decomposition():
     RefG medium-source decomposition of the C2 finite core.
 
     The C2 metric core already fixes the required mixed tensor through
-    G^mu_nu=8*pi*G Theta^mu_nu.  This block inserts the same phase variable
-    used by the exterior,
+    G^mu_nu=8*pi*G Theta^mu_nu.  This block inserts the exterior Bernoulli
+    phase coordinate used by the projected source,
 
         h_core = -log(B_core)/2,
 
@@ -1561,10 +1561,11 @@ def derive_c2_core_refg_medium_source_decomposition():
         P_B = exp(-log A_core) (dh/dr)^2/(8*pi*G).
 
     The difference between the required core source and this projected phase
-    source is the residual medium-stress channel.  The residual is finite at
-    the center and vanishes at the C2 boundary, so the core source is carried
-    by allowed RefG medium variables at the tensor-ledger level.  The remaining
-    task is the coupled action/evolution solution for this residual channel.
+    source is the independent residual medium-stress channel.  The residual is
+    finite at the center and vanishes at the C2 boundary, so the core source is
+    carried by allowed RefG medium variables at the tensor-ledger level.  The
+    remaining task is the coupled action/evolution solution for this residual
+    channel.
     """
     x, q, r_c, G_N = sp.symbols('x q r_c G_N', positive=True, real=True)
 
@@ -2138,7 +2139,7 @@ def derive_c2_core_local_stability_interface():
     The compact ledger now derives a finite residual stress, writes it as p01
     action-stress equations, solves the radial deformation branch, and shows
     that the diagonal residual tensor is integrable as one action-density
-    branch.  p01_core.py already proves that the same local action sector has a
+    branch.  p01_core.py supplies the local action-sector certificate: a
     nonempty no-ghost and mixed-mode principal-symbol region.
 
     This function records that interface.  It is a local principal-symbol
@@ -2168,6 +2169,7 @@ def derive_c2_core_local_stability_interface():
         "core_action_density_status": action_integrability["integrability_status"],
         "core_ivp_domain_status": ivp_domain["theorem_status"],
         "p01_local_stability_status": p01_local["status"],
+        "p01_local_stability_scope": p01_local["scope"],
         "p01_explicit_stable_point": p01_local["point"],
         "p01_checks": checks,
         "compact_reading": (

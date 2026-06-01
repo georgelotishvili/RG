@@ -1831,6 +1831,10 @@ def solar_branch_combined_dispersion_gate():
     )
     poly = sp.Poly(determinant_in_s, s)
     p2, p1, p0 = [sp.factor(value) for value in poly.all_coeffs()]
+    discriminant = sp.factor(sp.simplify(p1**2 - 4 * p2 * p0))
+    p0_equals_p2 = sp.simplify(p0 - p2) == 0
+    vieta_product = sp.simplify(p0 / p2)
+    luminal_surface_condition = sp.factor(sp.simplify(p1 + 2 * p2))
     expected = sp.factor(
         4
         * c_Z
@@ -1855,6 +1859,19 @@ def solar_branch_combined_dispersion_gate():
     representative_roots = []
     for root, multiplicity in sp.roots(representative_det, s).items():
         representative_roots.extend([sp.simplify(root)] * multiplicity)
+    representative_matrix_plus = sp.simplify(
+        principal_matrix.subs(representative_point).subs({omega: 1, k: 1})
+    )
+    representative_matrix_minus = sp.simplify(
+        principal_matrix.subs(representative_point).subs({omega: -1, k: 1})
+    )
+    nullspace_plus = representative_matrix_plus.nullspace()
+    nullspace_minus = representative_matrix_minus.nullspace()
+    required_polarizations_per_light_cone = 2
+    diagonalizable_double_root = (
+        len(nullspace_plus) >= required_polarizations_per_light_cone
+        and len(nullspace_minus) >= required_polarizations_per_light_cone
+    )
     representative_checks = {
         "K_PhiPhi_Fmin": sp.simplify(4 * c_Y2).subs(representative_point),
         "A_total": sp.simplify(4 * (c_Y2 + lambda_6)).subs(
@@ -1865,15 +1882,33 @@ def solar_branch_combined_dispersion_gate():
             bool(sp.simplify(root > 0)) and bool(sp.simplify(root <= 1))
             for root in representative_roots
         ),
+        "p0_equals_p2_identity": p0_equals_p2,
+        "double_root_boundary": sp.simplify(
+            representative_det - 5 * (s - 1) ** 2
+        )
+        == 0,
+        "nullity_plus": len(nullspace_plus),
+        "nullity_minus": len(nullspace_minus),
+        "diagonalizable_double_root": diagonalizable_double_root,
     }
 
-    status = (
-        "PASS_SOLAR_BRANCH_COMBINED_DISPERSION"
-        if coefficient_identity
+    if (
+        coefficient_identity
+        and p0_equals_p2
         and representative_det == 5 * (s - 1) ** 2
         and representative_checks["roots_real_positive_subluminal"]
-        else "CHECK_SOLAR_BRANCH_COMBINED_DISPERSION"
-    )
+        and not diagonalizable_double_root
+    ):
+        status = "BOUNDARY_LUMINAL_DOUBLE_ROOT_DEFECTIVE_IN_CURRENT_COMPLETION"
+    elif (
+        coefficient_identity
+        and representative_det == 5 * (s - 1) ** 2
+        and representative_checks["roots_real_positive_subluminal"]
+        and diagonalizable_double_root
+    ):
+        status = "PASS_SOLAR_BRANCH_COMBINED_DISPERSION"
+    else:
+        status = "CHECK_SOLAR_BRANCH_COMBINED_DISPERSION"
 
     return {
         "status": status,
@@ -1893,15 +1928,251 @@ def solar_branch_combined_dispersion_gate():
         "principal_matrix": principal_matrix,
         "determinant": determinant,
         "determinant_in_s": determinant_in_s,
-        "polynomial_coefficients": {"p2": p2, "p1": p1, "p0": p0},
+        "polynomial_coefficients": {
+            "p2": p2,
+            "p1": p1,
+            "p0": p0,
+            "discriminant": discriminant,
+        },
+        "vieta": {
+            "p0_equals_p2": p0_equals_p2,
+            "s1_times_s2": vieta_product,
+            "luminal_surface_condition_p1_plus_2p2": luminal_surface_condition,
+            "meaning": (
+                "With p0=p2, two real roots cannot both be subluminal unless "
+                "they coalesce at s=1."
+            ),
+        },
         "representative_point": representative_point,
         "representative_det": representative_det,
         "representative_roots_s": representative_roots,
+        "representative_symbol_at_omega_eq_k": representative_matrix_plus,
+        "representative_symbol_at_omega_eq_minus_k": representative_matrix_minus,
+        "representative_nullspaces": {
+            "plus": nullspace_plus,
+            "minus": nullspace_minus,
+        },
         "representative_checks": representative_checks,
         "reading": (
-            "Solar stability is certified by the combined F_min plus C6/Z "
-            "principal symbol, not by the isolated C6/Z block.  The displayed "
-            "point is a finite algebraic witness with real luminal roots."
+            "The current F_min plus C6/Z Solar block has a luminal boundary "
+            "point, but p0=p2 makes subluminal roots impossible away from the "
+            "double-root surface.  At the displayed point the symbol has only "
+            "one null polarization per light-cone direction, so this completion "
+            "is not yet a strong-hyperbolicity certificate."
+        ),
+    }
+
+
+def single_field_many_capabilities_principle():
+    """
+    Foundational principle imported from Intuitive_Theory.md.
+
+    RefG reverses the usual multi-field picture.  Standard language starts
+    with many fields and connects them by interactions.  RefG starts with one
+    base medium, but that medium has many independent channels.  Couplings
+    between channels must be derived as couplings, not imposed as identities.
+    """
+    return {
+        "status": "FOUNDATION_ONE_MEDIUM_MANY_INDEPENDENT_CHANNELS",
+        "standard_picture": (
+            "many particle fields connected by interactions, symmetries and "
+            "shared rules"
+        ),
+        "refg_picture": (
+            "one base medium with independent phase, pressure, longitudinal, "
+            "transverse, rotational, topological and resonant channels"
+        ),
+        "rule": (
+            "channel couplings may be present, but channel identities are not "
+            "assumed; every coupling between capabilities needs a derivation"
+        ),
+        "channel_rule": (
+            "phase response, spatial compression, shear and rotation require "
+            "their own channel equations even though they live in one medium"
+        ),
+    }
+
+
+def phase_spatial_channel_independence_audit():
+    """
+    Foundational audit for the Solar scalar-longitudinal block.
+
+    One base medium supports independent response channels.  The intuitive core
+    separates at least these operational traces:
+
+        phase/clock delay, pressure deficit, longitudinal compression,
+        transverse shear, rotation/topology, resonance, and lag.
+
+    The current C6/Z block is therefore only one overconstrained completion, not
+    the final medium foundation.  The decisive diagnostic is p0=p2 in the
+    combined Solar determinant: if the two roots are real, their product is
+    one, so two distinct subluminal roots are impossible.
+    """
+    principle = single_field_many_capabilities_principle()
+    combined = solar_branch_combined_dispersion_gate()
+    overconstrained = (
+        combined["vieta"]["p0_equals_p2"]
+        and combined["vieta"]["s1_times_s2"] == 1
+        and combined["status"]
+        == "BOUNDARY_LUMINAL_DOUBLE_ROOT_DEFECTIVE_IN_CURRENT_COMPLETION"
+    )
+
+    return {
+        "status": (
+            "FAIL_OLD_C6_Z_OVERCONSTRAINS_PHASE_AND_SPATIAL_RESPONSE"
+            if overconstrained
+            else "CHECK_PHASE_SPATIAL_CHANNEL_INDEPENDENCE"
+        ),
+        "one_medium_independent_response_channels": True,
+        "foundation_principle": principle,
+        "required_independent_channels": [
+            "phase_clock_delay_channel",
+            "pressure_deficit_channel",
+            "longitudinal_compression_channel",
+            "transverse_shear_channel",
+            "rotation_or_topology_channel",
+            "resonance_channel",
+            "phase_spatial_lag_channel",
+        ],
+        "old_completion_defect": {
+            "determinant_in_s": combined["determinant_in_s"],
+            "p0_equals_p2": combined["vieta"]["p0_equals_p2"],
+            "root_product": combined["vieta"]["s1_times_s2"],
+            "defective_double_root_status": combined["status"],
+        },
+        "repair_requirement": (
+            "break the identity p0=p2 by an independent medium response, while "
+            "preserving the Solar static exterior and the already fixed 1PN/2PN "
+            "static chain"
+        ),
+    }
+
+
+def solar_branch_dynamic_channel_repair_gate():
+    """
+    Static-silent dynamic-channel repair target for the Solar scalar block.
+
+    The current F_min+C6/Z block has p0=p2 and a defective luminal double root.
+    The underlying mistake is stronger than a cosmetic coefficient issue: the
+    phase-clock response and the longitudinal medium response shared a
+    constraint without an independent channel derivation.
+
+    The corrected principal target keeps the static gradient coefficients fixed
+    and adds independent dynamic response:
+
+        B -> B + epsilon_B,
+        M -> M + epsilon_M,
+
+    while A, C and D are unchanged.  Since this changes only the kinetic and
+    phase-spatial lag terms, it is static-silent at the principal level: it does
+    not alter the static Solar exterior equation.
+
+    This is still a principal-symbol target.  The covariant operator whose
+    expansion produces this dynamic channel must be written before exporting the
+    repair as a final article theorem.
+    """
+    s = sp.Symbol("s", real=True)
+    c_Y2, lambda_6, c_Z, epsilon_B, epsilon_M = sp.symbols(
+        "c_Y2 lambda_6 c_Z epsilon_B epsilon_M", positive=True, real=True
+    )
+    A0 = 4 * (c_Y2 + lambda_6)
+    B0 = c_Z
+    C0 = c_Z
+    D0 = 4 * (c_Y2 + lambda_6)
+    M0 = 8 * c_Y2 - 4 * lambda_6 - c_Z
+
+    A = A0
+    B = B0 + epsilon_B
+    C = C0
+    D = D0
+    M = M0 + epsilon_M
+
+    det = sp.factor((A * s + C) * (B * s + D) - M**2 * s)
+    poly = sp.Poly(det, s)
+    p2, p1, p0 = [sp.factor(value) for value in poly.all_coeffs()]
+    discriminant = sp.factor(sp.simplify(p1**2 - 4 * p2 * p0))
+    det_at_light = sp.factor(sp.simplify(det.subs(s, 1)))
+    speed_sum = sp.factor(sp.simplify(-p1 / p2))
+
+    witness = {
+        c_Y2: sp.Integer(1),
+        lambda_6: sp.Rational(1, 4),
+        c_Z: sp.Integer(1),
+        epsilon_B: sp.Integer(1),
+        epsilon_M: sp.sqrt(sp.Rational(83, 2)) - sp.Integer(6),
+    }
+    witness_det = sp.factor(det.subs(witness))
+    witness_roots_exact = []
+    for root, multiplicity in sp.roots(witness_det, s).items():
+        witness_roots_exact.extend([sp.simplify(root)] * multiplicity)
+    witness_roots = [sp.N(root, 16) for root in witness_roots_exact]
+    witness_roots_real = [
+        root for root in witness_roots if abs(sp.im(root)) < sp.Rational(1, 10) ** 12
+    ]
+    witness_checks = {
+        "epsilon_B_positive": sp.simplify(witness[epsilon_B] > 0),
+        "epsilon_M_positive": sp.simplify(witness[epsilon_M] > 0),
+        "p2_positive": sp.simplify(p2.subs(witness) > 0),
+        "p1_negative": sp.simplify(p1.subs(witness) < 0),
+        "p0_positive": sp.simplify(p0.subs(witness) > 0),
+        "discriminant_positive": sp.simplify(discriminant.subs(witness) > 0),
+        "det_at_light_positive": sp.simplify(det_at_light.subs(witness) > 0),
+        "speed_sum_below_two": sp.simplify(speed_sum.subs(witness) < 2),
+        "distinct_real_roots": len(witness_roots_real) == 2,
+        "strictly_subluminal_roots": all(
+            0 < float(sp.re(root)) < 1 for root in witness_roots_real
+        ),
+    }
+    status = (
+        "PASS_STATIC_SILENT_DYNAMIC_CHANNEL_SUBLUMINAL_WINDOW"
+        if all(bool(value) for value in witness_checks.values())
+        else "CHECK_STATIC_SILENT_DYNAMIC_CHANNEL_REPAIR"
+    )
+
+    return {
+        "status": status,
+        "old_overconstraint_audit": phase_spatial_channel_independence_audit(),
+        "baseline_coefficients": {
+            "A0": A0,
+            "B0": B0,
+            "C0": C0,
+            "D0": D0,
+            "M0": M0,
+        },
+        "dynamic_principal_shift": {
+            "A": sp.Eq(sp.Symbol("A_new"), A),
+            "B": sp.Eq(sp.Symbol("B_new"), B),
+            "C": sp.Eq(sp.Symbol("C_new"), C),
+            "D": sp.Eq(sp.Symbol("D_new"), D),
+            "M": sp.Eq(sp.Symbol("M_new"), M),
+            "static_silent": (
+                "C and D are unchanged; the new terms are kinetic/lag terms "
+                "and vanish on a static background"
+            ),
+        },
+        "determinant": det,
+        "polynomial_coefficients": {
+            "p2": p2,
+            "p1": p1,
+            "p0": p0,
+            "discriminant": discriminant,
+            "det_at_s_equals_1": det_at_light,
+            "speed_sum": speed_sum,
+        },
+        "witness_point": witness,
+        "witness_det": witness_det,
+        "witness_roots_exact_s": witness_roots_exact,
+        "witness_roots_s": witness_roots,
+        "witness_checks": witness_checks,
+        "operator_status": (
+            "principal-symbol repair target; derive the covariant static-silent "
+            "operator before article export"
+        ),
+        "reading": (
+            "The p0=p2 constraint is removed by giving the longitudinal medium its "
+            "own dynamic response and by separating the phase-spatial lag from "
+            "the C6/Z constraint.  The witness has two distinct real subluminal roots "
+            "and leaves the static gradient coefficients untouched."
         ),
     }
 
@@ -1933,10 +2204,20 @@ def scalar_speed_referee_audit():
     mixed = article_nonempty_stability_example()
     completion = c6_z_completion_scalar_speed_gate()
     solar_combined = solar_branch_combined_dispersion_gate()
+    channel_independence = phase_spatial_channel_independence_audit()
+    dynamic_channel_repair = solar_branch_dynamic_channel_repair_gate()
 
     status = (
         "PASS_SCALAR_SPEED_AUDIT_SOLAR_COMBINED_SUBLUMINAL"
         if solar_combined["status"] == "PASS_SOLAR_BRANCH_COMBINED_DISPERSION"
+        else "CHECK_OLD_C6_Z_OVERCONSTRAINED__DYNAMIC_CHANNEL_REPAIR_TARGET_AVAILABLE"
+        if solar_combined["status"]
+        == "BOUNDARY_LUMINAL_DOUBLE_ROOT_DEFECTIVE_IN_CURRENT_COMPLETION"
+        and dynamic_channel_repair["status"]
+        == "PASS_STATIC_SILENT_DYNAMIC_CHANNEL_SUBLUMINAL_WINDOW"
+        else "CHECK_SCALAR_SPEED_AUDIT_SOLAR_BOUNDARY_OR_DEFECTIVE"
+        if solar_combined["status"]
+        == "BOUNDARY_LUMINAL_DOUBLE_ROOT_DEFECTIVE_IN_CURRENT_COMPLETION"
         else "CHECK_SCALAR_SPEED_AUDIT"
     )
 
@@ -1955,9 +2236,28 @@ def scalar_speed_referee_audit():
         "solar_combined_det": solar_combined["determinant_in_s"],
         "solar_combined_point": solar_combined["representative_point"],
         "solar_combined_roots_s": solar_combined["representative_roots_s"],
+        "solar_combined_status": solar_combined["status"],
+        "solar_combined_vieta": solar_combined["vieta"],
+        "solar_combined_nullities": {
+            "plus": solar_combined["representative_checks"]["nullity_plus"],
+            "minus": solar_combined["representative_checks"]["nullity_minus"],
+        },
+        "phase_spatial_channel_independence": channel_independence,
+        "dynamic_channel_repair_status": dynamic_channel_repair["status"],
+        "dynamic_channel_repair_roots_exact_s": dynamic_channel_repair[
+            "witness_roots_exact_s"
+        ],
+        "dynamic_channel_repair_roots_s": dynamic_channel_repair["witness_roots_s"],
+        "dynamic_channel_operator_status": dynamic_channel_repair[
+            "operator_status"
+        ],
         "article_export": (
-            "Use the combined Solar F_min plus C6/Z determinant.  Do not export "
-            "the isolated C6/Z determinant as the Solar scalar-speed proof."
+            "The current combined Solar F_min plus C6/Z determinant is a "
+            "defective overconstrained completion, not a subluminal open-region "
+            "proof.  The Python repair target separates the longitudinal "
+            "dynamic channel and the phase-spatial lag while leaving static "
+            "gradient coefficients unchanged; the covariant static-silent "
+            "operator is the next required derivation before article export."
         ),
     }
 
@@ -1968,7 +2268,9 @@ def local_stability_short_path_certificate():
 
     The mixed-mode ledger gives the full principal-symbol criteria.  This short
     path records the decisive non-emptiness result: one explicit coefficient
-    point satisfies the local no-ghost and mixed-mode inequalities.
+    point satisfies the local no-ghost and mixed-mode inequalities.  This is a
+    local p01 coefficient-space result, not the final Solar F_min+C6/Z scalar
+    speed gate; that gate is handled by scalar_speed_referee_audit().
     """
     example = article_nonempty_stability_example()
     checks = example["checks"]
@@ -1988,9 +2290,13 @@ def local_stability_short_path_certificate():
         "mixed_roots_s_omega2_over_k2": example[
             "mixed_roots_s_omega2_over_k2"
         ],
+        "scope": (
+            "local p01 no-ghost/nonempty coefficient-space certificate; the "
+            "Solar scalar-longitudinal C6/Z overconstraint is audited separately"
+        ),
         "short_reading": (
             "one explicit coefficient point satisfies the local no-ghost "
-            "conditions and has luminal phase-longitudinal mixed speeds."
+            "conditions; it is not used as the final Solar scalar-speed proof."
         ),
     }
 
@@ -2150,7 +2456,8 @@ def status_assessment():
         "minkowski": "det M(s)=0 computed; mixed-mode algebraic positivity criteria and one luminal Solar-family point are explicit",
         "flrw": "comoving det M(s)=0 computed; physical speed is a^2*s; same algebraic criteria apply after scaling",
         "schwarzschild": "local orthonormal determinant equals Minkowski; coordinate radial redshift added",
-        "scalar_speed": "old t=-6/5 point and isolated C6/Z determinant are diagnostic only; the Solar export uses the combined F_min+C6/Z determinant with a real luminal witness point",
+        "scalar_speed": "old t=-6/5 point and isolated C6/Z determinant are diagnostic only; the current Solar F_min+C6/Z block overconstrains phase and spatial response, giving a defective luminal boundary; a static-silent dynamic-channel repair target now gives two distinct subluminal roots at principal-symbol level",
+        "foundation": "one base medium has many independent channels; couplings are derived as couplings and not imposed as identities",
         "remaining": "global curved-background perturbation system remains open",
     }
 
@@ -2177,9 +2484,15 @@ def p01_proof_gap_register():
         },
         {
             "gap": "mixed_mode_stability",
-            "current_status": "local 2x2 principal-symbol algebraic criteria are explicit; the physical Solar slice has a combined F_min+C6/Z determinant with one real luminal coefficient point",
-            "risk": "this closes the local homogeneous scalar-speed gate, not the full curved/global Cauchy problem",
-            "next_step": "extend to curved background perturbations and prove global hyperbolicity conditions",
+            "current_status": "local 2x2 principal-symbol algebraic criteria are explicit; the physical Solar slice exposes the old C6/Z p0=p2 overconstraint and a defective luminal double root; the new dynamic-channel repair target removes this constraint and has two distinct subluminal roots",
+            "risk": "the repair is still a principal-symbol target until the covariant static-silent operator is written",
+            "next_step": "derive the covariant static-silent operator whose expansion matches solar_branch_dynamic_channel_repair_gate",
+        },
+        {
+            "gap": "phase_spatial_channel_overconstraint",
+            "current_status": "single_field_many_capabilities_principle and phase_spatial_channel_independence_audit mark the old C6/Z block as overconstraining phase-clock delay and longitudinal deformation",
+            "risk": "using the old block as a final foundation would force the scalar roots onto a defective luminal boundary and would contradict the one-medium-many-channels principle",
+            "next_step": "replace the old single-constraint completion by independent phase, pressure, compression, shear, rotation/topology, resonance and lag channels in the extended core",
         },
         {
             "gap": "lorentz_invariance",
@@ -2462,6 +2775,7 @@ def article_core_theorem():
     power_counting_basis = minimal_response_power_counting_basis_theorem()
     eft_power_counting = eft_cutoff_power_counting_ledger()
     symmetry_gate = covariance_and_spontaneous_breaking_gate()
+    many_channels_principle = single_field_many_capabilities_principle()
     K_Phi_c, K_pi_c = analyze_lorentz_constrained_stability()
     horndeski_map = rg_to_horndeski()
     alphas = bellini_sawicki_alphas()
@@ -2471,6 +2785,8 @@ def article_core_theorem():
     local_stability_short = local_stability_short_path_certificate()
     scalar_speed_audit = scalar_speed_referee_audit()
     solar_combined_dispersion = solar_branch_combined_dispersion_gate()
+    channel_independence = phase_spatial_channel_independence_audit()
+    dynamic_channel_repair = solar_branch_dynamic_channel_repair_gate()
 
     c_Y, c_Y2, c_YI1 = sp.symbols("c_Y c_Y2 c_YI1", real=True)
 
@@ -2492,6 +2808,7 @@ def article_core_theorem():
         "minimal_response_power_counting_basis": power_counting_basis,
         "eft_cutoff_power_counting": eft_power_counting,
         "covariance_and_spontaneous_breaking": symmetry_gate,
+        "single_field_many_capabilities_principle": many_channels_principle,
         "sign_bridge": {
             "Y_to_X": horndeski_map["Y_to_X"],
             "c_X": "-2*c_Y^(Y)",
@@ -2530,6 +2847,8 @@ def article_core_theorem():
         "mixed_mode_gate": mixed_conditions,
         "nonempty_local_stability_example": nonempty_stability,
         "solar_branch_combined_dispersion": solar_combined_dispersion,
+        "phase_spatial_channel_independence": channel_independence,
+        "solar_branch_dynamic_channel_repair": dynamic_channel_repair,
         "scalar_speed_referee_audit": scalar_speed_audit,
         "local_stability_short_path": local_stability_short,
         "article_status": {
@@ -2537,7 +2856,8 @@ def article_core_theorem():
             "sign_convention": "CLOSED_Y_TO_X_BRIDGE",
             "no_ghost": "LOCAL_NO_GHOST_WINDOW_WITH_EXPLICIT_NONEMPTY_POINT",
             "eft_cutoff_power_counting": eft_power_counting["status"],
-            "mixed_modes": "LOCAL_PRINCIPAL_SYMBOL_CRITERIA_WITH_EXPLICIT_SOLAR_COMBINED_LUMINAL_POINT",
+            "foundation": many_channels_principle["status"],
+            "mixed_modes": "OLD_C6_Z_BLOCK_OVERCONSTRAINS_PHASE_AND_SPATIAL_RESPONSE; STATIC_SILENT_DYNAMIC_CHANNEL_REPAIR_TARGET_HAS_SUBLUMINAL_PRINCIPAL_WINDOW",
             "scalar_speed": scalar_speed_audit["status"],
             "local_stability_short_path": local_stability_short["status"],
             "global_stability": "SEPARATE_PROOF_TARGET",
@@ -2618,6 +2938,10 @@ if __name__ == "__main__" and _should_run_main_section("hyperbolicity"):
     print(f"  C6/Z scalar roots c_s^2: {speed_audit['completion_scalar_roots_c_s2']}")
     print(f"  Solar combined det: {speed_audit['solar_combined_det']}")
     print(f"  Solar combined roots c_s^2: {speed_audit['solar_combined_roots_s']}")
+    print(
+        "  dynamic-channel repair roots c_s^2: "
+        f"{speed_audit['dynamic_channel_repair_roots_exact_s']}"
+    )
     print(f"  export: {speed_audit['article_export']}")
 
     print("\n6. Status")
@@ -3119,7 +3443,7 @@ def old_variational_backbone_ledger():
         "conservation_loop": (
             "Bianchi + minimal matter coupling close the system on-shell; "
             "the sourced scalar relation is a reduced-sector consistency relation, "
-            "not a simultaneous second Euler-Lagrange equation for the same scalar."
+            "not an additional simultaneous scalar Euler-Lagrange equation."
         ),
     }
 

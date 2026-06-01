@@ -165,8 +165,8 @@ def universal_potential_to_index_lemma() -> dict[str, Any]:
         "acceleration_from_index": acceleration_from_index,
         "identity": sp.simplify(acceleration_from_potential - acceleration_from_index) == 0,
         "meaning": (
-            "The refractive force is mechanically proved once the RG action "
-            "produces a universal scalar potential F(Pi_eff)."
+            "The refractive force follows once the RG action produces a "
+            "universal scalar potential F(Pi_eff)."
         ),
         "still_open": (
             "minimal one-metric matter coupling supplies the weak universal coupling downstream",
@@ -1888,7 +1888,8 @@ def local_algebraic_scalar_no_go() -> dict[str, Any]:
 
 def two_channel_refractive_stress_ledger() -> dict[str, Any]:
     """
-    Working unification ledger: one refractive h_eff with two stress channels.
+    Working unification ledger: one refractive h_eff with two independent
+    stress channels.
 
     This is not the final stress-tensor theorem.  It records the minimal form
     that can hold both active limits without falsifying either:
@@ -1897,6 +1898,10 @@ def two_channel_refractive_stress_ledger() -> dict[str, Any]:
 
     with h_Newton supported by the p10 Bernoulli/localized-source branch and
     h_vortex supported by the p07 vortex/Delta_p branch.
+
+    One h_eff is a shared refractive output variable. The Bernoulli and vortex
+    channels remain distinct; their coupling and addition must be derived by
+    the stress projection.
     """
 
     r, r0, G, M, a0, c, rho_solid = sp.symbols(
@@ -1947,10 +1952,14 @@ def two_channel_refractive_stress_ledger() -> dict[str, Any]:
         "v2_total": v2_total,
         "far_v2": far_v2,
         "far_btfr_identity": sp.simplify(far_v4 - G * M * a0) == 0,
+        "one_medium_many_channels_rule": (
+            "one refractive output may collect independent stress channels; "
+            "the channels remain distinct"
+        ),
         "meaning": (
-            "A single refractive h_eff can carry both Newton and MOND behavior "
+            "A shared refractive h_eff can carry both Newton and MOND behavior "
             "because the local Bernoulli channel and the vortex anisotropic "
-            "channel are both entries of the active RG stress ledger."
+            "channel enter the active RG stress ledger as separate channels."
         ),
         "next_theorem_target": (
             "use p10 for the local channel and p01/p07 for the vortex channel",
@@ -2664,7 +2673,7 @@ def refractive_force_claim_gate() -> dict[str, ClaimGate]:
                 "n_eff=exp(h_eff) gives the same radial acceleration c^2 h_eff'",
                 "radial stress response gives the Newton inverse-square channel",
                 "anisotropic plateau stress gives the deep-MOND/BTFR channel",
-                "the two channels add inside one h_eff and one n_eff",
+                "the two independent channels add inside one h_eff and one n_eff",
             ),
             open_requirements=(
                 "use the named p10/p01/p07 source branches and transition selector in the weak spherical ledger",
@@ -2790,7 +2799,7 @@ def refractive_force_claim_gate() -> dict[str, ClaimGate]:
                 "p10 enters this source through Pi_B'",
                 "rho_B=Pi_B'/(c^2 h_B') returns the Bernoulli h_B' channel",
                 "p07 enters the same source through -2*Delta_p/r",
-                "the two channels add inside the same h_eff equation",
+                "the two independent channels add inside the same h_eff equation",
             ),
             open_requirements=(
                 "use the full_transition_active_source_selector for the weak spherical transition",
@@ -3006,7 +3015,7 @@ def p13_refractive_force_status() -> dict[str, Any]:
             "p10 first-order bi-conformal Newton branch and charge normalization",
             "p01/p07 weak vortex/MOND stress identities and transition selector",
             "finite coherence cutoff and external-field loading identities",
-            "single active weak stress ledger for p10 Bernoulli and p07 vortex channels",
+            "shared active weak stress ledger for independent p10 Bernoulli and p07 vortex channels",
         ),
         "not_article_ready_scope": (
             "full nonlinear non-spherical PDE theorem",

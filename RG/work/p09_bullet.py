@@ -296,9 +296,9 @@ def step1_collision_dynamics():
        -> გალაქტიკები გაივლიან თავიდან ბოლომდე
 
     3. chi ველი (memory):
-       v_chi მიბმულია გალაქტიკების კინემატიკურ სტრუქტურაზე,
-       რადგან tau_chi მნიშვნელოვნად დიდია.
-       -> chi ჩამორჩება გაზს და მიჰყვება კინემატიკურ სტრუქტურას.
+       v_chi გალაქტიკების კინემატიკურ სტრუქტურას მიჰყვება მეხსიერების
+       არხში, რადგან tau_chi მნიშვნელოვნად დიდია.
+       -> chi ჩამორჩება გაზს და ინარჩუნებს collisionless სტრუქტურის კვალს.
     """
     t, v_0, tau_drag = symbols("t v_0 tau_drag", positive=True)
 
@@ -784,7 +784,7 @@ def bullet_lensing_validation_requirements():
 
 
 def multi_cluster_universality_gate():
-    """The same mechanism must survive other merging clusters."""
+    """The merger-memory law must survive other merging clusters."""
     return {
         "universal_parameters_to_hold_fixed_or_derive": [
             "tau_rel=c/g_vir law",

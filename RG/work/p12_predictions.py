@@ -105,7 +105,7 @@ def x17_atomki_consistency():
         "nearest_harmonic": nearest_integer,
         "harmonic_mass_MeV": harmonic_mev,
         "fractional_error": fractional_error,
-        "verdict": "weak/conditional bridge; do not identify X17 with N=4",
+        "verdict": "weak/conditional bridge; X17 and N=4 stay separated here",
         "needed": "derive an RG transition/coupling rule before claiming an X17 explanation",
         "post_hoc_integer": nearest_integer,
         "operational_claim": False,
@@ -455,7 +455,7 @@ def stage_d5_old_quantum_prediction_ledger():
         },
         "fine_structure_variation": {
             "old_range": "Delta alpha/alpha ~ 1e-7--1e-6 at z~1--3",
-            "status": "conditional; must be tied to a real EM/gauge-completion mechanism before publication",
+            "status": "conditional; must be connected to a real EM/gauge-completion mechanism before publication",
         },
         "gravitational_birefringence": {
             "status": "very small, secondary prediction",

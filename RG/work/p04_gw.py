@@ -611,7 +611,7 @@ def step4b_common_mode_vs_shear_response():
 
     T0_coord = (L_0 / c) * exp(-phi_E)
 
-    # Common scalar/pressure perturbation: same response in both arms.
+    # Common scalar/pressure perturbation: common-mode response in both arms.
     T_x_common = simplify(T0_coord * series(sqrt(1 + sigma), sigma, 0, 2).removeO())
     T_y_common = simplify(T0_coord * series(sqrt(1 + sigma), sigma, 0, 2).removeO())
     delta_T_common = simplify(T_x_common - T_y_common)
@@ -1649,7 +1649,7 @@ def stage_c2_old_wave_status():
         "corrected_from_old": [
             "scalar breathing scaling is kept as A_b/A_T ~ v^2/c^2 ~ r_s/(2r) working estimate, not a theorem",
             "no extra quadratic compactness suppression is asserted",
-            "dipole suppression is now tied to universal s=1/2 and small differential s_excess",
+            "dipole suppression now follows from universal s=1/2 and small differential s_excess",
         ],
         "open": [
             "explicit PN scalar trace-quadrupole coefficient",
