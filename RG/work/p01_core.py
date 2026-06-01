@@ -2048,6 +2048,178 @@ def phase_spatial_channel_independence_audit():
     }
 
 
+def solar_branch_static_silent_dynamic_operator_gate():
+    """
+    Covariant representative for the Solar dynamic-channel repair.
+
+    The old Z invariant uses
+
+        U^A = u^mu partial_mu phi^A,
+
+    whose scalar-longitudinal linearization is
+
+        U_L = dot(pi_L) - grad_L(chi).
+
+    This is a relative phase-normal velocity.  It is useful, but by itself it
+    ties the longitudinal medium velocity to the phase tilt.  The independent
+    response channel is the material-frame velocity with the phase tilt
+    separated:
+
+        Q^A = D_perp^A Phi,        Q_L = grad_L(chi),
+        W^A = U^A + Q^A,           W_L = dot(pi_L).
+
+    A static source has dot(pi_L)=0, hence W^A=0 even when grad(chi) is
+    nonzero.  The operator
+
+        Delta L_dyn = epsilon_B W_A W^A + 2 epsilon_M W_A Q^A
+
+    is therefore static-silent at principal level.  It leaves the Solar static
+    gradient coefficients C,D unchanged, while shifting the scalar-longitudinal
+    dynamic coefficients
+
+        B -> B + epsilon_B,
+        M -> M + epsilon_M.
+
+    This is the missing operator-level step behind
+    solar_branch_dynamic_channel_repair_gate().
+    """
+    omega, k, chi, pi_L = sp.symbols("omega k chi pi_L", real=True)
+    c_Y2, lambda_6, c_Z, epsilon_B, epsilon_M = sp.symbols(
+        "c_Y2 lambda_6 c_Z epsilon_B epsilon_M", positive=True, real=True
+    )
+    s = sp.Symbol("s", real=True)
+
+    fmin_solar_symbol_L2 = sp.expand(
+        4 * c_Y2 * (omega * chi) ** 2
+        + 4 * c_Y2 * (k * pi_L) ** 2
+        + 8
+        * c_Y2
+        * ((omega * chi) * (k * pi_L) + (omega * pi_L) * (k * chi))
+    )
+    completion_symbol_L2 = sp.expand(
+        4 * lambda_6 * (omega * chi - k * pi_L) ** 2
+        + c_Z * (omega * pi_L - k * chi) ** 2
+    )
+
+    phase_normal_velocity_U = omega * pi_L - k * chi
+    material_phase_tilt_Q = k * chi
+    material_dynamic_velocity_W = sp.simplify(
+        phase_normal_velocity_U + material_phase_tilt_Q
+    )
+    dynamic_operator_symbol_L2 = sp.expand(
+        epsilon_B * material_dynamic_velocity_W**2
+        + 2 * epsilon_M * material_dynamic_velocity_W * material_phase_tilt_Q
+    )
+    static_silent_check = sp.simplify(
+        dynamic_operator_symbol_L2.subs({omega: 0, pi_L: 0})
+    )
+
+    total_symbol_L2 = sp.expand(
+        fmin_solar_symbol_L2
+        + completion_symbol_L2
+        + dynamic_operator_symbol_L2
+    )
+    principal_matrix = sp.Matrix(
+        [
+            [
+                sp.simplify(sp.diff(total_symbol_L2, left, right) / 2)
+                for right in (chi, pi_L)
+            ]
+            for left in (chi, pi_L)
+        ]
+    )
+
+    A_new = 4 * (c_Y2 + lambda_6)
+    B_new = c_Z + epsilon_B
+    C_new = c_Z
+    D_new = 4 * (c_Y2 + lambda_6)
+    M_new = 8 * c_Y2 - 4 * lambda_6 - c_Z + epsilon_M
+    expected_matrix = sp.Matrix(
+        [
+            [A_new * omega**2 + C_new * k**2, M_new * omega * k],
+            [M_new * omega * k, B_new * omega**2 + D_new * k**2],
+        ]
+    )
+    matrix_matches_repair = sp.simplify(principal_matrix - expected_matrix) == sp.zeros(
+        2
+    )
+
+    determinant = sp.factor(principal_matrix.det())
+    determinant_in_s = sp.factor(
+        sp.expand(determinant).subs(omega**2, s * k**2) / k**4
+    )
+    expected_det = sp.factor((A_new * s + C_new) * (B_new * s + D_new) - M_new**2 * s)
+    determinant_matches_repair = sp.simplify(determinant_in_s - expected_det) == 0
+
+    witness = {
+        c_Y2: sp.Integer(1),
+        lambda_6: sp.Rational(1, 4),
+        c_Z: sp.Integer(1),
+        epsilon_B: sp.Integer(1),
+        epsilon_M: sp.sqrt(sp.Rational(83, 2)) - sp.Integer(6),
+    }
+    witness_det = sp.factor(determinant_in_s.subs(witness))
+    witness_roots_exact = []
+    for root, multiplicity in sp.roots(witness_det, s).items():
+        witness_roots_exact.extend([sp.simplify(root)] * multiplicity)
+    witness_roots = [sp.N(root, 16) for root in witness_roots_exact]
+    witness_checks = {
+        "static_silent": static_silent_check == 0,
+        "matrix_matches_repair": matrix_matches_repair,
+        "determinant_matches_repair": determinant_matches_repair,
+        "witness_det_matches_article": sp.simplify(
+            witness_det - (20 * s**2 - 29 * s + 10) / 2
+        )
+        == 0,
+        "strictly_subluminal_roots": all(
+            0 < float(sp.re(root)) < 1 for root in witness_roots
+        ),
+    }
+
+    status = (
+        "PASS_COVARIANT_STATIC_SILENT_DYNAMIC_OPERATOR_EXPANDS_TO_REPAIR"
+        if all(bool(value) for value in witness_checks.values())
+        else "CHECK_COVARIANT_STATIC_SILENT_DYNAMIC_OPERATOR"
+    )
+
+    return {
+        "status": status,
+        "covariant_operator": (
+            "Delta L_dyn = epsilon_B W_A W^A + 2 epsilon_M W_A Q^A, "
+            "with U^A=u^mu partial_mu phi^A, Q^A=D_perp^A Phi, "
+            "and W^A=U^A+Q^A"
+        ),
+        "linear_dictionary": {
+            "U_L": phase_normal_velocity_U,
+            "Q_L": material_phase_tilt_Q,
+            "W_L": material_dynamic_velocity_W,
+        },
+        "dynamic_operator_symbol_L2": dynamic_operator_symbol_L2,
+        "static_silent_check": static_silent_check,
+        "principal_matrix": principal_matrix,
+        "expected_matrix": expected_matrix,
+        "coefficient_shifts": {
+            "A_new": A_new,
+            "B_new": B_new,
+            "C_new": C_new,
+            "D_new": D_new,
+            "M_new": M_new,
+        },
+        "determinant_in_s": determinant_in_s,
+        "expected_determinant_in_s": expected_det,
+        "witness_point": witness,
+        "witness_det": witness_det,
+        "witness_roots_exact_s": witness_roots_exact,
+        "witness_roots_s": witness_roots,
+        "checks": witness_checks,
+        "article_status": (
+            "operator-level static-silent repair available at local principal "
+            "symbol level; full curved-background hyperbolicity remains the "
+            "next technical layer"
+        ),
+    }
+
+
 def solar_branch_dynamic_channel_repair_gate():
     """
     Static-silent dynamic-channel repair target for the Solar scalar block.
@@ -2128,6 +2300,7 @@ def solar_branch_dynamic_channel_repair_gate():
         if all(bool(value) for value in witness_checks.values())
         else "CHECK_STATIC_SILENT_DYNAMIC_CHANNEL_REPAIR"
     )
+    operator_gate = solar_branch_static_silent_dynamic_operator_gate()
 
     return {
         "status": status,
@@ -2164,15 +2337,14 @@ def solar_branch_dynamic_channel_repair_gate():
         "witness_roots_exact_s": witness_roots_exact,
         "witness_roots_s": witness_roots,
         "witness_checks": witness_checks,
-        "operator_status": (
-            "principal-symbol repair target; derive the covariant static-silent "
-            "operator before article export"
-        ),
+        "operator_status": operator_gate["status"],
+        "covariant_operator_gate": operator_gate,
         "reading": (
             "The p0=p2 constraint is removed by giving the longitudinal medium its "
             "own dynamic response and by separating the phase-spatial lag from "
             "the C6/Z constraint.  The witness has two distinct real subluminal roots "
-            "and leaves the static gradient coefficients untouched."
+            "and leaves the static gradient coefficients untouched.  The local "
+            "operator is Delta L_dyn=epsilon_B W_A W^A+2 epsilon_M W_A Q^A."
         ),
     }
 
@@ -2206,10 +2378,18 @@ def scalar_speed_referee_audit():
     solar_combined = solar_branch_combined_dispersion_gate()
     channel_independence = phase_spatial_channel_independence_audit()
     dynamic_channel_repair = solar_branch_dynamic_channel_repair_gate()
+    dynamic_operator_gate = solar_branch_static_silent_dynamic_operator_gate()
 
     status = (
         "PASS_SCALAR_SPEED_AUDIT_SOLAR_COMBINED_SUBLUMINAL"
         if solar_combined["status"] == "PASS_SOLAR_BRANCH_COMBINED_DISPERSION"
+        else "PASS_SCALAR_SPEED_AUDIT_DYNAMIC_OPERATOR_REPAIRS_OLD_C6_Z_OVERCONSTRAINT"
+        if solar_combined["status"]
+        == "BOUNDARY_LUMINAL_DOUBLE_ROOT_DEFECTIVE_IN_CURRENT_COMPLETION"
+        and dynamic_channel_repair["status"]
+        == "PASS_STATIC_SILENT_DYNAMIC_CHANNEL_SUBLUMINAL_WINDOW"
+        and dynamic_operator_gate["status"]
+        == "PASS_COVARIANT_STATIC_SILENT_DYNAMIC_OPERATOR_EXPANDS_TO_REPAIR"
         else "CHECK_OLD_C6_Z_OVERCONSTRAINED__DYNAMIC_CHANNEL_REPAIR_TARGET_AVAILABLE"
         if solar_combined["status"]
         == "BOUNDARY_LUMINAL_DOUBLE_ROOT_DEFECTIVE_IN_CURRENT_COMPLETION"
@@ -2251,13 +2431,15 @@ def scalar_speed_referee_audit():
         "dynamic_channel_operator_status": dynamic_channel_repair[
             "operator_status"
         ],
+        "dynamic_channel_operator_gate": dynamic_operator_gate,
         "article_export": (
             "The current combined Solar F_min plus C6/Z determinant is a "
             "defective overconstrained completion, not a subluminal open-region "
-            "proof.  The Python repair target separates the longitudinal "
-            "dynamic channel and the phase-spatial lag while leaving static "
-            "gradient coefficients unchanged; the covariant static-silent "
-            "operator is the next required derivation before article export."
+            "proof.  The covariant static-silent operator "
+            "Delta L_dyn=epsilon_B W_A W^A+2 epsilon_M W_A Q^A separates the "
+            "longitudinal dynamic channel and the phase-spatial lag while "
+            "leaving static gradient coefficients unchanged.  The remaining "
+            "layer is full curved-background hyperbolicity."
         ),
     }
 
@@ -2456,7 +2638,7 @@ def status_assessment():
         "minkowski": "det M(s)=0 computed; mixed-mode algebraic positivity criteria and one luminal Solar-family point are explicit",
         "flrw": "comoving det M(s)=0 computed; physical speed is a^2*s; same algebraic criteria apply after scaling",
         "schwarzschild": "local orthonormal determinant equals Minkowski; coordinate radial redshift added",
-        "scalar_speed": "old t=-6/5 point and isolated C6/Z determinant are diagnostic only; the current Solar F_min+C6/Z block overconstrains phase and spatial response, giving a defective luminal boundary; a static-silent dynamic-channel repair target now gives two distinct subluminal roots at principal-symbol level",
+        "scalar_speed": "old t=-6/5 point and isolated C6/Z determinant are diagnostic only; the current Solar F_min+C6/Z block overconstrains phase and spatial response, giving a defective luminal boundary; the covariant static-silent dynamic operator gives two distinct subluminal roots at local principal-symbol level",
         "foundation": "one base medium has many independent channels; couplings are derived as couplings and not imposed as identities",
         "remaining": "global curved-background perturbation system remains open",
     }
@@ -2484,9 +2666,9 @@ def p01_proof_gap_register():
         },
         {
             "gap": "mixed_mode_stability",
-            "current_status": "local 2x2 principal-symbol algebraic criteria are explicit; the physical Solar slice exposes the old C6/Z p0=p2 overconstraint and a defective luminal double root; the new dynamic-channel repair target removes this constraint and has two distinct subluminal roots",
-            "risk": "the repair is still a principal-symbol target until the covariant static-silent operator is written",
-            "next_step": "derive the covariant static-silent operator whose expansion matches solar_branch_dynamic_channel_repair_gate",
+            "current_status": "local 2x2 principal-symbol algebraic criteria are explicit; the physical Solar slice exposes the old C6/Z p0=p2 overconstraint and a defective luminal double root; the covariant static-silent dynamic operator removes this constraint and has two distinct subluminal roots",
+            "risk": "the operator is verified at local principal-symbol level; full curved-background hyperbolicity and nonlinear completion are still open",
+            "next_step": "derive the full curved-background principal symbol for the repaired dynamic-channel operator",
         },
         {
             "gap": "phase_spatial_channel_overconstraint",
