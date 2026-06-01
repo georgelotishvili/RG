@@ -188,31 +188,22 @@ def audit_exponential_effective_energy_conditions():
 
 def derive_background_completed_medium_nec_gate():
     """
-    Total-medium NEC gate for the compact exponential branch.
+    Deprecated compatibility ledger for the old background-completed NEC gate.
 
-    The exponential exterior is sourced by a pressure deficit relative to the
-    unperturbed base medium.  The Einstein-profile source is therefore the
-    subtracted active contrast:
+    The old version treated a homogeneous positive base load as if it could be
+    added to the same exterior field equation without changing the metric.
+    That is not an article-safe result.  The compact exterior field equation is
+    closed by the active projected Bernoulli contrast:
 
         rho_a=-Delta_P, p_r_a=-Delta_P, p_t_a=+Delta_P.
 
-    Energy conditions, however, apply to the total physical medium.  Add a
-    homogeneous local background load (rho_*, p_*).  Then
-
-        rho_tot=rho_*-Delta_P,
-        p_r_tot=p_*-Delta_P,
-        p_t_tot=p_*+Delta_P.
-
-    The radial NEC is not an exotic-matter obstruction if the base medium has
-    enough positive null capacity:
-
-        rho_*+p_* >= 2 max(Delta_P).
-
-    This is the precise RefG reading: the active source is a finite pressure
-    deficit on a positive substrate, not a standalone negative-energy fluid.
+    Therefore the active source has negative radial null load.  A positive
+    homogeneous base background belongs to a different field-equation layer;
+    inserting it as a gravitating source would change the metric and require a
+    new exterior derivation.  Keep this function only so old ledgers do not
+    silently preserve the obsolete PASS status.
     """
     r, r_s, G = sp.symbols('r r_s G', positive=True, real=True)
-    rho_star, p_star = sp.symbols('rho_star p_star', positive=True, real=True)
     u = sp.Symbol('u', positive=True, real=True)
 
     delta_p = sp.simplify(r_s**2 * sp.exp(-r_s / r) / (32 * sp.pi * G * r**4))
@@ -229,22 +220,8 @@ def derive_background_completed_medium_nec_gate():
         "radial_null_load_a": sp.simplify(-2 * delta_p),
         "tangential_null_load_a": sp.Integer(0),
     }
-    total_medium = {
-        "rho_total": sp.simplify(rho_star - delta_p),
-        "p_r_total": sp.simplify(p_star - delta_p),
-        "p_t_total": sp.simplify(p_star + delta_p),
-        "radial_NEC_total": sp.simplify(rho_star + p_star - 2 * delta_p),
-        "tangential_NEC_total": sp.simplify(rho_star + p_star),
-        "WEC_density_total": sp.simplify(rho_star - delta_p),
-    }
-    sufficient_conditions = {
-        "density_nonnegative_all_r": sp.Ge(rho_star, delta_max),
-        "radial_NEC_nonnegative_all_r": sp.Ge(rho_star + p_star, 2 * delta_max),
-        "tangential_NEC_nonnegative_all_r": sp.Ge(rho_star + p_star, 0),
-    }
-
     return {
-        "total_medium_nec_status": "PASS_TOTAL_MEDIUM_NEC_REDUCES_TO_FINITE_BACKGROUND_CAPACITY_BOUND",
+        "total_medium_nec_status": "DEPRECATED_BACKGROUND_CAPACITY_NOT_AN_EXTERIOR_FIELD_EQUATION_RESULT",
         "Delta_P": sp.Eq(sp.Symbol('Delta_P'), delta_p),
         "Delta_P_shape_u": sp.Eq(sp.Symbol('Delta_P(u)'), delta_u),
         "dDeltaP_du": delta_u_derivative,
@@ -254,19 +231,20 @@ def derive_background_completed_medium_nec_gate():
             "Delta_P_max": delta_max,
         },
         "active_subtracted_contrast": active_contrast,
-        "total_physical_medium": total_medium,
-        "sufficient_total_medium_conditions": sufficient_conditions,
+        "removed_old_total_medium_completion": (
+            "rho_star/p_star completion removed from active article logic; "
+            "it would require a new exterior field equation and a rederived metric"
+        ),
         "physical_reading": (
-            "the negative radial null load belongs to the subtracted active "
-            "deficit that curves the metric; the total base medium satisfies "
-            "NEC whenever its positive background null capacity exceeds the "
-            "finite Bernoulli-deficit peak"
+            "the negative radial null load is the active phase-pressure "
+            "deficit that closes the compact exterior field equation.  A "
+            "positive homogeneous base load is not part of this exterior "
+            "equation unless the metric is rederived with that load included."
         ),
         "article_rule": (
-            "do not present the compact source as negative-energy ordinary "
-            "matter; present it as a finite pressure deficit on a positive "
-            "base medium, with total-medium NEC controlled by rho_*+p_* >= "
-            "16*exp(-4)/(pi*G*r_s^2)"
+            "do not use the old total-medium NEC capacity bound as an article "
+            "claim.  State the active radial NEC violation and read it as the "
+            "RefG base-medium phase-pressure deficit."
         ),
     }
 
@@ -2330,8 +2308,8 @@ def singularity_strength_ledger() -> list[str]:
         "The algebraic F_min polynomial has no phase-gradient invariant, while the compact exponential source is the Bernoulli gradient profile Delta_P=exp(phi)*(phi')^2/(32*pi*G).",
         "A covariant Bernoulli gradient source L_B=Z/(8*pi*G) with Z=-g^mn*d_m h*d_n h exactly supplies the exponential mixed source on the static branch.",
         "The physical RefG export uses the projected medium source L_B_perp=Z_perp/(8*pi*G), Z_perp=(u^m*u^n-g^mn)*d_m h*d_n h; on the static branch it gives the same mixed tensor without exporting a standalone phantom scalar.",
-        "The background-subtracted active deficit has negative radial null load in the ordinary Einstein-fluid audit; this is not the total base-medium energy tensor.",
-        "The total RefG medium NEC reduces to the finite capacity bound rho_*+p_* >= 2*max(Delta_P)=16*exp(-4)/(pi*G*r_s^2).",
+        "The active deficit has negative radial null load in the ordinary Einstein-fluid audit; in RefG this is the phase-pressure deficit signature, not ordinary positive matter.",
+        "A homogeneous positive base load is not added to the same exterior field equation; if it gravitates, the exterior metric must be rederived.",
         "The static exponential exterior has ADM mass r_s/2 in geometric units and physical mass c^2*r_s/(2G); the Komar sphere gives the same value.",
         "The Bernoulli coordinate source measure is finite, but the proper-volume source integral is finite only after the core cutoff r_c is inserted.",
         "With the C2 core inserted, the effective proper-volume source charge is finite for finite r_c.",
@@ -3477,7 +3455,6 @@ def compact_central_claim_gate():
     scalar_probe = stage_a3_scalar_perturbation_verification()
     short_path = compact_exterior_short_path_certificate()
     projected_source = derive_projected_bernoulli_medium_source()
-    total_nec = derive_background_completed_medium_nec_gate()
     energy_bookkeeping = derive_adm_komar_and_proper_energy_bookkeeping()
     junction = derive_c2_junction_stress_closure()
     core_source = derive_c2_core_field_equation_source()
@@ -3521,9 +3498,9 @@ def compact_central_claim_gate():
         "effective_source_status": "GEOMETRIC_SOURCE_PROFILE_MATCHES_BERNOULLI_DELTA_P",
         "p01_source_closure": "F_EQ_R_BRANCH_FAILS__EXACT_IMPLICIT_NONTRIVIAL_F_BRANCH_DERIVED_FOR_ANISOTROPY__ALGEBRAIC_FMIN_ALONE_INSUFFICIENT",
         "bernoulli_gradient_source": projected_source["refg_medium_export"],
-        "effective_energy_conditions": "SUBTRACTED_ACTIVE_DEFICIT_HAS_NEGATIVE_RADIAL_NULL_LOAD__TOTAL_MEDIUM_NEC_HAS_FINITE_BACKGROUND_CAPACITY_BOUND",
-        "total_medium_nec_status": total_nec["total_medium_nec_status"],
-        "total_medium_nec_bound": total_nec["sufficient_total_medium_conditions"]["radial_NEC_nonnegative_all_r"],
+        "effective_energy_conditions": "ACTIVE_DEFICIT_HAS_NEGATIVE_RADIAL_NULL_LOAD__REFG_READING_IS_PHASE_PRESSURE_DEFICIT",
+        "active_nec_status": "RADIAL_NEC_VIOLATION_IS_ACTIVE_DEFICIT_SIGNATURE",
+        "background_capacity_rule": "DO_NOT_USE_AS_SAME_EXTERIOR_FIELD_EQUATION_RESULT",
         "core_status": "C2_CORE_SOURCE_LEDGER_AND_BRANCH_ACTION_DENSITY_CLOSED__OFF_BRANCH_EFT_EXTENSION_OPEN",
         "core_field_equation_status": core_source["field_equation_status"],
         "core_source_center_status": core_source["finite_center_status"],

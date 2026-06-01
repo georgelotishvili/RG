@@ -2468,6 +2468,162 @@ def solar_branch_dynamic_channel_repair_gate():
     }
 
 
+def solar_branch_full_gradient_strong_hyperbolicity_gate():
+    """
+    Referee-facing closure of the repaired Solar scalar-longitudinal gate.
+
+    The question is whether the displayed repaired window used the full flat
+    principal gradient sector or only a shortened block.  This gate starts from
+    the full p01 coefficients containing Y, I1, I2, I3 and Y*I1, inserts the
+    p03 Solar-family coefficient relations, and only then adds the C6/Z and
+    static-silent dynamic-channel operator.  The added operator changes the
+    kinetic/lag entries B and M, but leaves the full gradient entries C and D
+    unchanged.
+
+    At the article witness point the repaired characteristic roots are
+
+        s_-= (29-sqrt(41))/40,  s_+=(29+sqrt(41))/40,
+
+    hence they are real, distinct and strictly subluminal.  The old double
+    luminal root is recorded as defective; the repaired witness has no Jordan
+    coalescence at that boundary point because the roots no longer coalesce.
+    """
+    c_Y, c_Y2, c_I1, c_I1sq, c_I2, c_I3, c_YI1 = sp.symbols(
+        "c_Y c_Y2 c_I1 c_I1sq c_I2 c_I3 c_YI1", real=True
+    )
+    lambda_6, c_Z, epsilon_B, epsilon_M = sp.symbols(
+        "lambda_6 c_Z epsilon_B epsilon_M", positive=True, real=True
+    )
+    s = sp.Symbol("s", real=True)
+
+    coeffs = quadratic_principal_coefficients(scale_factor=1)
+    solar_family = {
+        c_Y: -4 * c_Y2 - 2 * c_YI1,
+        c_I1: 4 * c_Y2 + 2 * c_YI1,
+        c_I1sq: c_Y2,
+        c_I2: -10 * c_Y2 - 3 * c_YI1,
+        c_I3: 8 * c_Y2 + 4 * c_YI1,
+    }
+    physical_solar_slice = {**solar_family, c_YI1: 2 * c_Y2}
+
+    fmin_A = sp.simplify(coeffs["A"].subs(physical_solar_slice))
+    fmin_B = sp.simplify(coeffs["B_long"].subs(physical_solar_slice))
+    fmin_C = sp.simplify(coeffs["C"].subs(physical_solar_slice))
+    fmin_D = sp.simplify(coeffs["D"].subs(physical_solar_slice))
+    fmin_M = sp.simplify(coeffs["M_mix"].subs(physical_solar_slice))
+
+    A_new = sp.simplify(fmin_A + 4 * lambda_6)
+    B_new = sp.simplify(c_Z + epsilon_B)
+    C_new = sp.simplify(fmin_C + c_Z)
+    D_new = sp.simplify(fmin_D + 4 * lambda_6)
+    M_new = sp.simplify(fmin_M - 4 * lambda_6 - c_Z + epsilon_M)
+    repaired_det = sp.factor(
+        (A_new * s + C_new) * (B_new * s + D_new) - M_new**2 * s
+    )
+
+    operator_gate = solar_branch_static_silent_dynamic_operator_gate()
+    repair_gate = solar_branch_dynamic_channel_repair_gate()
+    region_gate = solar_branch_dynamic_channel_admissible_region()
+    old_combined = solar_branch_combined_dispersion_gate()
+
+    witness = {
+        c_Y2: sp.Integer(1),
+        lambda_6: sp.Rational(1, 4),
+        c_Z: sp.Integer(1),
+        epsilon_B: sp.Integer(1),
+        epsilon_M: sp.sqrt(sp.Rational(83, 2)) - sp.Integer(6),
+    }
+    witness_det = sp.factor(repaired_det.subs(witness))
+    witness_roots = sorted(
+        [sp.simplify(root) for root in sp.roots(witness_det, s).keys()],
+        key=lambda value: float(sp.N(value)),
+    )
+    expected_roots = [
+        sp.simplify((sp.Integer(29) - sp.sqrt(41)) / 40),
+        sp.simplify((sp.Integer(29) + sp.sqrt(41)) / 40),
+    ]
+    root_match = (
+        len(witness_roots) == 2
+        and all(
+            sp.simplify(root - expected) == 0
+            for root, expected in zip(witness_roots, expected_roots)
+        )
+    )
+    distinct_roots = (
+        len(witness_roots) == 2
+        and sp.simplify(witness_roots[1] - witness_roots[0]) != 0
+    )
+    strictly_subluminal = all(
+        0 < float(sp.N(root)) < 1 for root in witness_roots
+    )
+    discriminant = sp.factor(sp.Poly(witness_det, s).discriminant())
+
+    checks = {
+        "full_Fmin_gradient_C_from_all_invariants": fmin_C == 0,
+        "full_Fmin_gradient_D_from_all_invariants": sp.simplify(fmin_D - 4 * c_Y2)
+        == 0,
+        "C_new_contains_full_gradient_sector": sp.simplify(C_new - c_Z) == 0,
+        "D_new_contains_full_gradient_sector": sp.simplify(
+            D_new - 4 * (c_Y2 + lambda_6)
+        )
+        == 0,
+        "dynamic_operator_static_silent": operator_gate["checks"]["static_silent"],
+        "dynamic_operator_matrix_matches": operator_gate["checks"][
+            "matrix_matches_repair"
+        ],
+        "finite_window": region_gate["status"]
+        == "PASS_REPAIRED_DYNAMIC_CHANNEL_HAS_FINITE_SUBLUMINAL_REGION",
+        "old_double_root_recorded_defective": old_combined["status"]
+        == "BOUNDARY_LUMINAL_DOUBLE_ROOT_DEFECTIVE_IN_CURRENT_COMPLETION",
+        "witness_roots_match_closed_form": root_match,
+        "witness_roots_distinct": distinct_roots,
+        "witness_roots_strictly_subluminal": strictly_subluminal,
+        "positive_discriminant": sp.simplify(discriminant > 0),
+    }
+
+    status = (
+        "PASS_FULL_GRADIENT_REPAIRED_STRONG_HYPERBOLICITY_GATE"
+        if all(bool(value) for value in checks.values())
+        and repair_gate["status"] == "PASS_STATIC_SILENT_DYNAMIC_CHANNEL_SUBLUMINAL_WINDOW"
+        else "CHECK_FULL_GRADIENT_REPAIRED_STRONG_HYPERBOLICITY_GATE"
+    )
+
+    return {
+        "status": status,
+        "solar_family_relations": solar_family,
+        "physical_solar_slice": {"c_YI1": sp.Eq(c_YI1, 2 * c_Y2)},
+        "full_Fmin_coefficients_on_slice": {
+            "A_F": fmin_A,
+            "B_F": fmin_B,
+            "C_F": fmin_C,
+            "D_F": fmin_D,
+            "M_F": fmin_M,
+        },
+        "repaired_coefficients": {
+            "A_new": A_new,
+            "B_new": B_new,
+            "C_new": C_new,
+            "D_new": D_new,
+            "M_new": M_new,
+        },
+        "repaired_determinant": repaired_det,
+        "witness_point": witness,
+        "witness_determinant": witness_det,
+        "witness_roots_exact_s": witness_roots,
+        "witness_roots_numeric_s": [sp.N(root, 16) for root in witness_roots],
+        "witness_discriminant": discriminant,
+        "checks": checks,
+        "article_statement": (
+            "The repaired scalar-longitudinal window uses the full flat "
+            "gradient sector after the p03 Solar-family relations are inserted. "
+            "The static-silent dynamic operator leaves C and D unchanged and "
+            "opens a finite region with two distinct real subluminal roots; the "
+            "old luminal double root is a defective boundary diagnostic, not "
+            "the exported stability point."
+        ),
+    }
+
+
 def scalar_speed_referee_audit():
     """
     Referee-facing audit of the scalar-speed objection.
@@ -2499,6 +2655,9 @@ def scalar_speed_referee_audit():
     dynamic_channel_repair = solar_branch_dynamic_channel_repair_gate()
     dynamic_operator_gate = solar_branch_static_silent_dynamic_operator_gate()
     admissible_region = solar_branch_dynamic_channel_admissible_region()
+    full_gradient_hyperbolicity = (
+        solar_branch_full_gradient_strong_hyperbolicity_gate()
+    )
 
     status = (
         "PASS_SCALAR_SPEED_AUDIT_SOLAR_COMBINED_SUBLUMINAL"
@@ -2512,6 +2671,8 @@ def scalar_speed_referee_audit():
         == "PASS_COVARIANT_STATIC_SILENT_DYNAMIC_OPERATOR_EXPANDS_TO_REPAIR"
         and admissible_region["status"]
         == "PASS_REPAIRED_DYNAMIC_CHANNEL_HAS_FINITE_SUBLUMINAL_REGION"
+        and full_gradient_hyperbolicity["status"]
+        == "PASS_FULL_GRADIENT_REPAIRED_STRONG_HYPERBOLICITY_GATE"
         else "CHECK_OLD_C6_Z_OVERCONSTRAINED__DYNAMIC_CHANNEL_REPAIR_TARGET_AVAILABLE"
         if solar_combined["status"]
         == "BOUNDARY_LUMINAL_DOUBLE_ROOT_DEFECTIVE_IN_CURRENT_COMPLETION"
@@ -2555,6 +2716,7 @@ def scalar_speed_referee_audit():
         ],
         "dynamic_channel_operator_gate": dynamic_operator_gate,
         "dynamic_channel_admissible_region": admissible_region,
+        "full_gradient_hyperbolicity_gate": full_gradient_hyperbolicity,
         "article_export": (
             "The current combined Solar F_min plus C6/Z determinant is a "
             "defective overconstrained completion, not a subluminal open-region "
@@ -2562,9 +2724,10 @@ def scalar_speed_referee_audit():
             "Delta L_dyn=epsilon_B W_A W^A+2 epsilon_M W_A Q^A separates the "
             "longitudinal dynamic channel and the phase-spatial lag while "
             "leaving static gradient coefficients unchanged.  On the Solar "
-            "representative slice the repaired determinant has a finite open "
-            "subluminal region in (epsilon_B, epsilon_M).  The remaining layer "
-            "is full curved-background hyperbolicity."
+            "representative slice, after the full Y/I1/I2/I3/YI1 gradient "
+            "sector is inserted, the repaired determinant has a finite open "
+            "subluminal region and two distinct real roots.  The remaining "
+            "layer is full curved-background hyperbolicity."
         ),
     }
 

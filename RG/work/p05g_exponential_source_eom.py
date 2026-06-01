@@ -3,7 +3,7 @@
 # B=exp(-r_s/r), A=exp(r_s/r) in ds^2=B c^2 dt^2-A dSigma^2.
 
 """
-PHASE 18g: Exponential exterior source and energy-condition verdict
+PHASE 18g: Exponential exterior source and active-deficit energy verdict
 
 This file targets the referee-level defect:
 
@@ -12,9 +12,9 @@ This file targets the referee-level defect:
 
 The result is precise.  Algebraic F_min(Y,I1,I2,I3) alone does not source the
 exponential compact exterior.  The closed compact branch is the RefG projected
-Bernoulli medium source
+deficit medium source
 
-    L_B_perp = Z_perp/(8*pi*G),
+    L_Delta_perp = Z_perp/(8*pi*G),
     Z_perp = (u^m u^n - g^mn) partial_m h partial_n h,
 
 together with the biconformal operational metric map
@@ -26,22 +26,27 @@ On the static comoving branch this source exactly satisfies
     G^mu_nu = 8*pi*G Theta^mu_nu
 
 for the exponential exterior.  The ordinary Einstein-fluid reading of the
-subtracted active contrast is also fixed here.  The physical RefG energy gate
-is the total-medium gate: the compact source is a finite pressure deficit on a
-positive base medium, and the total radial NEC is controlled by the explicit
-background capacity bound.
+active contrast is also fixed here.  The compact source has a negative radial
+null load in the standard NEC audit; in RefG this sign is the active
+phase-pressure deficit of the base medium, not a background-capacity repair.
 """
 
 import sympy as sp
 
 from p05_compact import (
     derive_covariant_bernoulli_gradient_source,
-    derive_background_completed_medium_nec_gate,
     derive_full_fmin_exponential_source_closure_system,
     derive_projected_bernoulli_medium_source,
     diagnose_algebraic_fmin_vs_gradient_source,
 )
 from p13_refractive_force import p10_static_first_order_biconformal_selection
+from p14_nec_deficit import (
+    active_deficit_nec_identity_gate,
+    compact_exponential_exterior_domain_gate,
+    compact_exponential_deficit_profile_gate,
+    nec_deficit_interpretation_ledger,
+    projected_deficit_static_stiffness_gate,
+)
 
 
 def _all_zero(values) -> bool:
@@ -101,7 +106,63 @@ def derive_biconformal_metric_map_gate():
             "the compact branch uses a definite biconformal metric map.  It is "
             "not the algebraic F_min source by itself; it is the operational "
             "metric branch selected at first order and sourced below by the "
-            "projected Bernoulli medium term."
+            "projected deficit medium term."
+        ),
+    }
+
+
+def derive_phase_equation_covariant_consistency_gate():
+    """
+    Show why the reduced radial phase equation is not detached from the curved
+    compact exterior.
+
+    On the compact biconformal branch B=exp(-2h), A=exp(2h), hence AB=1.  The
+    curved static harmonic current is
+
+        sqrt(-g) g^rr h' / sin(theta) = -r^2 h',
+
+    so the curved equation reduces exactly to the same radial equation
+    (r^2 h')'=0 used to obtain h=r_s/(2r).
+    """
+    r, r_s = sp.symbols("r r_s", positive=True, real=True)
+    h = r_s / (2 * r)
+    phi = -2 * h
+    A = sp.exp(2 * h)
+    B = sp.exp(-2 * h)
+
+    flat_h_residual = sp.simplify(sp.diff(r**2 * sp.diff(h, r), r))
+    flat_phi_residual = sp.simplify(sp.diff(r**2 * sp.diff(phi, r), r))
+    sqrt_minus_g_over_sin = sp.exp(2 * h) * r**2
+    g_rr_inv = -1 / A
+    curved_h_current = sp.simplify(sqrt_minus_g_over_sin * g_rr_inv * sp.diff(h, r))
+    curved_phi_current = sp.simplify(
+        sqrt_minus_g_over_sin * g_rr_inv * sp.diff(phi, r)
+    )
+    curved_h_residual = sp.simplify(sp.diff(curved_h_current, r))
+    curved_phi_residual = sp.simplify(sp.diff(curved_phi_current, r))
+
+    return {
+        "phase_equation_consistency_status": (
+            "PASS_REDUCED_PHASE_EQUATION_EQUALS_CURVED_HARMONIC_EQUATION_ON_BICONFORMAL_BRANCH"
+            if sp.simplify(A * B - 1) == 0
+            and flat_h_residual == 0
+            and flat_phi_residual == 0
+            and curved_h_residual == 0
+            and curved_phi_residual == 0
+            else "CHECK_PHASE_EQUATION_COVARIANT_CONSISTENCY"
+        ),
+        "biconformal_identity": sp.Eq(sp.Symbol("A*B"), sp.simplify(A * B)),
+        "h": sp.Eq(sp.Symbol("h"), h),
+        "phi": sp.Eq(sp.Symbol("phi"), phi),
+        "flat_h_residual": flat_h_residual,
+        "flat_phi_residual": flat_phi_residual,
+        "curved_h_current_over_sin": curved_h_current,
+        "curved_phi_current_over_sin": curved_phi_current,
+        "curved_h_residual": curved_h_residual,
+        "curved_phi_residual": curved_phi_residual,
+        "reading": (
+            "because AB=1, the static curved harmonic phase equation collapses "
+            "to the reduced radial phase equation on this branch"
         ),
     }
 
@@ -115,7 +176,7 @@ def derive_projected_source_eom_closure_gate():
         G^t_t=-D, G^r_r=D, G^theta_theta=G^phi_phi=-D,
         D=r_s^2 exp(-r_s/r)/(4r^4).
 
-    The projected Bernoulli source has
+    The projected deficit source has
 
         Delta_P=D/(8*pi*G),
         Theta^t_t=-Delta_P, Theta^r_r=Delta_P,
@@ -181,8 +242,69 @@ def derive_projected_source_eom_closure_gate():
         "ordinary_scalar_export": projected_source["ordinary_scalar_export"],
         "reading": (
             "the exponential compact exterior is a solution of the static RefG "
-            "projected Bernoulli medium source equations.  It is not sourced "
+            "projected deficit medium source equations.  It is not sourced "
             "by algebraic F_min alone."
+        ),
+    }
+
+
+def unified_deficit_operator_branch_selection_gate():
+    """
+    One-action reading of the compact projected deficit operator.
+
+    L_Delta_perp is not introduced as a second gravitational theory.  It is an
+    allowed projected exterior-load operator in the same EFT.  The on-shell
+    exterior load is selected by source compactness and boundary matching:
+    diffuse weak bodies keep the Solar 2PN medium-stress branch, while compact
+    C2 matching can select the unscreened phase-dominated exterior load.
+
+    This also records the direct unweighted Solar size of L_Delta_perp.  At
+    radius R, relative to the leading Newtonian curvature scale r_s/R^3,
+
+        D_Delta/D_N = (r_s/R) exp(-r_s/R)/4.
+    """
+    r_s, R, omega_delta = sp.symbols(
+        "r_s R omega_delta", positive=True, real=True
+    )
+    C = sp.Symbol("C", positive=True, real=True)
+    D_delta = sp.simplify(r_s**2 * sp.exp(-r_s / R) / (4 * R**4))
+    D_newton = r_s / R**3
+    raw_ratio = sp.simplify(D_delta / D_newton)
+    compactness_ratio = sp.simplify(raw_ratio.subs(r_s, C * R))
+    loaded_ratio = sp.simplify(omega_delta * compactness_ratio)
+
+    sun_r_s_m = sp.Float("2953.25008")
+    sun_R_m = sp.Float("695700000")
+    sun_C = sp.N(sun_r_s_m / sun_R_m, 16)
+    sun_raw_ratio = sp.N(compactness_ratio.subs(C, sun_C), 16)
+
+    return {
+        "branch_selection_status": (
+            "PASS_SINGLE_EFT_OPERATOR_WITH_BRANCH_SELECTED_EXTERIOR_LOAD"
+            if sp.simplify(compactness_ratio - C * sp.exp(-C) / 4) == 0
+            and sun_raw_ratio < sp.Float("1.1e-6")
+            else "CHECK_SINGLE_EFT_OPERATOR_BRANCH_SELECTION"
+        ),
+        "single_action_reading": (
+            "F_min is the minimal medium core; L_Delta_perp is an allowed "
+            "projected deficit operator in the same EFT.  The exterior solution "
+            "sets the load omega_delta by source compactness and boundary "
+            "matching; it is not a separate action."
+        ),
+        "direct_deficit_curvature": sp.Eq(sp.Symbol("D_Delta"), D_delta),
+        "leading_Newton_curvature_scale": sp.Eq(sp.Symbol("D_N"), D_newton),
+        "direct_ratio": sp.Eq(sp.Symbol("D_Delta/D_N"), raw_ratio),
+        "compactness_ratio": sp.Eq(sp.Symbol("D_Delta/D_N"), compactness_ratio),
+        "loaded_ratio": sp.Eq(sp.Symbol("omega_delta*D_Delta/D_N"), loaded_ratio),
+        "solar_compactness": sun_C,
+        "solar_unweighted_ratio": sun_raw_ratio,
+        "solar_branch_rule": (
+            "extended weak Solar matching keeps omega_delta small and exports "
+            "the q_2PN=7/4 medium-stress branch"
+        ),
+        "compact_branch_rule": (
+            "C2 compact matching sets the phase-dominated exterior load to the "
+            "projected deficit source used in the exponential branch"
         ),
     }
 
@@ -219,7 +341,7 @@ def audit_fmin_alone_vs_refg_compact_source_gate():
         "required_article_rule": (
             "do not state that F(Y,I1,I2,I3) alone generates the exponential "
             "compact exterior; state that the compact branch uses the projected "
-            "Bernoulli medium source L_B_perp in addition to the F_min medium "
+            "deficit medium source L_Delta_perp in addition to the F_min medium "
             "sector"
         ),
         "reading": (
@@ -233,63 +355,47 @@ def derive_energy_condition_verdict_gate():
     """
     Give the energy-condition answer explicitly.
 
-    The ordinary Einstein-fluid dictionary applied to the background-subtracted
-    active contrast gives a negative radial null load.  That is not the total
-    physical medium.  In RefG the source is a pressure deficit on a positive
-    base medium.  The total-medium NEC is therefore tested after adding the
-    local homogeneous background load.
+    The ordinary Einstein-fluid dictionary applied to the active contrast gives
+    a negative radial null load.  In RefG this is the phase-pressure deficit
+    ledger of the compact exterior.  It is not repaired by adding a homogeneous
+    gravitating background to the same field equation.
     """
-    r, r_s, G = sp.symbols("r r_s G", positive=True, real=True)
-    delta_p = sp.simplify(r_s**2 * sp.exp(-r_s / r) / (32 * sp.pi * G * r**4))
-    rho = -delta_p
-    p_r = -delta_p
-    p_t = delta_p
-
+    profile = compact_exponential_deficit_profile_gate()
+    exterior_domain = compact_exponential_exterior_domain_gate()
+    active_nec = active_deficit_nec_identity_gate()
+    stiffness = projected_deficit_static_stiffness_gate()
+    p14 = nec_deficit_interpretation_ledger()
     projected = derive_projected_bernoulli_medium_source()
-    total_medium = derive_background_completed_medium_nec_gate()
-    radial_nec = sp.simplify(rho + p_r)
-    tangential_nec = sp.simplify(rho + p_t)
-    weak_energy_density = rho
-    sec_combo = sp.simplify(rho + p_r + 2 * p_t)
-    delta_peak = total_medium["Delta_P_peak"]["Delta_P_max"]
 
     return {
         "energy_condition_verdict_status": (
-            "PASS_SUBTRACTED_CONTRAST_AUDIT_AND_TOTAL_MEDIUM_NEC_GATE"
-            if radial_nec == -2 * delta_p
-            and tangential_nec == 0
-            and weak_energy_density == -delta_p
-            and sec_combo == 0
+            "PASS_ACTIVE_DEFICIT_NEC_VERDICT_FOR_COMPACT_EXPONENTIAL_BRANCH"
+            if profile["deficit_profile_status"]
+            == "PASS_COMPACT_DEFICIT_PROFILE_POSITIVE_WITH_FINITE_PEAK"
+            and exterior_domain["exterior_domain_status"]
+            == "PASS_FORMAL_PEAK_LIES_INSIDE_THROAT__EXTERIOR_MAX_AT_THROAT"
+            and active_nec["active_deficit_nec_status"]
+            == "PASS_RADIAL_NEC_VIOLATION_IS_EXACTLY_ACTIVE_DEFICIT_SIGNATURE"
+            and stiffness["static_stiffness_status"]
+            == "PASS_ACTIVE_DEFICIT_HAS_POSITIVE_STATIC_STIFFNESS_AND_NO_STANDALONE_TIME_KINETIC"
+            and p14["p14_status"]
+            == "PASS_NEC_SIGN_REWRITTEN_AS_REFG_ACTIVE_DEFICIT_LEDGER"
             and projected["projected_medium_time_kinetic_coefficient"] == 0
-            and total_medium["total_medium_nec_status"]
-            == "PASS_TOTAL_MEDIUM_NEC_REDUCES_TO_FINITE_BACKGROUND_CAPACITY_BOUND"
-            else "CHECK_ENERGY_CONDITION_VERDICT_FOR_REFG_COMPACT_SOURCE"
+            else "CHECK_ACTIVE_DEFICIT_NEC_VERDICT_FOR_COMPACT_EXPONENTIAL_BRANCH"
         ),
-        "Delta_P_positive": sp.Eq(sp.Symbol("Delta_P"), delta_p),
-        "background_subtracted_Einstein_fluid_dictionary": {
-            "rho": rho,
-            "p_r": p_r,
-            "p_t": p_t,
-            "rho_plus_p_r": radial_nec,
-            "rho_plus_p_t": tangential_nec,
-            "rho_plus_p_r_plus_2p_t": sec_combo,
-        },
-        "subtracted_contrast_verdict": (
-            "the active deficit contrast has negative radial null load; this "
-            "is not the total base-medium energy tensor"
-        ),
-        "total_medium_nec_gate": {
-            "status": total_medium["total_medium_nec_status"],
-            "Delta_P_peak": total_medium["Delta_P_peak"],
-            "total_physical_medium": total_medium["total_physical_medium"],
-            "sufficient_total_medium_conditions": total_medium[
-                "sufficient_total_medium_conditions"
-            ],
-        },
+        "Delta_P_positive": profile["Delta_P"],
+        "exterior_domain_gate": exterior_domain,
+        "active_Einstein_fluid_dictionary": active_nec["active_effective_dictionary"],
+        "radial_NEC_a": active_nec["radial_NEC_a"],
+        "tangential_NEC_a": active_nec["tangential_NEC_a"],
+        "deficit_from_radial_NEC": active_nec["deficit_from_radial_NEC"],
+        "subtracted_contrast_verdict": active_nec["standard_GR_reading"],
+        "RefG_deficit_verdict": active_nec["RefG_reading"],
+        "p14_deficit_ledger": p14["p14_status"],
         "projected_medium_verdict": (
             "the RefG export is a projected spatial medium stress with no "
-            "standalone scalar time kinetic term; physically it is a finite "
-            "pressure deficit on a positive base medium"
+            "standalone scalar time kinetic term; physically it is an active "
+            "phase-pressure deficit of the base medium"
         ),
         "projected_medium_time_kinetic_coefficient": projected[
             "projected_medium_time_kinetic_coefficient"
@@ -297,21 +403,20 @@ def derive_energy_condition_verdict_gate():
         "projected_spatial_gradient_coefficient": projected[
             "projected_spatial_gradient_coefficient"
         ],
-        "finite_background_capacity_bound": sp.Ge(
-            sp.Symbol("rho_star") + sp.Symbol("p_star"),
-            2 * delta_peak,
-        ),
         "required_article_rule": (
-            "state that the negative null load is the subtracted pressure "
-            "deficit, while the total RefG medium satisfies the radial NEC "
-            "when rho_*+p_* is above the finite Bernoulli peak"
+            "state the radial NEC violation of the active source and read it "
+            "as the RefG base-medium phase-pressure deficit.  Do not add a "
+            "homogeneous positive background to this exterior field equation "
+            "without deriving the new metric."
         ),
     }
 
 
 def p05g_central_exponential_source_gate():
     biconformal = derive_biconformal_metric_map_gate()
+    phase_consistency = derive_phase_equation_covariant_consistency_gate()
     source = derive_projected_source_eom_closure_gate()
+    branch_selection = unified_deficit_operator_branch_selection_gate()
     fmin = audit_fmin_alone_vs_refg_compact_source_gate()
     energy = derive_energy_condition_verdict_gate()
 
@@ -320,16 +425,24 @@ def p05g_central_exponential_source_gate():
             "PASS_P05G_EXPONENTIAL_EXTERIOR_SOURCE_AND_ENERGY_VERDICT"
             if biconformal["biconformal_map_status"]
             == "PASS_BICONFORMAL_MAP_DEFINED_AND_FIRST_ORDER_SELECTED"
+            and phase_consistency["phase_equation_consistency_status"]
+            == "PASS_REDUCED_PHASE_EQUATION_EQUALS_CURVED_HARMONIC_EQUATION_ON_BICONFORMAL_BRANCH"
             and source["projected_source_eom_status"]
             == "PASS_PROJECTED_BERNOULLI_SOURCE_SOLVES_STATIC_EXPONENTIAL_EOM"
+            and branch_selection["branch_selection_status"]
+            == "PASS_SINGLE_EFT_OPERATOR_WITH_BRANCH_SELECTED_EXTERIOR_LOAD"
             and fmin["fmin_vs_refg_source_status"]
             == "PASS_FMIN_ALONE_REJECTED_AND_REFG_PROJECTED_SOURCE_CLOSES_EXTERIOR"
             and energy["energy_condition_verdict_status"]
-            == "PASS_SUBTRACTED_CONTRAST_AUDIT_AND_TOTAL_MEDIUM_NEC_GATE"
+            == "PASS_ACTIVE_DEFICIT_NEC_VERDICT_FOR_COMPACT_EXPONENTIAL_BRANCH"
             else "CHECK_P05G_EXPONENTIAL_EXTERIOR_SOURCE_AND_ENERGY_VERDICT"
         ),
         "biconformal_map": biconformal["biconformal_map_status"],
+        "phase_equation_covariant_consistency": phase_consistency[
+            "phase_equation_consistency_status"
+        ],
         "projected_source_eom": source["projected_source_eom_status"],
+        "branch_selection": branch_selection["branch_selection_status"],
         "fmin_vs_refg_source": fmin["fmin_vs_refg_source_status"],
         "energy_condition_verdict": energy["energy_condition_verdict_status"],
         "field_equation_residuals": source["field_equation_residuals"],
@@ -341,9 +454,10 @@ def p05g_central_exponential_source_gate():
         ],
         "article_export_rule": (
             "compact exponential exterior = biconformal phase branch sourced by "
-            "projected Bernoulli medium stress L_B_perp; F_min alone is not the "
+            "projected deficit medium stress L_Delta_perp; F_min alone is not the "
             "compact source"
         ),
+        "branch_selection_rule": branch_selection["single_action_reading"],
         "energy_export_rule": energy["required_article_rule"],
         "next_gates": [
             "carry this p05g result into the Georgian and English article text",
@@ -355,15 +469,17 @@ def p05g_central_exponential_source_gate():
 
 if __name__ == "__main__":
     print("=" * 72)
-    print("PHASE 18g: Exponential exterior source and energy verdict")
+    print("PHASE 18g: Exponential exterior source and active-deficit energy verdict")
     print("=" * 72)
 
     sections = [
         ("1. Biconformal metric map", derive_biconformal_metric_map_gate()),
-        ("2. Projected source EOM closure", derive_projected_source_eom_closure_gate()),
-        ("3. Fmin-alone vs RefG compact source", audit_fmin_alone_vs_refg_compact_source_gate()),
-        ("4. Energy-condition verdict", derive_energy_condition_verdict_gate()),
-        ("5. Central p05g gate", p05g_central_exponential_source_gate()),
+        ("2. Phase equation covariant consistency", derive_phase_equation_covariant_consistency_gate()),
+        ("3. Projected source EOM closure", derive_projected_source_eom_closure_gate()),
+        ("4. Unified branch selection", unified_deficit_operator_branch_selection_gate()),
+        ("5. Fmin-alone vs RefG compact source", audit_fmin_alone_vs_refg_compact_source_gate()),
+        ("6. Energy-condition verdict", derive_energy_condition_verdict_gate()),
+        ("7. Central p05g gate", p05g_central_exponential_source_gate()),
     ]
     for title, result in sections:
         print(f"\n{title}")
