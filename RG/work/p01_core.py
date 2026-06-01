@@ -1708,7 +1708,11 @@ def article_nonempty_stability_example():
 
 def c6_z_completion_scalar_speed_gate():
     """
-    Scalar-longitudinal speed gate for the C6/Z completion used in the article.
+    Isolated scalar-longitudinal speed gate for the C6/Z completion.
+
+    This is a useful diagnostic of the completion block by itself.  The Solar
+    2PN branch uses solar_branch_combined_dispersion_gate(), because the live
+    F_min phase kinetic term must be included together with C6/Z.
 
     The completion is
         L2 = lambda_6 (delta C_6)^2 + c_Z Z,
@@ -1772,13 +1776,142 @@ def c6_z_completion_scalar_speed_gate():
     }
 
 
+def solar_branch_combined_dispersion_gate():
+    """
+    Combined Solar-branch scalar-longitudinal determinant.
+
+    On the physical Solar 2PN slice
+
+        c_YI1 = 2*c_Y2,
+
+    the Solar-family relations give c_Y=-8*c_Y2.  The bare F_min principal
+    symbol then has
+
+        A_F=4*c_Y2, B_F=0, C_F=0, D_F=4*c_Y2, M_F=8*c_Y2.
+
+    Therefore the C6/Z block must be added to F_min before reading the scalar
+    speeds.  In the same Fourier convention as c6_z_completion_scalar_speed_gate
+    the total coefficients are
+
+        A=4*(c_Y2+lambda_6), B=c_Z, C=c_Z, D=4*(c_Y2+lambda_6),
+        M=8*c_Y2-4*lambda_6-c_Z.
+
+    This is the actual local Solar kinetic gate exported to the article.
+    """
+    omega, k, chi, pi_L = sp.symbols("omega k chi pi_L", real=True)
+    c_Y2, lambda_6, c_Z = sp.symbols(
+        "c_Y2 lambda_6 c_Z", positive=True, real=True
+    )
+    s = sp.Symbol("s", real=True)
+
+    fmin_solar_symbol_L2 = sp.expand(
+        4 * c_Y2 * (omega * chi) ** 2
+        + 4 * c_Y2 * (k * pi_L) ** 2
+        + 8
+        * c_Y2
+        * ((omega * chi) * (k * pi_L) + (omega * pi_L) * (k * chi))
+    )
+    completion_symbol_L2 = sp.expand(
+        4 * lambda_6 * (omega * chi - k * pi_L) ** 2
+        + c_Z * (omega * pi_L - k * chi) ** 2
+    )
+    total_symbol_L2 = sp.expand(fmin_solar_symbol_L2 + completion_symbol_L2)
+    principal_matrix = sp.Matrix(
+        [
+            [
+                sp.simplify(sp.diff(total_symbol_L2, left, right) / 2)
+                for right in (chi, pi_L)
+            ]
+            for left in (chi, pi_L)
+        ]
+    )
+    determinant = sp.factor(principal_matrix.det())
+    determinant_in_s = sp.factor(
+        sp.expand(determinant).subs(omega**2, s * k**2) / k**4
+    )
+    poly = sp.Poly(determinant_in_s, s)
+    p2, p1, p0 = [sp.factor(value) for value in poly.all_coeffs()]
+    expected = sp.factor(
+        4
+        * c_Z
+        * (c_Y2 + lambda_6)
+        * s**2
+        + (
+            96 * c_Y2 * lambda_6
+            - 8 * c_Z * lambda_6
+            - 48 * c_Y2**2
+            + 16 * c_Y2 * c_Z
+        )
+        * s
+        + 4 * c_Z * (c_Y2 + lambda_6)
+    )
+    coefficient_identity = sp.simplify(determinant_in_s - expected) == 0
+    representative_point = {
+        c_Y2: sp.Integer(1),
+        lambda_6: sp.Rational(1, 4),
+        c_Z: sp.Integer(1),
+    }
+    representative_det = sp.factor(determinant_in_s.subs(representative_point))
+    representative_roots = []
+    for root, multiplicity in sp.roots(representative_det, s).items():
+        representative_roots.extend([sp.simplify(root)] * multiplicity)
+    representative_checks = {
+        "K_PhiPhi_Fmin": sp.simplify(4 * c_Y2).subs(representative_point),
+        "A_total": sp.simplify(4 * (c_Y2 + lambda_6)).subs(
+            representative_point
+        ),
+        "B_total": c_Z.subs(representative_point),
+        "roots_real_positive_subluminal": all(
+            bool(sp.simplify(root > 0)) and bool(sp.simplify(root <= 1))
+            for root in representative_roots
+        ),
+    }
+
+    status = (
+        "PASS_SOLAR_BRANCH_COMBINED_DISPERSION"
+        if coefficient_identity
+        and representative_det == 5 * (s - 1) ** 2
+        and representative_checks["roots_real_positive_subluminal"]
+        else "CHECK_SOLAR_BRANCH_COMBINED_DISPERSION"
+    )
+
+    return {
+        "status": status,
+        "solar_slice": {
+            "c_YI1": "2*c_Y2",
+            "c_Y": "-8*c_Y2",
+            "K_PhiPhi_Fmin": 4 * c_Y2,
+            "K_pipi_Fmin": 0,
+        },
+        "combined_coefficients": {
+            "A": 4 * (c_Y2 + lambda_6),
+            "B": c_Z,
+            "C": c_Z,
+            "D": 4 * (c_Y2 + lambda_6),
+            "M": 8 * c_Y2 - 4 * lambda_6 - c_Z,
+        },
+        "principal_matrix": principal_matrix,
+        "determinant": determinant,
+        "determinant_in_s": determinant_in_s,
+        "polynomial_coefficients": {"p2": p2, "p1": p1, "p0": p0},
+        "representative_point": representative_point,
+        "representative_det": representative_det,
+        "representative_roots_s": representative_roots,
+        "representative_checks": representative_checks,
+        "reading": (
+            "Solar stability is certified by the combined F_min plus C6/Z "
+            "principal symbol, not by the isolated C6/Z block.  The displayed "
+            "point is a finite algebraic witness with real luminal roots."
+        ),
+    }
+
+
 def scalar_speed_referee_audit():
     """
     Referee-facing audit of the scalar-speed objection.
 
     The old t=-6/5 point is recorded as a hyperbolicity diagnostic only.  The
-    article export uses the t=-1 Solar-family point for the mixed F_min block
-    and the C6/Z completion for the scalar-longitudinal physical speed gate.
+    article export uses the combined Solar F_min plus C6/Z determinant.
     """
     c_Y, c_Y2, c_I1, c_I1sq, c_I2, c_I3, c_YI1 = sp.symbols(
         "c_Y c_Y2 c_I1 c_I1sq c_I2 c_I3 c_YI1", real=True
@@ -1799,11 +1932,11 @@ def scalar_speed_referee_audit():
 
     mixed = article_nonempty_stability_example()
     completion = c6_z_completion_scalar_speed_gate()
+    solar_combined = solar_branch_combined_dispersion_gate()
 
     status = (
-        "PASS_SCALAR_SPEED_AUDIT_ARTICLE_POINT_SUBLUMINAL"
-        if mixed["status"] == "PASS_EXPLICIT_LUMINAL_MIXED_LOCAL_STABILITY_POINT"
-        and completion["status"] == "PASS_C6_Z_COMPLETION_SCALAR_SPEEDS_LUMINAL"
+        "PASS_SCALAR_SPEED_AUDIT_SOLAR_COMBINED_SUBLUMINAL"
+        if solar_combined["status"] == "PASS_SOLAR_BRANCH_COMBINED_DISPERSION"
         else "CHECK_SCALAR_SPEED_AUDIT"
     )
 
@@ -1819,9 +1952,12 @@ def scalar_speed_referee_audit():
         "completion_scalar_roots_c_s2": completion[
             "scalar_longitudinal_roots_c_s2"
         ],
+        "solar_combined_det": solar_combined["determinant_in_s"],
+        "solar_combined_point": solar_combined["representative_point"],
+        "solar_combined_roots_s": solar_combined["representative_roots_s"],
         "article_export": (
-            "Use the t=-1 Solar-family point and the C6/Z completion gate.  Do "
-            "not export the old t=-6/5 point as a scalar-speed bound."
+            "Use the combined Solar F_min plus C6/Z determinant.  Do not export "
+            "the isolated C6/Z determinant as the Solar scalar-speed proof."
         ),
     }
 
@@ -2014,7 +2150,7 @@ def status_assessment():
         "minkowski": "det M(s)=0 computed; mixed-mode algebraic positivity criteria and one luminal Solar-family point are explicit",
         "flrw": "comoving det M(s)=0 computed; physical speed is a^2*s; same algebraic criteria apply after scaling",
         "schwarzschild": "local orthonormal determinant equals Minkowski; coordinate radial redshift added",
-        "scalar_speed": "old t=-6/5 point is diagnostic only; article point has mixed c_s^2=1 and C6/Z scalar-longitudinal c_s^2=1",
+        "scalar_speed": "old t=-6/5 point and isolated C6/Z determinant are diagnostic only; the Solar export uses the combined F_min+C6/Z determinant with a real luminal witness point",
         "remaining": "global curved-background perturbation system remains open",
     }
 
@@ -2041,7 +2177,7 @@ def p01_proof_gap_register():
         },
         {
             "gap": "mixed_mode_stability",
-            "current_status": "local 2x2 principal-symbol algebraic criteria are explicit and have one luminal Solar-family coefficient point",
+            "current_status": "local 2x2 principal-symbol algebraic criteria are explicit; the physical Solar slice has a combined F_min+C6/Z determinant with one real luminal coefficient point",
             "risk": "this closes the local homogeneous scalar-speed gate, not the full curved/global Cauchy problem",
             "next_step": "extend to curved background perturbations and prove global hyperbolicity conditions",
         },
@@ -2334,6 +2470,7 @@ def article_core_theorem():
     nonempty_stability = article_nonempty_stability_example()
     local_stability_short = local_stability_short_path_certificate()
     scalar_speed_audit = scalar_speed_referee_audit()
+    solar_combined_dispersion = solar_branch_combined_dispersion_gate()
 
     c_Y, c_Y2, c_YI1 = sp.symbols("c_Y c_Y2 c_YI1", real=True)
 
@@ -2392,6 +2529,7 @@ def article_core_theorem():
         },
         "mixed_mode_gate": mixed_conditions,
         "nonempty_local_stability_example": nonempty_stability,
+        "solar_branch_combined_dispersion": solar_combined_dispersion,
         "scalar_speed_referee_audit": scalar_speed_audit,
         "local_stability_short_path": local_stability_short,
         "article_status": {
@@ -2399,7 +2537,7 @@ def article_core_theorem():
             "sign_convention": "CLOSED_Y_TO_X_BRIDGE",
             "no_ghost": "LOCAL_NO_GHOST_WINDOW_WITH_EXPLICIT_NONEMPTY_POINT",
             "eft_cutoff_power_counting": eft_power_counting["status"],
-            "mixed_modes": "LOCAL_PRINCIPAL_SYMBOL_CRITERIA_WITH_EXPLICIT_LUMINAL_POINT",
+            "mixed_modes": "LOCAL_PRINCIPAL_SYMBOL_CRITERIA_WITH_EXPLICIT_SOLAR_COMBINED_LUMINAL_POINT",
             "scalar_speed": scalar_speed_audit["status"],
             "local_stability_short_path": local_stability_short["status"],
             "global_stability": "SEPARATE_PROOF_TARGET",
@@ -2478,6 +2616,8 @@ if __name__ == "__main__" and _should_run_main_section("hyperbolicity"):
     print(f"  old t=-6/5 roots: {speed_audit['old_t_minus_6_over_5_roots']}")
     print(f"  article mixed roots c_s^2: {speed_audit['article_mixed_roots_c_s2']}")
     print(f"  C6/Z scalar roots c_s^2: {speed_audit['completion_scalar_roots_c_s2']}")
+    print(f"  Solar combined det: {speed_audit['solar_combined_det']}")
+    print(f"  Solar combined roots c_s^2: {speed_audit['solar_combined_roots_s']}")
     print(f"  export: {speed_audit['article_export']}")
 
     print("\n6. Status")
