@@ -14,8 +14,10 @@ The result is precise.  Algebraic F_min(Y,I1,I2,I3) alone does not source the
 exponential compact exterior.  The closed compact branch is the RefG projected
 deficit medium source
 
-    L_Delta_perp = Z_perp/(8*pi*G),
-    Z_perp = (u^m u^n - g^mn) partial_m h partial_n h,
+    L_Delta_perp = Z_Delta_perp/(8*pi*G),
+    Z_Delta_perp = gamma^mn partial_m H_Delta partial_n H_Delta,
+    H_Delta = -log(det B^AB)/6,
+    gamma^mn = u^m u^n - g^mn,
 
 together with the biconformal operational metric map
 
@@ -163,6 +165,94 @@ def derive_phase_equation_covariant_consistency_gate():
         "reading": (
             "because AB=1, the static curved harmonic phase equation collapses "
             "to the reduced radial phase equation on this branch"
+        ),
+    }
+
+
+def derive_covariant_deficit_operator_from_medium_fields_gate():
+    """
+    Field-level form of the compact projected deficit operator.
+
+    The article cannot leave L_Delta_perp as the on-branch value (h')^2/A.
+    This gate writes it as a covariant invariant of the medium fields.
+
+        Y = g^mn d_m Phi d_n Phi,
+        u_m = d_m Phi/sqrt(Y),
+        gamma^mn = u^m u^n - g^mn,
+        B^AB = -g^mn d_m phi^A d_n phi^B,
+        I3 = det(B^AB),
+        H_Delta = -log(I3)/6,
+        Z_Delta_perp = gamma^mn d_m H_Delta d_n H_Delta.
+
+    On the static spherical compact exterior phi^A=x^A and A=exp(2h), so
+    I3=A^-3=exp(-6h).  Hence H_Delta=h and the invariant reduces to
+    Z_Delta_perp=(h')^2/A, the source used by the compact exponential branch.
+    """
+    r, r_s, G, omega_delta = sp.symbols(
+        "r r_s G omega_delta", positive=True, real=True
+    )
+    I3 = sp.Symbol("I3", positive=True, real=True)
+
+    h = r_s / (2 * r)
+    A = sp.exp(2 * h)
+    I3_static = sp.simplify(A ** -3)
+    H_delta = -sp.log(I3) / 6
+    H_delta_static = sp.simplify(H_delta.subs(I3, I3_static))
+    gamma_rr_static = sp.simplify(1 / A)
+    z_delta_perp_static = sp.simplify(
+        gamma_rr_static * sp.diff(H_delta_static, r) ** 2
+    )
+    expected_z_perp = sp.simplify(sp.diff(h, r) ** 2 / A)
+    l_delta_perp_loaded = sp.simplify(
+        omega_delta * z_delta_perp_static / (8 * sp.pi * G)
+    )
+    delta_p_compact = sp.simplify(
+        z_delta_perp_static / (8 * sp.pi * G)
+    )
+    D = sp.simplify(r_s**2 * sp.exp(-r_s / r) / (4 * r**4))
+    compact_residual = sp.simplify(D - 8 * sp.pi * G * delta_p_compact)
+
+    source_closure = derive_projected_source_eom_closure_gate()
+    source_residuals_zero = _all_zero(source_closure["field_equation_residuals"].values())
+
+    status = (
+        "PASS_COVARIANT_DEFICIT_OPERATOR_REDUCES_TO_STATIC_PROJECTED_SOURCE"
+        if sp.simplify(H_delta_static - h) == 0
+        and sp.simplify(z_delta_perp_static - expected_z_perp) == 0
+        and compact_residual == 0
+        and source_residuals_zero
+        else "CHECK_COVARIANT_DEFICIT_OPERATOR_REDUCTION"
+    )
+
+    return {
+        "operator_status": status,
+        "field_definitions": {
+            "Y": "g^mn d_m Phi d_n Phi",
+            "u_m": "d_m Phi/sqrt(Y)",
+            "gamma^mn": "u^m u^n - g^mn",
+            "B^AB": "-g^mn d_m phi^A d_n phi^B",
+            "I3": "det(B^AB)",
+            "H_Delta": "-log(I3)/6",
+            "Z_Delta_perp": "gamma^mn d_m H_Delta d_n H_Delta",
+        },
+        "static_branch_I3": sp.Eq(sp.Symbol("I3_static"), I3_static),
+        "static_branch_H_Delta": sp.Eq(sp.Symbol("H_Delta"), H_delta_static),
+        "static_projector_gamma_rr": sp.Eq(sp.Symbol("gamma_rr"), gamma_rr_static),
+        "Z_Delta_perp_static": sp.Eq(
+            sp.Symbol("Z_Delta_perp"), z_delta_perp_static
+        ),
+        "expected_Z_perp": sp.Eq(sp.Symbol("Z_perp"), expected_z_perp),
+        "loaded_L_Delta_perp": sp.Eq(
+            sp.Symbol("L_Delta_perp"), l_delta_perp_loaded
+        ),
+        "compact_load": sp.Eq(sp.Symbol("omega_delta"), sp.Integer(1)),
+        "compact_field_equation_residual_D_minus_8piGDeltaP": compact_residual,
+        "projected_source_eom_status": source_closure["projected_source_eom_status"],
+        "reading": (
+            "L_Delta_perp is a covariant projected medium invariant built from "
+            "Phi, phi^A and g_mn.  The compact static branch reduces it to "
+            "(h')^2/A and then to the active source that closes the diagonal "
+            "exterior field equations."
         ),
     }
 
@@ -415,6 +505,7 @@ def derive_energy_condition_verdict_gate():
 def p05g_central_exponential_source_gate():
     biconformal = derive_biconformal_metric_map_gate()
     phase_consistency = derive_phase_equation_covariant_consistency_gate()
+    covariant_deficit = derive_covariant_deficit_operator_from_medium_fields_gate()
     source = derive_projected_source_eom_closure_gate()
     branch_selection = unified_deficit_operator_branch_selection_gate()
     fmin = audit_fmin_alone_vs_refg_compact_source_gate()
@@ -427,6 +518,8 @@ def p05g_central_exponential_source_gate():
             == "PASS_BICONFORMAL_MAP_DEFINED_AND_FIRST_ORDER_SELECTED"
             and phase_consistency["phase_equation_consistency_status"]
             == "PASS_REDUCED_PHASE_EQUATION_EQUALS_CURVED_HARMONIC_EQUATION_ON_BICONFORMAL_BRANCH"
+            and covariant_deficit["operator_status"]
+            == "PASS_COVARIANT_DEFICIT_OPERATOR_REDUCES_TO_STATIC_PROJECTED_SOURCE"
             and source["projected_source_eom_status"]
             == "PASS_PROJECTED_BERNOULLI_SOURCE_SOLVES_STATIC_EXPONENTIAL_EOM"
             and branch_selection["branch_selection_status"]
@@ -441,6 +534,7 @@ def p05g_central_exponential_source_gate():
         "phase_equation_covariant_consistency": phase_consistency[
             "phase_equation_consistency_status"
         ],
+        "covariant_deficit_operator": covariant_deficit["operator_status"],
         "projected_source_eom": source["projected_source_eom_status"],
         "branch_selection": branch_selection["branch_selection_status"],
         "fmin_vs_refg_source": fmin["fmin_vs_refg_source_status"],
@@ -458,6 +552,7 @@ def p05g_central_exponential_source_gate():
             "compact source"
         ),
         "branch_selection_rule": branch_selection["single_action_reading"],
+        "covariant_deficit_operator_rule": covariant_deficit["reading"],
         "energy_export_rule": energy["required_article_rule"],
         "next_gates": [
             "carry this p05g result into the Georgian and English article text",
@@ -475,11 +570,12 @@ if __name__ == "__main__":
     sections = [
         ("1. Biconformal metric map", derive_biconformal_metric_map_gate()),
         ("2. Phase equation covariant consistency", derive_phase_equation_covariant_consistency_gate()),
-        ("3. Projected source EOM closure", derive_projected_source_eom_closure_gate()),
-        ("4. Unified branch selection", unified_deficit_operator_branch_selection_gate()),
-        ("5. Fmin-alone vs RefG compact source", audit_fmin_alone_vs_refg_compact_source_gate()),
-        ("6. Energy-condition verdict", derive_energy_condition_verdict_gate()),
-        ("7. Central p05g gate", p05g_central_exponential_source_gate()),
+        ("3. Covariant deficit operator", derive_covariant_deficit_operator_from_medium_fields_gate()),
+        ("4. Projected source EOM closure", derive_projected_source_eom_closure_gate()),
+        ("5. Unified branch selection", unified_deficit_operator_branch_selection_gate()),
+        ("6. Fmin-alone vs RefG compact source", audit_fmin_alone_vs_refg_compact_source_gate()),
+        ("7. Energy-condition verdict", derive_energy_condition_verdict_gate()),
+        ("8. Central p05g gate", p05g_central_exponential_source_gate()),
     ]
     for title, result in sections:
         print(f"\n{title}")
