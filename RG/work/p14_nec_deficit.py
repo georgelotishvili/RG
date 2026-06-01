@@ -23,6 +23,12 @@ This file separates three statements that were previously mixed together:
    phase-pressure deficit of the base medium produced by the compact
    oscillon-tail exterior.  The next physical gate is to derive the finite-core
    matching and dynamics of that deficit, not to hide the sign.
+
+4. The mass-deficit feedback is not a trampoline balance.  There is no growing
+   mechanical tension that catches the mass.  A compact source creates a
+   deficit, and the deficit reduces the source's effective mass/coupling.  The
+   stable point is a nonlinear fixed point of two different responses, not an
+   equality of two identical reductions.
 """
 
 import sympy as sp
@@ -295,6 +301,112 @@ def projected_deficit_static_stiffness_gate() -> dict:
     }
 
 
+def mass_deficit_feedback_balance_gate() -> dict:
+    """
+    Minimal symbolic gate for the mass-deficit feedback intuition.
+
+    Let q>=0 be a dimensionless local base-medium deficit amplitude.  A bare
+    compact source would create amplitude S>0.  In a deficit, the same source's
+    effective mass/coupling is reduced, so the carried source amplitude is
+
+        S_eff(q) = S exp(-chi q),     chi>0.
+
+    The balance condition is therefore
+
+        q = S exp(-chi q).
+
+    This is not "q and S_eff decrease equally".  They have different response
+    laws.  The fixed point is
+
+        q_* = LambertW(chi S)/chi,
+
+    and the relaxation dq/dtau = S_eff(q)-q has eigenvalue
+
+        lambda_* = -(1 + chi q_*) < 0.
+
+    Thus small perturbations return to the fixed point.  The special
+    mass-scaling-only case m_eff/m0=exp(phi/2), q=-phi, has chi=1/2.
+    """
+    q, S, chi = sp.symbols("q S chi", positive=True, real=True)
+
+    source_eff = sp.simplify(S * sp.exp(-chi * q))
+    residual = sp.simplify(q - source_eff)
+    potential = sp.simplify(q**2 / 2 + S * sp.exp(-chi * q) / chi)
+
+    W = sp.LambertW(chi * S)
+    q_star = sp.simplify(W / chi)
+    source_at_star = sp.simplify(W / chi)  # uses exp(-W)=W/(chi*S)
+
+    residual_prime_at_star = sp.simplify(
+        sp.diff(residual, q).subs(q, q_star).subs(S * sp.exp(-W), W / chi)
+    )
+    potential_second_at_star = sp.simplify(
+        sp.diff(potential, q, 2).subs(q, q_star).subs(S * sp.exp(-W), W / chi)
+    )
+
+    relaxation_rhs = sp.simplify(source_eff - q)
+    relaxation_eigenvalue = sp.simplify(
+        sp.diff(relaxation_rhs, q).subs(q, q_star).subs(S * sp.exp(-W), W / chi)
+    )
+
+    source_slope_at_star = sp.simplify(
+        sp.diff(source_eff, q).subs(q, q_star).subs(S * sp.exp(-W), W / chi)
+    )
+    deficit_slope = sp.Integer(1)
+    fixed_point_identity = sp.simplify(q_star - source_at_star) == 0
+
+    chi_mass = sp.Rational(1, 2)
+    q_star_mass_only = sp.simplify(q_star.subs(chi, chi_mass))
+    eigen_mass_only = sp.simplify(relaxation_eigenvalue.subs(chi, chi_mass))
+    small_source_series = sp.series(q_star, S, 0, 4)
+
+    passed = (
+        fixed_point_identity
+        and sp.simplify(residual_prime_at_star - (1 + W)) == 0
+        and sp.simplify(potential_second_at_star - (1 + W)) == 0
+        and sp.simplify(relaxation_eigenvalue + (1 + W)) == 0
+        and sp.simplify(source_slope_at_star + W) == 0
+    )
+
+    return {
+        "mass_deficit_feedback_status": (
+            "PASS_NONLINEAR_MASS_DEFICIT_FIXED_POINT_IS_STABLE"
+            if passed
+            else "CHECK_MASS_DEFICIT_FEEDBACK_BALANCE"
+        ),
+        "deficit_amplitude": q,
+        "bare_source_amplitude": S,
+        "response_sensitivity": chi,
+        "effective_source": sp.Eq(sp.Symbol("S_eff"), source_eff),
+        "balance_equation": sp.Eq(q, source_eff),
+        "fixed_point": sp.Eq(sp.Symbol("q_star"), q_star),
+        "fixed_point_identity": fixed_point_identity,
+        "source_slope_at_fixed_point": source_slope_at_star,
+        "deficit_slope": deficit_slope,
+        "not_equal_slope_reading": (
+            "the carried source slope is -LambertW(chi*S), while the deficit "
+            "side has slope +1; the two responses are not identical reductions"
+        ),
+        "residual_derivative_at_fixed_point": residual_prime_at_star,
+        "potential_second_derivative_at_fixed_point": potential_second_at_star,
+        "relaxation_eigenvalue_at_fixed_point": relaxation_eigenvalue,
+        "stability_conditions": [sp.Gt(S, 0), sp.Gt(chi, 0), sp.Gt(1 + W, 0)],
+        "mass_scaling_only_case_chi": chi_mass,
+        "mass_scaling_only_fixed_point": sp.Eq(sp.Symbol("q_star_mass"), q_star_mass_only),
+        "mass_scaling_only_eigenvalue": eigen_mass_only,
+        "small_source_series": small_source_series,
+        "reading": (
+            "mass creates deficit; deficit weakens effective mass/coupling; "
+            "the stable point is a nonlinear crossing of different response "
+            "laws, not a dead equality of equal decreases"
+        ),
+        "scope": (
+            "local one-variable feedback gate; the full compact finite-core "
+            "matching and spectrum remain in the compact-branch files"
+        ),
+    }
+
+
 def nec_deficit_interpretation_ledger() -> dict:
     """
     Article-facing interpretation with the correct status.
@@ -303,6 +415,7 @@ def nec_deficit_interpretation_ledger() -> dict:
     nec = active_deficit_nec_identity_gate()
     source = projected_deficit_source_closure_gate()
     stiffness = projected_deficit_static_stiffness_gate()
+    feedback = mass_deficit_feedback_balance_gate()
 
     passed = (
         profile["deficit_profile_status"]
@@ -313,6 +426,8 @@ def nec_deficit_interpretation_ledger() -> dict:
         == "PASS_ACTIVE_DEFICIT_SOURCE_CLOSES_STATIC_EXPONENTIAL_FIELD_EQUATIONS"
         and stiffness["static_stiffness_status"]
         == "PASS_ACTIVE_DEFICIT_HAS_POSITIVE_STATIC_STIFFNESS_AND_NO_STANDALONE_TIME_KINETIC"
+        and feedback["mass_deficit_feedback_status"]
+        == "PASS_NONLINEAR_MASS_DEFICIT_FIXED_POINT_IS_STABLE"
     )
 
     return {
@@ -325,18 +440,22 @@ def nec_deficit_interpretation_ledger() -> dict:
         "active_nec": nec["active_deficit_nec_status"],
         "source_closure": source["projected_deficit_source_status"],
         "static_stiffness": stiffness["static_stiffness_status"],
+        "mass_deficit_feedback": feedback["mass_deficit_feedback_status"],
         "article_supported_statement": (
             "In the compact exponential branch the standard effective-source "
             "dictionary gives radial NEC violation.  In RefG this sign is the "
             "active base-medium phase-pressure deficit carried by the projected "
             "deficit source.  The deficit closes the static exterior field "
-            "equations and has positive static spatial stiffness; full finite-core "
+            "equations and has positive static spatial stiffness.  A local "
+            "mass-deficit feedback gate gives a stable nonlinear fixed point "
+            "for effective-mass weakening by the deficit; full finite-core "
             "dynamical selection remains the next layer."
         ),
         "do_not_claim": [
             "NEC itself creates the deficit",
             "ordinary positive matter sources the compact exponential exterior",
             "a homogeneous positive background can be added to the same field equation without changing the metric",
+            "the mass and the base deficit decrease by the same law or the same coefficient",
             "full compact-object dynamical stability is proven by the static stiffness check",
         ],
     }
@@ -353,7 +472,8 @@ if __name__ == "__main__":
         ("3. Projected deficit source closure", projected_deficit_source_closure_gate()),
         ("4. Projected deficit static stiffness", projected_deficit_static_stiffness_gate()),
         ("5. Exterior domain gate", compact_exponential_exterior_domain_gate()),
-        ("6. NEC deficit interpretation ledger", nec_deficit_interpretation_ledger()),
+        ("6. Mass-deficit feedback balance", mass_deficit_feedback_balance_gate()),
+        ("7. NEC deficit interpretation ledger", nec_deficit_interpretation_ledger()),
     ]
     for title, result in sections:
         print(f"\n{title}")
