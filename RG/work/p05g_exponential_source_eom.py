@@ -505,10 +505,10 @@ def unified_deficit_operator_branch_selection_gate():
             else "CHECK_SINGLE_EFT_OPERATOR_BRANCH_SELECTION"
         ),
         "single_action_reading": (
-            "F_min is the structural medium core; L_Delta_perp is an allowed "
-            "projected deficit operator in the same EFT.  In the compact "
-            "source ledger, L_Delta_perp is the active exterior source while "
-            "F_min is not added again as ordinary RHS matter."
+            "In the compact pure-phase branch F_min is evaluated on "
+            "phase-normalized strain invariants.  That branch is unstrained "
+            "in its local phase frame, so F_min is quiet at action level while "
+            "L_Delta_perp is the active exterior source."
         ),
         "direct_deficit_curvature": sp.Eq(sp.Symbol("D_Delta"), D_delta),
         "leading_Newton_curvature_scale": sp.Eq(sp.Symbol("D_N"), D_newton),
@@ -562,10 +562,10 @@ def audit_fmin_alone_vs_refg_compact_source_gate():
         "Fmin_full_component_status": full_fmin["closure_status"],
         "diagnosis_status": diagnosis["diagnosis_status"],
         "required_article_rule": (
-            "do not state that F(Y,I1,I2,I3) alone generates the exponential "
-            "compact exterior; state that the compact branch uses the projected "
-            "deficit medium source L_Delta_perp, while F_min is the structural "
-            "medium sector rather than an additional compact RHS source"
+            "do not state that raw F(Y,I1,I2,I3) in absolute invariants "
+            "generates the exponential compact exterior.  State that compact "
+            "F_min is phase-normalized and quiet on the pure-phase branch, "
+            "while L_Delta_perp supplies the active exterior source"
         ),
         "reading": (
             "this closes the source-naming objection only after the source "
