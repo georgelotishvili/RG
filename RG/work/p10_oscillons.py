@@ -1062,6 +1062,117 @@ def step6_factor_two():
     return c_coord, L_ratio**2, diff, holds
 
 
+def step6b_deficit_scaling_factor_two_gate():
+    """
+    Deficit-language audit of the mass/size/lapse/light factor split.
+
+    Let q=-phi>=0 be the local base-medium deficit amplitude.  On the
+    biconformal branch,
+
+        m_eff/m0 = L_oper/L0 = d tau/dt = exp(-q/2),
+        c_coord/c = exp(-q),
+        n_light = c/c_coord = exp(q).
+
+    Thus mass, operational size and local clock lapse carry the same half
+    exponent, while the optical light-time channel carries the full exponent.
+    The full light/Shapiro factor is the product of the temporal and spatial
+    halves, not an equal reduction of matter and medium.
+    """
+    q, r_s, r, b, x = sp.symbols("q r_s r b x", positive=True, real=True)
+
+    mass_scale = sp.exp(-q / 2)
+    size_scale = sp.exp(-q / 2)
+    lapse_scale = sp.exp(-q / 2)
+    coordinate_light_speed = sp.exp(-q)
+
+    temporal_index = sp.simplify(1 / lapse_scale)
+    spatial_index = sp.simplify(1 / size_scale)
+    optical_index = sp.simplify(1 / coordinate_light_speed)
+
+    equal_m_l_lapse = [
+        sp.simplify(mass_scale - size_scale),
+        sp.simplify(mass_scale - lapse_scale),
+    ]
+    full_light_from_halves = sp.simplify(
+        optical_index - temporal_index * spatial_index
+    )
+    light_vs_matter_half = sp.simplify(
+        optical_index - 1 / mass_scale**2
+    )
+    coord_speed_vs_size = sp.simplify(
+        coordinate_light_speed - size_scale**2
+    )
+
+    mass_series = sp.series(mass_scale, q, 0, 3).removeO()
+    lapse_series = sp.series(lapse_scale, q, 0, 3).removeO()
+    c_series = sp.series(coordinate_light_speed, q, 0, 3).removeO()
+    n_time_series = sp.series(temporal_index, q, 0, 3).removeO()
+    n_space_series = sp.series(spatial_index, q, 0, 3).removeO()
+    n_light_series = sp.series(optical_index, q, 0, 3).removeO()
+
+    q_spherical = r_s / sp.sqrt(x**2 + b**2)
+    half_integrand = sp.simplify(
+        sp.diff(q_spherical / 2, b)
+    )
+    full_integrand = sp.simplify(
+        sp.diff(q_spherical, b)
+    )
+
+    # Use the magnitude convention for bending: the derivative above is
+    # negative because the index decreases with impact parameter.
+    delta_half = sp.simplify(
+        -sp.integrate(half_integrand, (x, -sp.oo, sp.oo))
+    )
+    delta_full = sp.simplify(
+        -sp.integrate(full_integrand, (x, -sp.oo, sp.oo))
+    )
+
+    passed = (
+        all(value == 0 for value in equal_m_l_lapse)
+        and full_light_from_halves == 0
+        and light_vs_matter_half == 0
+        and coord_speed_vs_size == 0
+        and sp.simplify(delta_full - 2 * delta_half) == 0
+    )
+
+    return {
+        "deficit_scaling_factor_two_status": (
+            "PASS_MASS_SIZE_LAPSE_HALF_EXPONENT_AND_LIGHT_FULL_EXPONENT"
+            if passed
+            else "CHECK_DEFICIT_SCALING_FACTOR_TWO_SPLIT"
+        ),
+        "deficit_amplitude": sp.Eq(q, -sp.Symbol("phi")),
+        "mass_scale": sp.Eq(sp.Symbol("m_eff/m0"), mass_scale),
+        "operational_size_scale": sp.Eq(sp.Symbol("L_oper/L0"), size_scale),
+        "lapse_scale": sp.Eq(sp.Symbol("d_tau/dt"), lapse_scale),
+        "coordinate_light_speed": sp.Eq(sp.Symbol("c_coord/c"), coordinate_light_speed),
+        "temporal_index": sp.Eq(sp.Symbol("n_time"), temporal_index),
+        "spatial_index": sp.Eq(sp.Symbol("n_space"), spatial_index),
+        "optical_index": sp.Eq(sp.Symbol("n_light"), optical_index),
+        "mass_size_lapse_equalities": equal_m_l_lapse,
+        "light_index_from_temporal_spatial_halves": full_light_from_halves,
+        "light_index_from_mass_scale": light_vs_matter_half,
+        "coordinate_speed_from_size_scale": coord_speed_vs_size,
+        "weak_mass_series": mass_series,
+        "weak_lapse_series": lapse_series,
+        "weak_c_coord_series": c_series,
+        "weak_temporal_index_series": n_time_series,
+        "weak_spatial_index_series": n_space_series,
+        "weak_light_index_series": n_light_series,
+        "half_channel_bending": delta_half,
+        "full_light_bending": delta_full,
+        "factor_two_bending_identity": sp.Eq(delta_full, 2 * delta_half),
+        "reading": (
+            "mass, operational size and lapse share exp(-q/2); light/Shapiro "
+            "uses the product of temporal and spatial half-indexes, exp(q)"
+        ),
+        "guardrail": (
+            "do not state that the local clock lapse is twice the mass/size "
+            "scaling; the factor two belongs to the optical light-time channel"
+        ),
+    }
+
+
 # ==============================================================================
 # ნაბიჯი 7: სინათლის გადახრის ცხადი გათვლა
 # ==============================================================================
@@ -1309,7 +1420,9 @@ def oscillon_gravity_short_path_certificate():
     radial deficit, a localized zero-frequency source fixes the 1/r tail, the
     asymptotic charge normalization gives Newton, the first-order p01 exterior
     selects the biconformal branch, and nu0 stays behind the operational
-    firewall.
+    firewall.  The same certificate also checks the deficit-language factor-two
+    split: mass, operational size and lapse carry the half exponent, while
+    optical light-time carries the full exponent.
     """
     bernoulli = bernoulli_static_gravity_identity()
     newton = bernoulli_newton_law_recovery()
@@ -1317,6 +1430,7 @@ def oscillon_gravity_short_path_certificate():
     branch = static_spherical_first_order_biconformal_branch()
     spherical = static_spherical_theorem_gate()
     nu0 = step12_cosmological_nu0()
+    deficit_factor_two = step6b_deficit_scaling_factor_two_gate()
     bernoulli_identity = str(bernoulli["bernoulli_integral"]) == (
         "Eq(P_static + Delta_P, 0)"
     )
@@ -1333,6 +1447,8 @@ def oscillon_gravity_short_path_certificate():
         and branch["biconformal_identity"]
         and spherical["status"]
         == "PASS_FIRST_ORDER_STATIC_SPHERICAL_BRANCH__NONLINEAR_CONTINUATION_TARGET"
+        and deficit_factor_two["deficit_scaling_factor_two_status"]
+        == "PASS_MASS_SIZE_LAPSE_HALF_EXPONENT_AND_LIGHT_FULL_EXPONENT"
         and nu0["status"] == "PASS_SUBSTRATE_NU0_OPERATIONAL_FIREWALL"
         and nu0["conversion_cancels_identity"]
         else "CHECK_OSCILLON_GRAVITY_SHORT_PATH"
@@ -1348,11 +1464,18 @@ def oscillon_gravity_short_path_certificate():
         "biconformal_branch_status": branch["status"],
         "biconformal_identity": branch["biconformal_identity"],
         "spherical_gate_status": spherical["status"],
+        "deficit_factor_two_status": deficit_factor_two[
+            "deficit_scaling_factor_two_status"
+        ],
+        "deficit_factor_two_bending_identity": deficit_factor_two[
+            "factor_two_bending_identity"
+        ],
         "nu0_firewall_status": nu0["status"],
         "short_reading": (
             "Bernoulli pressure -> localized source -> asymptotic charge -> "
-            "Newton force; p01 first order selects the biconformal exterior, "
-            "while nu0 remains sub-operational."
+            "Newton force; p01 first order selects the biconformal exterior; "
+            "the deficit scaling gate gives the optical factor-two split; "
+            "nu0 remains sub-operational."
         ),
     }
 
