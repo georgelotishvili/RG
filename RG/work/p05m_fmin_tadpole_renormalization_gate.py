@@ -5,8 +5,9 @@
 # This gate searches for the foundational error exposed by the referee:
 # raw F_min was treated as an ordinary exterior RHS source even though the
 # intuitive theory treats it as a structural medium sector.  Tadpole/background
-# subtraction is tested and rejected.  The result supports p05p: the compact
-# tail is a double-counting diagnostic, not a physical active compact source.
+# subtraction is tested and rejected.  The compact tail is a real raw-action
+# diagnostic.  The repair is p05s: compact F_min is written with
+# phase-normalized invariants and is quiet at action level.
 
 from __future__ import annotations
 
@@ -43,9 +44,8 @@ def derive_unit_background_tadpole_subtraction_gate():
     The physical Solar slice is already tadpole-free in the variables
     (Y,lambda_r,lambda_t).  Therefore this operation changes nothing.  If the
     compact tail remains, it is a Hessian/modulus effect rather than a bad
-    background constant or first derivative.  In the compact source ledger it
-    is then not repaired by subtraction; it is not inserted as ordinary RHS
-    matter in the first place.
+    background constant or first derivative.  The compact repair is therefore
+    not subtraction; it is the phase-normalized compact action in p05s.
     """
     u, w = sp.symbols("u w", positive=True, real=True)
     coeff_symbols = _coefficient_symbols()
@@ -135,9 +135,9 @@ def derive_unit_background_tadpole_subtraction_gate():
             "Solar slice.  The compact 1/r F_min tail is therefore not a bad "
             "constant or first-derivative calibration; it is produced by the "
             "quadratic modulus along the compact biconformal direction.  This "
-            "is the double-counting diagnostic: tadpole subtraction is not the "
-            "repair; the p05p source ledger keeps F_min structural on the "
-            "compact branch."
+            "is a raw-action diagnostic: tadpole subtraction is not the repair; "
+            "p05s rewrites compact F_min with phase-normalized invariants so "
+            "it is quiet at action level."
         ),
     }
 
@@ -217,10 +217,10 @@ def derive_compact_linear_tail_vs_solar_family_gate():
             "If the compact exponential branch is forced to use the same raw "
             "Solar F_min modulus, the physical Solar q_2PN=7/4 value does not "
             "silence the compact biconformal tail.  The formal error is using "
-            "one structural F_min modulus as ordinary active RHS matter in "
-            "both regimes.  The compact branch uses the p05p source ledger: "
-            "projected deficit is active RHS, F_min is structural medium "
-            "sector."
+            "the raw absolute-invariant F_min action as ordinary active RHS "
+            "matter in both regimes.  The compact branch uses p05s: "
+            "phase-normalized F_min is quiet on the pure-phase exterior and "
+            "the projected deficit source is active."
         ),
     }
 

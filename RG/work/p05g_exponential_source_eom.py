@@ -10,9 +10,11 @@ This file targets the referee-level defect:
     The static shadow/ISCO benchmark is useful only if the exponential
     compact exterior is sourced by the RefG equations, not merely assumed.
 
-The result is precise.  Algebraic F_min(Y,I1,I2,I3) alone does not source the
-exponential compact exterior.  The closed compact branch is the RefG projected
-deficit medium source
+The result is precise.  Raw algebraic F_min(Y,I1,I2,I3) in absolute invariants
+does not source the exponential compact exterior.  The compact pure-phase
+branch uses phase-normalized F_min invariants, where the F_min density, metric
+stress, and phi^A Euler residual vanish on the branch before variation.  The
+active exterior source is the RefG projected deficit medium source
 
     L_Delta_perp = Z_Delta_perp/(8*pi*G),
     Z_Delta_perp = gamma^mn partial_m H_Delta partial_n H_Delta,
@@ -23,7 +25,7 @@ together with the biconformal operational metric map
 
     B=exp(-2h), A=exp(2h), h=r_s/(2r).
 
-On the static comoving branch this source exactly satisfies
+On the static comoving branch the projected deficit source exactly satisfies
 
     G^mu_nu = 8*pi*G Theta^mu_nu
 
@@ -53,11 +55,8 @@ from p05m_fmin_tadpole_renormalization_gate import (
     derive_compact_linear_tail_vs_solar_family_gate,
     derive_unit_background_tadpole_subtraction_gate,
 )
-from p05p_no_double_count_source_ledger_gate import (
-    derive_compact_no_double_count_source_ledger_gate,
-)
-from p05r_variational_no_double_count_projector_gate import (
-    derive_variational_no_double_count_projector_gate,
+from p05s_phase_normalized_fmin_action_gate import (
+    derive_phase_normalized_fmin_action_gate,
 )
 from p13_refractive_force import p10_static_first_order_biconformal_selection
 from p14_nec_deficit import (
@@ -651,13 +650,12 @@ def p05g_central_exponential_source_gate():
     compact_fmin_weight = derive_compact_fmin_weight_from_residual_matching_gate()
     fmin_tadpole = derive_unit_background_tadpole_subtraction_gate()
     compact_tail = derive_compact_linear_tail_vs_solar_family_gate()
-    source_ledger = derive_compact_no_double_count_source_ledger_gate()
-    variational_projector = derive_variational_no_double_count_projector_gate()
+    phase_normalized_action = derive_phase_normalized_fmin_action_gate()
     energy = derive_energy_condition_verdict_gate()
 
     return {
         "p05g_status": (
-            "CHECK_P05G_NO_DOUBLE_COUNT_VARIATIONAL_PROJECTOR_PASS__CORE_DYNAMICS_OPEN"
+            "PASS_P05G_STATIC_COMPACT_SOURCE_LEDGER_WITH_PHASE_NORMALIZED_FMIN__DYNAMICS_OPEN"
             if biconformal["biconformal_map_status"]
             == "PASS_BICONFORMAL_MAP_DEFINED_AND_FIRST_ORDER_SELECTED"
             and phase_consistency["phase_equation_consistency_status"]
@@ -677,20 +675,18 @@ def p05g_central_exponential_source_gate():
             and full_raw_residual["full_raw_residual_status"]
             == "FAIL_RAW_FMIN_ADDS_NONZERO_TENSOR_RESIDUAL"
             and compact_projected_residual["projected_compact_residual_status"]
-            == "PASS_COMPACT_BRANCH_CLOSES_WHEN_ACTIVE_FMIN_WEIGHT_IS_ZERO"
+            == "SUPERSEDED_PROJECTED_RESIDUAL_ZERO__USE_P05S_ACTION_LEVEL_FMIN"
             and compact_fmin_weight["compact_fmin_weight_status"]
             == "FAIL_RESIDUAL_MATCHING_OMEGA_F_ZERO_IS_CIRCULAR_WITHOUT_ACTION_MECHANISM"
             and fmin_tadpole["tadpole_subtraction_status"]
             == "FAIL_TADPOLE_SUBTRACTION_DOES_NOT_REMOVE_COMPACT_LINEAR_TAIL"
             and compact_tail["compact_tail_vs_solar_family_status"]
             == "FAIL_SOLAR_PHYSICAL_SLICE_CONFLICTS_WITH_COMPACT_FMIN_TAIL_SILENCING"
-            and source_ledger["no_double_count_ledger_status"]
-            == "PASS_COMPACT_FMIN_RAW_RESIDUAL_IS_LEDGER_DOUBLE_COUNT_NOT_PHYSICAL_RHS"
-            and variational_projector["variational_projector_status"]
-            == "PASS_VARIATIONAL_NO_DOUBLE_COUNT_PROJECTOR_CLOSES_COMPACT_ACTIVE_RHS"
+            and phase_normalized_action["phase_normalized_action_status"]
+            == "PASS_ACTION_LEVEL_PHASE_NORMALIZED_FMIN_IS_QUIET_ON_COMPACT_BRANCH"
             and energy["energy_condition_verdict_status"]
             == "PASS_ACTIVE_DEFICIT_NEC_VERDICT_FOR_COMPACT_EXPONENTIAL_BRANCH"
-            else "CHECK_P05G_EXPONENTIAL_EXTERIOR_SOURCE_AND_NO_DOUBLE_COUNT_VERDICT"
+            else "CHECK_P05G_EXPONENTIAL_EXTERIOR_SOURCE_AND_FMIN_ACTION_VERDICT"
         ),
         "biconformal_map": biconformal["biconformal_map_status"],
         "phase_equation_covariant_consistency": phase_consistency[
@@ -715,11 +711,8 @@ def p05g_central_exponential_source_gate():
         "compact_tail_vs_solar_family": compact_tail[
             "compact_tail_vs_solar_family_status"
         ],
-        "no_double_count_source_ledger": source_ledger[
-            "no_double_count_ledger_status"
-        ],
-        "variational_no_double_count_projector": variational_projector[
-            "variational_projector_status"
+        "phase_normalized_fmin_action": phase_normalized_action[
+            "phase_normalized_action_status"
         ],
         "energy_condition_verdict": energy["energy_condition_verdict_status"],
         "field_equation_residuals": source["field_equation_residuals"],
@@ -732,11 +725,11 @@ def p05g_central_exponential_source_gate():
             "RefG_compact_source_closes_exponential_exterior"
         ],
         "article_export_rule": (
-            "export the compact branch through the no-double-count variational "
-            "projector: the source-role projector P_c=diag(0,1) keeps "
-            "L_Delta_perp as the active exterior source and keeps F_min as "
-            "the structural medium sector rather than an ordinary compact RHS "
-            "stress."
+            "export the compact branch through the phase-normalized F_min "
+            "action: in the compact pure-phase frame the hatted F_min "
+            "invariants equal one, so the tadpole-free F_min sector has zero "
+            "density, zero metric stress, and zero phi^A Euler residual.  "
+            "L_Delta_perp supplies the active exterior source."
         ),
         "branch_selection_rule": branch_selection["single_action_reading"],
         "covariant_deficit_operator_rule": covariant_deficit["reading"],
@@ -748,19 +741,19 @@ def p05g_central_exponential_source_gate():
         "compact_fmin_weight_rule": compact_fmin_weight["reading"],
         "fmin_tadpole_rule": fmin_tadpole["meaning"],
         "compact_tail_rule": compact_tail["meaning"],
-        "no_double_count_rule": source_ledger["main_reading"],
-        "source_ledger_article_direction": source_ledger["article_direction"],
-        "source_ledger_open_work": source_ledger["remaining_formal_work"],
-        "variational_projector_rule": variational_projector["what_this_closes"],
-        "variational_projector_article_statement": variational_projector[
+        "phase_normalized_action_rule": phase_normalized_action["action_level_rule"],
+        "phase_normalized_action_article_statement": phase_normalized_action[
             "article_export_statement"
+        ],
+        "phase_normalized_action_remaining_work": phase_normalized_action[
+            "remaining_work"
         ],
         "energy_export_rule": energy["required_article_rule"],
         "next_gates": [
-            "derive the compactness threshold that selects the compact structural ledger",
+            "derive the compactness threshold and continuous H-loading law",
             "derive the curved compact-core profile and match it to the exterior projected deficit source",
             "derive rotating RefG exterior from the same projected-source action",
-            "audit full coupled p01/projector perturbations around the compact branch",
+            "audit full coupled p01/H/metric perturbations around the compact branch",
         ],
     }
 
@@ -783,10 +776,9 @@ if __name__ == "__main__":
         ("10. Rejected compact Fmin weight from matching", derive_compact_fmin_weight_from_residual_matching_gate()),
         ("11. Fmin tadpole subtraction", derive_unit_background_tadpole_subtraction_gate()),
         ("12. Compact linear tail vs Solar family", derive_compact_linear_tail_vs_solar_family_gate()),
-        ("13. No-double-count source ledger", derive_compact_no_double_count_source_ledger_gate()),
-        ("14. Variational no-double-count projector", derive_variational_no_double_count_projector_gate()),
-        ("15. Energy-condition verdict", derive_energy_condition_verdict_gate()),
-        ("16. Central p05g gate", p05g_central_exponential_source_gate()),
+        ("13. Phase-normalized Fmin action", derive_phase_normalized_fmin_action_gate()),
+        ("14. Energy-condition verdict", derive_energy_condition_verdict_gate()),
+        ("15. Central p05g gate", p05g_central_exponential_source_gate()),
     ]
     for title, result in sections:
         print(f"\n{title}")

@@ -3,9 +3,11 @@
 # B=exp(-r_s/r), A=exp(r_s/r) in ds^2=B c^2 dt^2-A dSigma^2.
 #
 # This gate answers the referee's remaining point after p05i:
-# if the structural F_min sector is inserted again as an ordinary compact RHS
-# source on the same geometry, it produces a tensor residual.  That residual is
-# a double-counting diagnostic.  The compact source ledger is repaired in p05p.
+# if the raw absolute-invariant F_min sector is inserted as an ordinary compact
+# RHS source on the same geometry, it produces a tensor residual.  That raw
+# residual is real for the raw action and cannot be removed by a post-variation
+# projector.  The compact action-level repair is p05s: phase-normalized F_min
+# invariants are quiet on the compact pure-phase branch.
 
 from __future__ import annotations
 
@@ -69,9 +71,8 @@ def derive_fmin_compact_identity_branch_residual_gate():
     - the asymptotic scaling against the projected deficit source.
 
     The result is not used as a physical compact RHS source.  It is the audit
-    showing what goes wrong if the structural medium modulus is counted twice:
-    first as the mechanism that forms the geometry, then again as matter on
-    the same geometry.
+    showing that the raw absolute-invariant F_min action is the wrong compact
+    branch action for the pure-phase exterior.
     """
     r, r_s, G, M4 = sp.symbols("r r_s G M4", positive=True, real=True)
     u = sp.symbols("u", positive=True, real=True)
@@ -192,17 +193,16 @@ def derive_fmin_compact_identity_branch_residual_gate():
         "metric_residual_over_projected_D_u_series": ratio_u_series,
         "nonzero_checks": nonzero_checks,
         "verdict": (
-            "On the physical Solar F_min slice, inserting the structural "
-            "F_min sector again as an ordinary compact RHS source gives "
-            "nonzero stress and a nonzero phi^A Euler residual.  This is the "
-            "double-counting diagnostic: the compact projected deficit source "
-            "already closes the geometry, while F_min is the compact "
-            "structural medium sector, not an extra compact matter load."
+            "On the physical Solar F_min slice, inserting the raw absolute "
+            "F_min sector as an ordinary compact RHS source gives nonzero "
+            "stress and a nonzero phi^A Euler residual.  This raw tensor is "
+            "the referee's correct objection to the old projector wording.  "
+            "The compact branch must use the phase-normalized action in p05s."
         ),
         "next_options": [
-            "use p05p as the compact no-double-count source ledger",
+            "use p05s as the compact phase-normalized action ledger",
             "keep raw F_min explicitly marked as a rejected compact RHS insertion",
-            "write the no-double-count rule as a variational projector or branch decomposition",
+            "do not export a post-variation projector as source closure",
         ],
     }
 
@@ -213,9 +213,8 @@ def derive_phase_normalized_fmin_compact_gate():
 
     This is not a passive field redefinition of the raw F_min action.  A true
     metric stress tensor is not removed by renaming variables.  The calculation
-    below only shows what happens if the compact branch defines the quiet
-    F_min channel through local phase-normalized invariants, or equivalently
-    through a compact-branch projector.
+    below shows what happens when the compact branch action itself defines the
+    quiet F_min channel through local phase-normalized invariants.
 
     Define normalized invariants
 
@@ -314,7 +313,7 @@ def derive_phase_normalized_fmin_compact_gate():
             "If the compact branch defines the quiet F_min channel with local "
             "phase-normalized invariants, both the branch F_min stress and the "
             "branch spatial Euler residual vanish on the pure-phase exterior. "
-            "This is a branch-action/projector statement, not a passive "
+            "This is a branch-action statement, not a passive "
             "normalization of the raw F_min tensor."
         ),
     }
@@ -330,10 +329,9 @@ def derive_compact_branch_fmin_screening_gate():
       - compact pure-phase exterior: F_min is the structural medium sector and
         the active RHS source is L_Delta^perp.
 
-    Omega_F is kept only as an algebraic ledger marker.  It is not derived
-    from exterior residual matching.  The physical statement is the p05p
-    no-double-count rule: structural F_min is not added again as compact
-    matter on the same geometry.
+    Omega_F is kept only as an algebraic old-ledger marker.  It is not derived
+    from exterior residual matching.  The action-level compact repair is p05s:
+    phase-normalized F_min is quiet on the pure-phase branch.
     """
     Omega_F, F_raw, E_raw = sp.symbols("Omega_F F_raw E_raw", real=True)
     compact_rule = {Omega_F: 0}
@@ -344,7 +342,7 @@ def derive_compact_branch_fmin_screening_gate():
 
     return {
         "screening_gate_status": (
-            "PASS_IF_COMPACT_BRANCH_PROJECTOR_SETS_DIFFUSE_FMIN_WEIGHT_TO_ZERO"
+            "SUPERSEDED_BY_P05S_PHASE_NORMALIZED_ACTION"
             if compact_active_stress == 0 and compact_active_eom == 0
             else "CHECK_COMPACT_BRANCH_PROJECTOR"
         ),
@@ -355,10 +353,9 @@ def derive_compact_branch_fmin_screening_gate():
         "compact_active_Fmin_phiA_EOM": compact_active_eom,
         "weak_active_Fmin_stress": weak_active_stress,
         "remaining_derivation": (
-            "p05p supplies the source ledger: the compact active RHS is "
-            "L_Delta^perp, while F_min remains structural.  The remaining "
-            "formal work is to write this as an explicit variational projector "
-            "or branch decomposition, not to infer Omega_F from a residual."
+            "p05s supplies the source ledger: compact F_min is written with "
+            "phase-normalized invariants and is quiet at action level.  This "
+            "Omega_F marker is only a rejected old diagnostic."
         ),
     }
 

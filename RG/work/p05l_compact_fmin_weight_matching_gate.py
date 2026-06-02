@@ -5,7 +5,7 @@
 # This gate records a rejected attempt to derive the compact active weight of
 # the diffuse F_min channel from residual matching.  The algebra shows the
 # wrong ledger consequence, but the argument is circular.  The repair is the
-# p05p no-double-count source ledger, not residual-matched Omega_F.
+# p05s phase-normalized compact F_min action, not residual-matched Omega_F.
 
 from __future__ import annotations
 
@@ -32,7 +32,7 @@ def derive_compact_fmin_weight_from_residual_matching_gate():
     The compact exterior has two logically separate source layers:
 
     1. The projected phase-deficit channel L_Delta^perp.
-    2. The diffuse medium-stress channel represented by F_min.
+    2. The raw absolute-invariant F_min channel tested as a rejected audit.
 
     On the compact exponential exterior, L_Delta^perp already matches the full
     mixed Einstein tensor.  Therefore the required residual source outside the
@@ -47,9 +47,9 @@ def derive_compact_fmin_weight_from_residual_matching_gate():
         Omega_F Theta_F,raw^mu_mu = 0
 
     would force Omega_F=0 on the compact exterior.  This is not a derivation.
-    It is the sign that raw F_min was placed in the wrong ledger: the compact
-    branch already uses F_min structurally and must not add it again as
-    ordinary active compact RHS matter.
+    It is the sign that raw F_min was written in the wrong compact action.
+    The action-level repair is p05s: phase-normalized F_min is quiet on the
+    compact pure-phase exterior.
     """
     r, r_s, G, M4 = sp.symbols("r r_s G M4", positive=True, real=True)
     c_Y2, Omega_F = sp.symbols("c_Y2 Omega_F", real=True)
@@ -149,8 +149,8 @@ def derive_compact_fmin_weight_from_residual_matching_gate():
             "that channel vanishes at the boundary with no thin shell.  But "
             "using the already closed L_Delta exterior equation to set the "
             "raw F_min exterior weight to zero is circular.  The valid repair "
-            "is p05p: F_min is the compact structural medium sector and is not "
-            "added again as ordinary active compact RHS stress."
+            "is p05s: compact F_min is written with phase-normalized "
+            "invariants and is quiet at action level."
         ),
     }
 

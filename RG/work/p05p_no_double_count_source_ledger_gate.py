@@ -2,11 +2,14 @@
 # signature (+---); compact branch uses positive metric functions
 # B=exp(-r_s/r), A=exp(r_s/r) in ds^2=B c^2 dt^2-A dSigma^2.
 #
-# This gate repairs the foundational reading exposed by p05j-p05m:
-# the structural medium modulus F_min was being counted as an ordinary RHS
-# stress on a geometry that is already produced by the RefG medium mechanism.
-# That is double counting.  The primary repair is a source ledger, not a
-# compensating residual fit.
+# Historical ledger after the p05j-p05m raw residual audit.
+#
+# Referee correction: the old "double-count" label is not an action-level
+# closure by itself.  The raw absolute-invariant F_min stress is a real tensor
+# if that raw action is used.  The repaired compact route is p05s: write F_min
+# with phase-normalized compact-branch invariants so its compact stress
+# vanishes before variation.  This file is kept as a rejected/provenance
+# ledger for the older source-role wording.
 
 from __future__ import annotations
 
@@ -49,8 +52,10 @@ def derive_compact_no_double_count_source_ledger_gate():
         compact structural sector = F_min,
         active_rhs(F_min | compact exterior) = 0 by role, not by residual fit.
 
-    This gate closes the double-counting diagnosis.  p05r writes the same
-    ledger as an explicit variational source-role projector.
+    Referee correction: this ledger does not close the variational objection
+    by itself.  It records why the raw absolute-invariant insertion fails and
+    hands the repair to p05s, where F_min is made quiet at the action level by
+    phase-normalized compact invariants.
     """
     raw = derive_full_raw_fmin_plus_ldelta_residual_gate()
     projected = derive_compact_projected_full_residual_gate()
@@ -67,7 +72,7 @@ def derive_compact_no_double_count_source_ledger_gate():
     ledger_consistent = (
         raw["full_raw_residual_status"] == "FAIL_RAW_FMIN_ADDS_NONZERO_TENSOR_RESIDUAL"
         and projected["projected_compact_residual_status"]
-        == "PASS_COMPACT_BRANCH_CLOSES_WHEN_ACTIVE_FMIN_WEIGHT_IS_ZERO"
+        == "SUPERSEDED_PROJECTED_RESIDUAL_ZERO__USE_P05S_ACTION_LEVEL_FMIN"
         and matching["compact_fmin_weight_status"]
         == "FAIL_RESIDUAL_MATCHING_OMEGA_F_ZERO_IS_CIRCULAR_WITHOUT_ACTION_MECHANISM"
         and tadpole["tadpole_subtraction_status"]
@@ -81,7 +86,7 @@ def derive_compact_no_double_count_source_ledger_gate():
 
     return {
         "no_double_count_ledger_status": (
-            "PASS_COMPACT_FMIN_RAW_RESIDUAL_IS_LEDGER_DOUBLE_COUNT_NOT_PHYSICAL_RHS"
+            "SUPERSEDED_BY_P05S_PHASE_NORMALIZED_ACTION__DOUBLE_COUNT_LABEL_REJECTED"
             if ledger_consistent
             else "CHECK_COMPACT_FMIN_SOURCE_LEDGER"
         ),
@@ -103,20 +108,20 @@ def derive_compact_no_double_count_source_ledger_gate():
             "role": "diffuse weak-field medium response",
         },
         "main_reading": (
-            "The raw compact F_min tensor residual is the mark of double "
-            "counting: the same medium structure was first used as the "
-            "geometric mechanism and then added again as matter on the RHS."
+            "The raw compact F_min tensor residual is real for the raw "
+            "absolute-invariant action.  Calling it double-counting was not "
+            "enough; the action-level repair is the p05s phase-normalized "
+            "compact F_min branch."
         ),
         "article_direction": (
-            "Write the compact branch with a source ledger: the projected "
-            "deficit operator is the active exterior source; F_min is the "
-            "structural medium sector and is not added again as an ordinary "
-            "compact RHS stress."
+            "Do not export the post-variation source ledger as the final "
+            "answer.  Export p05s instead: compact F_min is written with "
+            "phase-normalized strain invariants and is quiet on the pure-phase "
+            "branch at the action level."
         ),
         "remaining_formal_work": (
-            "p05r writes this ledger as an explicit variational projector.  "
-            "The remaining work is compact-core dynamics, rotation, and "
-            "observational tests, not the source-ledger separation itself."
+            "Use p05s for the compact action-level source closure.  The "
+            "continuous weak-to-compact loading law still has to be derived."
         ),
     }
 

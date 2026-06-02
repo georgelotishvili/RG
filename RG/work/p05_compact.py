@@ -12,14 +12,14 @@ geodesic-algebra level: the vacuum phase equation gives the exterior, the
 effective source has the Bernoulli profile, curvature invariants vanish at the
 formal endpoint, and the C2 matching algebra is explicit.
 
-The algebraic p01/F_min polynomial does not by itself generate the compact
-Bernoulli profile, because that profile is a phase-gradient source.  This is
-not a missing compact matter term.  In the compact source ledger F_min is the
-structural medium sector; it is not added again as ordinary RHS stress on the
-same geometry.  This file derives the static branch source through the medium
-projector version, where the Bernoulli term is a rest-frame spatial-gradient
-response.  Ordinary standalone scalar export has wrong-sign time kinetic and
-is blocked.
+The raw algebraic p01/F_min polynomial in absolute invariants does not by
+itself generate the compact Bernoulli profile, because that profile is a
+phase-gradient source.  The compact branch repair is action-level, not a
+post-variation projector: F_min is written with phase-normalized strain
+invariants, so the pure-phase exterior is unstrained in its local phase frame
+and the F_min density, metric stress, and phi^A Euler residual vanish on that
+branch.  The active exterior source is the projected deficit medium term.
+Ordinary standalone scalar export has wrong-sign time kinetic and is blocked.
 
 This is not yet a full compact-object replacement proof.  The ADM/Komar mass
 bookkeeping is closed at the static asymptotic level, the C2 core's effective
@@ -56,6 +56,9 @@ Still open before full compact-object theory export:
 """
 import sympy as sp
 from p01_core import get_polynomial_lagrangian, local_stability_short_path_certificate
+from p05s_phase_normalized_fmin_action_gate import (
+    derive_phase_normalized_fmin_action_gate,
+)
 
 
 def compact_signature_bridge():
@@ -577,7 +580,7 @@ def derive_exact_minimal_f_branch_implicit_solution():
             f_asymptotic,
         ),
         "exact_branch_status": "EXACT_IMPLICIT_F_R_BRANCH_DERIVED_FOR_P01_ANISOTROPY",
-        "remaining_source_gate": "do not use this as compact active RHS closure; p05p keeps F_min structural and L_Delta_perp active",
+        "remaining_source_gate": "do not use this as compact active RHS closure; p05s phase-normalizes compact F_min and L_Delta_perp remains active",
     }
 
 
@@ -585,16 +588,17 @@ def derive_full_fmin_exponential_source_closure_system():
     """
     Diagnostic full-component F_min insertion for the exponential exterior.
 
-    This deliberately asks the wrong-ledger question: what would happen if the
-    structural F_min sector were forced to act as the ordinary compact RHS
-    source?  The complete diagonal target would be
+    This deliberately asks the wrong-branch question: what would happen if the
+    raw absolute-invariant F_min sector were forced to act as the ordinary
+    compact RHS source?  The complete diagonal target would be
 
         T^t_t = -Delta_P,  T^r_r = +Delta_P,  T^theta_theta = -Delta_P.
 
     The function writes that target directly in p01/F_min variables and shows
     why the minimal K_A branch is only an anisotropy diagnostic, not a full
-    compact source closure.  The physical compact ledger is p05p:
-    L_Delta_perp is active RHS, F_min is structural medium sector.
+    compact source closure.  The physical compact ledger is p05s:
+    compact F_min is phase-normalized and quiet at action level, while
+    L_Delta_perp is the active exterior source.
     """
     r, r_s, G = sp.symbols('r r_s G', positive=True, real=True)
     Y, lambda_r, lambda_t = sp.symbols('Y lambda_r lambda_t', positive=True, real=True)
@@ -708,10 +712,10 @@ def diagnose_algebraic_fmin_vs_gradient_source():
     the required gradient profile is even inserted.
 
     This block records the exact balance equations and the derivative source
-    that has the required profile.  In the no-double-count reading this is not
-    an instruction to solve compact gravity from F_min.  It is the reason
-    F_min stays structural while the projected phase-gradient source supplies
-    the active compact RHS.
+    that has the required profile.  This is not an instruction to solve compact
+    gravity from raw F_min.  It is the reason compact F_min must be written in
+    phase-normalized invariants while the projected phase-gradient source
+    supplies the active compact RHS.
     """
     Y, lambda_r, lambda_t = sp.symbols(
         'Y lambda_r lambda_t',
@@ -772,7 +776,7 @@ def diagnose_algebraic_fmin_vs_gradient_source():
         "ThetaRefG_gradient_source_target": theta_source,
         "Einstein_profile_residual_with_gradient_source": einstein_residual,
         "diagnosis_status": "ALGEBRAIC_FMIN_ALONE_DOES_NOT_CLOSE_EXPONENTIAL_SOURCE__PROJECTED_DEFICIT_SOURCE_REQUIRED",
-        "next_action": "use the no-double-count source ledger: keep F_min structural and use the covariant projected deficit source as active compact RHS",
+        "next_action": "use p05s: phase-normalize compact F_min and use the covariant projected deficit source as active compact RHS",
     }
 
 
@@ -848,7 +852,7 @@ def derive_covariant_bernoulli_gradient_source():
         },
         "closure_status": "COVARIANT_BERNOULLI_GRADIENT_SOURCE_DERIVED_FOR_STATIC_EXPONENTIAL_BRANCH",
         "physical_export_note": "RefG medium reading is derive_projected_bernoulli_medium_source(); unprojected scalar is static shorthand",
-        "remaining_gate": "full coupled projector/medium perturbative stability must be audited before full compact-object export",
+        "remaining_gate": "full coupled H/medium perturbative stability must be audited before full compact-object export",
     }
 
 
@@ -913,7 +917,7 @@ def derive_projected_bernoulli_medium_source():
         "projected_spatial_gradient_coefficient": projected_spatial_gradient_coeff,
         "ordinary_scalar_export": "BLOCKED_STANDALONE_SCALAR_EXPORT__UNPROJECTED_LB_IS_STATIC_SHORTHAND_WITH_WRONG_SIGN_TIME_KINETIC",
         "refg_medium_export": "PASS_STATIC_PROJECTED_BERNOULLI_MEDIUM_SOURCE_FOR_EXPONENTIAL_BRANCH",
-        "remaining_gate": "derive full coupled p01/projector perturbations and core action dynamics",
+        "remaining_gate": "derive full coupled p01/H perturbations and core action dynamics",
     }
 
 
@@ -2311,8 +2315,8 @@ def singularity_strength_ledger() -> list[str]:
         "The exact p01 anisotropy lever is lambda_r-lambda_t; f=r kills it, so a nontrivial radial deformation f(r) is the next closure target.",
         "A minimal nontrivial branch gives f=r*(1-r_s^2/(256*pi*G*K_A*r^4)) at linear order and exactly cancels the required anisotropy at that order.",
         "The same minimal branch has an exact implicit solution for the anisotropy equation after H=f*r/sqrt(a).",
-        "The minimal K_A branch does not close a forced F_min-as-active-RHS diagonal source; that forced ledger is rejected by the no-double-count rule.",
-        "The algebraic F_min polynomial has no phase-gradient invariant; in the compact ledger F_min is structural, while the active exponential source is the Bernoulli gradient profile Delta_P=exp(phi)*(phi')^2/(32*pi*G).",
+        "The minimal K_A branch does not close a forced raw F_min-as-active-RHS diagonal source; that forced raw ledger is rejected.",
+        "The algebraic raw F_min polynomial has no phase-gradient invariant; in the compact action F_min is phase-normalized and quiet, while the active exponential source is the Bernoulli gradient profile Delta_P=exp(phi)*(phi')^2/(32*pi*G).",
         "A covariant Bernoulli gradient source L_B=Z/(8*pi*G) with Z=-g^mn*d_m h*d_n h exactly supplies the exponential mixed source on the static branch.",
         "The physical RefG export uses the projected medium source L_B_perp=Z_perp/(8*pi*G), Z_perp=(u^m*u^n-g^mn)*d_m h*d_n h; on the static branch it gives the same mixed tensor without exporting a standalone phantom scalar.",
         "The active deficit has negative radial null load in the ordinary Einstein-fluid audit; in RefG this is the phase-pressure deficit signature, not ordinary positive matter.",
@@ -3473,6 +3477,7 @@ def compact_central_claim_gate():
     core_ivp_domain = derive_c2_core_nonlinear_ivp_parameter_domain_theorem()
     core_action_integrability = derive_c2_core_action_density_integrability_theorem()
     core_local_stability = derive_c2_core_local_stability_interface()
+    phase_action = derive_phase_normalized_fmin_action_gate()
     return {
         "file_export_status": "STATIC_COMPACT_CORE_SOURCE_LEDGER_READY_WITH_DYNAMICAL_SCOPE_BOUNDARY",
         "full_compact_object_status": "CORE_SOURCE_AND_BRANCH_ACTION_DENSITY_CLOSED__OFF_BRANCH_AND_DYNAMICS_GATED",
@@ -3497,16 +3502,18 @@ def compact_central_claim_gate():
             "Schwarzschild curvature singularity removed inside the static exponential branch",
             "C2 finite-core matching coefficients derived as a conditional ansatz",
             "static photon sphere, shadow and ISCO benchmarks derived",
-            "compact active source ledger separates L_Delta_perp from structural F_min through a variational projector",
+            "compact F_min is quiet at action level through phase-normalized strain invariants",
         ],
         "signature_bridge": signature["stress_bridge_status"],
         "exterior_status": "PHASE_EQUATION_AND_BICONFORMAL_MAP_DERIVED",
-        "algebraic_fmin_status": "ALGEBRAIC_P01_FMIN_IS_STRUCTURAL_NOT_COMPACT_ACTIVE_RHS",
+        "algebraic_fmin_status": "RAW_ABSOLUTE_FMIN_ACTIVE_RHS_REJECTED__PHASE_NORMALIZED_COMPACT_FMIN_QUIET",
         "black_hole_breaker_status": "SCHWARZSCHILD_CURVATURE_SINGULARITY_REMOVED_AT_GEOMETRY_LEVEL__GEODESIC_BOUNDARY_STILL_OPEN",
         "effective_source_status": "GEOMETRIC_SOURCE_PROFILE_MATCHES_BERNOULLI_DELTA_P",
-        "p01_source_closure": "FORCED_FMIN_ACTIVE_RHS_LEDGER_REJECTED__PROJECTED_DEFICIT_SOURCE_ACTIVE__FMIN_STRUCTURAL",
-        "no_double_count_source_ledger": "COMPACT_ACTIVE_RHS_IS_L_DELTA_PERP__FMIN_IS_STRUCTURAL_MEDIUM_SECTOR",
-        "no_double_count_variational_projector": "P_C_DIAG_0_1_CLOSES_COMPACT_ACTIVE_RHS__FMIN_STRUCTURAL",
+        "p01_source_closure": "FORCED_RAW_FMIN_ACTIVE_RHS_REJECTED__PHASE_NORMALIZED_FMIN_QUIET__PROJECTED_DEFICIT_ACTIVE",
+        "phase_normalized_fmin_action": phase_action[
+            "phase_normalized_action_status"
+        ],
+        "phase_normalized_fmin_rule": phase_action["action_level_rule"],
         "bernoulli_gradient_source": projected_source["refg_medium_export"],
         "effective_energy_conditions": "ACTIVE_DEFICIT_HAS_NEGATIVE_RADIAL_NULL_LOAD__REFG_READING_IS_PHASE_PRESSURE_DEFICIT",
         "active_nec_status": "RADIAL_NEC_VIOLATION_IS_ACTIVE_DEFICIT_SIGNATURE",

@@ -2,15 +2,17 @@
 # signature (+---); compact branch uses positive metric functions
 # B=exp(-r_s/r), A=exp(r_s/r) in ds^2=B c^2 dt^2-A dSigma^2.
 #
-# This gate writes the p05p source ledger as an explicit variational projector
-# in source-role space.  It is not a residual fit.  The projector is defined
-# before the field equation is evaluated:
+# Historical rejected gate.
+#
+# This file wrote the p05p source ledger as a source-role projector.  The
+# referee objection is correct: a projector placed in source-role space is not
+# by itself a variational mechanism for an action that contains raw F_min.
+# The active repair is p05s, where the compact F_min branch is written with
+# phase-normalized invariants and its stress vanishes at action level.
 #
 #     source roles = (F_min structural, L_Delta_perp active).
 #
-# On the compact branch the active gravitational variation keeps the second
-# role and removes the first from the RHS.  F_min remains in the structural
-# medium ledger; it is not deleted from the theory.
+# This file is retained only as a rejected diagnostic/provenance ledger.
 
 from __future__ import annotations
 
@@ -48,9 +50,10 @@ def derive_variational_no_double_count_projector_gate():
         V_active = P_c V = (0, Theta_Delta)^T,
         V_struct = Q_c V = (Theta_F, 0)^T.
 
-    This separates the variational ledger.  It does not tune a coefficient from
-    the field-equation residual.  The projected active source then closes the
-    compact exponential Einstein tensor exactly.
+    Referee correction: the algebraic projector identities are true, and the
+    projected residual is zero, but this does not prove that raw F_min is absent
+    from delta S / delta g.  Therefore this is not the compact source closure.
+    The accepted repair is the p05s phase-normalized action.
     """
     r, r_s, G = sp.symbols("r r_s G", positive=True, real=True)
     M4, c_Y2 = sp.symbols("M4 c_Y2", real=True)
@@ -128,7 +131,7 @@ def derive_variational_no_double_count_projector_gate():
 
     return {
         "variational_projector_status": (
-            "PASS_VARIATIONAL_NO_DOUBLE_COUNT_PROJECTOR_CLOSES_COMPACT_ACTIVE_RHS"
+            "REJECTED_POST_VARIATION_PROJECTOR_NOT_ACTION_MECHANISM__USE_P05S"
             if all_projector_checks_zero
             and compact_active_closes
             and structural_not_deleted
@@ -149,22 +152,18 @@ def derive_variational_no_double_count_projector_gate():
         "rejected_double_count_residuals": rejected_double_count_residuals,
         "projector_defined_before_residual": True,
         "what_this_closes": (
-            "The no-double-count rule is written as a variational branch "
-            "projector: compact active RHS receives L_Delta_perp only, while "
-            "F_min remains the structural medium sector.  The active compact "
-            "field-equation residual is exactly zero."
+            "The projector algebra gives zero residual only after the raw "
+            "F_min stress has been removed from the active RHS.  This is not "
+            "an action-level mechanism for an action that contains raw F_min."
         ),
         "what_this_does_not_claim": (
-            "This does not prove the full rotating compact object, QNM "
-            "spectrum, or observational viability.  It closes the source-ledger "
-            "mistake that double-counted F_min on the compact exterior."
+            "This file must not be exported as closure.  Use p05s, where "
+            "compact F_min is phase-normalized before variation and therefore "
+            "has zero compact-branch stress."
         ),
         "article_export_statement": (
-            "In the compact branch the variational source space splits into a "
-            "structural medium sector and an active projected-deficit sector. "
-            "The active compact RHS is obtained by the branch projector "
-            "P_c=diag(0,1), so F_min is not counted again as ordinary compact "
-            "matter; L_Delta_perp supplies the exterior source."
+            "Do not export the P_c projector as the final compact source "
+            "mechanism.  Export the phase-normalized F_min action of p05s."
         ),
     }
 

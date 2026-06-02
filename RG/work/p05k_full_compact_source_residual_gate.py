@@ -6,8 +6,10 @@
 # a passive phase normalization cannot remove a true metric stress tensor.
 # Therefore the compact exponential exterior is tested against the mistaken
 # insertion of raw F_min as an ordinary RHS stress plus the projected L_Delta
-# stress in one field equation.  The nonzero residual is the double-counting
-# diagnostic used by p05p.
+# stress in one field equation.  The nonzero residual is the raw absolute-
+# invariant objection.  The old double-count/projector wording is superseded
+# by p05s, where compact F_min is written with phase-normalized invariants and
+# is quiet at action level.
 
 from __future__ import annotations
 
@@ -73,7 +75,7 @@ def derive_full_raw_fmin_plus_ldelta_residual_gate():
 
     The raw F_min contribution is inserted with the physical Solar-family
     coefficient slice as if it were ordinary active compact matter.  This is
-    the wrong ledger placement, but it is the necessary diagnostic test.  The
+    the wrong compact branch action, but it is the necessary diagnostic test. The
     residual is
 
         R^mu_mu = G^mu_mu
@@ -175,26 +177,26 @@ def derive_full_raw_fmin_plus_ldelta_residual_gate():
         "ThetaF_radial_at_w_equals_2_over_M4_cY2": theta_fr_at_w2,
         "exact_closure_requires": exact_closure_requires,
         "verdict": (
-            "The tensor objection is correct for the mistaken ledger where raw "
-            "F_min is added as ordinary compact RHS matter: the projected "
-            "L_Delta source already matches the compact exponential Einstein "
-            "tensor, and raw F_min leaves a nonzero tensor residual.  This is "
-            "the double-counting mark.  No constant retuning of the projected "
+            "The tensor objection is correct for the raw absolute-invariant "
+            "F_min insertion: the projected L_Delta source already matches "
+            "the compact exponential Einstein tensor, and raw F_min leaves a "
+            "nonzero tensor residual.  No constant retuning of the projected "
             "load can absorb it, because the raw F_min radial and tangential "
             "stresses have the same branch value while the compact geometry "
-            "requires opposite radial/tangential signs."
+            "requires opposite radial/tangential signs.  The repair is not a "
+            "post-variation projector; it is the phase-normalized compact "
+            "F_min action in p05s."
         ),
     }
 
 
 def derive_compact_projected_full_residual_gate():
     """
-    Exact compact-branch closure when F_min is structural, not active RHS.
+    Old projected compact residual audit.
 
-    This is the tensor statement used by the no-double-count source ledger:
-    on the compact pure-phase exterior the active gravitational source is the
-    projected deficit channel, and the structural F_min sector is not added
-    again as an ordinary compact RHS stress.
+    This algebra is true after setting the raw F_min active weight to zero,
+    but by itself it is not a variational mechanism.  It is retained as the
+    old residual audit; p05s is the action-level compact F_min repair.
     """
     r, r_s, G = sp.symbols("r r_s G", positive=True, real=True)
     Omega_F, omega_delta = sp.symbols("Omega_F omega_delta", real=True)
@@ -235,7 +237,7 @@ def derive_compact_projected_full_residual_gate():
 
     return {
         "projected_compact_residual_status": (
-            "PASS_COMPACT_BRANCH_CLOSES_WHEN_ACTIVE_FMIN_WEIGHT_IS_ZERO"
+            "SUPERSEDED_PROJECTED_RESIDUAL_ZERO__USE_P05S_ACTION_LEVEL_FMIN"
             if _all_zero(compact_residuals.values())
             else "CHECK_COMPACT_BRANCH_PROJECTED_RESIDUAL"
         ),
@@ -246,11 +248,10 @@ def derive_compact_projected_full_residual_gate():
         "full_weighted_residuals": residuals,
         "compact_projected_residuals": compact_residuals,
         "article_safe_statement": (
-            "The compact exponential exterior is a solution of the projected "
-            "compact branch, where the active source is L_Delta^perp.  F_min "
-            "is the structural medium sector and is not added again as an "
-            "ordinary compact RHS stress.  This is a no-double-count source "
-            "ledger statement, not a passive change of variables."
+            "The projected residual is zero only after the raw F_min active "
+            "weight has been set to zero.  Do not export this as the compact "
+            "source mechanism.  Export p05s: phase-normalized F_min has zero "
+            "compact stress before variation."
         ),
     }
 
