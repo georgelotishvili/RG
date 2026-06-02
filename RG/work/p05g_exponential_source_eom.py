@@ -41,6 +41,7 @@ from p05_compact import (
     derive_projected_bernoulli_medium_source,
     diagnose_algebraic_fmin_vs_gradient_source,
 )
+from p05i_spatial_medium_eom_gate import p05i_central_spatial_medium_gate
 from p13_refractive_force import p10_static_first_order_biconformal_selection
 from p14_nec_deficit import (
     active_deficit_nec_identity_gate,
@@ -624,6 +625,7 @@ def p05g_central_exponential_source_gate():
     covariant_deficit = derive_covariant_deficit_operator_from_medium_fields_gate()
     operator_health = auxiliary_deficit_operator_health_gate()
     source = derive_projected_source_eom_closure_gate()
+    spatial_medium = p05i_central_spatial_medium_gate()
     branch_selection = unified_deficit_operator_branch_selection_gate()
     fmin = audit_fmin_alone_vs_refg_compact_source_gate()
     energy = derive_energy_condition_verdict_gate()
@@ -641,6 +643,8 @@ def p05g_central_exponential_source_gate():
             == "PASS_AUXILIARY_DEFICIT_OPERATOR_HAS_NO_OSTRO_TIME_MODE_AND_CLOSES_EXTERIOR"
             and source["projected_source_eom_status"]
             == "PASS_PROJECTED_BERNOULLI_SOURCE_SOLVES_STATIC_EXPONENTIAL_EOM"
+            and spatial_medium["p05i_status"]
+            == "PASS_SPATIAL_MEDIUM_EOM_AND_PROJECTED_ANISOTROPY_CLOSE"
             and branch_selection["branch_selection_status"]
             == "PASS_SINGLE_EFT_OPERATOR_WITH_BRANCH_SELECTED_EXTERIOR_LOAD"
             and fmin["fmin_vs_refg_source_status"]
@@ -656,10 +660,13 @@ def p05g_central_exponential_source_gate():
         "covariant_deficit_operator": covariant_deficit["operator_status"],
         "auxiliary_deficit_operator_health": operator_health["operator_health_status"],
         "projected_source_eom": source["projected_source_eom_status"],
+        "spatial_medium_eom": spatial_medium["p05i_status"],
         "branch_selection": branch_selection["branch_selection_status"],
         "fmin_vs_refg_source": fmin["fmin_vs_refg_source_status"],
         "energy_condition_verdict": energy["energy_condition_verdict_status"],
         "field_equation_residuals": source["field_equation_residuals"],
+        "spatial_medium_eom_residual": spatial_medium["f_euler_after_Lambda_zero"],
+        "spatial_medium_anisotropy_residual": spatial_medium["anisotropy_residual"],
         "Fmin_alone_closes_exponential_exterior": fmin[
             "Fmin_alone_closes_exponential_exterior"
         ],
@@ -673,6 +680,7 @@ def p05g_central_exponential_source_gate():
         ),
         "branch_selection_rule": branch_selection["single_action_reading"],
         "covariant_deficit_operator_rule": covariant_deficit["reading"],
+        "spatial_medium_article_rule": spatial_medium["article_rule"],
         "operator_health_rule": operator_health["reading"],
         "energy_export_rule": energy["required_article_rule"],
         "next_gates": [
