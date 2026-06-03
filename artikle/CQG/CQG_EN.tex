@@ -1,20 +1,17 @@
-\documentclass[12pt]{article}
+\documentclass[12pt,a4paper]{article}
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
 \usepackage{amsmath,amssymb,bm}
-\usepackage[a4paper,top=2cm,bottom=2cm,left=3cm,right=1.5cm]{geometry}
+\usepackage[a4paper,margin=2.5cm]{geometry}
 \usepackage[hidelinks]{hyperref}
 \usepackage{setspace}
-\usepackage{titlesec}
 
-\setstretch{1.05}
+\setstretch{1.15}
 \setlength{\parindent}{0.7cm}
 \setlength{\parskip}{0pt}
-\titleformat{\section}{\normalfont\bfseries\centering\uppercase}{ }{0pt}{}
-\titlespacing*{\section}{0pt}{18pt}{9pt}
-\renewcommand{\refname}{REFERENCES}
+\setlength{\emergencystretch}{2em}
 
 \begin{document}
 
@@ -34,8 +31,9 @@ $^{*}$\textit{e-mail:} \href{mailto:g_lotishvili@eeu.edu.ge}{g\_lotishvili@eeu.e
 
 \vspace{0.4cm}
 
-\noindent\textbf{Abstract---}
-Refractive Gravity (RefG) is a phase-spatial effective field theory with an Einstein--Hilbert metric core and a medium sector built from one phase scalar $\Phi$ and three spatial scalars $\phi^A$. The paper gives a self-contained gravitational calculation chain: metric variation defines the active medium stress, the weak static Bianchi/Tolman--Oppenheimer--Volkoff source equation fixes the refractive profile, and minimal metric coupling gives Newton's law for slow test bodies. The Solar branch gives $\gamma=\beta=1$, $\alpha_1=\alpha_2=\alpha_3=0$, $q_{2{\rm PN}}=7/4$, and the tensor sector has $c_g=c$. The compact phase branch is a different exterior: the raw absolute-invariant compact insertion of $F_{\rm min}$ is rejected, while the phase-normalized $F_{\rm min}$ sector has zero density, zero metric stress, and zero $\phi^A$ Euler residual on the pure-phase exterior. The projected phase-pressure deficit source then gives a horizonless exponential exterior with $r_{\rm ph}=r_s$, $b_c=e\,r_s$, $r_{\rm ISCO}=\varphi^2r_s$, and $f_{\rm ISCO}=0.931\,f_{\rm ISCO}^{\rm GR}$. Direct EHT, ngEHT, or BHEX comparison requires the rotating exterior, finite-core matching, and ray-traced plasma/accretion modeling.
+\begin{abstract}
+Refractive Gravity (RefG) is a phase-spatial effective field theory with an Einstein--Hilbert metric core and a medium sector built from one phase scalar $\Phi$ and three spatial scalars $\phi^A$. The paper gives a self-contained gravitational calculation chain: metric variation defines the active medium stress, the weak static Bianchi/Tolman--Oppenheimer--Volkoff source equation fixes the refractive profile, and minimal metric coupling gives Newton's law for slow test bodies. The Solar branch gives $\gamma=\beta=1$, $\alpha_1=\alpha_2=\alpha_3=0$, $q_{2{\rm PN}}=7/4$, and the tensor sector has $c_g=c$. The compact phase branch is a different exterior: the raw absolute-invariant compact insertion of $F_{\rm min}$ is rejected, while the phase-normalized $F_{\rm min}$ sector has zero density, zero metric stress, and zero $\phi^A$ Euler residual on the pure-phase exterior. The projected phase-pressure deficit source then gives a horizonless exponential exterior with photon sphere $r_{\rm ph}=r_s$, critical impact parameter $b_c=e\,r_s$, innermost stable circular orbit radius $r_{\rm ISCO}=\varphi^2r_s$, and orbital frequency $0.931$ times the Schwarzschild value. Direct black-hole-imaging comparison requires the rotating exterior, finite-core matching, and ray-traced plasma/accretion modeling.
+\end{abstract}
 
 \section{Introduction}
 
@@ -1029,7 +1027,7 @@ This second-order operator in the independent deficit field $H_\Delta$ adds
 positive static stiffness to the pressure-deficit channel. The propagating
 hyperbolic modes are controlled by the full $F_{\rm min}$ medium sector.
 
-The exponential exterior has no finite-radius event horizon in the static chart. Its strong-field use is therefore tied to tests of horizonless ultracompact objects. For such objects, a photon sphere has both a shadow-scale role and a dynamical-stability role: the light-ring structure is a stability criterion in its own right \cite{Cunha2017}, and the ringdown/echo channel gives a gravitational-wave discriminator from black holes \cite{Cardoso2016}. For horizonless light-ring objects, the quasinormal-mode (QNM)/echo channel is an open astrophysical-viability risk and part of the strong-field program itself. The result derived here is the static geometric core. Its astrophysical use proceeds through finite-core dynamics, the rotating exterior, QNM/echo analysis, and EHT/ngEHT/BHEX ray tracing.
+The exponential exterior has no finite-radius event horizon in the static chart. Its strong-field use is therefore tied to tests of horizonless ultracompact objects. For such objects, a photon sphere has both a shadow-scale role and a dynamical-stability role: the light-ring structure is a stability criterion in its own right \cite{Cunha2017}, and the ringdown/echo channel gives a gravitational-wave discriminator from black holes \cite{Cardoso2016}. For horizonless light-ring objects, the quasinormal-mode (QNM)/echo channel is an open astrophysical-viability risk and part of the strong-field program itself. The result derived here is the static geometric core. Its astrophysical use proceeds through finite-core dynamics, the rotating exterior, QNM/echo analysis, and Event Horizon Telescope (EHT), next-generation Event Horizon Telescope (ngEHT), and Black Hole Explorer (BHEX) ray tracing.
 
 Branch selection is set by compactness and boundary matching. For an extended
 weak object such as the Sun,
@@ -1182,7 +1180,7 @@ The shadow-scale shift is
 
 The observational separation of this branch requires percent-level shadow-scale control, a rotating compact model, and plasma/accretion ray tracing for EHT, ngEHT, and BHEX-type tests.
 
-\section*{Conclusion}
+\section{Conclusion}
 
 RefG is an effective phase-spatial framework for gravity. Its source is the active stress of the medium, read through the source-index chain
 \[
