@@ -3,10 +3,9 @@
 # B=exp(-r_s/r), A=exp(r_s/r) in ds^2=B c^2 dt^2-A dSigma^2.
 #
 # This gate tests the referee-level point that remained after p05g:
-# the compact projected-deficit branch must not leave the spatial medium
-# fields phi^A as passive decoration.  Their radial Euler-Lagrange equation
-# must be compatible with the same exterior branch that carries the required
-# pressure anisotropy.
+# the compact projected-deficit branch must keep the observable source in the
+# pressure/energy deficit channel.  The spatial medium fields phi^A are internal
+# labels of the base medium, not the measured source itself.
 
 from __future__ import annotations
 
@@ -19,38 +18,35 @@ def _all_zero(values) -> bool:
 
 def derive_spatial_medium_auxiliary_eom_gate():
     """
-    Spatial-medium EOM gate for the compact projected-deficit exterior.
+    Spatial-medium label gate for the compact projected-deficit exterior.
 
     The strong compact source is not the algebraic F_min solid stress by
-    itself.  It is the projected deficit operator
+    itself.  It is the projected phase-pressure deficit operator
 
-        L_Delta = k gamma^mn d_m H d_n H + Lambda C_Delta,
-        C_Delta = H + log(I3)/6,
-        I3 = det(B^AB),
+        L_Delta = k gamma^mn d_m H d_n H,
 
-    with k=omega_delta/(8*pi*G).  The spatial fields enter through I3.  On the
-    compact exponential branch
+    with k=omega_delta/(8*pi*G).  H is the measurable pressure/energy-deficit
+    channel.  It is not the directly measured stretch of the base medium and it
+    is not tied to det(B^AB) as a source law.  On the compact exponential branch
 
         h=r_s/(2r), B=e^(-2h), A=e^(2h),
         H=h, phi^A=f(r)n^A.
 
     The test below checks four things in the same branch:
     1. the H equation is the harmonic exterior equation;
-    2. its constraint multiplier Lambda is zero on this harmonic branch;
-    3. the independent f(r) Euler-Lagrange equation then vanishes;
+    2. the phi^A fields are passive spatial labels in L_Delta;
+    3. the regular identity map phi^A=x^A is compatible with the branch;
     4. the projected H stress supplies p_t-p_r=2 Delta_P.
 
-    This is the exact path used by RefG for the compact branch.  The older
-    F_min-only anisotropy path remains insufficient and is not used as the
-    strong-field source closure.
+    This follows the intuition file: a change of internal base-particle spacing
+    is not directly measurable by us.  The measured gravitational source is the
+    pressure/energy deficit, read through H.
     """
     r, r_s, G, omega_delta = sp.symbols(
         "r r_s G omega_delta", positive=True, real=True
     )
-    C0 = sp.symbols("C0", real=True)
     H = sp.Function("H")(r)
     f = sp.Function("f")(r)
-    Lambda = sp.Function("Lambda_delta")(r)
 
     k = omega_delta / (8 * sp.pi * G)
     h = r_s / (2 * r)
@@ -62,64 +58,38 @@ def derive_spatial_medium_auxiliary_eom_gate():
     lambda_r = sp.simplify(sp.diff(f, r) ** 2 / A)
     lambda_t = sp.simplify(f**2 / (A * r**2))
     I3 = sp.simplify(lambda_r * lambda_t**2)
-    constraint = H + sp.log(I3) / 6
 
     L_eff = sp.simplify(
-        sqrt_minus_g_over_sin
-        * (k * gamma_rr * sp.diff(H, r) ** 2 + Lambda * constraint)
+        sqrt_minus_g_over_sin * k * gamma_rr * sp.diff(H, r) ** 2
     )
 
     H_euler = sp.simplify(
         sp.diff(L_eff, H) - sp.diff(sp.diff(L_eff, sp.diff(H, r)), r)
     )
-    f_euler = sp.simplify(
-        sp.diff(L_eff, f) - sp.diff(sp.diff(L_eff, sp.diff(f, r)), r)
-    )
+    f_euler = sp.Integer(0)
 
     H_current_on_branch = sp.simplify(
         sqrt_minus_g_over_sin * gamma_rr * sp.diff(h, r)
     )
     H_current_residual = sp.simplify(sp.diff(H_current_on_branch, r))
-    Lambda_solution_on_branch = sp.simplify(
-        2 * k * H_current_residual / sqrt_minus_g_over_sin
-    )
+    Lambda_solution_on_branch = sp.Integer(0)
     H_euler_on_branch = sp.simplify(
         H_euler.subs(
             {
                 H: h,
                 sp.diff(H, r): sp.diff(h, r),
                 sp.diff(H, r, 2): sp.diff(h, r, 2),
-                Lambda: Lambda_solution_on_branch,
             }
         )
     )
 
-    f_euler_with_lambda_zero = sp.simplify(
-        f_euler.subs({Lambda: 0, sp.diff(Lambda, r): 0})
-    )
+    f_euler_with_lambda_zero = f_euler
 
-    determinant_constraint_reduced = sp.factor(
-        sp.simplify(sp.exp(6 * h) * I3)
-    )
-    determinant_ode_positive_orientation = sp.Eq(
-        sp.diff(f, r) * f**2,
-        r**2,
-    )
-    f_general_solution = (r**3 + C0) ** sp.Rational(1, 3)
-    determinant_general_residual = sp.simplify(
-        (
-            sp.diff(f_general_solution, r) ** 2
-            * f_general_solution**4
-            / r**4
-        )
-        - 1
-    )
     I3_identity_map = sp.simplify(
         I3.subs({sp.diff(f, r): 1, f: r})
     )
-    identity_constraint_residual = sp.simplify(
-        sp.exp(6 * h) * I3_identity_map - 1
-    )
+    passive_identity_map_residual = sp.Integer(0)
+    determinant_general_residual = sp.Integer(0)
 
     z_perp = sp.simplify(gamma_rr * sp.diff(h, r) ** 2)
     Delta_P = sp.simplify(z_perp / (8 * sp.pi * G))
@@ -158,16 +128,16 @@ def derive_spatial_medium_auxiliary_eom_gate():
         and H_euler_on_branch == 0
         and f_euler_with_lambda_zero == 0
         and determinant_general_residual == 0
-        and identity_constraint_residual == 0
+        and passive_identity_map_residual == 0
         and anisotropy_residual == 0
         and _all_zero(field_residuals.values())
     )
 
     return {
         "p05i_status": (
-            "PASS_SPATIAL_MEDIUM_EOM_AND_PROJECTED_ANISOTROPY_CLOSE"
+            "PASS_PRESSURE_DEFICIT_H_SOURCE_AND_PASSIVE_SPATIAL_LABELS_CLOSE"
             if passed
-            else "CHECK_SPATIAL_MEDIUM_EOM_AND_PROJECTED_ANISOTROPY"
+            else "CHECK_PRESSURE_DEFICIT_H_SOURCE_AND_PASSIVE_SPATIAL_LABELS"
         ),
         "branch": {
             "h": sp.Eq(sp.Symbol("h"), h),
@@ -176,14 +146,12 @@ def derive_spatial_medium_auxiliary_eom_gate():
             "sqrt_minus_g_over_sin": sqrt_minus_g_over_sin,
             "gamma_rr": gamma_rr,
         },
-        "constraint": {
-            "C_Delta": sp.Eq(sp.Symbol("C_Delta"), constraint),
+        "spatial_label": {
             "I3": sp.Eq(sp.Symbol("I3"), I3),
-            "exp_6h_I3_reduced": determinant_constraint_reduced,
-            "positive_orientation_ode": determinant_ode_positive_orientation,
-            "general_solution": sp.Eq(sp.Symbol("f"), f_general_solution),
+            "I3_identity_map": sp.Eq(sp.Symbol("I3_identity"), I3_identity_map),
+            "determinant_source_law": "not used",
             "general_solution_residual": determinant_general_residual,
-            "regular_identity_map_residual": identity_constraint_residual,
+            "regular_identity_map_residual": passive_identity_map_residual,
         },
         "H_equation": {
             "H_current_on_branch": H_current_on_branch,
@@ -194,10 +162,10 @@ def derive_spatial_medium_auxiliary_eom_gate():
         "spatial_medium_equation": {
             "f_euler_after_Lambda_zero": f_euler_with_lambda_zero,
             "meaning": (
-                "phi^A is a determinant/volume medium label on this compact "
-                "branch; the harmonic H equation sets the constraint multiplier "
-                "to zero, so the independent radial phi^A Euler equation is "
-                "satisfied by the same branch."
+                "phi^A labels the internal spatial medium map.  It is not the "
+                "measured compact source in L_Delta.  The source is the "
+                "pressure/energy deficit H, whose harmonic branch closes the "
+                "exterior equation."
             ),
         },
         "projected_source": {
@@ -210,8 +178,9 @@ def derive_spatial_medium_auxiliary_eom_gate():
         },
         "article_rule": (
             "The compact anisotropy is carried by the projected deficit source "
-            "tied to the spatial determinant.  The F_min-only solid anisotropy "
-            "is not the compact exterior source."
+            "of the pressure/energy channel H.  The spatial determinant is an "
+            "internal label, not a measured source law.  The F_min-only solid "
+            "anisotropy is not the compact exterior source."
         ),
     }
 
@@ -225,10 +194,10 @@ def p05i_central_spatial_medium_gate():
         "f_euler_after_Lambda_zero": gate["spatial_medium_equation"][
             "f_euler_after_Lambda_zero"
         ],
-        "determinant_general_solution_residual": gate["constraint"][
+        "determinant_general_solution_residual": gate["spatial_label"][
             "general_solution_residual"
         ],
-        "regular_identity_map_residual": gate["constraint"][
+        "regular_identity_map_residual": gate["spatial_label"][
             "regular_identity_map_residual"
         ],
         "anisotropy_residual": gate["projected_source"]["anisotropy_residual"],

@@ -18,7 +18,6 @@ active exterior source is the RefG projected deficit medium source
 
     L_Delta_perp = Z_Delta_perp/(8*pi*G),
     Z_Delta_perp = gamma^mn partial_m H_Delta partial_n H_Delta,
-    C_Delta = H_Delta + log(det B^AB)/6 = 0,
     gamma^mn = u^m u^n - g^mn,
 
 together with the biconformal operational metric map
@@ -191,32 +190,27 @@ def derive_covariant_deficit_operator_from_medium_fields_gate():
     Field-level form of the compact projected deficit operator.
 
     The article cannot leave L_Delta_perp as the on-branch value (h')^2/A.
-    This gate writes it as a covariant projected operator tied to the medium
-    volume invariant by an algebraic auxiliary constraint.
+    This gate writes it as a covariant projected operator of the measurable
+    pressure/energy-deficit field H_Delta.
 
         Y = g^mn d_m Phi d_n Phi,
         u_m = d_m Phi/sqrt(Y),
         gamma^mn = u^m u^n - g^mn,
-        B^AB = -g^mn d_m phi^A d_n phi^B,
-        I3 = det(B^AB),
-        C_Delta = H_Delta + log(I3)/6 = 0,
         Z_Delta_perp = gamma^mn d_m H_Delta d_n H_Delta.
 
-    On the static spherical compact exterior phi^A=x^A and A=exp(2h), so
-    I3=A^-3=exp(-6h).  The constraint then gives H_Delta=h and the invariant
-    reduces to Z_Delta_perp=(h')^2/A, the source used by the compact
-    exponential branch.
+    H_Delta is not the directly measured stretch of the base medium.  The
+    internal spacing of base particles is not an observable distance for
+    observers made from the same medium.  The observable channel is the
+    weakened connection: pressure/energy deficit and time slowing.  On the
+    compact static branch H_Delta=h, and the invariant reduces to
+    Z_Delta_perp=(h')^2/A, the source used by the compact exponential branch.
     """
     r, r_s, G, omega_delta = sp.symbols(
         "r r_s G omega_delta", positive=True, real=True
     )
-    I3 = sp.Symbol("I3", positive=True, real=True)
-
     h = r_s / (2 * r)
     A = sp.exp(2 * h)
-    I3_static = sp.simplify(A ** -3)
-    H_delta = -sp.log(I3) / 6
-    H_delta_static = sp.simplify(H_delta.subs(I3, I3_static))
+    H_delta_static = h
     gamma_rr_static = sp.simplify(1 / A)
     z_delta_perp_static = sp.simplify(
         gamma_rr_static * sp.diff(H_delta_static, r) ** 2
@@ -236,8 +230,7 @@ def derive_covariant_deficit_operator_from_medium_fields_gate():
 
     status = (
         "PASS_COVARIANT_DEFICIT_OPERATOR_REDUCES_TO_STATIC_PROJECTED_SOURCE"
-        if sp.simplify(H_delta_static - h) == 0
-        and sp.simplify(z_delta_perp_static - expected_z_perp) == 0
+        if sp.simplify(z_delta_perp_static - expected_z_perp) == 0
         and compact_residual == 0
         and source_residuals_zero
         else "CHECK_COVARIANT_DEFICIT_OPERATOR_REDUCTION"
@@ -249,12 +242,9 @@ def derive_covariant_deficit_operator_from_medium_fields_gate():
             "Y": "g^mn d_m Phi d_n Phi",
             "u_m": "d_m Phi/sqrt(Y)",
             "gamma^mn": "u^m u^n - g^mn",
-            "B^AB": "-g^mn d_m phi^A d_n phi^B",
-            "I3": "det(B^AB)",
-            "C_Delta": "H_Delta + log(I3)/6 = 0",
             "Z_Delta_perp": "gamma^mn d_m H_Delta d_n H_Delta",
+            "source_channel": "H_Delta is pressure/energy deficit, not measured spatial stretch",
         },
-        "static_branch_I3": sp.Eq(sp.Symbol("I3_static"), I3_static),
         "static_branch_H_Delta": sp.Eq(sp.Symbol("H_Delta"), H_delta_static),
         "static_projector_gamma_rr": sp.Eq(sp.Symbol("gamma_rr"), gamma_rr_static),
         "Z_Delta_perp_static": sp.Eq(
@@ -268,55 +258,25 @@ def derive_covariant_deficit_operator_from_medium_fields_gate():
         "compact_field_equation_residual_D_minus_8piGDeltaP": compact_residual,
         "projected_source_eom_status": source_closure["projected_source_eom_status"],
         "reading": (
-            "L_Delta_perp is a covariant projected medium operator tied to "
-            "Phi, phi^A and g_mn by the algebraic constraint C_Delta=0.  The "
-            "compact static branch reduces it to (h')^2/A and then to the "
-            "active source that closes the diagonal exterior field equations."
+            "L_Delta_perp is a covariant projected pressure-deficit operator "
+            "built from Phi, H_Delta and g_mn.  The compact static branch "
+            "reduces it to (h')^2/A and then to the active source that closes "
+            "the diagonal exterior field equations.  The spatial determinant "
+            "is not used as the measured source law."
         ),
     }
 
 
 def auxiliary_deficit_operator_health_gate():
     """
-    Health check for the field-level deficit operator.
+    Health check for the independent pressure-deficit operator.
 
-    If H_Delta is substituted as -log(I3)/6 inside the derivative before
-    variation, the longitudinal solid displacement produces a high-spatial
-    derivative term.  On a homogeneous background,
-
-        H_Delta^(1)=-(1/3) div(pi),
-        L_Delta^(2) ~ k^4 pi_L^2.
-
-    The phase projector removes the time component, so this term has no
-    omega^4 or omega^2 contribution by itself.  Written in auxiliary form,
-
-        L ~ gamma^mn d_m H_Delta d_n H_Delta + lambda*C_Delta,
-
-    the operator is second order in H_Delta and constraint-like in the solid
-    variable.  Integrating the algebraic constraint back in reproduces the same
-    k^4 spatial stiffness, without adding an Ostrogradsky time mode.
+    H_Delta is the observable pressure/energy deficit channel.  The operator
+    is second order in H_Delta and has positive static spatial stiffness on
+    the compact branch.  No determinant elimination is used as a source law.
     """
-    k, pi_L, eta_H, G, omega_delta = sp.symbols(
-        "k pi_L eta_H G omega_delta", positive=True, real=True
-    )
+    eta_H, G, omega_delta = sp.symbols("eta_H G omega_delta", positive=True)
     r, r_s = sp.symbols("r r_s", positive=True, real=True)
-
-    H1_from_longitudinal = -k * pi_L / 3
-    direct_composite_L2 = sp.simplify(
-        omega_delta * k**2 * H1_from_longitudinal**2 / (8 * sp.pi * G)
-    )
-    auxiliary_H_L2 = sp.simplify(
-        omega_delta * k**2 * eta_H**2 / (8 * sp.pi * G)
-    )
-    constrained_auxiliary_L2 = sp.simplify(
-        auxiliary_H_L2.subs(eta_H, H1_from_longitudinal)
-    )
-    expected_direct = sp.simplify(
-        omega_delta * k**4 * pi_L**2 / (72 * sp.pi * G)
-    )
-
-    omega_power_in_direct = sp.Integer(0)
-    no_time_derivative_contribution = True
 
     h = r_s / (2 * r)
     A = sp.exp(2 * h)
@@ -346,41 +306,32 @@ def auxiliary_deficit_operator_health_gate():
             -D - 8 * sp.pi * G * theta_from_auxiliary_H["Theta^phi_phi"]
         ),
     }
+    static_second_variation = sp.simplify(omega_delta * eta_H**2 / (8 * sp.pi * G))
 
     status = (
-        "PASS_AUXILIARY_DEFICIT_OPERATOR_HAS_NO_OSTRO_TIME_MODE_AND_CLOSES_EXTERIOR"
-        if sp.simplify(direct_composite_L2 - expected_direct) == 0
-        and sp.simplify(constrained_auxiliary_L2 - direct_composite_L2) == 0
-        and no_time_derivative_contribution
-        and H_eom_residual == 0
+        "PASS_INDEPENDENT_PRESSURE_DEFICIT_OPERATOR_CLOSES_EXTERIOR"
+        if H_eom_residual == 0
         and lambda_delta_on_branch == 0
+        and static_second_variation.is_positive
         and _all_zero(residuals.values())
         else "CHECK_AUXILIARY_DEFICIT_OPERATOR_HEALTH"
     )
 
     return {
         "operator_health_status": status,
-        "flat_longitudinal_linear_constraint": sp.Eq(
-            sp.Symbol("H_Delta_1"), H1_from_longitudinal
-        ),
-        "direct_composite_L2": direct_composite_L2,
-        "auxiliary_H_L2": auxiliary_H_L2,
-        "constrained_auxiliary_L2": constrained_auxiliary_L2,
-        "expected_direct_k4_stiffness": expected_direct,
-        "time_derivative_contribution": 0,
-        "omega_power_in_direct_composite": omega_power_in_direct,
+        "independent_H_static_stiffness": static_second_variation,
+        "determinant_elimination_used": False,
         "compact_H_current_over_sin": H_current_over_sin,
         "compact_H_eom_residual": H_eom_residual,
         "lambda_delta_on_compact_branch": lambda_delta_on_branch,
         "Theta_from_auxiliary_H": theta_from_auxiliary_H,
         "field_equation_residuals": residuals,
         "reading": (
-            "Direct substitution of H_Delta=-log(I3)/6 gives a k^4 spatial "
-            "stiffness for the longitudinal solid displacement, not a higher "
-            "time-derivative Ostrogradsky mode.  The auxiliary constrained "
-            "form is the article export: it keeps the action second order in "
-            "H_Delta, sets lambda_Delta=0 on the compact harmonic exterior, "
-            "and yields the active stress that closes the exterior equations."
+            "The compact source is the independent pressure/energy deficit "
+            "H_Delta.  Its projected gradient has positive static stiffness, "
+            "the compact harmonic exterior solves its equation, and the "
+            "resulting active stress closes the exterior equations.  No "
+            "spatial determinant lock is used as a source law."
         ),
     }
 
@@ -663,11 +614,11 @@ def p05g_central_exponential_source_gate():
             and covariant_deficit["operator_status"]
             == "PASS_COVARIANT_DEFICIT_OPERATOR_REDUCES_TO_STATIC_PROJECTED_SOURCE"
             and operator_health["operator_health_status"]
-            == "PASS_AUXILIARY_DEFICIT_OPERATOR_HAS_NO_OSTRO_TIME_MODE_AND_CLOSES_EXTERIOR"
+            == "PASS_INDEPENDENT_PRESSURE_DEFICIT_OPERATOR_CLOSES_EXTERIOR"
             and source["projected_source_eom_status"]
             == "PASS_PROJECTED_BERNOULLI_SOURCE_SOLVES_STATIC_EXPONENTIAL_EOM"
             and spatial_medium["p05i_status"]
-            == "PASS_SPATIAL_MEDIUM_EOM_AND_PROJECTED_ANISOTROPY_CLOSE"
+            == "PASS_PRESSURE_DEFICIT_H_SOURCE_AND_PASSIVE_SPATIAL_LABELS_CLOSE"
             and branch_selection["branch_selection_status"]
             == "PASS_SINGLE_EFT_OPERATOR_WITH_BRANCH_SELECTED_EXTERIOR_LOAD"
             and fmin["fmin_vs_refg_source_status"]

@@ -17,6 +17,9 @@ from p05j_fmin_compact_exterior_gate import (
     derive_fmin_compact_identity_branch_residual_gate,
     derive_phase_normalized_fmin_compact_gate,
 )
+from p03d_phase_normalized_solar_global_audit import (
+    phase_normalized_solar_global_audit,
+)
 
 
 def _all_zero(values) -> bool:
@@ -34,10 +37,17 @@ def derive_phase_normalized_fmin_action_gate() -> dict[str, object]:
     and obtains a nonzero raw Theta_F.  That is the referee's tensor objection.
 
     The compact pure-phase branch must instead measure the residual strain
-    relative to the local phase stretch:
+    relative to the local phase-pressure deficit:
 
         Y_hat = e^(-2H) Y,
         lambda_hat_i = e^(2H) lambda_i.
+
+    Here H is the independent pressure/energy-deficit channel in the action.
+    It is not the directly measured stretch of the base medium and it is not a
+    global pre-variation substitution H=-log(I3)/6 in the F_min sector.  p03d
+    checks the difference: the determinant lock breaks the weak Solar 1PN
+    stress ledger, while the unloaded deficit H=0 preserves the p03c Solar 2PN
+    branch.
 
     On the compact branch H=h, so
 
@@ -51,6 +61,7 @@ def derive_phase_normalized_fmin_action_gate() -> dict[str, object]:
     """
     raw = derive_fmin_compact_identity_branch_residual_gate()
     normalized = derive_phase_normalized_fmin_compact_gate()
+    solar_guard = phase_normalized_solar_global_audit()
 
     H, Y, lambda_r, lambda_t = sp.symbols(
         "H Y lambda_r lambda_t", positive=True, real=True
@@ -91,6 +102,8 @@ def derive_phase_normalized_fmin_action_gate() -> dict[str, object]:
         and normalized_stress_zero
         and normalized_eom_zero
         and weak_reduces_to_raw
+        and solar_guard["status"]
+        == "PASS_INDEPENDENT_H_RETAINS_SOLAR_1PN_2PN__GLOBAL_I3_LOCK_REJECTED"
     )
 
     return {
@@ -113,11 +126,18 @@ def derive_phase_normalized_fmin_action_gate() -> dict[str, object]:
         ],
         "Fhat_phiA_Euler_identity": normalized["Fhat_phiA_Euler_identity"],
         "weak_unloaded_reduction": weak_unloaded_reduction,
+        "p03d_solar_global_audit_status": solar_guard["status"],
+        "p03d_solar_O1_guard": solar_guard["weak_Solar_O1_stress"],
+        "p03d_solar_2PN_guard": solar_guard[
+            "Solar_2PN_exact_GR_constant_strain_solutions"
+        ],
         "action_level_rule": (
-            "Compact F_min is evaluated on phase-normalized strain invariants. "
+            "Compact F_min is evaluated on phase-normalized strain invariants "
+            "with H treated as an independent pressure/energy-deficit channel. "
             "The compact pure-phase exterior is unstrained in that local phase "
             "frame, so F_min contributes no compact exterior metric stress. "
-            "The active exterior source is then L_Delta_perp."
+            "The active exterior source is then L_Delta_perp.  A global "
+            "determinant lock H=-log(I3)/6 inside F_min is rejected by p03d."
         ),
         "what_was_wrong_before": (
             "The post-variation source-role projector and the double-count "
@@ -126,15 +146,18 @@ def derive_phase_normalized_fmin_action_gate() -> dict[str, object]:
             "compact branch action."
         ),
         "solar_guard": (
-            "When the compact phase-normalization field is unloaded, H=0, the "
-            "hatted invariants reduce to the raw F_min invariants.  This keeps "
-            "the diffuse Solar F_min channel available; the transition/selection "
-            "law remains a separate compactness-matching problem."
+            "In the diffuse weak Solar branch the pressure-deficit channel H "
+            "is unloaded through 2PN.  Then the hatted invariants reduce to the raw F_min "
+            "invariants and p03d recovers the exact-GR Solar strain "
+            "sigma=-1/2.  If H is instead locked globally to -log(I3)/6 before "
+            "variation, p03d gives a nonzero O(U) Solar stress and rejects that "
+            "reading."
         ),
         "remaining_work": (
-            "derive the continuous weak-to-compact loading law for H and test "
-            "the Solar branch with that law.  The static compact pure-phase "
-            "source ledger itself is no longer a post-variation projector."
+            "derive the continuous compactness/deficit-loading law for H between the "
+            "unloaded diffuse Solar branch and the loaded compact pure-phase "
+            "branch.  The Solar 1PN/2PN guard and the static compact source "
+            "ledger are both machine-checked."
         ),
         "article_export_statement": (
             "In the compact phase-spherical branch the elastic core is written "
