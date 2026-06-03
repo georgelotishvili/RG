@@ -238,7 +238,16 @@ CLAIM_BACKING = [
     (
         "phase-normalized F_min",
         ("phase-normalized", "F_{\\rm min}", "F_min"),
-        ("p05s_phase_normalized_fmin_action_gate.py", "p03d_phase_normalized_solar_global_audit.py"),
+        (
+            "p05s_phase_normalized_fmin_action_gate.py",
+            "p03d_phase_normalized_solar_global_audit.py",
+            "p05t_single_action_branch_consistency_gate.py",
+        ),
+    ),
+    (
+        "single-action branch consistency",
+        ("same covariant EFT action", "same action", "branch action", "H=0"),
+        ("p05t_single_action_branch_consistency_gate.py",),
     ),
     (
         "independent H_Delta compact source",
