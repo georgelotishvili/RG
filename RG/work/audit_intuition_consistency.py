@@ -250,6 +250,11 @@ CLAIM_BACKING = [
         ("p05t_single_action_branch_consistency_gate.py",),
     ),
     (
+        "H Euler source on Solar guard",
+        ("S_H", "H Euler", "H-equation", "partial F_{\\rm branch}/\\partial H"),
+        ("p05t_single_action_branch_consistency_gate.py",),
+    ),
+    (
         "independent H_Delta compact source",
         ("H_\\Delta", "H_Delta", "projected deficit"),
         ("p05g_exponential_source_eom.py", "p05i_spatial_medium_eom_gate.py"),

@@ -45,6 +45,105 @@ def _all_zero(values) -> bool:
     return all(sp.simplify(value) == 0 for value in values)
 
 
+def derive_weak_solar_H_euler_source_gate() -> dict[str, object]:
+    """
+    H-Euler source on the weak Solar branch.
+
+    The single-action claim needs more than F(H=0)=F_raw.  If H is a real
+    branch field, H=0 must also satisfy the H equation on the weak Solar
+    background to the order claimed by the Solar guard.  This gate computes the
+    algebraic F_min source
+
+        S_H = d F_branch / dH
+
+    before the projected H_Delta stiffness is added.  For H=0 the stiffness
+    term has zero current, so the F_min source must vanish on the Solar branch.
+    """
+    template = _single_fmin_template()
+    symbols = template["symbols"]
+    Y = symbols["Y"]
+    lambda_r = symbols["lambda_r"]
+    lambda_t = symbols["lambda_t"]
+    H = symbols["H"]
+    c_Y2 = symbols["c_Y2"]
+
+    eps = sp.Symbol("eps")
+    y1, y2, r1, r2, t1, t2 = sp.symbols(
+        "y1 y2 r1 r2 t1 t2", real=True
+    )
+    source = sp.diff(template["single_action_Fmin_template"], H)
+    series_subs = {
+        Y: 1 + y1 * eps + y2 * eps**2,
+        lambda_r: 1 + r1 * eps + r2 * eps**2,
+        lambda_t: 1 + t1 * eps + t2 * eps**2,
+        H: 0,
+    }
+    source_series_expanded = sp.expand(
+        sp.series(source.subs(series_subs), eps, 0, 3).removeO() / c_Y2
+    )
+    source_series = sp.factor(source_series_expanded)
+    source_o1 = sp.factor(source_series_expanded.coeff(eps, 1))
+    source_o2 = sp.factor(source_series_expanded.coeff(eps, 2))
+
+    u = sp.Symbol("U", real=True)
+    solar_1pn = {y1: u, r1: -u, t1: 0}
+    exact_gr_2pn = {
+        y1: u,
+        r1: -u,
+        t1: 0,
+        y2: u**2,
+        r2: u**2,
+        t2: -u**2,
+    }
+    solar_o1 = sp.factor(sp.simplify(source_o1.subs(solar_1pn)))
+    solar_o2_exact_gr = sp.factor(sp.simplify(source_o2.subs(exact_gr_2pn)))
+
+    r, r_s = sp.symbols("r r_s", positive=True, real=True)
+    h = r_s / (2 * r)
+    compact_source = sp.simplify(
+        source.subs(
+            {
+                H: h,
+                Y: sp.exp(2 * h),
+                lambda_r: sp.exp(-2 * h),
+                lambda_t: sp.exp(-2 * h),
+            }
+        )
+    )
+
+    passed = solar_o1 == 0 and solar_o2_exact_gr == 0 and compact_source == 0
+
+    return {
+        "status": (
+            "PASS_H_EULER_SOURCE_VANISHES_ON_WEAK_SOLAR_AND_COMPACT_BRANCHES"
+            if passed
+            else "CHECK_H_EULER_SOURCE_ON_BRANCHES"
+        ),
+        "H_source_definition": "S_H = dF_branch/dH",
+        "generic_H_source_series_over_cY2": source_series,
+        "generic_O1_over_cY2": source_o1,
+        "generic_O2_over_cY2": source_o2,
+        "Solar_1PN_relation": "y1=U, r1=-U, t1=0",
+        "Solar_O1_source_over_cY2": solar_o1,
+        "Solar_exact_GR_2PN_coefficients": {
+            "y1": u,
+            "r1": -u,
+            "t1": 0,
+            "y2": u**2,
+            "r2": u**2,
+            "t2": -u**2,
+        },
+        "Solar_exact_GR_2PN_source_over_cY2": solar_o2_exact_gr,
+        "compact_pure_phase_H_source": compact_source,
+        "reading": (
+            "The weak H=0 branch is not only a functional reduction to raw "
+            "F_min.  The H-Euler source from F_min vanishes through the Solar "
+            "1PN/2PN exact-GR strain ledger.  The O(U) cancellation follows "
+            "from y1+r1+2*t1=0, not merely from the unit-state tadpole."
+        ),
+    }
+
+
 def _single_fmin_template() -> dict[str, object]:
     Y, lambda_r, lambda_t, H = sp.symbols(
         "Y lambda_r lambda_t H", positive=True, real=True
@@ -134,6 +233,7 @@ def derive_single_action_branch_consistency_gate() -> dict[str, object]:
     p05g_health = auxiliary_deficit_operator_health_gate()
     raw_audit = derive_fmin_compact_identity_branch_residual_gate()
     compact_quiet = derive_phase_normalized_fmin_compact_gate()
+    H_euler = derive_weak_solar_H_euler_source_gate()
 
     compact_unit_invariants = all(value == 1 for value in compact_invariants.values())
     weak_unloaded_is_raw = template["unloaded_equals_raw"] and all(
@@ -181,6 +281,8 @@ def derive_single_action_branch_consistency_gate() -> dict[str, object]:
         and action_gate_pass
         and active_source_pass
         and determinant_lock_rejected
+        and H_euler["status"]
+        == "PASS_H_EULER_SOURCE_VANISHES_ON_WEAK_SOLAR_AND_COMPACT_BRANCHES"
     )
 
     return {
@@ -236,6 +338,7 @@ def derive_single_action_branch_consistency_gate() -> dict[str, object]:
                 ]
             ),
         },
+        "H_euler_source_guard": H_euler,
         "active_compact_source_guard": {
             "covariant_operator_status": p05g_operator["operator_status"],
             "operator_health_status": p05g_health["operator_health_status"],
@@ -265,7 +368,8 @@ def derive_single_action_branch_consistency_gate() -> dict[str, object]:
             "Yhat=e^{-2H}Y and lambdahat_i=e^{2H}lambda_i, with H an "
             "independent pressure/energy-deficit channel.  The weak Solar guard "
             "is the unloaded background H=0, where the template reduces to the "
-            "raw F_min and preserves the GR 1PN/2PN ledger.  The compact "
+            "raw F_min, preserves the GR 1PN/2PN ledger, and satisfies the "
+            "H-Euler equation through the same Solar strain identities.  The compact "
             "pure-phase exterior is the loaded background H=h, where the "
             "hatted invariants equal one and the tadpole-free F_min sector has "
             "zero density, zero metric stress and zero phi^A Euler residual.  "
