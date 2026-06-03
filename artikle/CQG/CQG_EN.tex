@@ -31,35 +31,42 @@ Refractive Gravity (RefG) is a phase-spatial effective field theory with an Eins
 
 \section{Introduction}
 
-General Relativity (GR) gives the metric core of gravitational dynamics. RefG keeps this core and adds a phase-spatial medium sector. The local state of the medium is described by action invariants, and its variation produces an active stress tensor. In the weak static limit that stress appears to an external observer as a refractive profile.
+General Relativity (GR) supplies the metric core of gravitational dynamics. RefG keeps this core and adds a phase-spatial medium sector whose action invariants vary to an active stress tensor. In the weak static limit that stress is read as a refractive profile.
 
-The name ``Refractive Gravity'' refers to this source mechanism: the gravitational response follows from a phase-pressure deficit that acts refractively on matter and light. The difference from the standard presentation of gravity appears at two levels. At the geometric level, matter remains minimally coupled to the metric. At the effective-medium level, the active stress of the phase-spatial sector gives a source-index chain that produces the Newtonian profile near a localized weak source and gives a definite compact-branch prediction in the strong static regime.
+The name ``Refractive Gravity'' refers to this source mechanism: the gravitational response follows from a phase-pressure deficit that acts refractively on matter and light. Matter remains minimally coupled to the metric; the effective-medium difference is that the active stress gives a source-index chain that produces the Newtonian profile near a localized weak source and a definite compact-branch prediction in the strong static regime.
 
-The construction is an effective field theory. It is written with the usual metric variables and with scalar fields that describe the internal state of the medium. The phase field $\Phi$ tracks the temporal phase-pressure degree of freedom, while the three fields $\phi^A$ track the spatial body of the medium. Their invariants define the allowed local energy functional. This follows the same conservative logic used in scalar-tensor and gravitational EFT work \cite{Horndeski1974,Gubitosi2013,BelliniSawicki2014,Deffayet2009,Kobayashi2011,Cheung2008}, with a different source mechanism: the operative weak-field quantity is the refractive index produced by the active stress.
+The construction is an effective field theory written with the usual metric variables and scalar fields for the medium state. The phase field $\Phi$ tracks the temporal phase-pressure degree of freedom, while the three fields $\phi^A$ track the spatial body of the medium. Their invariants define the local energy functional. This follows the same conservative logic used in scalar-tensor and gravitational EFT work \cite{Horndeski1974,Gubitosi2013,BelliniSawicki2014,Deffayet2009,Kobayashi2011,Cheung2008}, with a different weak-field source: the refractive index produced by the active stress.
 
-The tensor sector is restricted by the observed equality of the gravitational-wave and light speeds \cite{Abbott2017GW,Abbott2017GRB,Creminelli2017,Sakstein2017}. The RefG tensor bridge therefore uses the Horndeski-compatible constant-$G_4$ sector, so that the principal tensor speed is luminal. The spatial-medium part is related in spirit to solid and framid EFTs \cite{Endlich2013,Nicolis2015,Endlich2014,Bordin2017}; in RefG it serves as a gravitational source channel.
+The observed equality of gravitational-wave and light speeds restricts the tensor sector \cite{Abbott2017GW,Abbott2017GRB,Creminelli2017,Sakstein2017}. RefG uses the Horndeski-compatible constant-$G_4$ sector, so the principal tensor speed is luminal. The spatial-medium part is related in spirit to solid and framid EFTs \cite{Endlich2013,Nicolis2015,Endlich2014,Bordin2017}; in RefG it serves as a gravitational source channel.
 
-The compact static branch uses an exponential exterior. Exponential metric geometries have an independent literature as exact geometries, including their historical association with Yilmaz's gravitational theory \cite{Yilmaz1958}; the same metric form has also been analyzed as a traversable-wormhole geometry \cite{Boonserm2018}. Strong-field alternatives to GR provide the comparison setting \cite{Damour1992,Damour1993,Damour1996}. In RefG this exterior is the phase-spherical compact branch sourced by the projected phase-pressure deficit stress of the medium.
+The compact static branch uses an exponential exterior. This metric form has an independent literature, including its historical association with Yilmaz's gravitational theory \cite{Yilmaz1958} and its analysis as a traversable-wormhole geometry \cite{Boonserm2018}; strong-field alternatives to GR provide the comparison setting \cite{Damour1992,Damour1993,Damour1996}. In RefG the exterior is the phase-spherical compact branch sourced by the projected phase-pressure deficit stress of the medium.
 
-This paper presents the self-contained gravitational core that can be checked internally: action, active stress, refractive source, Newtonian limit, local principal-symbol stability, Solar-System compatibility, tensor speed, inertial identity, and the compact static predictions. The result is a single calculation chain from the action to the static compact-branch numbers.
+This paper presents the self-contained gravitational chain that can be checked internally: action, active stress, refractive source, Newtonian limit, local principal-symbol stability, Solar-System compatibility, tensor speed, inertial identity, and the compact static predictions.
+
+\medskip
+
+\noindent\textbf{Terminology}\par\smallskip
+\begin{list}{}{\setlength{\leftmargin}{0pt}\setlength{\itemindent}{0pt}\setlength{\labelwidth}{0pt}\setlength{\labelsep}{0pt}\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}\setlength{\parskip}{0pt}\setlength{\topsep}{0pt}\setlength{\partopsep}{0pt}}
+\item \textbf{Base medium.} The phase-spatial EFT sector described by $\Phi$ and $\phi^A$.
+\item \textbf{Active stress.} The metric variation of the medium action, $\Theta_{\mu\nu}^{\rm RefG}$.
+\item \textbf{Refractive source.} The active-stress channel that fixes $h_{\rm eff}$ and $n_{\rm eff}$.
+\item \textbf{Source-index chain.} The calculation $\Pi_\Delta'\to h_{\rm eff}\to n_{\rm eff}\to a_r$.
+\item \textbf{Phase-pressure deficit.} The projected pressure channel $\Delta_P=Z_\Delta^\perp/(8\pi G)$ that supplies the compact exterior source.
+\item \textbf{Phase-normalized strain invariants.} The $H$-rescaled variables $\widehat Y$, $\widehat\lambda_r$, and $\widehat\lambda_t$ used in a branch frame.
+\item \textbf{Biconformal map.} The compact metric rule using paired factors $e^{-2h}$ and $e^{2h}$.
+\item \textbf{Branch.} A background regime of the same normalized-invariant EFT sector, selected by compactness and boundary matching.
+\item \textbf{Weak-Solar branch.} The unloaded branch with $H=0$ and Solar $1$PN/$2$PN GR-compatible coefficients.
+\item \textbf{Compact phase-spherical branch.} The loaded branch with $H=H_\Delta=h$ that gives the exponential exterior.
+\item \textbf{Dynamic completion.} The $\epsilon_B,\epsilon_M$ kinetic extension opening the scalar-longitudinal subluminal window.
+\item \textbf{ESS operator.} The static-silent effective-solid-sector operator used for Solar kinetic completion.
+\item \textbf{Raw-invariant diagnostic.} The unnormalized compact-invariant audit; it is not the compact action.
+\end{list}
 
 \section{The Base Medium and the Physical Picture}
 
 RefG starts from a base medium that defines operational distance, time, mass, and wave propagation as local regimes of one substrate. A homogeneous state is self-calibrated by rods, clocks, and atoms formed within the same local phase-pressure state. Observable gravity begins when the medium state becomes spatially nonuniform.
 
 One base medium supports distinct mechanical responses. The phase, pressure, and spatial deformation channels used in this paper are separate responses of the same substrate, linked by internal medium interactions. A localized energy concentration creates a deficit in the phase pressure of the base medium. Test matter follows the gradient of the resulting refractive index. In the weak spherical regime this index gradient gives Newton's force; in a compact phase-dominated exterior the same logic leads to the exponential static branch.
-
-At the effective level, a localized matter source is represented by a closed phase-energy state of the medium. The \emph{active stress} is the stress tensor obtained by varying the medium action with respect to the metric. The scalar $h_{\rm eff}$ collects the weak static refractive potential for slow test matter. The slow-body source index is
-\[
-n_{\rm eff}=\exp(h_{\rm eff}).
-\]
-The light index is a metric optical quantity:
-\[
-n_{\rm light}=\sqrt{\frac{A_{\rm space}}{B_{\rm time}}}.
-\]
-The biconformal map is the compact-branch relation that turns the phase solution into the exponential exterior metric through the paired time/spatial conformal factors $e^{-2h}$ and $e^{2h}$.
-
-Branch labels are controlled by compactness and boundary matching: weak sources keep the diffuse Solar stress contribution, while the static compact predictions apply to $C^2$-matched ultradense sources whose exterior selects the phase-pressure-deficit branch.
 
 \section{Fields, Invariants, and the Action}
 
