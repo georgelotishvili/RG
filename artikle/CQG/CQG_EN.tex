@@ -125,6 +125,11 @@ branch normalization used below sets $\omega_\Delta=1$. In the weak-Solar
 branch this channel is small. In the compact $C^2$ matching branch
 $H_\Delta$ carries the matched exterior source law through
 $\mathcal L_\Delta^\perp$, while $I_3$ remains an internal medium invariant.
+The compact calculation below is this leading EFT truncation:
+$\mathcal L_\Delta^\perp$ is the first active projected-deficit operator on the
+matched pure-phase exterior, while other higher-sector operators are assumed
+subleading or vanishing on this branch and would define beyond-core corrections
+if retained.
 
 \subsection{Branch Frames and Phase Normalization}
 
@@ -149,6 +154,18 @@ These equalities are branch and matching conditions, not universal field
 identities: $H$ is the frame variable used to evaluate $F_{\rm min}$, while
 $H_\Delta$ is the independent higher-sector source field, and away from the
 compact pure-phase exterior they need not coincide.
+In the displayed core $H$ is auxiliary: no derivative of $H$ occurs in
+$F_{\rm min}^{(H)}$, and the compact-source gradients are carried by
+$H_\Delta$ through $\mathcal L_\Delta^\perp$. Variation with respect to $H$
+therefore gives the algebraic branch constraint
+\[
+S_H\equiv\frac{\partial F_{\rm min}^{(H)}}{\partial H}=0.
+\]
+The weak-Solar diagnostic below verifies this constraint for $H=0$ through the
+displayed Solar order, while the compact pure-phase branch satisfies it exactly
+by the tadpole-free unit state. Thus the two exteriors are self-consistent
+solutions of the same auxiliary-$H$ constraint; the finite-core load/source
+rule below fixes the selected compact exterior window.
 Branches are background regimes of the same normalized-invariant EFT sector:
 the weak-Solar branch has the unloaded normalization $H=0$, while the compact
 pure-phase exterior has the loaded normalization $H=h$. The raw
@@ -804,6 +821,7 @@ Thus the leading identity used in this paper is
 \[
 M_{\rm inert}=M_{\rm source}=\frac{E_0}{c^2}.
 \]
+This is a minimally coupled rest-energy normalization, not an independent compact-body boost calculation.
 The quantity $E_0$ is the total energy of the localized dressed state: the core and its exterior refractive dressing are counted once in the same normalization. Radiation and retarded dressing effects enter as higher-order response terms; the leading $F=Ma$ coefficient is fixed by the total rest energy. The full nonlinear compact-body Arnowitt--Deser--Misner (ADM)/Noether closure and finite-core dressing remain subsequent calculations.
 
 \section{The Compact Phase Branch}
@@ -1088,6 +1106,8 @@ hyperbolic modes are controlled by the full $F_{\rm min}$ medium sector.
 \subsection{Static Geodesic Predictions}
 
 The exponential exterior has no finite-radius event horizon in the static chart. Its strong-field use is therefore tied to tests of horizonless ultracompact objects. For such objects, a photon sphere has both a shadow-scale role and a dynamical-stability role: the light-ring structure is a stability criterion in its own right \cite{Cunha2017}, and the ringdown/echo channel gives a gravitational-wave discriminator from black holes \cite{Cardoso2016}. For horizonless light-ring objects, the quasinormal-mode (QNM)/echo channel is an open astrophysical-viability risk and part of the strong-field program itself. The result derived here is the static geometric core. Its astrophysical use proceeds through finite-core dynamics, the rotating exterior, QNM/echo analysis, and Event Horizon Telescope (EHT), next-generation Event Horizon Telescope (ngEHT), and Black Hole Explorer (BHEX) ray tracing.
+For a matched exponential exterior, the numbers below depend only on the metric;
+the finite-core selector fixes applicability, not the geodesic algebra.
 
 Branch selection is set by the finite-core load and source amplitude. For an extended
 weak object such as the Sun,
@@ -1103,9 +1123,12 @@ the condition under which no additional thin-shell stress is introduced at the
 boundary.
 
 The finite-core selector is algebraic at the static matching level.  Define the
-load $Q=r_s/r_c$ and the input compactness $Q_0$.  Surface-clock matching gives
+load $Q=r_s/r_c$ and the input compactness $Q_0$.  Surface-clock matching
+equates the volume-deficit clock to the compact surface lapse, and the same
+radius-shrink load ledger gives
 \[
-q_v=\frac{3Q}{2},\qquad Q_0=Qe^{-Q/2}.
+e^{-q_v/3}=e^{-Q/2}\quad\Rightarrow\quad q_v=\frac{3Q}{2},\qquad
+Q_0=Qe^{-Q/2}.
 \]
 The equation for $Q_0$ alone has two Lambert branches,
 \[
@@ -1124,13 +1147,26 @@ Equivalently,
 S(Q)=\frac{3Q}{2}e^{3\chi Q/2},\qquad
 \frac{dS}{dQ}=\frac34(3\chi Q+2)e^{3\chi Q/2}>0.
 \]
-Thus the finite-core source amplitude $S$ selects a unique branch.  The high
-compact branch is selected for
+Thus the finite-core source amplitude $S$ selects a unique load $Q$, not a
+second root at fixed $Q_0$. The $Q_0$ fold point $Q=2$ maps to
 \[
-S>S_{\rm fold}=3e^{3\chi},
+S_{\rm fold}=3e^{3\chi},
 \]
-while object-specific values of $S$ and $\chi$ belong to the finite-core
-equation of state or collapse history.
+but because $S(Q)$ is monotone this is a load marker in the $S$ variable, not a
+bistable fold. For the finite-core horizonless exterior used by the geodesic
+predictions the required window is
+\[
+1<Q_\star<2,\qquad
+\frac32 e^{3\chi/2}<S<3e^{3\chi},
+\]
+equivalently
+\[
+\frac{r_s}{2}<r_c<r_s.
+\]
+The throat is then inside the finite core while the photon sphere is exterior.
+Within the static truncation this is the object class assigned to the loaded
+compact $H=h$ exterior; object-specific values of $S$ and $\chi$ belong to the
+finite-core equation of state or collapse history.
 
 For null rays define
 \[
@@ -1138,7 +1174,11 @@ B_{\rm ph}(r)=\frac{e^{-2r_s/r}}{r^2}.
 \]
 The exponential-metric geodesic calculation is standard
 \cite{Boonserm2018}; in the present normalization the circular null condition
-$B_{\rm ph}'=0$ gives
+is checked in one line,
+\[
+B_{\rm ph}'(r)=\frac{2e^{-2r_s/r}(r_s-r)}{r^4}=0,
+\]
+and gives
 \[
 r_{\rm ph}=r_s.
 \]
@@ -1164,7 +1204,11 @@ V_{\rm eff}=e^{-r_s/r}
 +\frac{L^2e^{-2r_s/r}}{r^2}.
 \]
 Solving the standard circular-orbit and marginal-stability conditions for this
-potential gives
+potential leaves the quadratic
+\[
+r^2-3r_s r+r_s^2=0,
+\]
+whose exterior root gives
 \[
 r_{\rm ISCO}
 =\frac{3+\sqrt5}{2}\,r_s
@@ -1265,13 +1309,20 @@ Third, tensor waves must remain luminal:
 c_g=c.
 \]
 
-Fourth, the compact selector must put the finite core on the high branch:
+Fourth, the compact selector must put the finite core in the compact exterior
+window:
 \[
 Q_\star=\frac{2W(\chi S)}{3\chi},\qquad
-S>S_{\rm fold}=3e^{3\chi}.
+1<Q_\star<2,
 \]
-If this condition fails, the compact strong-field branch is not occupied.
-When it holds, the compact phase branch gives definite static branch predictions:
+equivalently
+\[
+\frac32 e^{3\chi/2}<S<3e^{3\chi},\qquad
+\frac{r_s}{2}<r_c<r_s.
+\]
+If this condition fails, the finite-core object does not realize the compact
+exterior window used by the geodesic predictions. When it holds, the compact
+phase branch gives definite static branch predictions:
 \[
 r_{\rm ph}=r_s,\qquad
 b_c=e\,r_s,\qquad
@@ -1311,7 +1362,8 @@ The finite-core source selector fixes the branch load by
 \[
 Q_\star=\frac{2W(\chi S)}{3\chi},
 \]
-with the compact branch selected for $S>3e^{3\chi}$. Direct comparison with
+with finite-core exterior applications requiring
+$1<Q_\star<2$, equivalently $r_s/2<r_c<r_s$. Direct comparison with
 EHT-class images belongs to the rotating exterior and ray-tracing problem.
 
 The present paper gives the self-contained gravitational core. The next steps are object-specific finite-core equations of state, the rotating compact solution, quasinormal-mode and echo stability, and observational modeling of shadows, rings, and accretion environments. Those steps determine the direct comparison with EHT, ngEHT, and BHEX data.

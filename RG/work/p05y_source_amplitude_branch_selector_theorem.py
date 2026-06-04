@@ -19,13 +19,26 @@ Surface-clock matching gives q = 3Q/2.  Hence a branch with load Q requires
     S(Q) = (3Q/2) exp(3 chi Q/2).
 
 For chi>0 this S(Q) is strictly increasing.  Therefore a physical finite-core
-source amplitude selects at most one branch.  Low/high Lambert roots are not
+source amplitude selects at most one load Q.  Low/high Lambert roots are not
 two possible endpoints for the same (Q0,S); they are two endpoints for the same
 Q0 but different source amplitudes.
 
+For a finite-core horizonless compact object using the displayed exterior
+geodesics, the core radius must lie between the throat and the photon sphere:
+
+    r_s/2 < r_c < r_s,
+
+or equivalently
+
+    1 < Q < 2.
+
+The Q=2 point maps to S_fold=3 exp(3 chi).  Since S(Q) is monotone, S_fold is
+a load marker in the S variable, not a bistable fold in S.
+
 Result:
     Q0 alone: no-go for branch selection.
-    (Q0,S,chi) with the p14 feedback source: unique branch selection.
+    (Q0,S,chi) with the p14 feedback source: unique load selection.
+    Finite-core geodesic exterior use: 1<Q_selected<2.
 """
 
 from __future__ import annotations
@@ -55,6 +68,9 @@ def derive_source_amplitude_selector_theorem() -> dict[str, object]:
     q_from_source = sp.simplify(sp.LambertW(chi * S) / chi)
     Q0_from_source = sp.simplify(Q_from_source * sp.exp(-Q_from_source / 2))
 
+    Q_photon = sp.Integer(1)
+    q_photon = sp.simplify(sp.Rational(3, 2) * Q_photon)
+    S_photon = sp.simplify(source_required.subs(Q, Q_photon))
     Q_fold = sp.Integer(2)
     q_fold = sp.simplify(sp.Rational(3, 2) * Q_fold)
     S_fold = sp.simplify(source_required.subs(Q, Q_fold))
@@ -101,7 +117,7 @@ def derive_source_amplitude_selector_theorem() -> dict[str, object]:
 
     return {
         "status": (
-            "PASS_SOURCE_AMPLITUDE_SELECTS_UNIQUE_BRANCH__Q0_ONLY_NO_GO"
+            "PASS_SOURCE_AMPLITUDE_SELECTS_UNIQUE_LOAD__Q0_ONLY_NO_GO"
             if all(checks.values())
             else "CHECK_SOURCE_AMPLITUDE_BRANCH_SELECTOR"
         ),
@@ -127,15 +143,27 @@ def derive_source_amplitude_selector_theorem() -> dict[str, object]:
             required_source_residual_by_identity
         ),
         "branch_thresholds": {
+            "photon_sphere_Q": Q_photon,
+            "photon_sphere_q_v": q_photon,
+            "photon_sphere_S": S_photon,
             "fold_Q": Q_fold,
             "fold_q_v": q_fold,
             "fold_S": S_fold,
-            "low_branch_selected_if": sp.Lt(S, S_fold),
-            "high_branch_selected_if": sp.Gt(S, S_fold),
+            "finite_core_exterior_window_Q": sp.And(Q > Q_photon, Q < Q_fold),
+            "finite_core_exterior_window_S": sp.And(
+                S > S_photon, S < S_fold
+            ),
+            "below_throat_load_if": sp.Lt(S, S_fold),
+            "over_throat_marker_if": sp.Gt(S, S_fold),
             "pressure_turn_Q": Q_pressure,
             "pressure_turn_q_v": q_pressure,
             "pressure_turn_S": S_pressure,
             "pressure_turn_selected_if": sp.Ge(S, S_pressure),
+            "reading": (
+                "The finite-core geodesic exterior window is 1<Q_selected<2, "
+                "equivalently S_photon<S<S_fold.  S_fold is the Q=2 throat "
+                "marker mapped through monotone S(Q), not a bistable fold in S."
+            ),
         },
         "Lambert_roots_for_same_Q0": {
             "Q_low": Q_low,
@@ -149,10 +177,11 @@ def derive_source_amplitude_selector_theorem() -> dict[str, object]:
         },
         "samples_chi1": samples,
         "closed_statement": (
-            "Branch choice is closed at the static finite-core selector level: "
+            "The static finite-core source selector fixes the load: "
             "Q0 alone is insufficient, but the physical source amplitude S in "
-            "the p14 feedback law selects a unique load Q.  The compact branch "
-            "is selected precisely when S exceeds the fold value."
+            "the p14 feedback law selects a unique load Q.  The finite-core "
+            "horizonless exterior window used by the compact geodesics is "
+            "1<Q_selected<2, equivalently S_photon<S<S_fold."
         ),
         "downstream_not_part_of_selector": [
             "compute S and chi for a specific equation of state or collapse history",
@@ -178,14 +207,14 @@ def source_amplitude_branch_selector_status() -> dict[str, object]:
         ),
         "source_selector_theorem": (
             selector["status"]
-            == "PASS_SOURCE_AMPLITUDE_SELECTS_UNIQUE_BRANCH__Q0_ONLY_NO_GO"
+            == "PASS_SOURCE_AMPLITUDE_SELECTS_UNIQUE_LOAD__Q0_ONLY_NO_GO"
         ),
     }
     passed = all(checks.values())
 
     return {
         "status": (
-            "PASS_BRANCH_SELECTION_CLOSED_BY_FINITE_CORE_SOURCE_AMPLITUDE"
+            "PASS_STATIC_SOURCE_LOAD_SELECTOR_AND_FINITE_CORE_WINDOW_EXPLICIT"
             if passed
             else "CHECK_BRANCH_SELECTION_SOURCE_AMPLITUDE_CLOSURE"
         ),
@@ -195,15 +224,17 @@ def source_amplitude_branch_selector_status() -> dict[str, object]:
             "surface-clock matching fixes q_v=3Q/2",
             "the p14 source amplitude S gives q_v=W(chi S)/chi",
             "therefore Q_selected=2 W(chi S)/(3 chi) is unique",
-            "S<S_fold selects the low branch, S>S_fold selects the compact high branch",
+            "S_fold=3 exp(3 chi) is the Q=2 throat marker mapped through monotone S(Q)",
+            "finite-core geodesic exterior use requires 1<Q_selected<2",
             "the two Lambert roots at the same Q0 require different S values",
         ],
         "selector_theorem": selector,
         "safe_physics_reading": (
             "Nature does not choose between two branches with Q0 alone.  The "
             "finite core carries a source amplitude S; that source fixes the "
-            "deficit fixed point, and the surface clock then fixes the branch "
-            "load.  This is the branch-selection mechanism."
+            "deficit fixed point, and the surface clock then fixes the load Q. "
+            "The compact finite-core exterior predictions apply when that load "
+            "lies in 1<Q<2.  Object-specific S and chi remain downstream."
         ),
         "still_downstream": selector["downstream_not_part_of_selector"],
     }

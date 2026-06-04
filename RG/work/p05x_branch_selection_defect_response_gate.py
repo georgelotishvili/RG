@@ -14,16 +14,18 @@ Closed before this file:
     algebraic, junction and source-ledger level.
   * p15c: the old free proportional bridge is replaced by surface-clock
     matching, alpha=2/3, and the load equation Q0=Q exp(-Q/2).
-  * p15d: the load equation alone gives low/high branches but does not
-    dynamically select the high branch.
+  * p15d: the load equation alone gives low/high Lambert branches but does not
+    dynamically select an occupied compact endpoint.
   * p05w/p14: a selected compact load can be supplied by a stable local
     mass-deficit feedback point.
 
 Therefore the original defect is split correctly:
   * Q0 alone is not a selector.
-  * the finite-core source amplitude S is the missing selector.
+  * the finite-core source amplitude S fixes the selected static load Q.
+  * finite-core geodesic exterior use requires 1<Q<2, so the throat is inside
+    the core and the photon sphere is exterior.
   * object-specific collapse histories and equations of state are downstream
-    predictions, not the logical branch-selection mechanism itself.
+    predictions, not part of the static load-window theorem itself.
 """
 
 from __future__ import annotations
@@ -59,14 +61,16 @@ def derive_compact_load_branch_dictionary_gate() -> dict[str, object]:
 
         Q0 = Q exp(-Q/2)
 
-    has two real branches for 0<Q0<2/e.  The low branch has Q<2.  The high
-    branch has Q>2 and therefore needs the finite-core/two-sheet/core-
-    replacement interpretation already flagged in p05v; it is not selected by
-    the algebra alone.
+    has two real Lambert branches for 0<Q0<2/e.  The branch with Q<2 contains
+    both weak loads Q<1 and the finite-core exterior-object window 1<Q<2.  The
+    branch with Q>2 is an over-throat Lambert branch, not the finite-core
+    geodesic window used by the static compact predictions.
     """
     Q0, Q = sp.symbols("Q0 Q", positive=True, real=True)
 
     Q0_of_Q = sp.simplify(Q * sp.exp(-Q / 2))
+    photon_Q = sp.Integer(1)
+    photon_Q0 = sp.simplify(Q0_of_Q.subs(Q, photon_Q))
     fold_Q = sp.Integer(2)
     fold_Q0 = sp.simplify(Q0_of_Q.subs(Q, fold_Q))
     pressure_turn_Q = sp.Integer(4)
@@ -99,10 +103,23 @@ def derive_compact_load_branch_dictionary_gate() -> dict[str, object]:
         "load_equation": sp.Eq(sp.Symbol("Q0"), Q0_of_Q),
         "derivative": sp.Eq(sp.Symbol("dQ0/dQ"), dQ0_dQ),
         "two_real_branch_domain": sp.And(Q0 > 0, Q0 < fold_Q0),
+        "photon_sphere_marker": {
+            "Q": photon_Q,
+            "Q0": photon_Q0,
+            "Q0_numeric": sp.N(photon_Q0, 12),
+        },
         "fold_point": {
             "Q": fold_Q,
             "Q0": fold_Q0,
             "Q0_numeric": sp.N(fold_Q0, 12),
+        },
+        "finite_core_exterior_window": {
+            "Q_region": sp.And(Q > photon_Q, Q < fold_Q),
+            "radius_reading": "r_s/2 < r_c < r_s",
+            "reading": (
+                "The throat r_s/2 is inside the finite core while the photon "
+                "sphere r_s is outside it."
+            ),
         },
         "pressure_turn_marker": {
             "Q": pressure_turn_Q,
@@ -113,21 +130,26 @@ def derive_compact_load_branch_dictionary_gate() -> dict[str, object]:
             "Q": Q_low,
             "q_v": qv_low,
             "region": low_region,
-            "reading": "weak/exterior-sheet branch in the one-residual audit",
+            "reading": (
+                "Lambert branch with Q<2; it contains weak loads Q<1 and the "
+                "finite-core exterior-object window 1<Q<2."
+            ),
         },
         "high_branch": {
             "Q": Q_high,
             "q_v": qv_high,
             "region": high_region,
             "reading": (
-                "compact load branch; its physical occupation requires the "
-                "finite-core dynamical transition/history law"
+                "over-throat Lambert branch Q>2; this is not the finite-core "
+                "geodesic window used by the compact-object predictions"
             ),
         },
         "samples": samples,
         "article_safe_reading": (
-            "The algebra gives a compact branch as a permitted static load, "
-            "not yet as a dynamically selected endpoint of collapse."
+            "The algebra fixes a selected static load from S and chi.  The "
+            "compact geodesic predictions apply to finite-core objects in the "
+            "window 1<Q<2; object-specific S, chi and time-dependent endpoint "
+            "selection remain downstream."
         ),
     }
 
@@ -163,9 +185,9 @@ def branch_selection_defect_response_status() -> dict[str, object]:
             p15d["status"]
             == "PASS_BRANCH_CHOICE_AUDIT_DONE__FINITE_CORE_DYNAMICAL_SELECTION_STILL_OPEN"
         ),
-        "source_amplitude_selector_closed": (
+        "source_amplitude_load_selector": (
             p05y["status"]
-            == "PASS_BRANCH_SELECTION_CLOSED_BY_FINITE_CORE_SOURCE_AMPLITUDE"
+            == "PASS_STATIC_SOURCE_LOAD_SELECTOR_AND_FINITE_CORE_WINDOW_EXPLICIT"
         ),
         "branch_dictionary_explicit": (
             branch_dictionary["status"]
@@ -176,7 +198,7 @@ def branch_selection_defect_response_status() -> dict[str, object]:
 
     return {
         "status": (
-            "PASS_BRANCH_SELECTION_DEFECT_CLOSED_AT_STATIC_SOURCE_SELECTOR_LEVEL"
+            "PASS_BRANCH_SELECTION_REFRAMED_AS_STATIC_LOAD_WINDOW__DYNAMICAL_ENDPOINT_OPEN"
             if passed
             else "CHECK_BRANCH_SELECTION_DEFECT_RESPONSE_CHAIN"
         ),
@@ -188,7 +210,8 @@ def branch_selection_defect_response_status() -> dict[str, object]:
             "surface-clock matching fixes the old proportional alpha bridge to alpha=2/3",
             "load branches are explicit Lambert-W branches",
             "a selected load can sit at a stable local mass-deficit feedback point",
-            "finite-core source amplitude S selects a unique branch; Q0 alone is proved insufficient",
+            "finite-core source amplitude S selects a unique load; Q0 alone is proved insufficient",
+            "finite-core geodesic exterior predictions require 1<Q_selected<2",
         ],
         "downstream_not_part_of_selector": [
             "compute S and chi for a specific equation of state or collapse history",
@@ -197,16 +220,19 @@ def branch_selection_defect_response_status() -> dict[str, object]:
             "complete the ADM/Noether proper-inventory to external-charge map for object-specific mass accounting",
         ],
         "defect_safe_statement": (
-            "The branch-selection criticism is closed at the static finite-core "
-            "selector level.  Q0 alone cannot select a branch, but the finite "
-            "core also carries the source amplitude S.  The p14 feedback fixes "
-            "q_v=W(chi S)/chi and surface-clock matching then fixes a unique "
-            "load Q=2W(chi S)/(3chi)."
+            "The branch-selection criticism is narrowed to the correct static "
+            "statement.  Q0 alone cannot select an occupied endpoint, but the "
+            "finite core also carries the source amplitude S.  The p14 feedback "
+            "fixes q_v=W(chi S)/chi and surface-clock matching then fixes a "
+            "unique load Q=2W(chi S)/(3chi).  The compact finite-core geodesic "
+            "predictions apply only in the window 1<Q<2."
         ),
         "article_status_if_used_today": (
-            "A compact object is on the high branch when its finite-core source "
-            "amplitude exceeds S_fold=3 exp(3 chi).  Object-specific S and chi "
-            "must be computed before making population predictions."
+            "A finite-core compact exterior object must satisfy "
+            "1<Q_selected<2, equivalently "
+            "(3/2) exp(3 chi/2)<S<3 exp(3 chi).  Object-specific S and chi "
+            "must be computed before making population predictions or collapse "
+            "endpoint claims."
         ),
         "branch_dictionary": branch_dictionary,
         "source_amplitude_selector": p05y["selector_theorem"],
