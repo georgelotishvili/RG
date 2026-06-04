@@ -773,42 +773,22 @@ and from the tensor-speed-safe scalar-tensor/DHOST restriction
 \[
 G_4=\frac{M_{\rm Pl}^2}{2},\qquad G_5=0.
 \]
-Therefore
+The standard tensor-speed condition then gives
 \[
 \alpha_T=0,
 \qquad
 c_g=c.
 \]
-The spatial medium completion leaves this principal result unchanged on the
-homogeneous background used here. For transverse-traceless perturbations,
-\[
-\delta K_{\rm TT}=0,\qquad
-\delta G_{\rm TT}=0,
-\]
-so the displayed core has no tensor masslike or anisotropic-stress correction
-at this order, and the principal dispersion relation is
+The spatial medium completion is static-silent for transverse-traceless modes
+on the homogeneous background used here and adds no principal tensor correction
+at this order, so
 \[
 \omega^2=c^2k^2.
 \]
-Thus the tensor wave speed is luminal in this RefG core.
 
 \section{Inertia and Mass}
 
-This section fixes the energy normalization of the gravitational core. The same total localized dressed energy $E_0$ is read as the Noether inertial mass and as the far-zone refractive source charge. The conserved four-momentum is
-\[
-P^\mu=\int T^{0\mu}\,d^3x.
-\]
-For a localized rest configuration,
-\[
-P^\mu=\left(\frac{E_0}{c},0,0,0\right).
-\]
-Under a boost,
-\[
-P'^0=\gamma\frac{E_0}{c},
-\qquad
-P'^i=\gamma\frac{E_0v^i}{c^2}.
-\]
-Therefore the inertial mass is
+This section fixes the energy normalization of the gravitational core. The same total localized dressed energy $E_0$ is read as the Noether inertial mass and as the far-zone refractive source charge. For a localized rest configuration, the standard relativistic normalization gives
 \[
 M_{\rm inert}=\frac{E_0}{c^2}.
 \]
@@ -1152,12 +1132,9 @@ For null rays define
 \[
 B_{\rm ph}(r)=\frac{e^{-2r_s/r}}{r^2}.
 \]
-Then
-\[
-B_{\rm ph}'(r)=
--\frac{2(r-r_s)e^{-2r_s/r}}{r^4},
-\]
-so the photon sphere is
+The exponential-metric geodesic calculation is standard
+\cite{Boonserm2018}; in the present normalization the circular null condition
+$B_{\rm ph}'=0$ gives
 \[
 r_{\rm ph}=r_s.
 \]
@@ -1182,16 +1159,8 @@ For massive circular orbits the effective potential is
 V_{\rm eff}=e^{-r_s/r}
 +\frac{L^2e^{-2r_s/r}}{r^2}.
 \]
-The angular momentum of a circular orbit is
-\[
-L_{\rm circ}^2=
-\frac{r^2 r_s e^{r_s/r}}{2(r-r_s)}.
-\]
-The marginal stability condition $dL_{\rm circ}^2/dr=0$ gives
-\[
-r^2-3r_s r+r_s^2=0.
-\]
-Therefore
+Solving the standard circular-orbit and marginal-stability conditions for this
+potential gives
 \[
 r_{\rm ISCO}
 =\frac{3+\sqrt5}{2}\,r_s
@@ -1229,8 +1198,7 @@ $r_{\rm ph}=r_s$, $b_c=e\,r_s$ and
 $b_c/b_c^{\rm GR}=2e/(3\sqrt3)=1.0463$.  Panel (b) plots the
 massive effective potential
 $V_{\rm eff}=e^{-r_s/r}+L^2e^{-2r_s/r}/r^2$ together with the
-Schwarzschild comparison; the circular-orbit condition
-$dL_{\rm circ}^2/dr=0$ gives
+Schwarzschild comparison; the circular-orbit and marginal-stability conditions give
 $r_{\rm ISCO}=\varphi^2r_s$ for RefG and $3r_s$ for Schwarzschild,
 with $f_{\rm ISCO}/f_{\rm ISCO}^{\rm GR}=0.931$.}
 \label{fig:geodesic-structure}
@@ -1266,17 +1234,14 @@ M_{\rm new}=8c_{Y2}-4\lambda_6-c_Z+\epsilon_M,
 \]
 with $A$, $C$, and $D$ kept at their static-core values.
 $\lambda_6$, $c_Z$, $\epsilon_B$, and $\epsilon_M$ are EFT response
-coefficients; the displayed values give a representative point in the open
-healthy window. At
-$\epsilon_B=1$ and $\epsilon_M=\sqrt{83/2}-6$ the representative determinant is
-\[
-\det M_{\rm rep}(s)=\frac{20s^2-29s+10}{2},
-\]
-with roots $0.5649$ and $0.8851$.  On the same slice the open allowed region is
+coefficients; the local-stability section gives the representative determinant
+and roots.  On the same slice the open allowed region is
 \[
 26+\epsilon_B+10\sqrt{1+\epsilon_B}<(6+\epsilon_M)^2<36+6\epsilon_B,
 \]
-with width $5(\sqrt{1+\epsilon_B}-1)^2$.  Thus the scalar sector is part of the
+with width $5(\sqrt{1+\epsilon_B}-1)^2$.  The representative point
+$\epsilon_B=1$, $\epsilon_M=\sqrt{83/2}-6$ has roots $0.5649$ and $0.8851$.
+Thus the scalar sector is part of the
 falsification filter: a ghost, a complex root, a degenerate hyperbolic symbol,
 or a superluminal scalar-longitudinal root rejects the parameter branch.
 
