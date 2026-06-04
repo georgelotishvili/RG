@@ -54,7 +54,7 @@ This paper presents the self-contained gravitational chain that can be checked i
 \item \textbf{Phase-pressure deficit.} The projected quadratic channel $\Delta_P=Z_\Delta^\perp/(8\pi G)$ whose active stress supports the compact exterior.
 \item \textbf{Phase-normalized strain invariants.} The $H$-rescaled variables $\widehat Y$, $\widehat\lambda_r$, and $\widehat\lambda_t$ used to evaluate $F_{\rm min}^{(H)}$ in a branch frame.
 \item \textbf{Biconformal map.} The compact-branch map $h=-\phi/2$ with paired metric factors $e^{-2h}$ and $e^{2h}$.
-\item \textbf{Branch.} A background regime of the same normalized-invariant EFT sector, selected by compactness and boundary matching.
+\item \textbf{Branch.} A background regime of the same normalized-invariant EFT sector, selected by the finite-core load and source amplitude.
 \item \textbf{Weak-Solar branch.} The unloaded $H=0$ branch with $\gamma=\beta=1$, vanishing preferred-frame source, and $q_{2{\rm PN}}=7/4$.
 \item \textbf{Compact phase-spherical branch.} The loaded $H=H_\Delta=h$ branch in which the reduced phase equation and projected deficit source give the exponential exterior.
 \item \textbf{Dynamic completion.} The static-silent $\epsilon_B,\epsilon_M$ extension that changes the scalar-longitudinal kinetic/mixing entries and opens the subluminal window.
@@ -961,7 +961,7 @@ Thus
 G^\mu{}_\nu-8\pi G\Theta^\mu{}_\nu=0.
 \]
 With this mixed-index convention, $D=8\pi G\Delta_P$ gives $G^t{}_t=-D=8\pi G\Theta^t{}_t$. The effective-fluid notation $\rho_a=-\Delta_P$ used below is the active deficit contribution of the medium, and the field-equation residual is read with this active contrast.
-The compact-branch static consistency chain is then: $(r^2\phi')'=0$ fixes $\phi=-r_s/r$; the biconformal map gives $h=r_s/(2r)$ and the exponential metric; the independent deficit field has $H_\Delta=h$ and zero harmonic residual; $\mathcal L_\Delta^\perp=Z_\Delta^\perp/(8\pi G)$ gives the active source written above; with this source the diagonal field-equation residuals vanish and $p_t-p_r=2\Delta_P$. This is the conditional static exterior equation of the compact branch. The remaining finite-core question is dynamical branch selection: which compact interiors reach this boundary regime.
+The compact-branch static consistency chain is then: $(r^2\phi')'=0$ fixes $\phi=-r_s/r$; the biconformal map gives $h=r_s/(2r)$ and the exponential metric; the independent deficit field has $H_\Delta=h$ and zero harmonic residual; $\mathcal L_\Delta^\perp=Z_\Delta^\perp/(8\pi G)$ gives the active source written above; with this source the diagonal field-equation residuals vanish and $p_t-p_r=2\Delta_P$. This is the static exterior equation of the compact branch. The finite-core selector is the load/source rule derived below.
 
 \subsection{Raw-Invariant Diagnostic}
 
@@ -1105,7 +1105,7 @@ hyperbolic modes are controlled by the full $F_{\rm min}$ medium sector.
 
 The exponential exterior has no finite-radius event horizon in the static chart. Its strong-field use is therefore tied to tests of horizonless ultracompact objects. For such objects, a photon sphere has both a shadow-scale role and a dynamical-stability role: the light-ring structure is a stability criterion in its own right \cite{Cunha2017}, and the ringdown/echo channel gives a gravitational-wave discriminator from black holes \cite{Cardoso2016}. For horizonless light-ring objects, the quasinormal-mode (QNM)/echo channel is an open astrophysical-viability risk and part of the strong-field program itself. The result derived here is the static geometric core. Its astrophysical use proceeds through finite-core dynamics, the rotating exterior, QNM/echo analysis, and Event Horizon Telescope (EHT), next-generation Event Horizon Telescope (ngEHT), and Black Hole Explorer (BHEX) ray tracing.
 
-Branch selection is set by compactness and boundary matching. For an extended
+Branch selection is set by the finite-core load and source amplitude. For an extended
 weak object such as the Sun,
 $C=r_s/R_{\rm source}\ll 1$; the diffuse medium stress and radial deformation
 remain in the active-source exterior equation, and the weak-Solar branch gives
@@ -1118,9 +1118,35 @@ diagonal field-equation residuals vanish. A smooth $C^2$ exterior matching is
 the condition under which no additional thin-shell stress is introduced at the
 boundary.
 
-The full dynamical selection by a finite core is the interior-and-matching
-problem. The static numbers below apply to ultradense sources whose exterior
-matching selects the compact phase branch.
+The finite-core selector is algebraic at the static matching level.  Define the
+load $Q=r_s/r_c$ and the input compactness $Q_0$.  Surface-clock matching gives
+\[
+q_v=\frac{3Q}{2},\qquad Q_0=Qe^{-Q/2}.
+\]
+The equation for $Q_0$ alone has two Lambert branches,
+\[
+Q_\pm=-2W_{0,-1}\!\left(-\frac{Q_0}{2}\right),
+\]
+so $Q_0$ by itself is not the branch selector.  The local deficit feedback is
+\[
+q_v=Se^{-\chi q_v},\qquad q_\star=\frac{W(\chi S)}{\chi},
+\]
+and hence
+\[
+Q_\star=\frac{2W(\chi S)}{3\chi}.
+\]
+Equivalently,
+\[
+S(Q)=\frac{3Q}{2}e^{3\chi Q/2},\qquad
+\frac{dS}{dQ}=\frac34(3\chi Q+2)e^{3\chi Q/2}>0.
+\]
+Thus the finite-core source amplitude $S$ selects a unique branch.  The high
+compact branch is selected for
+\[
+S>S_{\rm fold}=3e^{3\chi},
+\]
+while object-specific values of $S$ and $\chi$ belong to the finite-core
+equation of state or collapse history.
 
 For null rays define
 \[
@@ -1267,7 +1293,13 @@ Third, tensor waves must remain luminal:
 c_g=c.
 \]
 
-Fourth, the compact phase branch gives definite static branch predictions:
+Fourth, the compact selector must put the finite core on the high branch:
+\[
+Q_\star=\frac{2W(\chi S)}{3\chi},\qquad
+S>S_{\rm fold}=3e^{3\chi}.
+\]
+If this condition fails, the compact strong-field branch is not occupied.
+When it holds, the compact phase branch gives definite static branch predictions:
 \[
 r_{\rm ph}=r_s,\qquad
 b_c=e\,r_s,\qquad
@@ -1303,9 +1335,14 @@ with a $+4.63\%$ shadow-scale shift and
 \[
 f_{\rm ISCO}=0.931\,f_{\rm ISCO}^{\rm GR}.
 \]
-This is the conditional static result of the compact phase branch. Its direct comparison with EHT-class images belongs to the rotating exterior and ray-tracing problem.
+The finite-core source selector fixes the branch load by
+\[
+Q_\star=\frac{2W(\chi S)}{3\chi},
+\]
+with the compact branch selected for $S>3e^{3\chi}$. Direct comparison with
+EHT-class images belongs to the rotating exterior and ray-tracing problem.
 
-The present paper gives the self-contained gravitational core. The next steps are finite-core matching, the rotating compact solution, quasinormal-mode and echo stability, and observational modeling of shadows, rings, and accretion environments. Those steps determine the direct comparison with EHT, ngEHT, and BHEX data.
+The present paper gives the self-contained gravitational core. The next steps are object-specific finite-core equations of state, the rotating compact solution, quasinormal-mode and echo stability, and observational modeling of shadows, rings, and accretion environments. Those steps determine the direct comparison with EHT, ngEHT, and BHEX data.
 
 \section*{Funding}
 
