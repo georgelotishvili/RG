@@ -5,6 +5,7 @@
 \usepackage{lmodern}
 \usepackage{amsmath,amssymb,bm}
 \usepackage{graphicx}
+\usepackage{array}
 \usepackage[a4paper,margin=2.5cm]{geometry}
 \usepackage[hidelinks]{hyperref}
 \usepackage{setspace}
@@ -13,6 +14,7 @@
 \setlength{\parindent}{0.7cm}
 \setlength{\parskip}{0pt}
 \setlength{\emergencystretch}{2em}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 
 \title{Refractive Gravity: A Phase-Field Theory}
 \author{}
@@ -32,15 +34,15 @@ The compact phase-spherical branch is treated as a separate static branch of the
 
 General Relativity (GR) supplies the metric core of gravitational dynamics. RefG keeps this core and adds a phase-spatial medium sector whose metric variation produces an active stress tensor. In the weak static limit that stress is read as a refractive profile.
 
-The name ``Refractive Gravity'' refers to this source mechanism: the gravitational response follows from a phase-pressure deficit that acts refractively on matter and light. Matter remains minimally coupled to the metric; the effective-medium difference is that the active stress gives a source-index chain that produces the Newtonian profile near a localized weak source and a definite compact-branch prediction in the strong static regime.
+The name ``Refractive Gravity'' refers to this source mechanism: the active stress of a phase-pressure deficit is encoded as a refractive metric response for matter and light. Matter remains minimally coupled to the metric; the effective-medium difference is that the stress-to-index chain recovers the Newtonian profile near a localized weak source, while the compact sector gives conditional static branch markers after a separate source/load selection.
 
 The construction is an effective field theory written with the usual metric variables and scalar fields for the medium state. The phase field $\Phi$ tracks the temporal phase-pressure degree of freedom, while the three fields $\phi^A$ track the spatial body of the medium. Their invariants define the local energy functional. This follows the same conservative logic used in scalar-tensor and gravitational EFT work \cite{Horndeski1974,Gubitosi2013,BelliniSawicki2014,Deffayet2009,Kobayashi2011,Cheung2008}, with a different weak-field source: the refractive index produced by the active stress.
 
 The observed equality of gravitational-wave and light speeds restricts the tensor sector \cite{Abbott2017GW,Abbott2017GRB,Creminelli2017,Sakstein2017}. RefG uses the Horndeski-compatible constant-$G_4$ sector, so the principal tensor speed is luminal. The spatial-medium part is related in spirit to solid and framid EFTs \cite{Endlich2013,Nicolis2015,Endlich2014,Bordin2017}; in RefG it serves as a gravitational source channel.
 
-The compact static branch uses an exponential exterior. This metric form has an independent literature, including its historical association with Yilmaz's gravitational theory \cite{Yilmaz1958} and its analysis as a traversable-wormhole geometry \cite{Boonserm2018}; strong-field alternatives to GR provide the comparison setting \cite{Damour1992,Damour1993,Damour1996}. RefG uses this metric form as the phase-spherical compact exterior, not Yilmaz's field equations or source prescription: the source is the projected phase-pressure deficit stress and the Einstein-equation residual is checked explicitly below.
+The compact static branch yields an exponential exterior. Similar exponential geometries have an independent literature, including analyses as traversable-wormhole geometries \cite{Boonserm2018}; strong-field alternatives to GR provide the comparison setting \cite{Damour1992,Damour1993,Damour1996}. In RefG this exterior is derived as the phase-spherical compact branch from the phase equation, biconformal map, and projected phase-pressure deficit source; the diagonal field-equation residual is checked explicitly below.
 
-This paper presents the self-contained gravitational chain that can be checked internally: action, active stress, refractive source, Newtonian limit, local principal-symbol stability, Solar-System compatibility, tensor speed, inertial identity, and the compact static predictions.
+This paper assembles the checkable gravitational-core chain: action, active stress, refractive source, Newtonian limit, local principal-symbol stability, weak-Solar compatibility, tensor speed, inertial identity, and conditional compact static markers.
 
 \medskip
 
@@ -53,19 +55,60 @@ This paper presents the self-contained gravitational chain that can be checked i
 \item \textbf{Phase-pressure deficit.} The projected quadratic channel $\Delta_P=Z_\Delta^\perp/(8\pi G)$ whose active stress supports the compact exterior.
 \item \textbf{Phase-normalized strain invariants.} The $H$-rescaled variables $\widehat Y$, $\widehat\lambda_r$, and $\widehat\lambda_t$ used to evaluate $F_{\rm min}^{(H)}$ in a branch frame.
 \item \textbf{Biconformal map.} The compact-branch map $h=-\phi/2$ with paired metric factors $e^{-2h}$ and $e^{2h}$.
-\item \textbf{Branch.} A background regime of the same normalized-invariant EFT sector, selected by the finite-core load and source amplitude.
-\item \textbf{Weak-Solar branch.} The unloaded $H=0$ branch with $\gamma=\beta=1$, vanishing preferred-frame source, and $q_{2{\rm PN}}=7/4$.
-\item \textbf{Compact phase-spherical branch.} The loaded $H=H_\Delta=h$ branch in which the reduced phase equation and projected deficit source give the exponential exterior.
-\item \textbf{Dynamic completion.} The static-silent $\epsilon_B,\epsilon_M$ extension that changes the scalar-longitudinal kinetic/mixing entries and opens the subluminal window.
+\item \textbf{Branch.} A background regime of the same normalized-invariant EFT sector, selected by compactness, boundary matching, exterior source weight, and source amplitude.
+\item \textbf{Weak-Solar branch.} The unloaded weak-field $H=0$ branch with $\gamma=\beta=1$, vanishing preferred-frame source, and $q_{2{\rm PN}}=7/4$.
+\item \textbf{Compact phase-spherical branch.} The loaded static $H=H_\Delta=h$ branch in which the reduced phase equation and projected deficit source give the exponential exterior.
+\item \textbf{Dynamic completion.} The local principal-symbol, static-silent $\epsilon_B,\epsilon_M$ extension that changes the scalar-longitudinal kinetic/mixing entries and opens the subluminal window; full curved-background nonlinear hyperbolicity remains a separate gate.
 \item \textbf{ESS operator.} The static-silent effective-solid-sector operator $\delta_{AB}(u^\mu\partial_\mu\phi^A)(u^\nu\partial_\nu\phi^B)$ used to give the Solar solid mode positive kinetic energy.
 \item \textbf{Raw-invariant diagnostic.} The compact-exterior check using unnormalized raw invariants; it identifies a diagnostic obstruction, not the compact action.
 \end{list}
+
+\subsection*{Validation Status and Scope}
+
+The claims below are used only in the scope in which the algebraic checks close.
+A closed entry means that the stated calculation is closed in that sector; the
+right column lists what is not concluded from it.
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.18}
+\begin{tabular}{L{0.22\textwidth}L{0.35\textwidth}L{0.33\textwidth}}
+\hline
+Sector & Article-level status & Scope boundary \\
+\hline
+Refractive source and Newton limit &
+Action stress gives the weak static source-index chain and Newton's law in the
+weak spherical limit. &
+Full nonlinear, non-spherical medium PDEs and the microscopic origin of $G$ are
+not claimed here. \\
+Weak-Solar branch &
+The $1$PN branch has $\gamma=\beta=1$ and $\alpha_i=0$ in the minimal chain;
+$q_{2{\rm PN}}=7/4$ is the weak-Solar branch value. &
+The full raw Solar-System likelihood and the complete PPN table remain outside
+this paper. \\
+Local stability &
+The scalar-longitudinal sector has a healthy local principal symbol after the
+static-silent dynamic repair; a representative subluminal point is displayed. &
+Full curved-background nonlinear hyperbolicity and constraint closure remain
+open. \\
+Tensor speed &
+The local tensor sector has constant $G_4$, $G_5=0$, and $c_g=c$. &
+Full cosmological wave propagation, damping, and waveform/catalog tests remain
+open. \\
+Compact phase branch &
+The static exponential exterior source ledger closes: phase-normalized
+$F_{\rm min}$ is stress-quiet, the projected deficit closes the diagonal
+residual, and the source amplitude selects a static finite-core window. &
+No black-hole replacement, EHT support, rotating exterior, QNM/echo stability,
+or plasma/accretion ray-tracing claim is made here. \\
+\hline
+\end{tabular}
+\end{center}
 
 \section{The Base Medium and the Physical Picture}
 
 RefG starts from a base medium that defines operational distance, time, mass, and wave propagation as local regimes of one substrate. A homogeneous state is self-calibrated by rods, clocks, and atoms formed within the same local phase-pressure state. Observable gravity begins when the medium state becomes spatially nonuniform.
 
-One base medium supports distinct mechanical responses. The phase, pressure, and spatial deformation channels used in this paper are separate responses of the same substrate, linked by internal medium interactions. A localized energy concentration creates a deficit in the phase pressure of the base medium. Test matter follows the gradient of the resulting refractive index. In the weak spherical regime this index gradient gives Newton's force; in a compact phase-dominated exterior the same logic leads to the exponential static branch.
+One base medium supports distinct mechanical responses. The phase, pressure, and spatial deformation channels used in this paper are separate responses of the same substrate, linked by internal medium interactions. A localized energy concentration creates a deficit in the phase pressure of the base medium. In the weak static reading, geodesic motion can be rewritten as motion in the gradient of the resulting refractive index, giving Newton's force in the weak spherical regime. The compact phase-dominated exterior is selected by a separate source/load condition and gives the exponential static branch.
 
 \section{Fields, Invariants, and the Action}
 
@@ -94,7 +137,7 @@ $F_{\rm min}^{(H)}$ denote the same polynomial evaluated on the
 $H$-normalized strain invariants defined below.  On the weak-Solar frame
 $H=0$, $F_{\rm min}^{(H)}$ reduces to the raw invariant expression displayed
 above.
-The full action is
+The article-level leading action is
 \begin{align*}
 S=\int d^4x\sqrt{-g}\left[
 \frac{M_{\rm Pl}^2}{2}R+M_*^4 F_{\rm min}^{(H)}
@@ -119,16 +162,16 @@ Z_\Delta^\perp=
 \mathcal L_\Delta^\perp=
 \omega_\Delta\,\frac{Z_\Delta^\perp}{8\pi G}.
 \]
-Here $\omega_\Delta$ is a fixed dimensionless EFT coefficient; the compact
-branch normalization used below sets $\omega_\Delta=1$. In the weak-Solar
-branch this channel is small. In the compact $C^2$ matching branch
+Here $\omega_\Delta$ is a branch-selected dimensionless EFT coefficient; the
+compact branch normalization used below sets $\omega_\Delta=1$. In the
+weak-Solar branch this channel is treated as unloaded at the leading order used
+here. In the compact $C^2$ matching branch
 $H_\Delta$ carries the matched exterior source law through
 $\mathcal L_\Delta^\perp$, while $I_3$ remains an internal medium invariant.
 The compact calculation below is this leading EFT truncation:
 $\mathcal L_\Delta^\perp$ is the first active projected-deficit operator on the
-matched pure-phase exterior, while other higher-sector operators are assumed
-subleading or vanishing on this branch and would define beyond-core corrections
-if retained.
+matched pure-phase exterior, while other higher-sector operators are left as
+beyond-core corrections unless a later branch derivation makes them active.
 
 \subsection{Branch Frames and Phase Normalization}
 
@@ -250,9 +293,9 @@ exterior $2$PN metric stress.
 On the compact pure-phase branch the hatted invariants equal one, so the same
 $H$ source vanishes exactly.
 
-The calculation chain from the minimal core to the weak static source is direct. Metric variation of the action gives the active stress $\Theta^{\rm RefG}_{\mu\nu}$; the radial balance of this stress enters the Bianchi/Tolman--Oppenheimer--Volkoff (TOV) identity; the resulting pressure source determines the profile $h_{\rm eff}$; the slow-body source index reads that profile as $n_{\rm eff}=\exp(h_{\rm eff})$. Thus the weak source-index chain is the active medium response of the action stress, read through the differential TOV/Bianchi source equation.
+At weak static order the calculation chain from the minimal core to the source profile is direct. Metric variation of the action gives the active stress $\Theta^{\rm RefG}_{\mu\nu}$; the radial balance of this stress enters the Bianchi/Tolman--Oppenheimer--Volkoff (TOV) identity; the resulting pressure source determines the profile $h_{\rm eff}$; the slow-body source index reads that profile as $n_{\rm eff}=\exp(h_{\rm eff})$. Thus the weak source-index chain is the active medium response of the action stress, read through the differential TOV/Bianchi source equation.
 
-The same action contains the technical background channel used for local stability and for the weak-Solar branch. The combination
+The same action contains the technical background channels used for local stability diagnostics and for the weak-Solar branch. The combination
 \[
 C_6=Y+2I_1-I_3,
 \]
@@ -262,8 +305,11 @@ Z=\delta_{AB}(u^\mu\partial_\mu\phi^A)(u^\nu\partial_\nu\phi^B),
 \qquad
 u_\mu=\frac{\partial_\mu\Phi}{\sqrt{Y}},
 \]
-enter as the local completion of the medium background. They close the kinetic matrix and preserve the luminal tensor sector.
-The phase and spatial responses remain independent channels; the scalar-longitudinal sector is read from the combined principal symbol.
+enter as a local completion of the medium background. The isolated $C_6/Z$
+block is a diagnostic luminal completion; the scalar-longitudinal sector
+exported below uses the static-silent dynamic repair at local principal-symbol
+level.
+The phase and spatial responses remain independent channels.
 
 The active RefG stress is defined by
 \[
@@ -291,7 +337,9 @@ G_3=0,\qquad
 G_4=\frac{M_{\rm Pl}^2}{2},\qquad
 G_5=0.
 \]
-Because $G_4$ is constant and $G_5=0$, the principal tensor speed is luminal.
+Because $G_4$ is constant and $G_5=0$, the local principal tensor speed is
+luminal in this tensor sector. This is not used as a full cosmological
+wave-propagation calculation.
 
 \section{The Refractive Source and Newton's Law}
 
@@ -430,7 +478,8 @@ symbol below.
 
 \subsection{Static Completion Diagnostic}
 
-The technical $C_6/Z$ background completion closes the kinetic matrix without changing the tensor sector. With
+The technical $C_6/Z$ background completion is first used as a diagnostic that
+closes the flat kinetic matrix without changing the tensor sector. With
 \[
 \Phi=t+\chi,\qquad \phi^A=x^A+\pi^A,
 \]
@@ -708,11 +757,15 @@ This is the local coefficient condition used here for
 with the full vector-sector PN analysis belonging to the complete PPN extension
 \cite{WillNordtvedt1972,Kostelecky2022}.
 
-The second post-Newtonian optical coefficient used by the Solar branch is the physical weak-Solar one:
+The second post-Newtonian optical coefficient used by the Solar branch is the
+physical weak-Solar branch value:
 \[
 q_{2{\rm PN}}=\frac{7}{4}.
 \]
-Restricted zero-stress and dark-energy-scale checks test this branch separation. The compact phase branch is a separate strong-field exterior; its observational signatures are the shadow and innermost stable circular orbit (ISCO) quantities derived below.
+Restricted zero-stress and dark-energy-scale checks test this branch separation;
+they are not a full raw Solar-System likelihood. The compact phase branch is a
+separate strong-field exterior; its conditional static markers are the shadow
+and innermost stable circular orbit (ISCO) quantities derived below.
 
 The Solar branch is obtained by imposing the second-order relation
 \[
@@ -765,7 +818,10 @@ and hence
 \[
 n_{\rm light}=1+2U+\frac74U^2+O(U^3).
 \]
-Thus $q_{2{\rm PN}}=7/4$. Cassini and lunar-laser-ranging tests probe this weak-Solar metric branch; RefG changes the source mechanism, while the weak-Solar $1$PN/$2$PN optical coefficients remain GR-compatible.
+Thus $q_{2{\rm PN}}=7/4$. Cassini and lunar-laser-ranging tests constrain this
+weak-Solar metric branch, but a full raw Solar-System likelihood is a separate
+data-analysis step. RefG changes the source mechanism, while the displayed
+weak-Solar $1$PN/$2$PN optical coefficients remain GR-compatible.
 
 The technical background completion is negligible on Solar scales. Its dimensionless contribution is
 \[
@@ -782,8 +838,8 @@ leading Newtonian curvature scale is
 At the Solar surface this is about $1.06\times10^{-6}$. Thus the diffuse
 medium stress dominates the weak-Solar boundary matching over the
 phase-dominated deficit exterior. In the compact $C^2$ matching branch the same
-fixed operator, with the normalization $\omega_\Delta=1$, balances the
-exponential exterior.
+projected operator, with the compact-branch normalization $\omega_\Delta=1$,
+balances the exponential exterior.
 
 \section{Tensor Waves}
 
@@ -805,6 +861,9 @@ at this order, so
 \[
 \omega^2=c^2k^2.
 \]
+This is the local tensor-speed statement used in the paper; full cosmological
+wave propagation, waveform damping, and catalog-level gravitational-wave tests
+belong to the later propagation sector.
 
 \section{Inertia and Mass}
 
@@ -1153,7 +1212,7 @@ S_{\rm fold}=3e^{3\chi},
 \]
 but because $S(Q)$ is monotone this is a load marker in the $S$ variable, not a
 bistable fold. For the finite-core horizonless exterior used by the geodesic
-predictions the required window is
+markers the required window is
 \[
 1<Q_\star<2,\qquad
 \frac32 e^{3\chi/2}<S<3e^{3\chi},
@@ -1192,7 +1251,7 @@ Relative to Schwarzschild,
 \frac{b_c}{b_c^{\rm GR}}
 =\frac{2e}{3\sqrt3}=1.0463.
 \]
-Thus the compact static branch gives a shadow-scale prediction
+Thus the compact static branch gives the conditional shadow-scale marker
 \[
 \Delta b_c=+4.63\%.
 \]
@@ -1228,7 +1287,7 @@ $(\Omega_{\rm ISCO}^{\rm GR})^2=c^2/(54r_s^2)$ at the same mass,
 \right]^{1/2}
 =0.931.
 \]
-The compact static RefG prediction is therefore the pair
+The conditional compact static branch markers are therefore the pair
 \[
 b_c=e\,r_s,\qquad r_{\rm ISCO}=\varphi^2r_s,
 \]
@@ -1320,8 +1379,8 @@ equivalently
 \frac{r_s}{2}<r_c<r_s.
 \]
 If this condition fails, the finite-core object does not realize the compact
-exterior window used by the geodesic predictions. When it holds, the compact
-phase branch gives definite static branch predictions:
+exterior window used by the geodesic markers. When it holds, the compact phase
+branch gives conditional static branch markers:
 \[
 r_{\rm ph}=r_s,\qquad
 b_c=e\,r_s,\qquad
@@ -1343,12 +1402,18 @@ RefG is an effective phase-spatial framework for gravity. Its source is the acti
 \]
 which gives Newton's law in the weak spherical limit. In the Solar branch the same action admits $\gamma=\beta=1$, the local preferred-frame source condition $K_{\rm pf}=0$, and the physical weak-Solar coefficient $q_{2{\rm PN}}=7/4$. In the tensor sector the principal wave speed has $c_g=c$.
 
-The compact phase-spherical branch gives a horizonless static exponential exterior supported by the projected phase-pressure deficit stress and by the reduced exterior phase equation. Its $F_{\rm min}$ sector is evaluated on phase-normalized strain invariants; on the pure-phase exterior this gives zero $F_{\rm min}$ metric stress and zero $\phi^A$ Euler residual. The same active source obeys
+The compact phase-spherical branch gives a static exponential exterior with no
+finite-radius Killing horizon, supported by the projected phase-pressure
+deficit stress and by the reduced exterior phase equation. Its $F_{\rm min}$
+sector is evaluated on phase-normalized strain invariants; on the pure-phase
+exterior this gives zero $F_{\rm min}$ metric stress and zero $\phi^A$ Euler
+residual. The same active source obeys
 \[
 \Delta_P=-\frac{1}{2}\left(\rho_a+p_{r,a}\right),
 \]
 so the standard effective-source language directly reads the RefG
-phase-pressure deficit. Its null and timelike geodesic predictions are
+phase-pressure deficit. Its conditional static null and timelike geodesic
+markers are
 \[
 b_c=e\,r_s,\qquad
 r_{\rm ISCO}=\varphi^2r_s,
@@ -1455,9 +1520,6 @@ T. Damour and G. Esposito-Farese, Tensor-scalar gravity and binary-pulsar experi
 
 \bibitem{Boonserm2018}
 P. Boonserm, T. Ngampitipan, A. Simpson, and M. Visser, Exponential metric represents a traversable wormhole, \textit{Physical Review D} \textbf{98}, 084048 (2018).
-
-\bibitem{Yilmaz1958}
-H. Yilmaz, New Approach to General Relativity, \textit{Physical Review} \textbf{111}, 1417--1426 (1958), doi:10.1103/PhysRev.111.1417.
 
 \bibitem{Cunha2017}
 P. V. P. Cunha, E. Berti, and C. A. R. Herdeiro, Light-ring stability for ultracompact objects, \textit{Physical Review Letters} \textbf{119}, 251102 (2017).
