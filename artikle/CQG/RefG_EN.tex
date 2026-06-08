@@ -1163,7 +1163,18 @@ hyperbolic modes are controlled by the full $F_{\rm min}$ medium sector.
 
 \subsection{Static Geodesic Predictions}
 
-The exponential exterior has no finite-radius event horizon in the static chart. Its strong-field use is therefore tied to tests of horizonless ultracompact objects. For such objects, a photon sphere has both a shadow-scale role and a dynamical-stability role: the light-ring structure is a stability criterion in its own right \cite{Cunha2017}, and the ringdown/echo channel gives a gravitational-wave discriminator from black holes \cite{Cardoso2016}. For horizonless light-ring objects, the quasinormal-mode (QNM)/echo channel is an open astrophysical-viability risk and part of the strong-field program itself. The result derived here is the static geometric core. Its astrophysical use proceeds through finite-core dynamics, the rotating exterior, QNM/echo analysis, and Event Horizon Telescope (EHT), next-generation Event Horizon Telescope (ngEHT), and Black Hole Explorer (BHEX) ray tracing.
+The exponential exterior has no finite-radius event horizon in the static chart.
+Its strong-field use is therefore tied to tests of horizonless-candidate
+ultracompact objects. For such candidate objects, a photon sphere has both a
+shadow-scale role and a dynamical-stability role: the light-ring structure is a
+stability criterion in its own right \cite{Cunha2017}, and the ringdown/echo
+channel gives a gravitational-wave discriminator from black holes
+\cite{Cardoso2016}. The quasinormal-mode (QNM)/echo channel is therefore an
+open astrophysical-viability risk and part of the strong-field program itself.
+The result checked here is the static geometric core. Its astrophysical use
+proceeds through finite-core dynamics, the rotating exterior, QNM/echo analysis,
+and Event Horizon Telescope (EHT), next-generation Event Horizon Telescope
+(ngEHT), and Black Hole Explorer (BHEX) ray tracing.
 For a matched exponential exterior, the numbers below depend only on the metric;
 the finite-core selector fixes applicability, not the geodesic algebra.
 
@@ -1211,8 +1222,8 @@ second root at fixed $Q_0$. The $Q_0$ fold point $Q=2$ maps to
 S_{\rm fold}=3e^{3\chi},
 \]
 but because $S(Q)$ is monotone this is a load marker in the $S$ variable, not a
-bistable fold. For the finite-core horizonless exterior used by the geodesic
-markers the required window is
+bistable fold. For the finite-core compact exterior used by the geodesic markers
+the required window is
 \[
 1<Q_\star<2,\qquad
 \frac32 e^{3\chi/2}<S<3e^{3\chi},
@@ -1430,13 +1441,19 @@ with finite-core exterior applications requiring
 $1<Q_\star<2$, equivalently $r_s/2<r_c<r_s$. Direct comparison with
 EHT-class images belongs to the rotating exterior and ray-tracing problem.
 
-The present paper gives the self-contained gravitational core. The next steps are object-specific finite-core equations of state, the rotating compact solution, quasinormal-mode and echo stability, and observational modeling of shadows, rings, and accretion environments. Those steps determine the direct comparison with EHT, ngEHT, and BHEX data.
+The present paper gives the checkable article-level gravitational core. The next steps are object-specific finite-core equations of state, the rotating compact solution, quasinormal-mode and echo stability, and observational modeling of shadows, rings, and accretion environments. Those steps determine the direct comparison with EHT, ngEHT, and BHEX data.
 
 \section*{Data availability statement}
 
 No observational or experimental datasets were generated or analysed in this
 study. The results are based on analytic derivations presented in the article
 and on cited standard results.
+The algebraic checks underlying the validation table are implemented in the
+accompanying Python/SymPy source tree under \texttt{RG/work/}. The relevant
+check scripts are the \texttt{p01}, \texttt{p03}, \texttt{p04}, \texttt{p05},
+and \texttt{p13} sector gates. These checks verify symbolic identities and
+branch-scope gates; they do not constitute an observational likelihood fit, a
+rotating compact-object solution, or a numerical plasma/accretion simulation.
 
 \begin{thebibliography}{99}
 
