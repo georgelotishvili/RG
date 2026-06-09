@@ -44,6 +44,10 @@ numbers of this static exterior are $r_{\rm ph}=r_s$, $b_c=e\,r_s$,
 $r_{\rm ISCO}=\varphi^2r_s$, and
 $f_{\rm ISCO}=0.931\,f_{\rm ISCO}^{\rm GR}$ at the same mass. These are
 conditional static branch markers, not direct black-hole-imaging predictions.
+A restricted volume-response compactness class is also exhibited: for
+$\chi=1$ on the principal exterior-sheet branch,
+$e^{-1/2}<C_0<2/e$ implies $1<Q<2$ and fixes a stable reduced source map
+$S(C_0)$.
 Rotating exteriors, finite-core dynamics, QNM/echo stability, and ray-traced
 plasma/accretion modeling remain separate tests.
 \end{abstract}
@@ -148,9 +152,11 @@ open. \\
 Compact phase branch &
 The static exponential exterior source ledger closes: phase-normalized
 $F_{\rm min}$ is stress-quiet, the projected deficit closes the diagonal
-residual, and the source amplitude selects a static finite-core window. &
-No black-hole replacement, EHT support, rotating exterior, QNM/echo stability,
-or plasma/accretion ray-tracing claim is made here. \\
+residual, the source amplitude selects a static finite-core window, and a
+restricted volume-response compactness class realizes $1<Q<2$. &
+No general compact-object branch-selection theorem, black-hole replacement,
+EHT support, rotating exterior, QNM/echo stability, or plasma/accretion
+ray-tracing claim is made here. \\
 \hline
 \end{tabular}
 \end{center}
@@ -1302,6 +1308,46 @@ Within the static truncation this is the object class assigned to the loaded
 compact $H=h$ exterior; object-specific values of $S$ and $\chi$ belong to the
 finite-core equation of state or collapse history.
 
+There is one restricted class for which the selector can be written with a
+single physical compactness input.  Take the volume-response attenuation
+$\chi=1$ and the principal exterior-sheet branch of
+$Q_0=Qe^{-Q/2}$.  Then
+\[
+Q(C_0)=-2W_0\!\left(-\frac{C_0}{2}\right),\qquad
+q(C_0)=\frac{3Q(C_0)}{2},
+\]
+and the compact finite-core window is exactly
+\[
+e^{-1/2}<C_0<\frac{2}{e}
+\quad\Longrightarrow\quad
+1<Q(C_0)<2.
+\]
+The reduced source map is then
+\[
+S(C_0)=q(C_0)e^{q(C_0)},
+\]
+so the balance $\dot q=S(C_0)e^{-q}-q$ has the fixed point
+$q=q(C_0)$ and linear eigenvalue $-(1+q(C_0))<0$.  This closes the reduced
+branch-selection map for the stated volume-response class, while the
+arbitrary-EOS and full action-coefficient map for $\chi$ remain outside the
+present calculation.
+
+As an explicit equation-of-state realizing class, the Newtonian $n=1$
+polytrope
+\[
+p=K\rho_c^2
+\]
+has compactness
+\[
+C_0=\frac{4K\rho_c}{c^2}.
+\]
+It enters the compact window when
+\[
+e^{-1/2}<\frac{4K\rho_c}{c^2}<\frac{2}{e}.
+\]
+This is a realizing class and compactness band, not a relativistic TOV fit or
+an observational EOS claim.
+
 For null rays define
 \[
 B_{\rm ph}(r)=\frac{e^{-2r_s/r}}{r^2}.
@@ -1503,10 +1549,20 @@ The finite-core source selector fixes the branch load by
 Q_\star=\frac{2W(\chi S)}{3\chi},
 \]
 with finite-core exterior applications requiring
-$1<Q_\star<2$, equivalently $r_s/2<r_c<r_s$. Direct comparison with
-EHT-class images belongs to the rotating exterior and ray-tracing problem.
+$1<Q_\star<2$, equivalently $r_s/2<r_c<r_s$.  In the restricted
+volume-response class this becomes the compactness band
+$e^{-1/2}<C_0<2/e$, with
+$S(C_0)=q(C_0)e^{q(C_0)}$ and
+$Q(C_0)=-2W_0(-C_0/2)$.  The $n=1$ polytropic realizing class
+$p=K\rho_c^2$ enters this band when
+$e^{-1/2}<4K\rho_c/c^2<2/e$.  Direct comparison with EHT-class images belongs
+to the rotating exterior and ray-tracing problem.
 
-The present paper gives the checkable article-level gravitational core. The next steps are object-specific finite-core equations of state, the rotating compact solution, quasinormal-mode and echo stability, and observational modeling of shadows, rings, and accretion environments. Those steps determine the direct comparison with EHT, ngEHT, and BHEX data.
+The present paper gives the checkable article-level gravitational core. The
+next steps are arbitrary and relativistic finite-core equations of state, the
+rotating compact solution, quasinormal-mode and echo stability, and
+observational modeling of shadows, rings, and accretion environments. Those
+steps determine the direct comparison with EHT, ngEHT, and BHEX data.
 
 \section*{Data availability statement}
 
@@ -1516,7 +1572,7 @@ and on cited standard results.
 The algebraic checks underlying the validation table are implemented in the
 accompanying Python/SymPy source tree under \texttt{RG/work/}. The relevant
 check scripts are the \texttt{p01}, \texttt{p03}, \texttt{p04}, \texttt{p05},
-and \texttt{p13} sector gates. These checks verify symbolic identities and
+\texttt{p13}, and \texttt{p16} sector gates. These checks verify symbolic identities and
 branch-scope gates; they do not constitute an observational likelihood fit, a
 rotating compact-object solution, or a numerical plasma/accretion simulation.
 
