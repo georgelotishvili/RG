@@ -16,6 +16,9 @@ artikle/*
 !artikle/CQG/
 artikle/CQG/*
 !artikle/CQG/RefG_EN.tex
+!artikle/GERG/
+artikle/GERG/*
+!artikle/GERG/RefG_EN.tex
 
 # Python caches and test/build artifacts
 __pycache__/
