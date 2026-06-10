@@ -17,6 +17,7 @@ DEFAULT_REPORT = WORK_DIR / "intuition_audit_report.md"
 
 
 ARTICLE_CANDIDATES = [
+    ROOT / "artikle" / "GERG" / "RefG_EN.tex",
     ROOT / "artikle" / "CQG" / "RefG_EN.tex",
     ROOT / "artikle" / "CQG" / "CQG_EN.tex",
     ROOT / "artikle" / "article.tex",
@@ -227,9 +228,15 @@ RULES = [
         "MEDIUM",
         r"\bYilmaz\b",
         "Yilmaz reference found.",
-        "Yilmaz should not be used as the support for the compact exponential "
-        "branch unless a deliberate reference decision is made.",
-        ("avoid", "not include", "do not cite", "rejected"),
+        "Deliberate decision (2026-06-10 rebuild plan): Yilmaz IS cited, but "
+        "only neutrally/historically (Papapetrou metric lineage, the Misner "
+        "controversy, distinction from Yilmaz's field equations). Supportive "
+        "use of Yilmaz for the compact branch is still flagged.",
+        (
+            "avoid", "not include", "do not cite", "rejected",
+            "controversy", "bibitem", "import the ghost", "refutation",
+            "cancels newton",
+        ),
         ("article", "work"),
     ),
 ]
