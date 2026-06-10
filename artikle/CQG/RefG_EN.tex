@@ -44,10 +44,11 @@ numbers of this static exterior are $r_{\rm ph}=r_s$, $b_c=e\,r_s$,
 $r_{\rm ISCO}=\varphi^2r_s$, and
 $f_{\rm ISCO}=0.931\,f_{\rm ISCO}^{\rm GR}$ at the same mass. These are
 conditional static branch markers, not direct black-hole-imaging predictions.
-A restricted volume-response compactness class is also exhibited: for
-$\chi=1$ on the principal exterior-sheet branch,
-$e^{-1/2}<C_0<2/e$ implies $1<Q<2$ and fixes a stable reduced source map
-$S(C_0)$.
+The deficit-feedback exponent is fixed to $\chi=1$ by the volume readout of
+the asymptotic mass, so the realizing window is parameter-free:
+$e^{-1/2}<C_0<2/e$, equivalently $r_s/2<r_c<r_s$. The $C^2$-matched cored
+geometry is horizonless, regular, and geodesically complete, with a bounded
+effective source that continues the exterior deficit.
 Rotating exteriors, finite-core dynamics, QNM/echo stability, and ray-traced
 plasma/accretion modeling remain separate tests.
 \end{abstract}
@@ -152,8 +153,10 @@ open. \\
 Compact phase branch &
 The static exponential exterior source ledger closes: phase-normalized
 $F_{\rm min}$ is stress-quiet, the projected deficit closes the diagonal
-residual, the source amplitude selects a static finite-core window, and a
-restricted volume-response compactness class realizes $1<Q<2$. &
+residual, the source amplitude selects a static finite-core window with
+derived feedback exponent $\chi=1$ (parameter-free band $1<Q<2$), and the
+$C^2$-cored geometry is geodesically complete and regular with a bounded
+junction-continuous effective source. &
 No general compact-object branch-selection theorem, black-hole replacement,
 EHT support, rotating exterior, QNM/echo stability, or plasma/accretion
 ray-tracing claim is made here. \\
@@ -164,9 +167,8 @@ ray-tracing claim is made here. \\
 \section{The EFT Medium Language and the Physical Picture}
 
 The ``base medium'' terminology is a compact way to describe the scalar EFT
-sector and its physical reading. It should not be read as a microscopic
-derivation of rods, clocks, atoms, or the gravitational constant. Those are
-downstream questions. In this paper the calculational input is narrower: a
+sector and its physical reading. It is not a microscopic derivation of rods,
+clocks, atoms, or the gravitational constant; those are downstream questions. In this paper the calculational input is narrower: a
 metric action, scalar invariants, and the stress tensor obtained by metric
 variation.
 
@@ -355,7 +357,7 @@ $S_H\equiv\partial F_{\rm branch}/\partial H$ evaluated at $H=0$,
 The weak-Solar strain has $y_1=1$, $r_1=-1$, $t_1=0$. On the exact-GR $2$PN
 constant-strain branch one has $y_2=1$, $r_2=1$, $t_2=-1$. Hence
 $S_H=0+O(U^3)$. Thus the unloaded branch $H=0$ is an $H$-equation solution
-through the Solar order displayed here, rather than merely a formal reduction of the action.
+through the Solar order displayed here, rather than a formal reduction of the action alone.
 The cancellation is structural: the first-order source is proportional to the
 weak variation of $Y+I_1$, and the second-order source vanishes under the same
 exact-GR vacuum condition that removes the $F_{\rm min}$ gradient and the
@@ -1258,9 +1260,17 @@ deficit supplies the leading exterior source. The reduced exterior phase equatio
 $(r^2\phi')'=0$, the biconformal map, and the projected deficit source
 $\mathcal L_\Delta^\perp$ define the exponential exterior. In this branch the
 phase-normalized $F_{\rm min}$ sector has zero stress on the pure-phase exterior, and the
-diagonal field-equation residuals vanish. A smooth $C^2$ exterior matching is
-the condition under which no additional thin-shell stress is introduced at the
-boundary.
+diagonal field-equation residuals vanish. A smooth $C^2$ exterior matching
+introduces no thin-shell stress at the boundary, and the matched object is a
+complete geometry. The $C^2$ logarithmic core profile on $r<r_c$, with
+$\log(AB)=q\,[(r/r_c)^2-1]^3$ for $q=r_s/r_c$, has a regular isotropic center
+with finite curvature, removes the infinite proper radial depth of the bare
+exterior, and lets radial null geodesics reach the center at finite affine
+parameter and extend through it. Its effective source is bounded on the core
+and joins the exterior continuously, with the radial null load equal to
+$-2\Delta_P$ at $r_c$. The cored geometry is therefore horizonless, regular,
+and geodesically complete, and the geodesic numbers below are markers of this
+complete static geometry.
 
 The finite-core selector is algebraic at the static matching level.  Define the
 load $Q=r_s/r_c$ and the input compactness $Q_0$.  Surface-clock matching
@@ -1305,13 +1315,20 @@ equivalently
 \]
 The throat is then inside the finite core while the photon sphere is exterior.
 Within the static truncation this is the object class assigned to the loaded
-compact $H=h$ exterior; object-specific values of $S$ and $\chi$ belong to the
-finite-core equation of state or collapse history.
+compact $H=h$ exterior; the object-specific value of $S$ belongs to the
+finite-core equation of state or collapse history, while the exponent $\chi$
+is fixed next.
 
-There is one restricted class for which the selector can be written with a
-single physical compactness input.  Take the volume-response attenuation
-$\chi=1$ and the principal exterior-sheet branch of
-$Q_0=Qe^{-Q/2}$.  Then
+The exponent $\chi$ is set by the readout channel, not by the polynomial
+coefficients: the phase-normalized $F_{\rm min}$ sector is stress-quiet on
+this branch, so $\chi$ carries no dependence on the $c_i$ or on
+$\omega_\Delta$, and it is the exponent of the deficit-readout filter in the
+volume variable $q_v=3h$. The external source amplitude is the ADM/Komar
+mass, a volume-extensive charge read through the filter $e^{-3h}=e^{-q_v}$,
+which gives $\chi=1$; the intensive clock/rod filter $e^{-h}=e^{-q_v/3}$,
+with exponent $1/3$, is not the gravitating channel. With $\chi=1$ and the
+principal exterior-sheet branch of $Q_0=Qe^{-Q/2}$, the selector takes a
+single physical compactness input:
 \[
 Q(C_0)=-2W_0\!\left(-\frac{C_0}{2}\right),\qquad
 q(C_0)=\frac{3Q(C_0)}{2},
@@ -1328,9 +1345,10 @@ S(C_0)=q(C_0)e^{q(C_0)},
 \]
 so the balance $\dot q=S(C_0)e^{-q}-q$ has the fixed point
 $q=q(C_0)$ and linear eigenvalue $-(1+q(C_0))<0$.  This closes the reduced
-branch-selection map for the stated volume-response class, while the
-arbitrary-EOS and full action-coefficient map for $\chi$ remain outside the
-present calculation.
+branch-selection map with a derived exponent: $\chi$ has no coefficient
+dependence to absorb, the volume channel fixes $\chi=1$, and the window is
+parameter-free.  An arbitrary-EOS, relativistic-TOV compactness map remains
+outside the present calculation.
 
 As an explicit equation-of-state realizing class, the Newtonian $n=1$
 polytrope
@@ -1492,12 +1510,12 @@ c_g=c.
 Fourth, the compact selector must put the finite core in the compact exterior
 window:
 \[
-Q_\star=\frac{2W(\chi S)}{3\chi},\qquad
+Q_\star=\frac{2W(S)}{3},\qquad
 1<Q_\star<2,
 \]
-equivalently
+with the derived feedback exponent $\chi=1$, equivalently
 \[
-\frac32 e^{3\chi/2}<S<3e^{3\chi},\qquad
+\frac32 e^{3/2}<S<3e^{3},\qquad
 \frac{r_s}{2}<r_c<r_s.
 \]
 If this condition fails, the finite-core object does not realize the compact
@@ -1546,11 +1564,13 @@ f_{\rm ISCO}=0.931\,f_{\rm ISCO}^{\rm GR}.
 \]
 The finite-core source selector fixes the branch load by
 \[
-Q_\star=\frac{2W(\chi S)}{3\chi},
+Q_\star=\frac{2W(S)}{3},
 \]
-with finite-core exterior applications requiring
-$1<Q_\star<2$, equivalently $r_s/2<r_c<r_s$.  In the restricted
-volume-response class this becomes the compactness band
+with the feedback exponent fixed to $\chi=1$ by the volume readout of the
+asymptotic mass.  Finite-core exterior applications require $1<Q_\star<2$,
+equivalently the parameter-free window $r_s/2<r_c<r_s$, realized on a
+horizonless, regular, geodesically complete cored geometry.  On the
+principal exterior-sheet branch this is the compactness band
 $e^{-1/2}<C_0<2/e$, with
 $S(C_0)=q(C_0)e^{q(C_0)}$ and
 $Q(C_0)=-2W_0(-C_0/2)$.  The $n=1$ polytropic realizing class

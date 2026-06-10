@@ -17,6 +17,7 @@ DEFAULT_REPORT = WORK_DIR / "intuition_audit_report.md"
 
 
 ARTICLE_CANDIDATES = [
+    ROOT / "artikle" / "CQG" / "RefG_EN.tex",
     ROOT / "artikle" / "CQG" / "CQG_EN.tex",
     ROOT / "artikle" / "article.tex",
     ROOT / "artikle" / "ARTICLE_EN.tex",
