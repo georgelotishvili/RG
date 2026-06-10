@@ -128,8 +128,8 @@ def derive_branch_selection_consolidated_status() -> dict[str, Any]:
 
     return {
         "STATUS": (
-            "PASS_CHI_FIXED_TO_ONE__PARAMETER_FREE_WINDOW__STATIC_GEOMETRY_"
-            "COMPLETE_AND_INTERIOR_LEDGER_CLOSED__EOS_DYNAMICS_ROTATION_OPEN"
+            "PASS_CHI_FIXED_TO_ONE__PARAMETER_FREE_WINDOW__"
+            "STATIC_GEOMETRY_AND_INTERIOR_LEDGER_DONE__EOS_DYNAMICS_ROTATION_OPEN"
             if (chi_derived and band_matches and geometry_closed and interior_ledger_closed)
             else "CHECK_BRANCH_SELECTION_CONSOLIDATED_STATUS"
         ),

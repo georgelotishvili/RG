@@ -53,6 +53,8 @@ def derive_branch_selection_export_gate() -> dict[str, Any]:
     p16c = derive_eos_to_window_map_gate()
     p16d = derive_finite_core_interior_matching_gate()
     p16f = derive_stated_compactness_class_source_map()
+    p16j = derive_geodesic_completeness_gate()
+    p16k = derive_interior_effective_source_ledger()
 
     required_passes = {
         "p16_source_coefficient_identification": p16["STATUS"].startswith(
@@ -117,12 +119,20 @@ def derive_branch_selection_export_gate() -> dict[str, Any]:
             "p16c": p16c["STATUS"],
             "p16d": p16d["STATUS"],
             "p16f": p16f["STATUS"],
+            "p16j": p16j["STATUS"],
+            "p16k": p16k["STATUS"],
         },
         "safe_article_language": (
             "General compact markers remain conditional.  A restricted "
             "stated-class statement is allowed for the volume-response "
             "principal-branch class with e^{-1/2}<C0<2/e, including the n=1 "
-            "polytropic realizing band recorded in p16f."
+            "polytropic realizing band recorded in p16f.  After p16g/p16h the "
+            "feedback exponent chi=1 is derived (not assumed), so the window is "
+            "parameter-free; after p16j/p16k the markers may be described as "
+            "markers of a geodesically complete, regular, horizonless cored "
+            "geometry with a bounded junction-continuous effective source.  "
+            "Dynamical selection, EOS-sourced interior, stability and rotation "
+            "stay conditional."
         ),
         "stated_class_language": (
             "For the volume-response compact class chi=1 on the principal "
@@ -134,9 +144,12 @@ def derive_branch_selection_export_gate() -> dict[str, Any]:
         ),
         "blocked_upgrade": [
             "replace the stated-class S(C0) map by arbitrary-EOS action functions",
-            "derive the feedback attenuation chi from the compact action coefficients",
+            "derive the action-level matter-inventory to ADM/Noether map "
+            "(p16g/p16h fixed chi=1 as a readout/ADM exponent; the chi-from-"
+            "polynomial-coefficients target is empty)",
             "upgrade the n=1 realizing class to relativistic TOV and observational EOS families",
-            "upgrade the C2 interior from static ansatz ledger to solved physical endpoint",
+            "upgrade the C2 interior from static ansatz ledger to a physical-EOS "
+            "sourced endpoint (geometry and source ledger are done in p16j/p16k)",
         ],
         "do_not_claim": [
             "do not claim arbitrary compact markers are dynamically branch-selected",
