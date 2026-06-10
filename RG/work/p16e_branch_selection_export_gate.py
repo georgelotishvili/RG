@@ -34,6 +34,12 @@ from p16d_finite_core_interior_matching import (
 from p16f_compactness_band_source_map import (
     derive_stated_compactness_class_source_map,
 )
+from p16j_geodesic_completeness_regular_object import (
+    derive_geodesic_completeness_gate,
+)
+from p16k_interior_effective_source_ledger import (
+    derive_interior_effective_source_ledger,
+)
 
 
 def _pass_status(label: str) -> str:
