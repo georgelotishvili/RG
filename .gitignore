@@ -13,9 +13,6 @@ RG/work/*.md
 artikle/*
 !artikle/article_ge.md
 !artikle/article_en.tex
-!artikle/CQG/
-artikle/CQG/*
-!artikle/CQG/RefG_EN.tex
 !artikle/GERG/
 artikle/GERG/*
 !artikle/GERG/RefG_EN.tex
