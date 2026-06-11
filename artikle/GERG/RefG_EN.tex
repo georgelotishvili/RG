@@ -35,17 +35,17 @@ three solid scalars, in the supersolid class of self-gravitating media. The
 scalar sector is a minimal low-order polynomial response basis in the standard
 medium invariants; the tensor sector lies in the constant-$G_4$ Horndeski
 class, so gravitational waves propagate at the speed of light identically. In
-the weak static regime the medium stress reproduces Newton's law through a
-refractive source--index chain, and the Solar branch coincides with general
-relativity through second post-Newtonian order: $\gamma=\beta=1$, vanishing
-preferred-frame source combination at the order displayed, and
-light-propagation coefficient $q_{2{\rm PN}}=7/4$. In the strong-field regime
+the weak static regime, the medium stress reproduces Newton's law through a
+refractive source--index chain. The Solar branch coincides with general
+relativity through the second post-Newtonian order, yielding $\gamma=\beta=1$,
+a vanishing preferred-frame source combination at the displayed order, and a
+light-propagation coefficient $q_{2{\rm PN}}=7/4$. In the strong-field regime,
 we show that the projected phase-pressure deficit of the same scalar sector
-sources the exponential (Papapetrou) exterior exactly, reproducing its Einstein
-tensor component by component without a propagating ghost --- a geometry
+sources the exponential (Papapetrou) exterior exactly. It reproduces the
+Einstein tensor component by component without a propagating ghost --- a geometry
 previously realized in general relativity only by a phantom scalar. A
-$C^2$-matched regular core removes the wormhole throat and renders the
-geometry horizonless and geodesically complete, and the deficit-feedback
+$C^2$-matched regular core removes the wormhole throat, rendering the
+geometry horizonless and geodesically complete. The deficit-feedback
 exponent is fixed by the volume readout of the asymptotic mass, leaving a
 parameter-free realizing window $r_s/2<r_c<r_s$. The resulting static branch
 is falsifiable: the shadow radius exceeds the Schwarzschild value by
@@ -59,12 +59,12 @@ ISCO frequency is $0.931$ of the general-relativity value at the same mass.
 General relativity (GR) has passed every weak-field and radiative test to
 date, from Solar-System post-Newtonian measurements to the direct detection of
 gravitational waves \cite{Will2014,Bertotti2003,Abbott2017GW}. The remaining
-frontier is the strong static field: horizon-scale images of M87* and
+frontier is the strong, static gravitational field. Horizon-scale images of M87* and
 Sagittarius~A* \cite{EHT2019M87,EHT2022SgrA} and the ringdown phase of binary
-mergers now probe the geometry within a few Schwarzschild radii, where the
-black-hole paradigm faces its sharpest alternatives --- horizonless
-ultracompact objects whose exterior mimics a black hole while their interior
-remains regular \cite{CardosoPani2019}. Quantitative tests of this kind
+mergers now probe the geometry within a few Schwarzschild radii. In this
+regime the black-hole paradigm faces its sharpest alternatives: horizonless
+ultracompact objects whose exteriors mimic a black hole while their interiors
+remain regular \cite{CardosoPani2019}. Quantitative tests of this kind
 require concrete theories: actions whose field equations select a definite
 exterior, complementing parametrized metric approaches
 \cite{CliftonEtAl2012}.
@@ -72,62 +72,65 @@ exterior, complementing parametrized metric approaches
 A systematic source of such theories is the effective field theory (EFT) of
 gravitating media. Depending on the symmetries imposed on a set of scalar
 fields, one obtains superfluids, solids, framids, or supersolids
-\cite{NicolisEtAl2015,CeloriaComelliPilo2017}; the same construction underlies
+\cite{NicolisEtAl2015,CeloriaComelliPilo2017}. The same construction underlies
 solid inflation \cite{Endlich2013} and the EFT of dark energy
 \cite{Cheung2008,Gubitosi2013,BelliniSawicki2014}. Refractive Gravity (RefG)
-is a theory of this class: one shift-symmetric phase scalar $\Phi$ and three
-solid scalars $\phi^A$ coupled minimally to the metric --- the field content
+is a theory within this class, comprising one shift-symmetric phase scalar
+$\Phi$ and three solid scalars $\phi^A$ coupled minimally to the metric --- the
+field content
 of a supersolid medium. The word ``medium'' is used throughout as the physical
 reading of this scalar sector, not as a microscopic substrate assumed in
 advance; matter couples only to the metric, and every statement below follows
 from the action, metric variation, and branch-specific field equations. The
 name of the theory refers to its weak-field mechanism: the static balance of
 the medium stress defines an effective refractive profile for slow matter and
-light, and Newton's law emerges as the weak spherical limit of this
+light. Newton's law then emerges as the weak spherical limit of this
 source--index chain.
 
-The strong-field side of the paper concerns a geometry with a long history:
-the exponential metric
-$ds^2=e^{-r_s/r}c^2dt^2-e^{r_s/r}(dr^2+r^2d\Omega^2)$, first written by
-Papapetrou \cite{Papapetrou1954}, later adopted as the basis of an
-alternative field-equations program whose status remained contested
-\cite{Yilmaz1958,Misner1999,AlleyYilmaz1995}, and recently re-examined within
+The strong-field analysis in this paper concerns a geometry with a long
+history: the exponential metric
+$ds^2=e^{-r_s/r}c^2dt^2-e^{r_s/r}(dr^2+r^2d\Omega^2)$. This metric was first
+written by Papapetrou \cite{Papapetrou1954}, later served as the basis of an
+alternative field-equation program whose status remained contested
+\cite{Yilmaz1958,Misner1999,AlleyYilmaz1995}, and was recently re-examined within
 GR as a traversable wormhole by Boonserm, Ngampitipan, Simpson, and Visser
 \cite{Boonserm2018}. The test-particle and wave phenomenology of this exterior
 is known: the photon sphere, critical impact parameter, ISCO radius, and
 Regge--Wheeler potentials were derived in \cite{Boonserm2018}, the shadow size
 and ISCO frequency shift in \cite{MakukovMychelkin2018}, and the confrontation
 with Event Horizon Telescope data in \cite{Vagnozzi2023}. None of the
-exterior geodesic numbers quoted in this paper is new; they are used with
+exterior geodesic numbers quoted in this paper are new; they are used with
 attribution and a one-line normalization table.
 
-What has remained unsettled is the source. Within GR the exponential exterior
-requires an effective stress whose radial null energy condition is violated at
-every radius, and its canonical realization is a massless ghost (phantom)
-scalar \cite{Boonserm2018}; the alternative realizations in the literature ---
-antiscalar backgrounds \cite{MakukovMychelkin2018}, modified field-equation
-programs \cite{Yilmaz1958} --- either involve a ghost degree of freedom or
-work outside the standard field-equation framework. A healthy field-theoretic source for this geometry,
-with a regular interior in place of the wormhole throat, has been missing.
+What has remained unsettled is the physical source of this geometry. Within
+GR, the exponential exterior requires an effective stress that violates the
+radial null energy condition at every radius, and its canonical realization is
+a massless ghost (phantom) scalar \cite{Boonserm2018}. Alternative realizations
+in the literature --- antiscalar backgrounds \cite{MakukovMychelkin2018} or
+modified field-equation programs \cite{Yilmaz1958} --- either involve a ghost
+degree of freedom or operate outside the standard field-equation framework. A
+healthy field-theoretic source for this geometry, with a regular interior in
+place of the wormhole throat, has been missing.
 
-In this paper we supply one, and we delimit exactly what it does and does not
-establish. Three results are shown. First, the projected phase-pressure
-deficit of the RefG scalar sector --- a single higher-sector operator with no
-propagating time-kinetic degree of freedom --- sources the exponential
-exterior exactly: its stress reproduces the Einstein tensor in all four
-diagonal components with one common profile function, a four-component
+In this paper we supply such a source, and we delimit exactly what it does
+and does not establish. We show three results. First, the projected
+phase-pressure deficit of the RefG scalar sector --- a single higher-sector
+operator with no propagating time-kinetic degree of freedom --- sources the
+exponential exterior exactly. Its stress reproduces the Einstein tensor in all
+four diagonal components with one common profile function --- a four-component
 functional match that no constant rescaling could imitate. Second, the
-finite-core load selector that decides between the weak (Solar) branch and the
-compact branch is closed into a parameter-free statement: the feedback
-exponent is fixed by the volume readout of the asymptotic mass, and the
-realizing window becomes $r_s/2<r_c<r_s$ in the core radius, equivalently a
+finite-core load selector, which decides between the weak (Solar) branch and
+the compact branch, closes into a parameter-free statement: the feedback
+exponent is fixed by the volume readout of the asymptotic mass, narrowing the
+realizing window to $r_s/2<r_c<r_s$ in the core radius --- equivalently, a
 compactness band with no adjustable constant. Third, a $C^2$-matched
-logarithmic core replaces the region containing the wormhole throat: the
-resulting geometry is horizonless, regular at the center, geodesically
-complete, and its effective source is bounded and continuous at the junction.
+logarithmic core replaces the region containing the wormhole throat. The
+resulting geometry is horizonless, regular at the center, and geodesically
+complete, with an effective source that is bounded and continuous at the
+junction.
 
-On this static branch the observational markers are inherited from the known
-exterior and are fixed: the shadow radius exceeds the Schwarzschild value by
+On this static branch, the observational markers are inherited from the known
+exterior and remain fixed: the shadow radius exceeds the Schwarzschild value by
 $4.6\%$ and the ISCO frequency is $0.931$ of the GR value at the same mass.
 In contrast to model families with a free closeness parameter, which can
 approach the Kerr limit arbitrarily closely \cite{CardosoPani2019}, these
@@ -137,24 +140,24 @@ $1\sigma$ level while allowing it at $2\sigma$, and next-generation
 horizon-scale instruments can falsify the branch outright. We also confront
 the generic structural risk of this object class: the cored geometry
 possesses the stable inner light ring required by the light-ring pairing
-theorem \cite{CunhaBertiHerdeiro2017}, and we compute its location and the
-depth of the trapping well, which turns out to be shallow across the whole
-realizing window; the nonlinear fate of trapped modes remains open, as it
-does for the entire horizonless class \cite{CunhaEtAl2023}.
+theorem \cite{CunhaBertiHerdeiro2017}. We compute its location and the depth
+of the trapping well, which proves to be shallow across the whole realizing
+window; the nonlinear fate of trapped modes remains open, as it does for the
+entire horizonless class \cite{CunhaEtAl2023}.
 
-The scope of the paper is fixed here once. All strong-field statements refer
-to the static, spherically symmetric branch; the rotating exterior, the
+The scope of the paper is fixed as follows. All strong-field statements
+refer to the static, spherically symmetric branch. The rotating exterior, the
 quasinormal-mode and echo spectrum, a matter equation of state for the core,
 and the collapse dynamics that would select the branch for a given
-astrophysical object are open problems, collected in the Discussion with the
-specific reason each one does not affect the static results. The weak-field
-sector of RefG coincides with GR through second post-Newtonian order; those
-results are consistency checks, and the only GR-discriminating predictions of
-the paper are the compact-branch markers.
+astrophysical object are open problems; they are collected in the Discussion,
+alongside the specific reason each one does not affect the static results. The
+weak-field sector of RefG coincides with GR through the second post-Newtonian
+order; those results are consistency checks, and the only GR-discriminating
+predictions of the paper are the compact-branch markers.
 
-The paper is organized as follows. Section~\ref{sec:theory} fixes the field
-content, the design requirements, the action, and the branch structure, and
-states the tensor-sector and cosmological-background properties.
+The paper is organized as follows. Section~\ref{sec:theory} introduces the
+field content, the design requirements, the action, and the branch structure,
+and states the tensor-sector and cosmological-background properties.
 Section~\ref{sec:weak} derives the refractive source--index chain, Newton's
 law, and the Solar post-Newtonian results. Section~\ref{sec:stability}
 presents the local stability analysis of the scalar-longitudinal sector.
@@ -172,7 +175,7 @@ diagnostics and the Solar-system derivations.
 \subsection{Design requirements}
 \label{sec:design}
 
-The theory is constructed to satisfy five requirements, each of which maps to
+The theory is constructed to satisfy five requirements, each mapping to
 a specific structural choice below:
 \begin{enumerate}
 \item exact recovery of Newton's law and of GR light bending in the weak
@@ -207,18 +210,19 @@ I_1 &= {\rm Tr}\,B,\qquad
 I_2=\frac{1}{2}\left[({\rm Tr}\,B)^2-{\rm Tr}(B^2)\right],\qquad
 I_3=\det B.
 \end{align*}
-On the homogeneous background $\Phi=t$, $\phi^A=x^A$ one has $Y=1$,
-$B^{AB}=\delta^{AB}$. In the convention $\mathcal L=M_*^4F$ the invariants
-are dimensionless, the coefficients below are medium response parameters, and
-the density scale is carried by $M_*^4$. For a static spherical solid
-configuration $B^{AB}$ has one radial and two tangential eigenvalues, denoted
-$\lambda_r$ and $\lambda_t$; these appear throughout the compact branch.
+On the homogeneous background $\Phi=t$, $\phi^A=x^A$, one has $Y=1$,
+$B^{AB}=\delta^{AB}$. In the convention $\mathcal L=M_*^4F$, the invariants
+are dimensionless, the coefficients introduced below are medium response
+parameters, and the density scale is carried by $M_*^4$. For a static,
+spherical solid configuration, $B^{AB}$ has one radial and two tangential
+eigenvalues, denoted $\lambda_r$ and $\lambda_t$; these eigenvalues appear
+throughout the analysis of the compact branch.
 
 \subsection{Action}
 \label{sec:action}
 
-The minimal low-order polynomial response basis in the invariants --- seven
-terms, with a single phase--solid mixing term --- is
+The minimal low-order polynomial response basis in these invariants --- seven
+terms, with a single phase--solid mixing term --- is given by
 \begin{align*}
 F_{\rm min}={}&
 c_Y Y+c_{Y2}Y^2+c_{I1}I_1+c_{I1sq}I_1^2+c_{I2}I_2+c_{I3}I_3
@@ -231,12 +235,12 @@ S=\int d^4x\sqrt{-g}\left[
 +\mathcal L_{\rm EFT}^{>{\rm min}}
 \right]+S_{\rm m}[g_{\mu\nu},\psi],
 \end{align*}
-where matter couples minimally to the metric alone,
+where matter couples minimally to the metric alone. The term
 $\mathcal L_{\rm EFT}^{>{\rm min}}$ denotes the higher EFT sector of the same
-medium (one operator of which becomes active on the compact branch,
-Section~\ref{sec:compact}), and $F_{\rm min}^{(H)}$ is the same polynomial
-evaluated on the phase-normalized strain invariants defined next. The active
-stress of the scalar sector is obtained by metric variation,
+medium (one operator of which becomes active on the compact branch, as
+detailed in Section~\ref{sec:compact}), and $F_{\rm min}^{(H)}$ is the same
+polynomial evaluated on the phase-normalized strain invariants defined below.
+The active stress of the scalar sector is obtained by metric variation,
 \[
 \Theta^{\rm RefG}_{\mu\nu}
 =2\frac{\partial\mathcal L_{\rm RefG}}{\partial g^{\mu\nu}}
@@ -246,23 +250,24 @@ G_{\mu\nu}=8\pi G\,\Theta^{\rm RefG}_{\mu\nu}
 \quad (T^{\rm m}_{\mu\nu}=0),
 \]
 with the overall sign appropriate to the $(+---)$ signature (for a canonical
-scalar it returns
-$\Theta_{\mu\nu}=\partial_\mu\phi\,\partial_\nu\phi-g_{\mu\nu}\mathcal L$),
-and is the source of every exterior considered below.
+scalar, this returns
+$\Theta_{\mu\nu}=\partial_\mu\phi\,\partial_\nu\phi-g_{\mu\nu}\mathcal L$).
+This stress is the source of every exterior considered below.
 
 \subsection{Branch frames and phase normalization}
 \label{sec:branches}
 
-Let $H$ be a phase-normalization variable and define the rescaled strain
+Let $H$ be a phase-normalization variable, and define the rescaled strain
 invariants
 \[
 \widehat Y=e^{-2H}Y,\qquad
 \widehat\lambda_r=e^{2H}\lambda_r,\qquad
 \widehat\lambda_t=e^{2H}\lambda_t,
 \]
-with hatted $\widehat I_n$ formed from $\widehat\lambda_r,\widehat\lambda_t$
-as $I_n$ are formed from $\lambda_r,\lambda_t$. No derivative of $H$ appears
-in $F_{\rm min}^{(H)}$, so $H$ is auxiliary and its variation gives the
+where the hatted invariants $\widehat I_n$ are formed from
+$\widehat\lambda_r,\widehat\lambda_t$ in the same manner that $I_n$ are formed
+from $\lambda_r,\lambda_t$. Because no derivative of $H$ appears in
+$F_{\rm min}^{(H)}$, the variable $H$ is auxiliary, and its variation gives the
 algebraic constraint
 \[
 S_H\equiv\frac{\partial F_{\rm min}^{(H)}}{\partial H}=0 .
@@ -272,8 +277,8 @@ is the unloaded normalization $H=0$, on which $F_{\rm min}^{(H)}$ reduces to
 the raw polynomial and the constraint $S_H=0$ is satisfied through second
 post-Newtonian order by the Solar strain itself (the expansion is collected
 in Appendix~\ref{app:solar}). The compact branch is the loaded normalization
-$H=h$, where $h$ is the metric phase of the compact exterior; there the
-hatted invariants equal one, and because the Solar coefficient family is
+$H=h$, where $h$ is the metric phase of the compact exterior. In this regime
+the hatted invariants equal one, and because the Solar coefficient family is
 tadpole-free at the unit state,
 \[
 F_{\rm min}(1,1,1)=0,\qquad
@@ -283,10 +288,10 @@ F_{\rm min}(1,1,1)=0,\qquad
 \]
 the polynomial sector carries zero stress and zero $\phi^A$ Euler residual on
 the compact exterior, and $S_H=0$ holds exactly. The motivation for this
-normalization is not aesthetic: Section~\ref{sec:obstruction} exhibits the
-explicit tensor obstruction that forbids the raw-invariant insertion on the
-compact branch, and the phase-normalized frame is the resolution of that
-obstruction. A global identification of $H$ with the solid determinant,
+normalization is structural rather than aesthetic:
+Section~\ref{sec:obstruction} exhibits an explicit tensor obstruction that
+forbids the insertion of raw invariants on the compact branch, and the
+phase-normalized frame resolves it. A global identification of $H$ with the solid determinant,
 $H=-\ln(\lambda_r\lambda_t^2)/6$, is rejected by the same algebra: it
 generates a nonzero weak-Solar stress at first order and admits no exact-GR
 second-order solution (Appendix~\ref{app:solar}).
@@ -299,8 +304,8 @@ Section~\ref{sec:compact}) is the independent deficit-source scalar.
 \subsection{Tensor sector}
 \label{sec:tensor}
 
-In the pure phase projection, with $Y=-2X$, the theory lies in the minimal
-Horndeski class \cite{Horndeski1974} with
+Under the pure phase projection, with $Y=-2X$, the theory lies in the minimal
+Horndeski class \cite{Horndeski1974}, yielding
 \[
 G_2=-2c_YX+4c_{Y2}X^2,\qquad G_3=0,\qquad
 G_4=\frac{M_{\rm Pl}^2}{2},\qquad G_5=0 .
@@ -310,23 +315,25 @@ identically, $\alpha_T=0$ and $c_g=c$
 \cite{Creminelli2017}, consistent with the binary-neutron-star bound
 $|c_g/c-1|\lesssim{\rm few}\times10^{-15}$
 \cite{Abbott2017GW,Abbott2017GRB}. The solid sector is static-silent for
-transverse-traceless perturbations on the homogeneous background used here:
-its quadratic TT corrections to both the kinetic and gradient terms vanish,
-so the local dispersion is $\omega^2=c^2k^2$ and the tensor mode is massless
-on the Minkowski branch. Solid and supersolid media can generate a tensor
-mass on cosmological backgrounds \cite{CeloriaComelliPilo2017}; for RefG the
-corresponding FLRW mass term is an open item of the cosmological extension,
-and does not affect the local statements of this paper.
+transverse-traceless (TT) perturbations on the homogeneous background used
+here: its quadratic TT corrections to both the kinetic and gradient terms
+vanish; consequently, the local dispersion relation is $\omega^2=c^2k^2$, and
+the tensor mode remains massless on the Minkowski branch. Although solid and
+supersolid media can generate a tensor mass on cosmological backgrounds
+\cite{CeloriaComelliPilo2017}, the corresponding FLRW mass term for RefG
+remains an open problem of the cosmological extension, and it does not affect
+the local statements of this paper.
 
 \subsection{Cosmological background}
 \label{sec:cosmo}
 
 The same scalar sector admits a spatially flat FLRW background on the
 zero-current branch of the phase equation, on which the medium contributes
-$\rho=-p=c_Y^2/(4c_{Y2})$, i.e.\ an exact $w=-1$ component at the background
+$\rho=-p=c_Y^2/(4c_{Y2})$ --- an exact $w=-1$ component at the background
 level. This is an algebraic statement about the background equations; the
 perturbation analysis, the early-time scaling bounds, and the confrontation
-with cosmological data belong to a separate study. We record it here because
+with cosmological data are deferred to a separate study. We record it here
+because
 a new gravitational EFT must at minimum admit a sensible cosmological
 background, and this one does.
 
@@ -335,14 +342,14 @@ background, and this one does.
 
 RefG sits at a definite point of the known theory space. Its field content
 and symmetries are those of a supersolid \cite{NicolisEtAl2015}; its
-self-gravitating dynamics parallels the media of
-\cite{CeloriaComelliPilo2017}; its phase projection is minimal Horndeski with
-constant $G_4$; the timelike gradient of $\Phi$ plays the role that the
-aether vector plays in Einstein-aether theory, with the difference that here
-it is the gradient of a shift-symmetric scalar and the solid sector supplies
-the spatial frame. The compact exterior connects the theory to the
-exponential-metric literature cited in the Introduction, with the source
-mechanism replaced: where GR realizations require a phantom scalar
+self-gravitating dynamics parallels those of the media of
+\cite{CeloriaComelliPilo2017}; and its phase projection is minimal Horndeski
+with a constant $G_4$. The timelike gradient of $\Phi$ plays a role analogous
+to that of the aether vector in Einstein-aether theory, with the distinction
+that here it is the gradient of a shift-symmetric scalar, while the solid
+sector supplies the spatial frame. The compact exterior connects the theory
+to the exponential-metric literature cited in the Introduction, but replaces
+the source mechanism: where GR realizations require a phantom scalar
 \cite{Boonserm2018}, RefG uses a projected deficit operator with no
 propagating time-kinetic degree of freedom (Section~\ref{sec:compact}).
 
@@ -353,14 +360,14 @@ propagating time-kinetic degree of freedom (Section~\ref{sec:compact}).
 \label{sec:newton}
 
 The weak static metric is written as $g_{tt}=\exp(-2h_{\rm eff})$. For slow
-test matter the corresponding source index is $n_{\rm eff}=\exp(h_{\rm eff})$,
+test matter, the corresponding source index is $n_{\rm eff}=\exp(h_{\rm eff})$,
 the effective potential per unit mass is $V_{\rm eff}/m=-c^2h_{\rm eff}$, and
-the radial acceleration is
+the radial acceleration is given by
 \[
 a_r=c^2\frac{d\ln n_{\rm eff}}{dr}=c^2h_{\rm eff}' .
 \]
 The profile $h_{\rm eff}$ is sourced by the active medium stress. For a
-static spherical configuration with anisotropic pressure contrast
+static, spherical configuration with anisotropic pressure contrast
 $\Delta_p=p_{\rm tan}-p_{\rm rad}$, the Bianchi/Tolman--Oppenheimer--Volkoff
 balance of that stress reads
 \[
@@ -373,19 +380,19 @@ deficit component of the same source is quadratic in the refractive gradient,
 \Pi_\Delta=\frac{e^{-2h_{\rm eff}}(h_{\rm eff}')^2}{8\pi G},
 \]
 and is the weak-field shadow of the operator that will carry the compact
-branch; in the local spherical weak limit it is subleading, $\Delta_p$ is
-absent at leading order, and the exterior source-free equation is
+branch. In the local spherical weak limit this term is subleading, $\Delta_p$
+is absent at leading order, and the exterior source-free equation is
 \[
 \left(r^2h_{\rm eff}'\right)'=0 .
 \]
-Gauss normalization of the localized source charge fixes
-$-r^2h_{\rm eff}'=GM/c^2$, hence
+Imposing Gauss normalization on the localized source charge fixes
+$-r^2h_{\rm eff}'=GM/c^2$, yielding
 \[
 h_{\rm eff}(r)=\frac{GM}{c^2r},\qquad
 \Phi_N=-\frac{GM}{r},\qquad
 a_r=-\frac{GM}{r^2}.
 \]
-Newton's law is the weak spherical limit of the chain
+Consequently, Newton's law emerges as the weak spherical limit of the chain
 $\Theta^{\rm RefG}_{\mu\nu}\to h_{\rm eff}\to n_{\rm eff}\to a_r$.
 
 \subsection{Solar post-Newtonian branch}
@@ -397,23 +404,23 @@ with $u=GM/(c^2R)$,
 g_{tt}^{A}&=1-2u+2(\beta_A-1)u^2+\cdots,\\
 g_{RR}^{A}&=-(1+2\gamma u+a_2u^2+\cdots),
 \end{align*}
-related to the standard isotropic PPN metric by
-$\beta_{\rm PPN}=\beta_A+\gamma-1$. The first-order field equations give
-$\gamma=1$; at second order the medium-strain solution fixes $a_2=4$
+which relates to the standard isotropic PPN metric via
+$\beta_{\rm PPN}=\beta_A+\gamma-1$. Solving the first-order field equations
+yields $\gamma=1$; at second order the medium-strain solution fixes $a_2=4$
 (Appendix~\ref{app:solar}), and the same branch then gives $\beta_A=1$, hence
 \[
 \gamma=1,\qquad \beta_{\rm PPN}=1,\qquad b_2=\frac{a_2-\gamma^2}{2}=\frac32 .
 \]
-In the static scalar reduction the preferred-frame source combination is
+In the static scalar reduction, the preferred-frame source combination is
 \[
 K_{\rm pf}
 =-c_{I1}-6c_{I1sq}-2c_{I2}-c_{I3}+c_Y+2c_{Y2}+2c_{YI1},
 \]
-and on the Solar-compatible coefficient family $K_{\rm pf}=0$. This is the
-local coefficient condition used here for
-$\alpha_1=\alpha_2=\alpha_3=0$; the full vector-sector PPN analysis, against
-the bounds $|\alpha_1|\lesssim10^{-4}$, $|\alpha_2|\lesssim10^{-7}$
-\cite{Will2014,WillNordtvedt1972,Kostelecky2011}, belongs to the complete PPN
+and it vanishes, $K_{\rm pf}=0$, on the Solar-compatible coefficient family.
+This is the local coefficient condition used here for
+$\alpha_1=\alpha_2=\alpha_3=0$. A full vector-sector PPN analysis against the
+bounds $|\alpha_1|\lesssim10^{-4}$, $|\alpha_2|\lesssim10^{-7}$
+\cite{Will2014,WillNordtvedt1972,Kostelecky2011} belongs to the complete PPN
 extension and is the standard follow-up for any theory with a solid sector.
 
 The static light index $n_{\rm light}=\sqrt{A/B}$ expands as
@@ -421,30 +428,33 @@ The static light index $n_{\rm light}=\sqrt{A/B}$ expands as
 n_{\rm light}=1+2U+\frac74U^2+O(U^3)
 \qquad(\gamma=1,\ \beta=1,\ b_2=\tfrac32),
 \]
-so the second-order optical coefficient is $q_{2{\rm PN}}=7/4$. The values
+so the second-order optical coefficient is $q_{2{\rm PN}}=7/4$. These values
 $\gamma=\beta=1$, $b_2=3/2$, and
 $q_{2{\rm PN}}=7/4$ coincide with general relativity through second
 post-Newtonian order. The weak-field sector of RefG is therefore a
-consistency check --- Cassini, $|\gamma-1|=(2.1\pm2.3)\times10^{-5}$
-\cite{Bertotti2003}, and lunar laser ranging constrain it exactly as they
-constrain GR --- and not a discriminating test; the fully coupled
-self-consistent exterior ODE and a raw Solar-System likelihood remain
-separate steps. The Solar branch imposes the second-order relation
-$c_{YI1}=2c_{Y2}$, whose kinetic consequence is handled in
-Section~\ref{sec:stability}; the radial medium deformation that absorbs the
+consistency check --- measurements from Cassini,
+$|\gamma-1|=(2.1\pm2.3)\times10^{-5}$ \cite{Bertotti2003}, and lunar laser
+ranging constrain it exactly as they do GR --- rather than a discriminating
+test; the fully coupled self-consistent exterior ODE and a raw Solar-System
+likelihood remain separate steps. The Solar branch imposes the second-order
+relation $c_{YI1}=2c_{Y2}$, whose kinetic consequence is handled in
+Section~\ref{sec:stability}. The radial medium deformation that absorbs the
 second-order angular residual is derived in Appendix~\ref{app:solar}.
 
-Two scale statements close the weak field. The technical background
+Two scaling statements close the weak-field analysis. First, the technical
+background
 completion contributes $\Delta_{\rm Solar}\sim\Lambda R_\odot^2\sim
-5.3\times10^{-35}$ to the Solar metric, leaving the post-Newtonian matching
-unchanged. The projected deficit operator of the compact branch is also
-directly small here: relative to the Newtonian curvature scale its local
+5.3\times10^{-35}$ to the Solar metric, which leaves the post-Newtonian
+matching unchanged. Second, the projected deficit operator of the compact
+branch is suppressed in this regime: relative to the Newtonian curvature
+scale, its local
 source ratio is $Ce^{-C}/4\approx1.06\times10^{-6}$ at the Solar surface
-($C=r_s/R_\odot$), so the diffuse medium stress dominates the weak-Solar
-matching and the two branches do not contaminate each other.
+($C=r_s/R_\odot$). Consequently, the diffuse medium stress dominates the
+weak-Solar matching, and the two branches do not contaminate each other.
 
-The total localized energy fixes both normalizations used above: the same
-$E_0$ is read as the Noether inertial mass and as the far-zone source charge,
+Finally, the total localized energy fixes both normalizations used above:
+the same $E_0$ serves as both the Noether inertial mass and the far-zone
+source charge,
 $M_{\rm inert}=M_{\rm source}=E_0/c^2$, in the standard minimally coupled
 rest-energy normalization.
 
@@ -458,11 +468,12 @@ $K_{\Phi\Phi}=4c_{Y2}>0$. The physical Solar point therefore sits on a
 kinetic degeneracy of $F_{\rm min}$ that must be lifted by the medium's
 dynamic response. Earlier single-constraint completions overconstrain the
 phase lag and the longitudinal response and pin the scalar speeds to a
-defective luminal double root; that diagnostic, together with the bare
+defective luminal double root. That diagnostic, together with the bare
 no-ghost window of the minimal polynomial, is collected in
 Appendix~\ref{app:stability}.
 
-The lift used here is a static-silent dynamic operator. With
+The mechanism used to lift this degeneracy is a static-silent dynamic
+operator. With
 $U^A=u^\mu\partial_\mu\phi^A$, $Q^A=-g^{\mu\nu}\partial_\mu\phi^A
 \partial_\nu\Phi$, and $W^A=U^A+Q^A$ (locally $W_L=\dot\pi_L$,
 $Q_L=\nabla_L\chi$), the operator
@@ -471,14 +482,14 @@ $Q_L=\nabla_L\chi$), the operator
 =\epsilon_B W_A W^A+2\epsilon_M W_A Q^A
 \]
 vanishes for any static source, so the Solar exterior of
-Section~\ref{sec:weak} is untouched, while in the quadratic action it shifts
-only the longitudinal kinetic entry and the mixing entry of the
+Section~\ref{sec:weak} is untouched. In the quadratic action, however, it
+shifts only the longitudinal kinetic entry and the mixing entry of the
 scalar-longitudinal principal matrix,
 \[
 B_{\rm new}=c_Z+\epsilon_B,\qquad
 M_{\rm new}=8c_{Y2}-4\lambda_6-c_Z+\epsilon_M .
 \]
-On the representative Solar slice $c_{Y2}=1$, $\lambda_6=1/4$, $c_Z=1$ the
+On the representative Solar slice $c_{Y2}=1$, $\lambda_6=1/4$, $c_Z=1$, the
 completed determinant is
 \[
 \det M_{\rm rep}(s)
@@ -490,18 +501,19 @@ and real, positive, strictly subluminal roots exist in the open window
 26+\epsilon_B+10\sqrt{1+\epsilon_B}<(6+\epsilon_M)^2<36+6\epsilon_B,
 \]
 of width $5(\sqrt{1+\epsilon_B}-1)^2$, finite for every $\epsilon_B>0$. At
-the representative point $\epsilon_B=1$, $\epsilon_M=\sqrt{83/2}-6$ the roots
+the representative point $\epsilon_B=1$, $\epsilon_M=\sqrt{83/2}-6$, the roots
 are
 \[
 s_1=\frac{29-\sqrt{41}}{40}\simeq0.5649,\qquad
 s_2=\frac{29+\sqrt{41}}{40}\simeq0.8851,
 \]
-both subluminal (Figure~\ref{fig:stability-window}). The falsification object
-is the window itself, not the representative point: a ghost, a complex root,
-or a superluminal scalar-longitudinal root rejects the parameter branch. The
-statements of this section are local flat-background principal-symbol
-results; curved-background hyperbolicity and the constraint-closure analysis
-are open problems listed in Section~\ref{sec:discussion}.
+both of which are subluminal (Figure~\ref{fig:stability-window}). The
+falsification object is the window itself, not the representative point: a
+ghost, a complex root, or a superluminal scalar-longitudinal root rejects the
+parameter branch. The statements of this section are local flat-background
+principal-symbol results; establishing curved-background hyperbolicity and
+completing the constraint-closure analysis are open problems, listed in
+Section~\ref{sec:discussion}.
 
 \begin{figure}[t]
 \centering
@@ -521,8 +533,8 @@ $s_1\simeq0.565$ and $s_2\simeq0.885$.}
 \label{sec:exterior}
 
 The compact branch uses the reduced exterior static phase equation
-$(r^2\phi')'=0$ with flat normalization at infinity, $\phi=-r_s/r$, and the
-biconformal map $h=-\phi/2$, giving the exterior
+$(r^2\phi')'=0$ with a flat normalization at infinity, $\phi=-r_s/r$, and the
+biconformal map $h=-\phi/2$. Together these give the exterior
 \[
 ds^2=e^{-r_s/r}c^2dt^2
 -e^{r_s/r}\left(dr^2+r^2d\Omega^2\right),
@@ -532,11 +544,11 @@ This is the exponential (Papapetrou) metric
 \cite{Papapetrou1954,Yilmaz1958,Boonserm2018}. Because $AB=1$, the curved
 static harmonic current reduces exactly to $-r^2h'$, so the reduced phase
 equation is the full curved equation on this branch. For comparison with the
-literature, which uses $m=GM/c^2$ and the form $e^{-2m/r}$, note
-$r_s=2m$ throughout. The metric has no finite-radius Killing horizon; it
-matches Schwarzschild through first post-Newtonian order and, in the time
-component, through $O(m^2/r^2)$, departing at second order in the spatial
-sector. Its Einstein tensor has the mixed diagonal profile
+literature, which uses $m=GM/c^2$ and the form $e^{-2m/r}$, note that
+$r_s=2m$ throughout. The metric has no finite-radius Killing horizon. It
+matches the Schwarzschild metric through the first post-Newtonian order and,
+in the time component, through $O(m^2/r^2)$, departing at second order in the
+spatial sector. Its Einstein tensor has the mixed diagonal profile
 \[
 G^t{}_t=-D,\qquad
 G^r{}_r=+D,\qquad
@@ -544,24 +556,24 @@ G^\theta{}_\theta=G^\phi{}_\phi=-D,
 \qquad
 D=\frac{r_s^2\,e^{-r_s/r}}{4r^4}.
 \]
-Any source of this exterior must reproduce this specific four-component
-pattern: opposite signs in the radial and tangential directions, with one
-common profile function $D(r)$. In GR the canonical realization is a
-massless ghost scalar, and the radial null energy condition is violated at
-every radius \cite{Boonserm2018}. The remainder of this section shows how
-the RefG scalar sector supplies this source without a propagating ghost,
-which finite-core window realizes it, and how the wormhole throat at
-$r=r_s/2$ \cite{Boonserm2018} is excised by a regular core.
+Any source of this exterior must reproduce this four-component pattern:
+opposite signs in the radial and tangential directions, with a single common
+profile function $D(r)$. In GR, the canonical realization is a massless ghost
+scalar, and the radial null energy condition is violated at every radius
+\cite{Boonserm2018}. The remainder of this section shows how the RefG scalar
+sector supplies this source without a propagating ghost, identifies the
+finite-core window that realizes it, and shows how a regular core excises the
+wormhole throat at $r=r_s/2$ \cite{Boonserm2018}.
 
 \subsection{The raw-invariant obstruction}
 \label{sec:obstruction}
 
 We first record why the polynomial sector itself cannot source this exterior
 --- the obstruction that motivates the phase-normalized frame of
-Section~\ref{sec:branches}. On the compact identity medium configuration the
-raw invariants are $Y=w$, $\lambda_r=\lambda_t=1/w$ with $w=e^{r_s/r}$.
-Inserting them into $F_{\rm min}$ on the physical Solar coefficient slice
-gives the stress
+Section~\ref{sec:branches}. Evaluating the raw invariants on the compact
+identity medium configuration gives $Y=w$, $\lambda_r=\lambda_t=1/w$ with
+$w=e^{r_s/r}$. Inserting these into $F_{\rm min}$ on the physical Solar
+coefficient slice produces the stress
 \[
 \frac{\Theta_F^t{}_t}{M_*^4c_{Y2}}
 =\frac{(w-1)(3w^4-5w^3+w^2-23w+16)}{w^3},
@@ -569,13 +581,13 @@ gives the stress
 \frac{\Theta_F^r{}_r}{M_*^4c_{Y2}}
 =-\frac{(w-1)(w^4-7w^3-5w^2+3w+16)}{w^3},
 \]
-with the tangential components equal to the radial one. For example
-$\Theta_F^r{}_r/(M_*^4c_{Y2})=19/4$ at $w=2$. This tensor cannot be absorbed
-by any constant retuning of the source: the raw radial and tangential
-stresses are equal, while the exponential geometry requires them to have
-opposite signs. The raw-invariant insertion is therefore excluded as a
-compact source, and the compact branch must be --- and is --- formulated on
-the phase-normalized action, where the same polynomial is exactly quiet:
+with the tangential components equal to the radial one. For example,
+$\Theta_F^r{}_r/(M_*^4c_{Y2})=19/4$ at $w=2$. No constant retuning of the
+source can absorb this tensor: the raw radial and tangential stresses are
+equal, while the exponential geometry requires them to have opposite signs.
+The insertion of raw invariants is therefore excluded as a compact source,
+and the compact branch must instead be --- and is --- formulated on the
+phase-normalized action, where the same polynomial is exactly quiet:
 $\widehat Y=\widehat\lambda_r=\widehat\lambda_t=1$, so
 $\widehat F_{\rm min}=0$, $\widehat\Theta_F^\mu{}_\nu=0$, and the $\phi^A$
 Euler residual vanishes. The obstruction thus fixes the role of the phase
@@ -587,8 +599,8 @@ unchanged.
 \subsection{The projected deficit source: realizability}
 \label{sec:realizability}
 
-The active compact source is one operator of the higher EFT sector, written
-with an independent deficit scalar $H_\Delta$:
+The active compact source is a single operator of the higher EFT sector,
+written with an independent deficit scalar $H_\Delta$:
 \[
 u_\mu=\frac{\partial_\mu\Phi}{\sqrt Y},\qquad
 \gamma^{\mu\nu}=u^\mu u^\nu-g^{\mu\nu},\qquad
@@ -597,12 +609,12 @@ Z_\Delta^\perp=
 \mathcal L_\Delta^\perp=
 \omega_\Delta\,\frac{Z_\Delta^\perp}{8\pi G},
 \]
-with $\omega_\Delta$ a dimensionless coefficient set to $1$ by the branch
-normalization below; on the weak-Solar branch this channel is unloaded, and
-its local source ratio at the Solar surface is $\sim10^{-6}$
+where $\omega_\Delta$ is a dimensionless coefficient set to $1$ by the
+branch normalization below. On the weak-Solar branch this channel is
+unloaded, and its local source ratio at the Solar surface is $\sim10^{-6}$
 (Section~\ref{sec:solar}), so the branches do not mix. On the compact
-exterior $H_\Delta=h=r_s/(2r)$ solves its own Euler equation,
-$(r^2H_\Delta')'=0$, with zero residual, and the operator's stress is
+exterior, $H_\Delta=h=r_s/(2r)$ solves its own Euler equation,
+$(r^2H_\Delta')'=0$, with zero residual. The operator's stress is
 \[
 \Theta^t{}_t=-\Delta_P,\qquad
 \Theta^r{}_r=+\Delta_P,\qquad
@@ -611,21 +623,21 @@ $(r^2H_\Delta')'=0$, with zero residual, and the operator's stress is
 \Delta_P=\frac{Z_\Delta^\perp}{8\pi G}
 =\frac{r_s^2\,e^{-r_s/r}}{32\pi G\,r^4}.
 \]
-Comparing with the Einstein tensor above, $D=8\pi G\,\Delta_P$ and
+Comparing with the Einstein tensor above, we find $D=8\pi G\,\Delta_P$ and
 \[
 G^\mu{}_\nu-8\pi G\,\Theta^\mu{}_\nu=0
 \]
 in all four diagonal components. This is the central result of the section:
-the match is a four-component
-functional identity with one common profile, holding at every radius. A
-single fitted constant could rescale one amplitude; it could not produce the
-correct relative signs and the common radial profile in all four components
-simultaneously. The only quantity fixed by hand is the overall normalization
+the match is a four-component functional identity with one common profile,
+holding at every radius. While a single fitted constant could rescale an
+overall amplitude, it could not simultaneously produce the correct relative
+signs and the common radial profile in all four components. The only quantity
+fixed by hand is the overall normalization
 $\omega_\Delta=1$.
 
-In effective-fluid language the active source has
-$\rho_a=-\Delta_P$, $p_{r,a}=-\Delta_P$, $p_{t,a}=+\Delta_P$, so the radial
-null energy condition is violated at every exterior radius,
+Translated into effective-fluid language, the active source has
+$\rho_a=-\Delta_P$, $p_{r,a}=-\Delta_P$, $p_{t,a}=+\Delta_P$. As a result,
+the radial null energy condition is violated at every exterior radius,
 $\rho_a+p_{r,a}=-2\Delta_P<0$, while the transverse one is saturated. This
 reproduces, as it must, the source pattern that
 Ref.~\cite{Boonserm2018} proved unavoidable for this geometry; the physical
@@ -633,10 +645,10 @@ reading in RefG is a phase-pressure deficit of the medium, with the largest
 exterior deficit at the matching surface.
 
 The difference from the phantom realization is structural. A ghost scalar
-carries a propagating degree of freedom with
-wrong-sign time kinetic energy. The projector $\gamma^{\mu\nu}$ removes the
-time-kinetic direction of $H_\Delta$ on the static branch: the operator
-contributes no $\dot H_\Delta^2$ term, its second variation is a positive
+carries a propagating degree of freedom with wrong-sign time kinetic energy.
+Here, the projector $\gamma^{\mu\nu}$ removes the time-kinetic direction of
+$H_\Delta$ on the static branch: the operator contributes no
+$\dot H_\Delta^2$ term, and its second variation is a positive
 static stiffness,
 \[
 \delta^2\mathcal L_\Delta^\perp
@@ -647,15 +659,15 @@ static stiffness,
 +\frac{(\delta h_\phi)^2}{r^2\sin^2\theta}
 \right]>0,
 \]
-and $H_\Delta$ enters the static problem as an elliptic constraint field, not
-as a phantom wave. The propagating scalar spectrum of the theory is carried
-by the $F_{\rm min}$ sector analyzed in Section~\ref{sec:stability}. The
-null-energy violation of the effective source is thus achieved without a
-wrong-sign kinetic term in any propagating sector --- which is what a
-healthy realization of this geometry requires. The full perturbation
-spectrum around the compact background, including the coupled
-$\{g,\Phi,\phi^A,H_\Delta\}$ system, remains the open dynamical problem
-recorded in Section~\ref{sec:discussion}.
+and $H_\Delta$ enters the static problem as an elliptic constraint field
+rather than as a phantom wave. The propagating scalar spectrum of the theory
+is carried by the $F_{\rm min}$ sector analyzed in
+Section~\ref{sec:stability}. The null-energy violation of the effective
+source is thus achieved without a wrong-sign kinetic term in any propagating
+sector --- which is what a healthy realization of this geometry requires.
+Determining the full perturbation spectrum around the compact background,
+including the coupled $\{g,\Phi,\phi^A,H_\Delta\}$ system, remains an open
+dynamical problem, recorded in Section~\ref{sec:discussion}.
 
 \subsection{Branch selector and the parameter-free window}
 \label{sec:selector}
@@ -668,17 +680,19 @@ the compact surface lapse,
 \[
 e^{-q_v/3}=e^{-Q/2}\quad\Longrightarrow\quad q_v=\frac{3Q}{2},
 \]
-and the equation $Q_0=Qe^{-Q/2}$ alone has two Lambert branches
-$Q_\pm=-2W_{0,-1}(-Q_0/2)$, so $Q_0$ by itself does not select the branch.
-The selection is made by the source amplitude through the deficit feedback
+Because the equation $Q_0=Qe^{-Q/2}$ alone has two Lambert branches,
+$Q_\pm=-2W_{0,-1}(-Q_0/2)$, the input $Q_0$ by itself does not select the
+branch. Instead, the selection is made by the source amplitude through the
+deficit feedback
 \[
 q_v=S\,e^{-\chi q_v},\qquad
 q_\star=\frac{W(\chi S)}{\chi},\qquad
 \left.\frac{d}{dq}\left(Se^{-\chi q}-q\right)\right|_{q_\star}
 =-\chi q_\star-1<0,
 \]
-a stable fixed point for any $S,\chi>0$; since $S(Q)=\tfrac{3Q}{2}e^{3\chi
-Q/2}$ is monotone, the amplitude selects a unique load.
+This yields a stable fixed point for any $S,\chi>0$. Since
+$S(Q)=\tfrac{3Q}{2}e^{3\chi Q/2}$ is monotone, the amplitude selects a unique
+load.
 
 The exponent $\chi$ is not an adjustable parameter, for two reasons that we
 state as separate facts. First, it cannot depend on the polynomial
@@ -695,16 +709,16 @@ e^{-3h}=e^{-q_v}\quad\Longrightarrow\quad\chi=1,
 whereas the intensive clock/rod filter $e^{-h}=e^{-q_v/3}$ (exponent $1/3$)
 measures a single rate, not an integrated mass, and is not the gravitating
 channel. We classify the two facts: the coefficient-independence of
-$\chi$ is an action-level statement, while the volume-readout identification
-is a physical normalization argument --- the unique exponent consistent with
-the extensive (Komar) character of the gravitating charge --- and not an
-action-level derivation. With $\chi=1$ the selector is
+$\chi$ is an action-level statement, whereas the volume-readout
+identification is a physical normalization argument --- the unique exponent
+consistent with the extensive (Komar) character of the gravitating charge ---
+and not an action-level derivation. With $\chi=1$ the selector becomes
 \[
 Q_\star=\frac{2W(S)}{3},
 \]
-and the requirement that the throat radius $r_s/2$ lie inside the core while
-the photon sphere lies outside, $1<Q_\star<2$, becomes the parameter-free
-window
+Enforcing the requirement that the throat radius $r_s/2$ lie inside the
+core while the photon sphere lies outside, $1<Q_\star<2$, yields the
+parameter-free window
 \[
 \frac32e^{3/2}<S<3e^{3},
 \qquad
@@ -717,22 +731,23 @@ $Q(C_0)=-2W_0(-C_0/2)$. As an explicit realizing class, the Newtonian $n=1$
 polytrope $p=K\rho_c^2$ has $C_0=4K\rho_c/c^2$ and enters the window for
 $e^{-1/2}<4K\rho_c/c^2<2/e$; a relativistic equation-of-state map is the
 natural refinement. The object-specific value of $S$ belongs to the core
-equation of state or collapse history --- the selector says which loads
+equation of state or collapse history. The selector says which loads
 realize the branch, not which astrophysical objects reach them; that
 dynamical question is taken up in Section~\ref{sec:discussion}.
 
 \subsection{The regular core: completeness of the geometry}
 \label{sec:core}
 
-The exterior alone is geodesically incomplete, and contains the wormhole
-throat at $r=r_s/2$ \cite{Boonserm2018}. Both features are removed by a
+Considered in isolation, the exterior is geodesically incomplete and
+contains the wormhole throat at $r=r_s/2$ \cite{Boonserm2018}. Both features
+are removed by a
 $C^2$-matched core. With $x=r/r_c$ and $q=r_s/r_c\in(1,2)$, the logarithmic
 core profiles
 \begin{align*}
 \log A_-&=q\left(\tfrac{35}{8}x^2-\tfrac{21}{4}x^4+\tfrac{15}{8}x^6\right),\\
 \log B_-&=-q+q\left(-\tfrac{11}{8}x^2+\tfrac{9}{4}x^4-\tfrac{7}{8}x^6\right)
 \end{align*}
-match the exterior $\log A_+=q/x$, $\log B_+=-q/x$ at $x=1$ through value,
+match the exterior $\log A_+=q/x$ and $\log B_+=-q/x$ at $x=1$ in value,
 slope, and curvature, so the Israel junction stress vanishes identically.
 The combination obeys the closed identity
 \[
@@ -747,7 +762,7 @@ $R(0)=0$, with finite curvature
 $R_0=\dfrac{177\,q}{4r_c^2}$,
 $K_0=\dfrac{15063\,q^2}{16r_c^4}$ (Ricci and Kretschmann scalars).
 \item \emph{Finite depth:} the proper radial distance from the matching
-surface to the center is finite (e.g.\ $1.74\,r_c$ at $q=3/2$), whereas the
+surface to the center is finite (e.g., $1.74\,r_c$ at $q=3/2$), whereas the
 bare exterior continued to $r=0$ has infinite proper depth --- the infinite
 throat is an artifact removed by the core.
 \item \emph{Geodesic completeness:} a radial null geodesic reaches the
@@ -773,15 +788,16 @@ the open interior problem.
 
 The test-particle structure of the exponential exterior is known
 \cite{Boonserm2018,MakukovMychelkin2018}, and we quote it in the present
-normalization ($r_s=2m$). The photon sphere sits at $r_{\rm ph}=r_s$, the
-critical impact parameter is
+normalization ($r_s=2m$). The photon sphere is located at $r_{\rm ph}=r_s$,
+and the critical impact parameter is
 \[
 b_c=e\,r_s
 \qquad\Longrightarrow\qquad
 \frac{b_c}{b_c^{\rm GR}}=\frac{2e}{3\sqrt3}=1.0463,
 \]
-a $+4.63\%$ shadow-scale excess over Schwarzschild at the same mass. Massive
-circular orbits give the ISCO from $r^2-3r_sr+r_s^2=0$,
+a $+4.63\%$ shadow-scale excess over a Schwarzschild black hole of the same
+mass. For massive particles, circular orbits give the ISCO from the condition
+$r^2-3r_sr+r_s^2=0$,
 \[
 r_{\rm ISCO}=\frac{3+\sqrt5}{2}\,r_s,
 \qquad
@@ -793,19 +809,19 @@ a $6.9\%$ reduction of the ISCO frequency, in agreement with
 \cite{MakukovMychelkin2018}. (The exterior root can also be written
 $r_{\rm ISCO}=\varphi^{2}r_s$, with $\varphi$ the golden ratio.) What the present
 construction adds to these known numbers is their setting: they are now
-markers of a geodesically complete regular geometry --- its exterior realized
+markers of a geodesically complete, regular geometry --- its exterior realized
 by the projected EFT source, its core carrying a bounded, junction-continuous
 effective source not yet derived from an equation of state --- in a
 parameter-free compactness window.
 
 The light-ring structure of the cored object follows from the optical
 potential $V=B/(Ar^2)$ computed through the matched geometry. The exterior
-maximum at $r=r_s$ is the unstable light ring; $V$ is continuous and $C^1$
-at the junction with $V'(r_c)>0$ for $q>1$, and rises as the centrifugal
-wall $e^{-q}/r^2$ at the regular center; consequently $V$ has exactly one
-interior minimum --- a stable light ring inside the core --- realizing the
-light-ring pairing required for horizonless ultracompact objects
-\cite{CunhaBertiHerdeiro2017}. Its location and the depth of the trapping
+maximum at $r=r_s$ is the unstable light ring. The potential $V$ is
+continuous and $C^1$ at the junction, with $V'(r_c)>0$ for $q>1$, and rises
+as the centrifugal wall $e^{-q}/r^2$ at the regular center. Consequently,
+$V$ has exactly one interior minimum --- a stable light ring inside the core
+--- realizing the light-ring pairing required for horizonless ultracompact
+objects \cite{CunhaBertiHerdeiro2017}. Its location and the depth of the trapping
 well are explicit: at $q=3/2$ the stable ring sits at $r\simeq0.87\,r_c$
 ($0.58\,r_s$), and the well-depth ratio between the unstable maximum and the
 stable minimum is
@@ -839,8 +855,8 @@ $f_{\rm ISCO}/f_{\rm ISCO}^{\rm GR}=0.931$.}
 \subsection{Confrontation with observations}
 \label{sec:observations}
 
-Table~\ref{tab:observations} collects the confrontation of both branches
-with data. The weak-field rows are GR-degenerate by construction; the
+Table~\ref{tab:observations} summarizes the confrontation of both branches
+with the data. The weak-field rows are GR-degenerate by construction; the
 compact-branch rows are the discriminating content of the theory.
 
 \begin{table}[t]
@@ -873,13 +889,13 @@ predictions of the static branch for objects in the realizing window.}
 \label{tab:observations}
 \end{table}
 
-The shadow prediction deserves its precise statement. The Event Horizon
+The shadow prediction deserves a precise statement. The Event Horizon
 Telescope measures the fractional deviation of the Sgr~A* shadow diameter
 from Schwarzschild as $\delta=-0.04^{+0.09}_{-0.10}$ (Keck mass-to-distance
 prior) and $\delta=-0.08^{+0.09}_{-0.09}$ (VLTI prior) \cite{EHT2022SgrA}.
-The static branch predicts $\delta=+0.046$, which lies within the
-$2\sigma$ bands but about $1$--$1.5\sigma$ above the measured central
-values \cite{Vagnozzi2023}. Two caveats accompany any such comparison: the
+The static branch predicts $\delta=+0.046$. This value lies within the
+$2\sigma$ bands but about $1$--$1.5\sigma$ above the measured central values
+\cite{Vagnozzi2023}. Two caveats accompany any such comparison: the
 ring-to-shadow calibration depends on the emission model, and the
 prediction is for the static branch while Sgr~A* may spin. With those
 caveats, this is the most directly testable consequence of the model: because
@@ -908,18 +924,19 @@ viability requires a dedicated nonlinear evolution and is left open here. In the
 object is controlled by the same exterior light ring as in GR, while the
 regular core replaces the horizon as the inner boundary, which is the
 classic setting for late-time echoes \cite{Cardoso2016,AbediEtAl2017,
-WesterweckEtAl2018}; the quasinormal spectrum of the cored geometry is open.
+WesterweckEtAl2018}; the quasinormal spectrum of the cored geometry remains
+open.
 
 \subsection{Falsifiability and open problems}
 \label{sec:open}
 
 The falsification conditions for the branch and for the framework are
 distinct, and we state both. The compact branch is excluded if
-horizon-scale shadow measurements of an object independently shown to be in
-the realizing window exclude a $+4.6\%$ excess, or if the trapped-mode
-instability is shown to destroy the cored configuration on astrophysical
-timescales, or if the rotating extension (once constructed) fails the
-existing spin-sensitive constraints. The framework as a whole loses its
+horizon-scale shadow measurements of an object independently shown to lie in
+the realizing window exclude a $+4.6\%$ excess. It is similarly excluded if
+the trapped-mode instability is shown to destroy the cored configuration on
+astrophysical timescales, or if the rotating extension (once constructed)
+fails the existing spin-sensitive constraints. The framework as a whole loses its
 discriminating content with the branch: its weak-field sector is
 GR-degenerate, so RefG without the compact branch is observationally
 indistinguishable from GR at currently accessible orders. The
@@ -940,7 +957,7 @@ Section~\ref{sec:selector} is a static statement about loads, not a
 formation theory; (v) curved-background hyperbolicity and the constraint
 closure of the scalar sector, beyond the flat principal-symbol analysis;
 (vi) the cosmological perturbation theory and the FLRW tensor mass term of
-the solid sector; (vii) the explicit vector-sector PPN parameters
+the solid sector; and (vii) the explicit vector-sector PPN parameters
 $\alpha_1,\alpha_2$ beyond the displayed coefficient condition. None of
 these affects the static results derived above; each is the standard next
 layer of its respective literature, and (i)--(iii) are shared by every
@@ -953,28 +970,28 @@ horizonless-object program, including gravastars and boson stars
 RefG is a supersolid-class gravitational EFT with three established
 properties and one parameter-free prediction. The weak static sector reproduces
 Newton's law through a refractive source--index chain and coincides with GR
-through second post-Newtonian order; the tensor sector is luminal
-identically; the scalar-longitudinal sector has an open, healthy stability
+through the second post-Newtonian order; the tensor sector is luminal
+identically; and the scalar-longitudinal sector has an open, healthy stability
 window at the local level. On the compact branch, the projected
 phase-pressure deficit of the same scalar sector sources the exponential
 (Papapetrou) exterior exactly --- a geometry whose GR realizations require a
 phantom scalar --- through a four-component functional match with no
-propagating ghost; the feedback exponent is fixed by the volume readout of
+propagating ghost. The feedback exponent is fixed by the volume readout of
 the asymptotic mass, making the realizing window $r_s/2<r_c<r_s$
-parameter-free; and a $C^2$-matched core renders the geometry horizonless,
-regular, and geodesically complete, while excising the wormhole throat of
-the bare exterior. The branch inherits the known geodesic numbers of the
-exponential metric and turns them into falsifiable predictions of a
-complete geometry: a $+4.6\%$ shadow excess, already under mild tension
-from Sagittarius~A* and decidable by next-generation instruments, and an
-ISCO frequency $0.931$ of the GR value. The rotating exterior, the
+parameter-free. A $C^2$-matched core renders the geometry horizonless,
+regular at the center, and geodesically complete, while excising the wormhole
+throat of the bare exterior. The branch inherits the known geodesic numbers
+of the exponential metric and turns them into falsifiable predictions of a
+complete geometry: a $+4.6\%$ shadow excess, already under mild tension from
+Sagittarius~A* and decidable by next-generation instruments, and an ISCO
+frequency $0.931$ of the GR value at the same mass. The rotating exterior, the
 quasinormal spectrum with the trapped-mode question, the equation-of-state
 interior, and the collapse dynamics of branch selection are the next layer
 of the program.
 
 \section*{Data availability statement}
 
-No observational or experimental datasets were generated or analysed in
+No observational or experimental datasets were generated or analyzed in
 this study. The results are analytic; the algebraic identities and branch
 gates underlying every displayed equation are implemented in an
 accompanying Python/SymPy source tree (sector gates p01--p16), publicly
