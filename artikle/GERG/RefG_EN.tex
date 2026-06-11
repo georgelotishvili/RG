@@ -32,7 +32,7 @@ with a regular horizonless compact branch}
 We present Refractive Gravity (RefG), a metric effective field theory
 consisting of Einstein--Hilbert gravity, one shift-symmetric phase scalar, and
 three solid scalars, in the supersolid class of self-gravitating media. The
-scalar sector is the general lowest-derivative polynomial in the standard
+scalar sector is a minimal low-order polynomial response basis in the standard
 medium invariants; the tensor sector lies in the constant-$G_4$ Horndeski
 class, so gravitational waves propagate at the speed of light identically. In
 the weak static regime the medium stress reproduces Newton's law through a
@@ -216,8 +216,8 @@ $\lambda_r$ and $\lambda_t$; these appear throughout the compact branch.
 \subsection{Action}
 \label{sec:action}
 
-The most general polynomial in the invariants through quadratic order, with
-the single phase--solid mixing term, is
+The minimal low-order polynomial response basis in the invariants --- seven
+terms, with a single phase--solid mixing term --- is
 \begin{align*}
 F_{\rm min}={}&
 c_Y Y+c_{Y2}Y^2+c_{I1}I_1+c_{I1sq}I_1^2+c_{I2}I_2+c_{I3}I_3
@@ -238,12 +238,15 @@ evaluated on the phase-normalized strain invariants defined next. The active
 stress of the scalar sector is obtained by metric variation,
 \[
 \Theta^{\rm RefG}_{\mu\nu}
-=-2\frac{\partial\mathcal L_{\rm RefG}}{\partial g^{\mu\nu}}
-+g_{\mu\nu}\mathcal L_{\rm RefG},
+=2\frac{\partial\mathcal L_{\rm RefG}}{\partial g^{\mu\nu}}
+-g_{\mu\nu}\mathcal L_{\rm RefG},
 \qquad
 G_{\mu\nu}=8\pi G\,\Theta^{\rm RefG}_{\mu\nu}
 \quad (T^{\rm m}_{\mu\nu}=0),
 \]
+with the overall sign appropriate to the $(+---)$ signature (for a canonical
+scalar it returns
+$\Theta_{\mu\nu}=\partial_\mu\phi\,\partial_\nu\phi-g_{\mu\nu}\mathcal L$),
 and is the source of every exterior considered below.
 
 \subsection{Branch frames and phase normalization}
@@ -529,9 +532,10 @@ This is the exponential (Papapetrou) metric
 static harmonic current reduces exactly to $-r^2h'$, so the reduced phase
 equation is the full curved equation on this branch. For comparison with the
 literature, which uses $m=GM/c^2$ and the form $e^{-2m/r}$, note
-$r_s=2m$ throughout. The metric has no finite-radius Killing horizon, matches
-Schwarzschild through second order in $m/r$, and its Einstein tensor has the
-mixed diagonal profile
+$r_s=2m$ throughout. The metric has no finite-radius Killing horizon; it
+matches Schwarzschild through first post-Newtonian order and, in the time
+component, through $O(m^2/r^2)$, departing at second order in the spatial
+sector. Its Einstein tensor has the mixed diagonal profile
 \[
 G^t{}_t=-D,\qquad
 G^r{}_r=+D,\qquad
@@ -788,8 +792,10 @@ a $6.9\%$ reduction of the ISCO frequency, in agreement with
 \cite{MakukovMychelkin2018}. (Incidentally $r_{\rm ISCO}=\varphi^2 r_s$ with
 $\varphi$ the golden ratio; this is algebra, not physics.) What the present
 construction adds to these known numbers is their setting: they are now
-markers of a geodesically complete regular object realized by a healthy
-EFT source in a parameter-free compactness window.
+markers of a geodesically complete regular geometry --- its exterior realized
+by the projected EFT source, its core carrying a bounded, junction-continuous
+effective source not yet derived from an equation of state --- in a
+parameter-free compactness window.
 
 The light-ring structure of the cored object follows from the optical
 potential $V=B/(Ar^2)$ computed through the matched geometry. The exterior
