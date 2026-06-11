@@ -2,11 +2,10 @@
 # signature (+---); Y = g^mn d_m Phi d_n Phi; B^AB = -g^mn d_m phi^A d_n phi^B.
 # T_mn = 2*dL/dg^mn - g_mn*L; off-diagonal symmetric variables use factor 1.
 # Horndeski/EFT bridge only: X = -1/2 g^mn d_m Phi d_n Phi, so Y = -2X.
-# Intuitive_Theory.md section 0: measurability axiom.
-# Free substrate is not directly measurable; measurable physics begins when an
-# oscillon-tail trace makes the substrate locally distinguishable.  p01 uses
-# Y=1, B=delta as the effective normalized background representation of that
-# axiom and tests consistency around it.
+# Background normalization: p01 uses Y=1, B=delta as the declared normalized
+# local homogeneous background of the theory stack (an input, not a derived
+# minimum; see the proof-gap register below) and tests zero-stress, no-ghost,
+# and hyperbolicity consistency around it.
 
 import sys
 from enum import Enum
@@ -128,7 +127,7 @@ def analyze_no_ghost() -> NoGhostResult:
     pi_dot_sq = pi1_dot**2 + pi2_dot**2 + pi3_dot**2
     
     # ფლუქტუაციები
-    # შენიშვნა: Y=1, B=δ არის Intuitive_Theory.md §0-ის გაზომვადობის
+    # შენიშვნა: Y=1, B=δ არის თეორიის დეკლარირებული ნორმალიზებული ფონის
     # აქსიომის ეფექტური ნორმალიზებული ფონი. p01 ამ აქსიომას არ ამტკიცებს;
     # ის ამოწმებს, თავსებადია თუ არა ეფექტური პოლინომი ამ ფონის გარშემო.
     Y_pert = 1 + 2*dPhi_dot + dPhi_dot**2
@@ -181,18 +180,17 @@ def foundational_axiom_bridge():
     """
     Record the foundational axiom bridge used by p01.
 
-    Intuitive_Theory.md section 0 states the measurability axiom: free
-    substrate is not directly measurable; measurable physics begins only when
-    an oscillon-tail trace creates local distinguishability.  p01 does not
-    derive this primitive.  It represents its unexcited effective background
-    by Y=1, B=delta and tests consistency around that normalized branch.
+    The theory stack declares its normalized background as a primitive: the
+    unexcited homogeneous state is represented by Y=1, B=delta, and p01 does
+    not derive this input.  It tests consistency around that normalized
+    branch.
     """
     return {
-        "source": "Intuitive_Theory.md section 0",
+        "source": "declared foundational normalization of the theory stack",
         "foundational_axiom": (
-            "Free substrate is not directly measurable; it becomes measurable "
-            "only through oscillon-tail-induced distinguishable nodal, phase, "
-            "or pressure traces."
+            "The unexcited homogeneous state Y=1, B=delta is a declared "
+            "input of the theory stack; observable structure is carried by "
+            "stress, phase, and pressure responses around it."
         ),
         "formal_role_in_p01": (
             "Y=1, B^{AB}=delta^{AB} is the normalized local homogeneous "
@@ -1965,7 +1963,7 @@ def solar_branch_combined_dispersion_gate():
 
 def single_field_many_capabilities_principle():
     """
-    Foundational principle imported from Intuitive_Theory.md.
+    Foundational structural principle of the theory stack.
 
     RefG reverses the usual multi-field picture.  Standard language starts
     with many fields and connects them by interactions.  RefG starts with one
@@ -1997,7 +1995,7 @@ def phase_spatial_channel_independence_audit():
     """
     Foundational audit for the Solar scalar-longitudinal block.
 
-    One base medium supports independent response channels.  The intuitive core
+    One base medium supports independent response channels.  The foundational core
     separates at least these operational traces:
 
         phase/clock delay, pressure deficit, longitudinal compression,
@@ -2939,7 +2937,7 @@ def p01_proof_gap_register():
             "gap": "foundational_measurability_axiom_boundary",
             "current_status": (
                 "Y=1, B=delta is explicitly marked as the effective normalized "
-                "background representation of the Intuitive_Theory.md §0 "
+                "background representation of the declared §0 measurability "
                 "measurability axiom"
             ),
             "risk": (
