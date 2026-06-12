@@ -73,10 +73,10 @@ def oscillon_claim_gate() -> list[ClaimGate]:
             open_requirement="derive PPN gamma/beta plus Shapiro delay, perihelion, Cassini, LLR, and clock/LPI tests.",
         ),
         ClaimGate(
-            claim="substrate carrier frequency nu0",
-            status="PASS_OPERATIONAL_FIREWALL__MICROPHYSICAL_DYNAMICS_TARGET",
-            verified_here="nu0 is a substrate rhythm, not a local oscillon-clock frequency; local measurements cancel the substrate-time conversion and see only dimensionless ratios.",
-            open_requirement="derive the microscopic substrate dynamics that selects the value of nu0.",
+            claim="substrate energy-status law (revised postulate; formerly 'carrier frequency nu0')",
+            status="PASS_OPERATIONAL_FIREWALL__POPULATION_STANDARD_TARGET",
+            verified_here="The firewall holds a fortiori under the revised postulate (law-level invariance: the energy-status law is universal, not the value): only dimensionless ratios are locally observable; the substrate-time conversion cancels. The frequency STANDARD for oscillon stability is the existing oscillon population itself (mutual lock), not nu0 -- the substrate supplies the coupling channel, the energy status (tension), and the nonlinearity that shapes admissible locks.",
+            open_requirement="population-lock fixed points: which mutually compatible oscillon frequency sets does the medium nonlinearity admit (p11c ledger; population fixed-point programme). The numerical VALUE of nu0 is no longer a required input of the framework.",
         ),
     ]
 
@@ -89,6 +89,8 @@ def oscillon_do_not_claim() -> list[str]:
         "Do not claim solar-system tests are fully passed; only leading weak-field checks are present.",
         "Do not claim the microscopic substrate value of G is derived from oscillon parameters here.",
         "Do not treat nu0 as a directly measured frequency in local oscillon/vortex time.",
+        "Do not treat nu0 as the lock/resonance standard for oscillon stability; under the revised tail-compatibility condition the standard is the existing oscillon population (mutual lock), and the substrate enters only as coupling channel, energy status, and nonlinearity.",
+        "Do not claim any specific numerical value of nu0 (e.g. the legacy 1.91e30 Hz calibration) is required or established; its source gate is unrecovered and no observable now depends on it.",
     ]
 
 
@@ -1347,16 +1349,17 @@ def step11_local_invariance():
 
 def step12_cosmological_nu0():
     """
-    Operational firewall for the substrate rhythm.
+    Operational firewall for the substrate layer.
 
     FLRW ფონზე: ds² = -dt² + a(t)² δ_ij dx^i dx^j (არა ბი-კონფორმული)
 
-    Substrate ν₀ არის სუბ-ოსცილონური ფონური რიტმი (Intuitive §1).
-    ის *არ არის* composite (არ შედგება ლოკალური ოსცილონებისგან).
-
-    ამიტომ ν₀ არ იზომება პირდაპირ ჩვენი ოპერაციული დროით. თუ substrate-time
-    conversion იცვლება, ლოკალური კომპოზიტური საათები და ატომური პროცესები იმავე
-    conversion-ს ატარებენ და უგანზომილო ფარდობები უცვლელი რჩება.
+    Revised postulate (population standard): nu0_sub here denotes the
+    substrate ENERGY-STATUS read in frequency language -- a local state
+    variable, not a universal carrier and not the lock standard for
+    oscillon stability (the standard is the oscillon population itself;
+    mutual lock). The firewall below is unchanged and holds a fortiori:
+    local composite clocks carry the same substrate-time conversion, so
+    only dimensionless ratios are observable and nu0 cancels.
     """
     nu0_sub, xi, alpha, q_clock = sp.symbols(
         "nu0_sub xi alpha q_clock",
@@ -1380,7 +1383,7 @@ def step12_cosmological_nu0():
             "oscillon/vortex clocks, so they do not measure nu0 directly; "
             "they measure ratios in which the substrate-time conversion cancels."
         ),
-        "microphysical_target": "derive the substrate dynamics that selects nu0_sub.",
+        "microphysical_target": "population-lock fixed points (p11c): which mutually compatible oscillon sets the medium nonlinearity admits; the value of nu0_sub itself is no longer a required input.",
     }
 
 

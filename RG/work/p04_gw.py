@@ -442,8 +442,8 @@ PHASE 18: LIGO-ის დიფერენციალური პასუხ
     მკლავის შედარება კითხულობს shear/TT ნარჩენს.
 
 References:
-    - Intuitive_Theory.md §4 (c_coord ∝ L_oper²)
-    - Intuitive_Theory.md §9.1 (LIGO-ის სიგნალის ფიზიკური წყარო)
+    - internal working notes: c_coord ∝ L_oper² chain; LIGO signal =
+      direct TT/shear residual (common-mode self-cancels operationally)
     - OLD/0. MAIN.tex §sec:solar (light deflection 2× factor)
     - p10_oscillons.py (factor 2 emergence)
 """

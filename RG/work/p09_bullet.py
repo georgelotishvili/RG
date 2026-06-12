@@ -75,7 +75,7 @@ References:
     - Clowe et al. 2006 (ApJL 648:L109) - Bullet Cluster discovery
     - Paraficz et al. 2016 - 250 kpc aperture mass budget benchmark
     - OLD/ISPG_MOND.tex Sec. "The Bullet Cluster in the frozen-hysteresis limit"
-    - Intuitive_Theory.md §6.2 - vortex memory mechanism
+    - internal working notes: vortex memory mechanism (frozen-hysteresis reading)
     - PLAN.md ფაზა 4 - chi field role
 """
 

@@ -88,6 +88,15 @@ INTUITION_ANCHORS = [
         "Every strong article claim must be hand-checkable from the paper text "
         "and backed by a concrete work-file calculation.",
     ),
+    (
+        "population_lock_standard",
+        "Oscillon stability is referenced to the existing particle population "
+        "(mutual lock through the shared medium), not to a substrate frequency "
+        "standard. The substrate enters as coupling channel, energy status, "
+        "and nonlinearity; no numerical value of nu0 is a required input "
+        "(p10 firewall, p11c ledger). Regressions to a nu0-lock or "
+        "invariant-carrier wording are drift.",
+    ),
 ]
 
 
@@ -280,7 +289,11 @@ CLAIM_BACKING = [
     (
         "strong-field prediction",
         ("ISCO", "photon sphere", "b_c", "golden"),
-        ("p05_compact.py", "p12_predictions.py"),
+        (
+            "p05_compact.py",
+            "p16j_geodesic_completeness_regular_object.py",
+            "p16l_inner_light_ring_structure.py",
+        ),
     ),
 ]
 

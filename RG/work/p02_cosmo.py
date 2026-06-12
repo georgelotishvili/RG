@@ -202,7 +202,7 @@ def get_friedmann_equations():
 
 def flrw_pressure_relaxation_interpretation():
     """
-    Interpretive bridge from Intuitive_Theory §6.3 to the p02 FLRW ledger.
+    Interpretive bridge from the internal pressure-relaxation reading to the p02 FLRW ledger.
 
     This does not replace FLRW expansion or redshift. It records the internal
     RG reading: the same background history can be read as substrate pressure
