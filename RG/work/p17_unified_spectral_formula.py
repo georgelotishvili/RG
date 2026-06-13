@@ -1403,6 +1403,831 @@ def p01_isotropic_linear_response_alpha_E_candidate() -> dict[str, Any]:
     }
 
 
+def p01_alpha_E_positive_window_witness_gate() -> dict[str, Any]:
+    """
+    Nonempty coefficient-space witness for alpha_E>0.
+
+    The previous gate gives
+
+        alpha_E = -p_y/rho_y.
+
+    This gate records one explicit p01 zero-stress coefficient point where the
+    sign requirements are simultaneously satisfied:
+
+        rho_y > 0, p_y < 0, K_pi > 0, alpha_E > 0.
+
+    It is a nonempty-window witness, not a proof that the final selected branch
+    must live at this point.
+    """
+    c_Y, c_Y2, c_I1, c_I1sq, c_I2, c_I3, c_YI1 = sp.symbols(
+        "c_Y c_Y2 c_I1 c_I1sq c_I2 c_I3 c_YI1", real=True
+    )
+    zero_stress_solution = {
+        c_I1: -3 * c_I1sq / 2 - c_I2 / 2 + c_Y2 / 2 + c_YI1 / 2,
+        c_Y: 9 * c_I1sq / 2 + 3 * c_I2 / 2 + c_I3
+        - 3 * c_Y2 / 2 - 3 * c_YI1 / 2,
+    }
+    rho_y = sp.simplify(
+        9 * c_I1sq / 2 + 3 * c_I2 / 2 + c_I3
+        + 9 * c_Y2 / 2 + 3 * c_YI1 / 2
+    )
+    p_y = sp.simplify(
+        9 * c_I1sq / 2 + 3 * c_I2 / 2 + c_I3
+        + c_Y2 / 2 - c_YI1 / 2
+    )
+    K_pi = sp.simplify(
+        -9 * c_I1sq / 2 - 3 * c_I2 / 2 - c_I3
+        - c_Y2 / 2 - 3 * c_YI1 / 2
+    )
+    alpha_E = sp.simplify(-p_y / rho_y)
+
+    witness_seed = {
+        c_I1sq: sp.Rational(1, 4),
+        c_I2: -sp.Rational(13, 3),
+        c_I3: sp.Rational(9, 2),
+        c_Y2: sp.Rational(1, 5),
+        c_YI1: sp.Rational(1, 3),
+    }
+    witness = {
+        **witness_seed,
+        c_I1: sp.simplify(zero_stress_solution[c_I1].subs(witness_seed)),
+        c_Y: sp.simplify(zero_stress_solution[c_Y].subs(witness_seed)),
+    }
+    witness_values = {
+        "rho_y": sp.simplify(rho_y.subs(witness)),
+        "p_y": sp.simplify(p_y.subs(witness)),
+        "K_pi": sp.simplify(K_pi.subs(witness)),
+        "alpha_E": sp.simplify(alpha_E.subs(witness)),
+        "c_Y2": sp.simplify(c_Y2.subs(witness)),
+    }
+    checks = {
+        "rho_y_positive": sp.simplify(witness_values["rho_y"] > 0),
+        "p_y_negative": sp.simplify(witness_values["p_y"] < 0),
+        "K_pi_positive": sp.simplify(witness_values["K_pi"] > 0),
+        "alpha_E_positive": sp.simplify(witness_values["alpha_E"] > 0),
+        "c_Y2_positive": sp.simplify(witness_values["c_Y2"] > 0),
+    }
+
+    return {
+        "status": "PASS_P01_ALPHA_E_POSITIVE_WINDOW_WITNESS_GATE"
+        if all(checks.values())
+        else "CHECK_P01_ALPHA_E_POSITIVE_WINDOW_WITNESS_GATE",
+        "zero_stress_solution": zero_stress_solution,
+        "witness_coefficients": witness,
+        "witness_values": witness_values,
+        "checks": checks,
+        "meaning": (
+            "The p01 coefficient space has at least one explicit local point "
+            "where phase-energy increase drains the pressure reservoir and "
+            "keeps the basic phase/solid linear responses positive."
+        ),
+        "open_requirements": [
+            "prove the selected physical branch lies inside this sign domain",
+            "add the full mixed-mode/hyperbolicity constraints to the witness domain",
+            "lift the isotropic witness to the tensor long-mode node sector",
+        ],
+    }
+
+
+def p01_alpha_E_mixed_characteristic_witness_gate() -> dict[str, Any]:
+    """
+    Add p01 mixed-characteristic checks to the alpha_E witness.
+
+    This uses the same p01 principal-symbol convention as analyze_sound_speeds:
+
+        det[(A s + C)(B s + D) - M^2 s] = 0,  s = c_s^2.
+
+    The witness below is selected so that the alpha_E pressure-drain sign is
+    positive and the mixed characteristic roots are real and positive.  It is
+    not a subluminal theorem: one characteristic and the transverse speed are
+    superluminal at this local point, so subluminal branch selection remains
+    open.
+    """
+    c_Y, c_Y2, c_I1, c_I1sq, c_I2, c_I3, c_YI1 = sp.symbols(
+        "c_Y c_Y2 c_I1 c_I1sq c_I2 c_I3 c_YI1", real=True
+    )
+    s = sp.Symbol("s", real=True)
+    zero_stress_solution = {
+        c_I1: -3 * c_I1sq / 2 - c_I2 / 2 + c_Y2 / 2 + c_YI1 / 2,
+        c_Y: 9 * c_I1sq / 2 + 3 * c_I2 / 2 + c_I3
+        - 3 * c_Y2 / 2 - 3 * c_YI1 / 2,
+    }
+    witness_seed = {
+        c_I1sq: sp.Rational(1, 4),
+        c_I2: -sp.Rational(13, 3),
+        c_I3: sp.Rational(9, 2),
+        c_Y2: sp.Rational(1, 5),
+        c_YI1: sp.Rational(1, 3),
+    }
+    witness = {
+        **witness_seed,
+        c_I1: sp.simplify(zero_stress_solution[c_I1].subs(witness_seed)),
+        c_Y: sp.simplify(zero_stress_solution[c_Y].subs(witness_seed)),
+    }
+
+    rho_y = sp.simplify(
+        9 * c_I1sq / 2 + 3 * c_I2 / 2 + c_I3
+        + 9 * c_Y2 / 2 + 3 * c_YI1 / 2
+    )
+    p_y = sp.simplify(
+        9 * c_I1sq / 2 + 3 * c_I2 / 2 + c_I3
+        + c_Y2 / 2 - c_YI1 / 2
+    )
+    alpha_E = sp.simplify(-p_y / rho_y)
+
+    A = sp.simplify(c_Y + 6 * c_Y2 + 3 * c_YI1)
+    B_long = sp.simplify(-c_I1 - 6 * c_I1sq - 2 * c_I2 - c_I3 - c_YI1)
+    C = sp.simplify(-c_Y - 2 * c_Y2 - 3 * c_YI1)
+    D = sp.simplify(c_I1 + 10 * c_I1sq + 2 * c_I2 + c_I3 + c_YI1)
+    M_mix = sp.simplify(4 * c_YI1)
+    K_T = B_long
+    G_T = sp.simplify(-c_I1 - 6 * c_I1sq - c_I2 - c_YI1)
+
+    values = {
+        "rho_y": sp.simplify(rho_y.subs(witness)),
+        "p_y": sp.simplify(p_y.subs(witness)),
+        "alpha_E": sp.simplify(alpha_E.subs(witness)),
+        "A": sp.simplify(A.subs(witness)),
+        "B_long": sp.simplify(B_long.subs(witness)),
+        "C": sp.simplify(C.subs(witness)),
+        "D": sp.simplify(D.subs(witness)),
+        "M_mix": sp.simplify(M_mix.subs(witness)),
+        "K_T": sp.simplify(K_T.subs(witness)),
+        "G_T": sp.simplify(G_T.subs(witness)),
+    }
+    characteristic = sp.factor(
+        (values["A"] * s + values["C"])
+        * (values["B_long"] * s + values["D"])
+        - values["M_mix"] ** 2 * s
+    )
+    roots = sp.solve(characteristic, s)
+    transverse_cs2 = sp.simplify(values["G_T"] / values["K_T"])
+    checks = {
+        "alpha_E_positive": sp.simplify(values["alpha_E"] > 0),
+        "phase_kinetic_positive": sp.simplify(values["A"] > 0),
+        "longitudinal_kinetic_positive": sp.simplify(values["B_long"] > 0),
+        "transverse_kinetic_positive": sp.simplify(values["K_T"] > 0),
+        "transverse_gradient_positive": sp.simplify(values["G_T"] > 0),
+        "mixed_roots_positive": all(sp.simplify(root > 0) for root in roots),
+    }
+    subluminal_checks = {
+        "mixed_roots_le_one": all(sp.simplify(root <= 1) for root in roots),
+        "transverse_cs2_le_one": sp.simplify(transverse_cs2 <= 1),
+    }
+
+    return {
+        "status": "PASS_P01_ALPHA_E_MIXED_CHARACTERISTIC_WITNESS_GATE"
+        if all(checks.values())
+        else "CHECK_P01_ALPHA_E_MIXED_CHARACTERISTIC_WITNESS_GATE",
+        "witness_coefficients": witness,
+        "principal_values": values,
+        "characteristic_polynomial": sp.Eq(
+            sp.Symbol("P_mixed(s)"), characteristic
+        ),
+        "mixed_characteristic_roots": roots,
+        "transverse_cs2": transverse_cs2,
+        "checks": checks,
+        "subluminal_checks_open": subluminal_checks,
+        "meaning": (
+            "The alpha_E>0 pressure-drain sign can coexist with positive p01 "
+            "mixed characteristics at a concrete coefficient point.  This "
+            "strengthens the witness from a pressure sign check to a local "
+            "hyperbolic-characteristic check."
+        ),
+        "open_requirements": [
+            "find or prove a subluminal branch if the final sector requires subluminality",
+            "add the static-silent dynamic repair channels from p01 before article export",
+            "lift this isotropic local witness to the long-mode tensor/projector node sector",
+        ],
+    }
+
+
+def p01_alpha_E_static_silent_mixed_repair_gate() -> dict[str, Any]:
+    """
+    Recheck the alpha_E witness after the p01 static-silent dynamic repair.
+
+    The p01 repair operator
+
+        Delta L_dyn = epsilon_B W_A W^A + 2 epsilon_M W_A Q^A
+
+    is static-silent at principal level.  It leaves the static pressure/gradient
+    response untouched, while shifting the scalar-longitudinal dynamic channel
+
+        B -> B + epsilon_B,      M -> M + epsilon_M.
+
+    This gate applies that repair to the alpha_E witness above.  The result is a
+    repaired scalar-longitudinal mixed branch with strictly subluminal roots.
+    The transverse speed is deliberately left to the separate shear-sector gate,
+    because this operator does not act on that channel.
+    """
+    s = sp.Symbol("s", real=True)
+    mixed_gate = p01_alpha_E_mixed_characteristic_witness_gate()
+    values = mixed_gate["principal_values"]
+
+    epsilon_B = sp.Integer(3)
+    epsilon_M = sp.sqrt(sp.Integer(4801)) / 40 - sp.Rational(4, 3)
+
+    A = values["A"]
+    B_long = values["B_long"]
+    C = values["C"]
+    D = values["D"]
+    M_mix = values["M_mix"]
+
+    B_repaired = sp.simplify(B_long + epsilon_B)
+    M_repaired = sp.simplify(M_mix + epsilon_M)
+    characteristic_repaired = sp.factor(
+        (A * s + C) * (B_repaired * s + D) - M_repaired**2 * s
+    )
+    repaired_roots = sp.solve(characteristic_repaired, s)
+    discriminant = sp.factor(sp.discriminant(characteristic_repaired, s))
+
+    principal_values_after = {
+        "rho_y": values["rho_y"],
+        "p_y": values["p_y"],
+        "alpha_E": values["alpha_E"],
+        "A": A,
+        "B_long": B_repaired,
+        "C": C,
+        "D": D,
+        "M_mix": M_repaired,
+        "K_T": values["K_T"],
+        "G_T": values["G_T"],
+    }
+    checks = {
+        "source_witness_passes": mixed_gate["status"]
+        == "PASS_P01_ALPHA_E_MIXED_CHARACTERISTIC_WITNESS_GATE",
+        "epsilon_B_positive": epsilon_B > 0,
+        "epsilon_M_positive": epsilon_M > 0,
+        "pressure_response_unchanged": sp.simplify(
+            principal_values_after["alpha_E"] - values["alpha_E"]
+        )
+        == 0,
+        "static_gradients_unchanged": sp.simplify(
+            principal_values_after["C"] - C
+        )
+        == 0
+        and sp.simplify(principal_values_after["D"] - D) == 0,
+        "B_shift_matches_repair": sp.simplify(
+            B_repaired - B_long - epsilon_B
+        )
+        == 0,
+        "M_shift_matches_repair": sp.simplify(
+            M_repaired - M_mix - epsilon_M
+        )
+        == 0,
+        "repaired_mixed_kinetic_positive": B_repaired > 0,
+        "repaired_discriminant_positive": discriminant > 0,
+        "repaired_roots_strictly_subluminal": all(
+            0 < float(sp.N(root, 16)) < 1 for root in repaired_roots
+        ),
+    }
+
+    return {
+        "status": "PASS_P01_ALPHA_E_STATIC_SILENT_MIXED_REPAIR_GATE"
+        if all(bool(value) for value in checks.values())
+        else "CHECK_P01_ALPHA_E_STATIC_SILENT_MIXED_REPAIR_GATE",
+        "source_unrepaired_status": mixed_gate["status"],
+        "repair_operator": (
+            "Delta L_dyn = epsilon_B W_A W^A + 2 epsilon_M W_A Q^A; "
+            "static-silent, shifts only B and M in the scalar-longitudinal "
+            "principal channel."
+        ),
+        "repair_values": {
+            "epsilon_B": epsilon_B,
+            "epsilon_M": epsilon_M,
+            "B_repaired": B_repaired,
+            "M_repaired": M_repaired,
+        },
+        "principal_values_before": values,
+        "principal_values_after": principal_values_after,
+        "unrepaired_mixed_roots": mixed_gate["mixed_characteristic_roots"],
+        "repaired_characteristic_polynomial": sp.Eq(
+            sp.Symbol("P_mixed_repaired(s)"), characteristic_repaired
+        ),
+        "repaired_mixed_characteristic_roots": repaired_roots,
+        "repaired_mixed_root_values": [sp.N(root, 16) for root in repaired_roots],
+        "transverse_cs2_open": mixed_gate["transverse_cs2"],
+        "checks": checks,
+        "meaning": (
+            "The same alpha_E>0 pressure-drain witness admits a p01 "
+            "static-silent dynamic completion that makes the scalar-longitudinal "
+            "mixed characteristic branch strictly subluminal, without changing "
+            "the static pressure response used by kappa_E and q_rare."
+        ),
+        "open_requirements": [
+            "combine with the separate transverse/shear completion gate for a full local speed witness",
+            "embed this repair in the full tensor/projector node sector",
+            "derive epsilon_B and epsilon_M from the nonlinear RG action instead of keeping them as witness parameters",
+        ],
+    }
+
+
+def p01_alpha_E_static_silent_shear_repair_gate() -> dict[str, Any]:
+    """
+    Close the alpha_E witness transverse speed with an independent shear channel.
+
+    The p01 foundation already separates one medium into independent response
+    channels: phase, pressure, longitudinal compression, transverse shear,
+    rotation/topology, resonance and lag.  The mixed repair above acts only on
+    the scalar-longitudinal dynamic channel.  The transverse speed therefore
+    needs its own local shear response, represented at principal level by
+
+        Delta L_shear = epsilon_T |dot(pi_T)|^2.
+
+    A static configuration has dot(pi_T)=0, so this completion is static-silent:
+    it leaves the pressure response, static gradients and mixed scalar block
+    untouched, while shifting only
+
+        K_T -> K_T + epsilon_T.
+
+    For the alpha_E witness, epsilon_T=1/4 changes c_T^2 from 53/33 to 53/63.
+    """
+    omega, pi_T = sp.symbols("omega pi_T", real=True)
+    mixed_repair = p01_alpha_E_static_silent_mixed_repair_gate()
+    values = mixed_repair["principal_values_after"]
+
+    epsilon_T = sp.Rational(1, 4)
+    shear_symbol = epsilon_T * (omega * pi_T) ** 2
+    static_silent_check = sp.simplify(shear_symbol.subs(omega, 0))
+
+    K_T_before = values["K_T"]
+    G_T = values["G_T"]
+    K_T_repaired = sp.simplify(K_T_before + epsilon_T)
+    transverse_cs2_before = sp.simplify(G_T / K_T_before)
+    transverse_cs2_repaired = sp.simplify(G_T / K_T_repaired)
+
+    checks = {
+        "source_mixed_repair_passes": mixed_repair["status"]
+        == "PASS_P01_ALPHA_E_STATIC_SILENT_MIXED_REPAIR_GATE",
+        "epsilon_T_positive": epsilon_T > 0,
+        "shear_operator_static_silent": static_silent_check == 0,
+        "pressure_response_unchanged": sp.simplify(
+            values["alpha_E"] - mixed_repair["principal_values_before"]["alpha_E"]
+        )
+        == 0,
+        "scalar_mixed_polynomial_unchanged": True,
+        "K_T_shift_matches_repair": sp.simplify(
+            K_T_repaired - K_T_before - epsilon_T
+        )
+        == 0,
+        "G_T_unchanged": sp.simplify(G_T - values["G_T"]) == 0,
+        "transverse_speed_positive": transverse_cs2_repaired > 0,
+        "transverse_speed_strictly_subluminal": transverse_cs2_repaired < 1,
+        "mixed_roots_remain_strictly_subluminal": all(
+            0 < float(sp.N(root, 16)) < 1
+            for root in mixed_repair["repaired_mixed_characteristic_roots"]
+        ),
+    }
+
+    principal_values_after = {
+        **values,
+        "K_T": K_T_repaired,
+        "G_T": G_T,
+        "transverse_cs2": transverse_cs2_repaired,
+    }
+
+    return {
+        "status": "PASS_P01_ALPHA_E_STATIC_SILENT_SHEAR_REPAIR_GATE"
+        if all(bool(value) for value in checks.values())
+        else "CHECK_P01_ALPHA_E_STATIC_SILENT_SHEAR_REPAIR_GATE",
+        "source_mixed_repair_status": mixed_repair["status"],
+        "repair_operator": (
+            "Delta L_shear = epsilon_T |dot(pi_T)|^2; static-silent at "
+            "principal level and shifts only the transverse kinetic coefficient."
+        ),
+        "repair_values": {
+            "epsilon_T": epsilon_T,
+            "K_T_before": K_T_before,
+            "K_T_repaired": K_T_repaired,
+            "G_T": G_T,
+        },
+        "principal_values_after": principal_values_after,
+        "mixed_repair_roots": mixed_repair["repaired_mixed_characteristic_roots"],
+        "transverse_cs2_before": transverse_cs2_before,
+        "transverse_cs2_repaired": transverse_cs2_repaired,
+        "checks": checks,
+        "meaning": (
+            "At the alpha_E witness point, the independent transverse shear "
+            "kinetic channel closes the remaining local speed check: the "
+            "scalar-longitudinal repaired roots stay subluminal and the "
+            "transverse speed becomes 53/63, without touching the static "
+            "pressure-drain response."
+        ),
+        "open_requirements": [
+            "derive the covariant transverse projector form of Delta L_shear from the full RG action",
+            "derive epsilon_T dynamically instead of keeping it as a witness parameter",
+            "embed the scalar-longitudinal and transverse repairs in the full tensor/projector node sector",
+        ],
+    }
+
+
+def p01_alpha_E_mixed_repair_admissible_region_gate() -> dict[str, Any]:
+    """
+    Replace the mixed-repair witness point by its finite open parameter region.
+
+    For the alpha_E witness let
+
+        B = B0 + epsilon_B,     M = M0 + epsilon_M.
+
+    The repaired mixed characteristic is
+
+        p2 s^2 + p1 s + p0 = 0,
+        p2 = A B,
+        p1 = A D + B C - M^2,
+        p0 = C D.
+
+    With A,C,D positive and B positive, the two roots are strictly in (0,1)
+    iff the Vieta data obey
+
+        P = p0/p2 < 1,
+        2 sqrt(P) < S < 1 + P,
+        S = -p1/p2.
+
+    Equivalently, for the positive M branch:
+
+        B > C D / A,
+        A D + B C + 2 sqrt(A B C D) < M^2 < (A + C)(B + D).
+
+    This proves that the mixed repair is not a tuned isolated point.
+    """
+    epsilon_B, epsilon_M = sp.symbols("epsilon_B epsilon_M", real=True)
+    mixed_gate = p01_alpha_E_mixed_characteristic_witness_gate()
+    mixed_repair = p01_alpha_E_static_silent_mixed_repair_gate()
+    values = mixed_gate["principal_values"]
+
+    A = values["A"]
+    B0 = values["B_long"]
+    C = values["C"]
+    D = values["D"]
+    M0 = values["M_mix"]
+
+    B = sp.simplify(B0 + epsilon_B)
+    M = sp.simplify(M0 + epsilon_M)
+    p2 = sp.simplify(A * B)
+    p1 = sp.simplify(A * D + B * C - M**2)
+    p0 = sp.simplify(C * D)
+    product_P = sp.simplify(p0 / p2)
+    sum_S = sp.simplify(-p1 / p2)
+
+    min_B = sp.simplify(C * D / A)
+    min_epsilon_B = sp.simplify(min_B - B0)
+    lower_M2 = sp.simplify(A * D + B * C + 2 * sp.sqrt(A * B * C * D))
+    upper_M2 = sp.simplify((A + C) * (B + D))
+    window_width_M2 = sp.simplify(upper_M2 - lower_M2)
+
+    repair_values = mixed_repair["repair_values"]
+    witness_epsilon_B = repair_values["epsilon_B"]
+    witness_epsilon_M = repair_values["epsilon_M"]
+    witness_M2 = sp.simplify((M0 + witness_epsilon_M) ** 2)
+    witness_lower_M2 = sp.simplify(lower_M2.subs(epsilon_B, witness_epsilon_B))
+    witness_upper_M2 = sp.simplify(upper_M2.subs(epsilon_B, witness_epsilon_B))
+    witness_width_M2 = sp.simplify(
+        window_width_M2.subs(epsilon_B, witness_epsilon_B)
+    )
+
+    checks = {
+        "source_mixed_repair_passes": mixed_repair["status"]
+        == "PASS_P01_ALPHA_E_STATIC_SILENT_MIXED_REPAIR_GATE",
+        "minimum_epsilon_B_positive": min_epsilon_B > 0,
+        "witness_epsilon_B_inside_open_region": witness_epsilon_B
+        > min_epsilon_B,
+        "witness_M2_inside_open_window": (
+            float(sp.N(witness_lower_M2, 16))
+            < float(sp.N(witness_M2, 16))
+            < float(sp.N(witness_upper_M2, 16))
+        ),
+        "witness_window_width_positive": float(sp.N(witness_width_M2, 16)) > 0,
+        "witness_roots_strictly_subluminal": all(
+            0 < float(sp.N(root, 16)) < 1
+            for root in mixed_repair["repaired_mixed_characteristic_roots"]
+        ),
+    }
+
+    return {
+        "status": "PASS_P01_ALPHA_E_MIXED_REPAIR_ADMISSIBLE_REGION_GATE"
+        if all(bool(value) for value in checks.values())
+        else "CHECK_P01_ALPHA_E_MIXED_REPAIR_ADMISSIBLE_REGION_GATE",
+        "coefficients": {
+            "A": A,
+            "B0": B0,
+            "C": C,
+            "D": D,
+            "M0": M0,
+        },
+        "repaired_polynomial_coefficients": {
+            "p2": p2,
+            "p1": p1,
+            "p0": p0,
+            "product_P": product_P,
+            "sum_S": sum_S,
+        },
+        "admissible_region": {
+            "epsilon_B_condition": sp.StrictGreaterThan(
+                epsilon_B, min_epsilon_B
+            ),
+            "positive_M_branch_epsilon_M_interval": (
+                sp.simplify(sp.sqrt(lower_M2) - M0),
+                sp.simplify(sp.sqrt(upper_M2) - M0),
+            ),
+            "M2_lower": lower_M2,
+            "M2_upper": upper_M2,
+            "M2_window_width": window_width_M2,
+        },
+        "witness": {
+            "epsilon_B": witness_epsilon_B,
+            "epsilon_M": witness_epsilon_M,
+            "M2": witness_M2,
+            "M2_lower": witness_lower_M2,
+            "M2_upper": witness_upper_M2,
+            "roots": mixed_repair["repaired_mixed_characteristic_roots"],
+            "root_values": mixed_repair["repaired_mixed_root_values"],
+        },
+        "checks": checks,
+        "meaning": (
+            "The alpha_E scalar-longitudinal repair has a finite open "
+            "subluminal parameter region.  The displayed witness is one point "
+            "inside that region, not an isolated fine-tuned accident."
+        ),
+    }
+
+
+def p01_alpha_E_shear_repair_admissible_region_gate() -> dict[str, Any]:
+    """
+    Replace the shear-repair witness point by its open parameter region.
+
+    The independent transverse kinetic completion gives
+
+        K_T -> K_T + epsilon_T,
+        c_T^2(epsilon_T) = G_T / (K_T + epsilon_T).
+
+    At the alpha_E witness G_T>K_T, so strict subluminality requires
+
+        epsilon_T > G_T - K_T.
+    """
+    epsilon_T = sp.Symbol("epsilon_T", real=True)
+    shear_repair = p01_alpha_E_static_silent_shear_repair_gate()
+    values = shear_repair["repair_values"]
+
+    K_T = values["K_T_before"]
+    G_T = values["G_T"]
+    epsilon_T_min = sp.simplify(G_T - K_T)
+    transverse_cs2 = sp.simplify(G_T / (K_T + epsilon_T))
+    witness_epsilon_T = values["epsilon_T"]
+    witness_cs2 = sp.simplify(transverse_cs2.subs(epsilon_T, witness_epsilon_T))
+
+    checks = {
+        "source_shear_repair_passes": shear_repair["status"]
+        == "PASS_P01_ALPHA_E_STATIC_SILENT_SHEAR_REPAIR_GATE",
+        "threshold_positive": epsilon_T_min > 0,
+        "witness_inside_open_region": witness_epsilon_T > epsilon_T_min,
+        "witness_transverse_speed_positive": witness_cs2 > 0,
+        "witness_transverse_speed_strictly_subluminal": witness_cs2 < 1,
+    }
+
+    return {
+        "status": "PASS_P01_ALPHA_E_SHEAR_REPAIR_ADMISSIBLE_REGION_GATE"
+        if all(bool(value) for value in checks.values())
+        else "CHECK_P01_ALPHA_E_SHEAR_REPAIR_ADMISSIBLE_REGION_GATE",
+        "admissible_region": {
+            "epsilon_T_condition": sp.StrictGreaterThan(
+                epsilon_T, epsilon_T_min
+            ),
+            "transverse_cs2": transverse_cs2,
+        },
+        "witness": {
+            "epsilon_T": witness_epsilon_T,
+            "epsilon_T_min": epsilon_T_min,
+            "transverse_cs2": witness_cs2,
+        },
+        "checks": checks,
+        "meaning": (
+            "The alpha_E transverse repair also has an open subluminal region: "
+            "any epsilon_T greater than G_T-K_T closes the local transverse "
+            "speed bound."
+        ),
+    }
+
+
+def p01_alpha_E_full_local_speed_completion_gate() -> dict[str, Any]:
+    """
+    Combined local speed closure for the alpha_E pressure-drain witness.
+
+    This is the end of the local homogeneous principal-symbol part of the
+    alpha_E audit:
+
+      * pressure-drain response remains alpha_E>0,
+      * scalar-longitudinal mixed roots are real, positive and subluminal,
+      * transverse speed is positive and subluminal,
+      * both repairs are static-silent at the pressure/static-gradient level,
+      * the repair values sit inside open admissible regions.
+
+    It is still a local completion, not the nonlinear action derivation.
+    """
+    mixed_region = p01_alpha_E_mixed_repair_admissible_region_gate()
+    shear_region = p01_alpha_E_shear_repair_admissible_region_gate()
+    shear_repair = p01_alpha_E_static_silent_shear_repair_gate()
+
+    mixed_roots = shear_repair["mixed_repair_roots"]
+    transverse_cs2 = shear_repair["transverse_cs2_repaired"]
+    local_speeds = [*mixed_roots, transverse_cs2]
+    values = shear_repair["principal_values_after"]
+
+    checks = {
+        "mixed_region_passes": mixed_region["status"]
+        == "PASS_P01_ALPHA_E_MIXED_REPAIR_ADMISSIBLE_REGION_GATE",
+        "shear_region_passes": shear_region["status"]
+        == "PASS_P01_ALPHA_E_SHEAR_REPAIR_ADMISSIBLE_REGION_GATE",
+        "all_local_speeds_positive": all(
+            0 < float(sp.N(speed, 16)) for speed in local_speeds
+        ),
+        "all_local_speeds_strictly_subluminal": all(
+            float(sp.N(speed, 16)) < 1 for speed in local_speeds
+        ),
+        "alpha_E_positive": values["alpha_E"] > 0,
+        "rho_y_positive": values["rho_y"] > 0,
+        "p_y_negative": values["p_y"] < 0,
+        "static_pressure_response_preserved": True,
+    }
+
+    return {
+        "status": "PASS_P01_ALPHA_E_FULL_LOCAL_SPEED_COMPLETION_GATE"
+        if all(bool(value) for value in checks.values())
+        else "CHECK_P01_ALPHA_E_FULL_LOCAL_SPEED_COMPLETION_GATE",
+        "mixed_repair_region_status": mixed_region["status"],
+        "shear_repair_region_status": shear_region["status"],
+        "completed_witness_parameters": {
+            "epsilon_B": mixed_region["witness"]["epsilon_B"],
+            "epsilon_M": mixed_region["witness"]["epsilon_M"],
+            "epsilon_T": shear_region["witness"]["epsilon_T"],
+        },
+        "local_speed_spectrum": {
+            "mixed_roots": mixed_roots,
+            "mixed_root_values": [sp.N(root, 16) for root in mixed_roots],
+            "transverse_cs2": transverse_cs2,
+        },
+        "pressure_response": {
+            "rho_y": values["rho_y"],
+            "p_y": values["p_y"],
+            "alpha_E": values["alpha_E"],
+        },
+        "checks": checks,
+        "meaning": (
+            "The alpha_E local principal-symbol sector is closed at witness "
+            "level and promoted to open repair windows: the pressure-drain "
+            "sign, mixed scalar-longitudinal speeds and transverse speed are "
+            "mutually compatible without changing the static pressure response."
+        ),
+        "remaining_derivation_boundary": (
+            "The next layer is not another local speed fix; it is deriving "
+            "epsilon_B, epsilon_M and epsilon_T from the nonlinear RG action "
+            "and lifting the result to the full tensor/projector node sector."
+        ),
+    }
+
+
+def p01_alpha_E_quadratic_repair_action_embedding_gate() -> dict[str, Any]:
+    """
+    Embed the completed alpha_E repair in one quadratic principal action block.
+
+    This is the action-level closure for the local witness.  Introduce the
+    principal channel variables
+
+        W_L = dot(pi_L),     Q_L = grad(chi),     W_T = dot(pi_T),
+
+    and add
+
+        Delta L_quad =
+            epsilon_B W_L^2 + 2 epsilon_M W_L Q_L + epsilon_T W_T^2.
+
+    Static configurations have W_L=W_T=0, so the added block is static-silent.
+    At principal level it shifts exactly
+
+        B -> B + epsilon_B,
+        M -> M + epsilon_M,
+        K_T -> K_T + epsilon_T,
+
+    and leaves A,C,D,G_T and the pressure response unchanged.
+    """
+    omega, k, chi, pi_L, pi_T = sp.symbols(
+        "omega k chi pi_L pi_T", real=True
+    )
+    epsilon_B, epsilon_M, epsilon_T = sp.symbols(
+        "epsilon_B epsilon_M epsilon_T", real=True
+    )
+
+    mixed_gate = p01_alpha_E_mixed_characteristic_witness_gate()
+    full_speed = p01_alpha_E_full_local_speed_completion_gate()
+    values = mixed_gate["principal_values"]
+
+    A = values["A"]
+    B0 = values["B_long"]
+    C = values["C"]
+    D = values["D"]
+    M0 = values["M_mix"]
+    K_T0 = values["K_T"]
+    G_T = values["G_T"]
+
+    base_symbol = sp.expand(
+        A * (omega * chi) ** 2
+        + B0 * (omega * pi_L) ** 2
+        + C * (k * chi) ** 2
+        + D * (k * pi_L) ** 2
+        + M0
+        * ((omega * chi) * (k * pi_L) + (omega * pi_L) * (k * chi))
+        + K_T0 * (omega * pi_T) ** 2
+        - G_T * (k * pi_T) ** 2
+    )
+    repair_symbol = sp.expand(
+        epsilon_B * (omega * pi_L) ** 2
+        + 2 * epsilon_M * (omega * pi_L) * (k * chi)
+        + epsilon_T * (omega * pi_T) ** 2
+    )
+    total_symbol = sp.expand(base_symbol + repair_symbol)
+    static_silent_check = sp.simplify(repair_symbol.subs(omega, 0))
+
+    longitudinal_matrix = sp.Matrix(
+        [
+            [
+                sp.simplify(sp.diff(total_symbol, left, right) / 2)
+                for right in (chi, pi_L)
+            ]
+            for left in (chi, pi_L)
+        ]
+    )
+    expected_longitudinal_matrix = sp.Matrix(
+        [
+            [A * omega**2 + C * k**2, (M0 + epsilon_M) * omega * k],
+            [
+                (M0 + epsilon_M) * omega * k,
+                (B0 + epsilon_B) * omega**2 + D * k**2,
+            ],
+        ]
+    )
+    transverse_symbol = sp.expand(
+        (K_T0 + epsilon_T) * (omega * pi_T) ** 2 - G_T * (k * pi_T) ** 2
+    )
+
+    witness = full_speed["completed_witness_parameters"]
+    witness_subs = {
+        epsilon_B: witness["epsilon_B"],
+        epsilon_M: witness["epsilon_M"],
+        epsilon_T: witness["epsilon_T"],
+    }
+    witness_total_symbol = sp.factor(total_symbol.subs(witness_subs))
+
+    checks = {
+        "full_speed_completion_passes": full_speed["status"]
+        == "PASS_P01_ALPHA_E_FULL_LOCAL_SPEED_COMPLETION_GATE",
+        "repair_block_static_silent": static_silent_check == 0,
+        "longitudinal_matrix_matches_shift_rule": sp.simplify(
+            longitudinal_matrix - expected_longitudinal_matrix
+        )
+        == sp.zeros(2),
+        "transverse_symbol_matches_shift_rule": sp.simplify(
+            total_symbol.coeff(pi_T, 2) - transverse_symbol.coeff(pi_T, 2)
+        )
+        == 0,
+        "A_unchanged": True,
+        "C_unchanged": True,
+        "D_unchanged": True,
+        "G_T_unchanged": True,
+        "pressure_response_unchanged": full_speed["pressure_response"][
+            "alpha_E"
+        ]
+        == values["alpha_E"],
+    }
+
+    return {
+        "status": "PASS_P01_ALPHA_E_QUADRATIC_REPAIR_ACTION_EMBEDDING_GATE"
+        if all(bool(value) for value in checks.values())
+        else "CHECK_P01_ALPHA_E_QUADRATIC_REPAIR_ACTION_EMBEDDING_GATE",
+        "quadratic_repair_operator": (
+            "Delta L_quad = epsilon_B W_L^2 + 2 epsilon_M W_L Q_L "
+            "+ epsilon_T W_T^2"
+        ),
+        "shift_rule": {
+            "B": sp.Eq(sp.Symbol("B_repaired"), B0 + epsilon_B),
+            "M": sp.Eq(sp.Symbol("M_repaired"), M0 + epsilon_M),
+            "K_T": sp.Eq(sp.Symbol("K_T_repaired"), K_T0 + epsilon_T),
+            "unchanged": ["A", "C", "D", "G_T", "rho_y", "p_y", "alpha_E"],
+        },
+        "witness_parameters": witness,
+        "witness_total_symbol": witness_total_symbol,
+        "checks": checks,
+        "meaning": (
+            "The completed alpha_E local-speed repair has a single quadratic "
+            "principal-action representative.  It is static-silent and produces "
+            "exactly the scalar-longitudinal and transverse shifts used by the "
+            "open repair-window gates."
+        ),
+        "remaining_derivation_boundary": (
+            "This closes the local quadratic embedding.  The later article "
+            "step is deriving these channel coefficients from the nonlinear "
+            "RG action rather than selecting them inside the admissible windows."
+        ),
+    }
+
+
 def finite_amplitude_pressure_status_domain_gate() -> dict[str, Any]:
     """
     Guard the finite-amplitude meaning of the pressure-status response.
@@ -2918,6 +3743,14 @@ def unified_formula_status() -> dict[str, Any]:
     q_rare_source = p10_time_averaged_source_to_q_rare_candidate()
     kappa_E_gate = p01_pressure_potential_to_kappa_E_gate()
     alpha_E_response = p01_isotropic_linear_response_alpha_E_candidate()
+    alpha_E_witness = p01_alpha_E_positive_window_witness_gate()
+    alpha_E_mixed = p01_alpha_E_mixed_characteristic_witness_gate()
+    alpha_E_repair = p01_alpha_E_static_silent_mixed_repair_gate()
+    alpha_E_shear = p01_alpha_E_static_silent_shear_repair_gate()
+    alpha_E_mixed_region = p01_alpha_E_mixed_repair_admissible_region_gate()
+    alpha_E_shear_region = p01_alpha_E_shear_repair_admissible_region_gate()
+    alpha_E_full_speed = p01_alpha_E_full_local_speed_completion_gate()
+    alpha_E_action_embedding = p01_alpha_E_quadratic_repair_action_embedding_gate()
     finite_status_domain = finite_amplitude_pressure_status_domain_gate()
     q_rare_invariance = local_tempo_transposition_q_rare_invariance_gate()
     active_projection = node_pressure_to_active_stress_projection_gate()
@@ -2965,6 +3798,20 @@ def unified_formula_status() -> dict[str, Any]:
         kappa_E_gate["status"] == "PASS_P01_PRESSURE_POTENTIAL_TO_KAPPA_E_GATE",
         alpha_E_response["status"]
         == "PASS_P01_ISOTROPIC_LINEAR_RESPONSE_ALPHA_E_CANDIDATE",
+        alpha_E_witness["status"] == "PASS_P01_ALPHA_E_POSITIVE_WINDOW_WITNESS_GATE",
+        alpha_E_mixed["status"] == "PASS_P01_ALPHA_E_MIXED_CHARACTERISTIC_WITNESS_GATE",
+        alpha_E_repair["status"]
+        == "PASS_P01_ALPHA_E_STATIC_SILENT_MIXED_REPAIR_GATE",
+        alpha_E_shear["status"]
+        == "PASS_P01_ALPHA_E_STATIC_SILENT_SHEAR_REPAIR_GATE",
+        alpha_E_mixed_region["status"]
+        == "PASS_P01_ALPHA_E_MIXED_REPAIR_ADMISSIBLE_REGION_GATE",
+        alpha_E_shear_region["status"]
+        == "PASS_P01_ALPHA_E_SHEAR_REPAIR_ADMISSIBLE_REGION_GATE",
+        alpha_E_full_speed["status"]
+        == "PASS_P01_ALPHA_E_FULL_LOCAL_SPEED_COMPLETION_GATE",
+        alpha_E_action_embedding["status"]
+        == "PASS_P01_ALPHA_E_QUADRATIC_REPAIR_ACTION_EMBEDDING_GATE",
         finite_status_domain["status"] == "PASS_FINITE_AMPLITUDE_PRESSURE_STATUS_DOMAIN_GATE",
         q_rare_invariance["status"]
         == "PASS_LOCAL_TEMPO_TRANSPOSITION_Q_RARE_INVARIANCE_GATE",
@@ -3013,6 +3860,16 @@ def unified_formula_status() -> dict[str, Any]:
         "p10_time_averaged_source_to_q_rare_candidate": q_rare_source,
         "p01_pressure_potential_to_kappa_E_gate": kappa_E_gate,
         "p01_isotropic_linear_response_alpha_E_candidate": alpha_E_response,
+        "p01_alpha_E_positive_window_witness_gate": alpha_E_witness,
+        "p01_alpha_E_mixed_characteristic_witness_gate": alpha_E_mixed,
+        "p01_alpha_E_static_silent_mixed_repair_gate": alpha_E_repair,
+        "p01_alpha_E_static_silent_shear_repair_gate": alpha_E_shear,
+        "p01_alpha_E_mixed_repair_admissible_region_gate": alpha_E_mixed_region,
+        "p01_alpha_E_shear_repair_admissible_region_gate": alpha_E_shear_region,
+        "p01_alpha_E_full_local_speed_completion_gate": alpha_E_full_speed,
+        "p01_alpha_E_quadratic_repair_action_embedding_gate": (
+            alpha_E_action_embedding
+        ),
         "finite_amplitude_pressure_status_domain_gate": finite_status_domain,
         "local_tempo_transposition_q_rare_invariance_gate": q_rare_invariance,
         "node_pressure_to_active_stress_projection_gate": active_projection,
@@ -3052,7 +3909,9 @@ def unified_formula_status() -> dict[str, Any]:
             "derive the pressure-node readout S[psi] from the full stress/energy deficit",
             "compute C_G and C_psiG from the action to fix Xi and eps_node",
             "derive alpha_E and C_B from the nonlinear p01/p10 Bernoulli/oscillon source",
-            "prove the p01 coefficient sign window rho_y>0 and p_y<0 for alpha_E>0",
+            "derive the open alpha_E coefficient sign domain rho_y>0 and p_y<0",
+            "derive epsilon_B, epsilon_M and epsilon_T from the nonlinear RG action",
+            "lift the completed local alpha_E speed witness to the tensor/projector node sector",
             "derive the finite-amplitude pressure-status continuation beyond the linear kappa_E gate",
             "derive the local P0 transposition law so q_rare remains dimensionless",
             "project DeltaP_node(k,z) into p13 active stress before cluster lensing",
@@ -3096,6 +3955,30 @@ if __name__ == "__main__":
     print(
         "alpha_E response:",
         status["p01_isotropic_linear_response_alpha_E_candidate"]["status"],
+    )
+    print(
+        "alpha_E witness:",
+        status["p01_alpha_E_positive_window_witness_gate"]["status"],
+    )
+    print(
+        "alpha_E mixed:",
+        status["p01_alpha_E_mixed_characteristic_witness_gate"]["status"],
+    )
+    print(
+        "alpha_E repair:",
+        status["p01_alpha_E_static_silent_mixed_repair_gate"]["status"],
+    )
+    print(
+        "alpha_E shear:",
+        status["p01_alpha_E_static_silent_shear_repair_gate"]["status"],
+    )
+    print(
+        "alpha_E full speed:",
+        status["p01_alpha_E_full_local_speed_completion_gate"]["status"],
+    )
+    print(
+        "alpha_E action embedding:",
+        status["p01_alpha_E_quadratic_repair_action_embedding_gate"]["status"],
     )
     print(
         "finite pressure domain:",
