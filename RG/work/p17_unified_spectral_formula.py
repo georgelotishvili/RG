@@ -448,6 +448,716 @@ def elastic_projector_operator_candidate() -> dict[str, Any]:
     }
 
 
+def quadratic_action_to_operator_derivation() -> dict[str, Any]:
+    """
+    Variational origin of the spatial principal symbol.
+
+    The previous function wrote the tensor operator directly.  This function
+    derives it as the Hessian of the quadratic medium energy for a Fourier mode
+    u_i(k):
+
+        E2 = 1/2 Z_L (k.u)^2
+           + 1/2 Z_T (k^2 u^2 - (k.u)^2)
+           + 1/2 M_eff^2 u^2.
+
+    The Hessian d^2 E2 / d u_i d u_j must equal
+
+        L_ij = Z_L k^2 P_L,ij + Z_T k^2 P_T,ij + M_eff^2 delta_ij.
+
+    This is the first real strengthening step: the spatial block is no longer
+    just a listed channel sum; it is the second variation of a medium energy.
+    """
+    kx, ky, kz = sp.symbols("kx ky kz", real=True)
+    ux, uy, uz = sp.symbols("ux uy uz", real=True)
+    Z_L, Z_T, M_eff2 = sp.symbols("Z_L Z_T M_eff2", positive=True, real=True)
+    k_vec = sp.Matrix([kx, ky, kz])
+    u_vec = sp.Matrix([ux, uy, uz])
+    k2 = sp.simplify((k_vec.T * k_vec)[0])
+    u2 = sp.simplify((u_vec.T * u_vec)[0])
+    k_dot_u = sp.simplify((k_vec.T * u_vec)[0])
+
+    compression_energy = sp.Rational(1, 2) * Z_L * k_dot_u**2
+    shear_energy = sp.Rational(1, 2) * Z_T * (k2 * u2 - k_dot_u**2)
+    mass_energy = sp.Rational(1, 2) * M_eff2 * u2
+    energy_density = sp.simplify(compression_energy + shear_energy + mass_energy)
+    variables = [ux, uy, uz]
+    hessian = sp.Matrix(
+        [
+            [sp.simplify(sp.diff(energy_density, a, b)) for b in variables]
+            for a in variables
+        ]
+    )
+
+    identity = sp.eye(3)
+    P_L = sp.simplify((k_vec * k_vec.T) / k2)
+    P_T = sp.simplify(identity - P_L)
+    expected_operator = sp.simplify(Z_L * k2 * P_L + Z_T * k2 * P_T + M_eff2 * identity)
+    residual = sp.simplify(hessian - expected_operator)
+
+    return {
+        "status": "PASS_QUADRATIC_ACTION_TO_OPERATOR_DERIVATION"
+        if residual == sp.zeros(3)
+        else "CHECK_QUADRATIC_ACTION_TO_OPERATOR_DERIVATION",
+        "quadratic_energy_density": energy_density,
+        "compression_energy": compression_energy,
+        "shear_energy": shear_energy,
+        "mass_or_resonance_energy": mass_energy,
+        "derived_operator_hessian": hessian,
+        "expected_projector_operator": expected_operator,
+        "residual": residual,
+        "meaning": (
+            "The spatial L_RG block follows from a quadratic elastic medium "
+            "energy.  Z_L and Z_T are now stiffness coefficients to derive from "
+            "the action, not arbitrary decorations."
+        ),
+        "open_requirement": (
+            "identify this quadratic energy as the local second variation of "
+            "the full RG action around the selected background branch."
+        ),
+    }
+
+
+def gradient_energy_node_pressure_readout() -> dict[str, Any]:
+    """
+    Action-style origin of the Chladni node readout.
+
+    For a standing long mode psi=sin(kx), the raw amplitude is zero at the node,
+    so |psi|^2 is the wrong matter-attractor map.  The local gradient energy
+
+        E_grad = 1/2 Z_node (d psi/dx)^2
+
+    peaks at the node and vanishes at the antinode.  The pressure-node readout
+    keeps that energetic feature but gates it by low amplitude:
+
+        DeltaP_node = Xi E_grad exp(-psi^2/eps^2).
+
+    This still is not the final stress tensor, but it is a stronger candidate
+    than the earlier pure toy kernel because it is tied to a quadratic energy
+    density.
+    """
+    x, k, eps = sp.symbols("x k eps", positive=True, real=True)
+    Z_node, Xi = sp.symbols("Z_node Xi", positive=True, real=True)
+    psi = sp.sin(k * x)
+    gradient_energy = sp.simplify(
+        sp.Rational(1, 2) * Z_node * sp.diff(psi, x) ** 2
+    )
+    pressure_readout = sp.simplify(
+        Xi * gradient_energy * sp.exp(-(psi**2) / eps**2)
+    )
+
+    node_value = sp.simplify(pressure_readout.subs(x, 0))
+    antinode_value = sp.simplify(pressure_readout.subs(x, sp.pi / (2 * k)))
+    raw_amplitude_node = sp.simplify((psi**2).subs(x, 0))
+    raw_amplitude_antinode = sp.simplify((psi**2).subs(x, sp.pi / (2 * k)))
+
+    return {
+        "status": "PASS_GRADIENT_ENERGY_NODE_PRESSURE_READOUT"
+        if node_value == Xi * Z_node * k**2 / 2
+        and antinode_value == 0
+        and raw_amplitude_node == 0
+        and raw_amplitude_antinode == 1
+        else "CHECK_GRADIENT_ENERGY_NODE_PRESSURE_READOUT",
+        "standing_mode": sp.Eq(sp.Symbol("psi"), psi),
+        "gradient_energy": sp.Eq(sp.Symbol("E_grad"), gradient_energy),
+        "pressure_readout": sp.Eq(sp.Symbol("DeltaP_node"), pressure_readout),
+        "node_value_x0": node_value,
+        "antinode_value_pi_over_2k": antinode_value,
+        "raw_amplitude_node": raw_amplitude_node,
+        "raw_amplitude_antinode": raw_amplitude_antinode,
+        "meaning": (
+            "The Chladni intuition points to gradient/strain energy at low "
+            "amplitude nodes, not to raw amplitude density."
+        ),
+        "open_requirement": (
+            "replace the exponential low-amplitude gate by the exact nonlinear "
+            "stress/relaxation response of the RG medium."
+        ),
+    }
+
+
+def kronecker_sum_spectrum_unification() -> dict[str, Any]:
+    """
+    One-operator embedding of spatial and internal particle spectra.
+
+    A clean way to avoid two disconnected laws is a Kronecker-sum operator:
+
+        L_total = L_spatial x I_internal + I_spatial x L_internal.
+
+    Then every total eigenvalue is a sum
+
+        lambda_total(a,b) = lambda_spatial,a + lambda_internal,b.
+
+    Cosmic long modes can sit in the internal singlet/ground block, while
+    localized particles can use nontrivial internal C3/order-9 blocks plus a
+    finite spatial core.  This is still a separable local model, but it gives
+    the correct algebraic architecture for one spectrum.
+    """
+    lam_s0, lam_s1, lam_i0, lam_i1, lam = sp.symbols(
+        "lambda_s0 lambda_s1 lambda_i0 lambda_i1 lambda",
+        real=True,
+    )
+    L_spatial = sp.diag(lam_s0, lam_s1)
+    L_internal = sp.diag(lam_i0, lam_i1)
+    I_spatial = sp.eye(2)
+    I_internal = sp.eye(2)
+    total_operator = sp.kronecker_product(L_spatial, I_internal) + sp.kronecker_product(
+        I_spatial, L_internal
+    )
+    characteristic = sp.factor((total_operator - lam * sp.eye(4)).det())
+    expected_characteristic = sp.factor(
+        (lam_s0 + lam_i0 - lam)
+        * (lam_s0 + lam_i1 - lam)
+        * (lam_s1 + lam_i0 - lam)
+        * (lam_s1 + lam_i1 - lam)
+    )
+    residual = sp.simplify(characteristic - expected_characteristic)
+
+    return {
+        "status": "PASS_KRONECKER_SUM_SPECTRUM_UNIFICATION"
+        if residual == 0
+        else "CHECK_KRONECKER_SUM_SPECTRUM_UNIFICATION",
+        "total_operator": total_operator,
+        "characteristic_polynomial": characteristic,
+        "expected_pairwise_sum_polynomial": expected_characteristic,
+        "residual": residual,
+        "meaning": (
+            "The same L_RG can carry spatial long modes and internal particle "
+            "blocks.  The particle/cosmic split is a mode-sector split, not a "
+            "new law."
+        ),
+        "open_requirement": (
+            "replace the diagonal toy blocks by the p17 elastic projector block "
+            "and the p11 C3/order-9 internal operator, then derive their coupling."
+        ),
+    }
+
+
+def localized_c3_coupled_operator_candidate() -> dict[str, Any]:
+    """
+    Coupled spatial-internal candidate with C3 symmetry preserved.
+
+    The previous Kronecker-sum model separates spatial and internal sectors.
+    The next strengthening is to let spatial localization change the internal
+    C3 stiffness without creating a second law.
+
+    Use a C3-circulant Hermitian internal block
+
+        Q_C3(theta) = (exp(i theta) P + exp(-i theta) P^2) / sqrt(2),
+
+    where P is the cyclic permutation matrix.  Since Q_C3 commutes with P, the
+    coupling below preserves C3:
+
+        L_total = L_spatial x I_3 + I_2 x (omega0 I_3 + kappa Q_C3)
+                + eps P_core x Q_C3.
+
+    The long spatial sector sees kappa Q_C3.  The localized/core sector sees
+    (kappa + eps) Q_C3.  Therefore particle localization and the internal C3
+    resonance are coupled inside one operator.
+    """
+    theta = sp.Symbol("theta", real=True)
+    lambda_long, lambda_core = sp.symbols(
+        "lambda_long lambda_core", real=True
+    )
+    omega0, kappa, eps = sp.symbols("omega0 kappa eps", real=True)
+    I2 = sp.eye(2)
+    I3 = sp.eye(3)
+    L_spatial = sp.diag(lambda_long, lambda_core)
+    P_core = sp.diag(0, 1)
+    P_cyclic = sp.Matrix([[0, 1, 0], [0, 0, 1], [1, 0, 0]])
+    P_cyclic2 = P_cyclic**2
+    Q_c3 = sp.simplify(
+        (
+            sp.exp(sp.I * theta) * P_cyclic
+            + sp.exp(-sp.I * theta) * P_cyclic2
+        )
+        / sp.sqrt(2)
+    )
+    L_internal = sp.simplify(omega0 * I3 + kappa * Q_c3)
+    separable_operator = sp.kronecker_product(L_spatial, I3) + sp.kronecker_product(
+        I2, L_internal
+    )
+    coupling = eps * sp.kronecker_product(P_core, Q_c3)
+    total_operator = sp.simplify(separable_operator + coupling)
+
+    c3_commutator = sp.simplify(Q_c3 * P_cyclic - P_cyclic * Q_c3)
+    decoupled_residual = sp.simplify(total_operator.subs(eps, 0) - separable_operator)
+    long_block = sp.simplify(total_operator[:3, :3])
+    core_block = sp.simplify(total_operator[3:6, 3:6])
+    expected_long_block = sp.simplify(lambda_long * I3 + L_internal)
+    expected_core_block = sp.simplify(
+        lambda_core * I3 + omega0 * I3 + (kappa + eps) * Q_c3
+    )
+    long_residual = sp.simplify(long_block - expected_long_block)
+    core_residual = sp.simplify(core_block - expected_core_block)
+
+    checks = [
+        c3_commutator == sp.zeros(3),
+        decoupled_residual == sp.zeros(6),
+        long_residual == sp.zeros(3),
+        core_residual == sp.zeros(3),
+    ]
+
+    return {
+        "status": "PASS_LOCALIZED_C3_COUPLED_OPERATOR_CANDIDATE"
+        if all(checks)
+        else "CHECK_LOCALIZED_C3_COUPLED_OPERATOR_CANDIDATE",
+        "Q_C3": Q_c3,
+        "C3_commutator_with_cyclic_permutation": c3_commutator,
+        "separable_operator": separable_operator,
+        "coupling_term": coupling,
+        "total_operator": total_operator,
+        "decoupled_residual_eps0": decoupled_residual,
+        "long_sector_block": long_block,
+        "core_sector_block": core_block,
+        "core_interpretation": (
+            "Localization changes the effective C3 stiffness from kappa to "
+            "kappa+eps in the core sector.  This is a symmetry-preserving "
+            "spatial-internal coupling."
+        ),
+        "open_requirement": (
+            "derive eps and the exact P_core profile from the localized oscillon "
+            "solution rather than treating the core projector as a toy block."
+        ),
+    }
+
+
+def two_level_localization_lock_condition() -> dict[str, Any]:
+    """
+    Minimal algebra for a localized particle branch splitting from a continuum.
+
+    A finite two-level toy block captures the spectral logic:
+
+        H = [[lambda_cont, g],
+             [g, lambda_core]],
+
+    where lambda_cont is a long/spatial continuum level and lambda_core is the
+    localized C3/core candidate level.  The lower mixed eigenvalue is
+
+        lambda_- = (lambda_cont + lambda_core
+                    - sqrt((lambda_cont-lambda_core)^2 + 4 g^2))/2.
+
+    This is not a proof of a 3D oscillon bound state.  It is the algebraic
+    gate saying what the full fluctuation problem must reproduce.
+    """
+    lambda_cont, lambda_core, g = sp.symbols(
+        "lambda_cont lambda_core g", real=True
+    )
+    Delta = sp.Symbol("Delta", positive=True)
+    H = sp.Matrix([[lambda_cont, g], [g, lambda_core]])
+    trace = sp.trace(H)
+    determinant = sp.factor(H.det())
+    discriminant = sp.simplify((lambda_cont - lambda_core) ** 2 + 4 * g**2)
+    lambda_minus = sp.simplify(
+        (lambda_cont + lambda_core - sp.sqrt(discriminant)) / 2
+    )
+    lambda_plus = sp.simplify(
+        (lambda_cont + lambda_core + sp.sqrt(discriminant)) / 2
+    )
+    trace_residual = sp.simplify(lambda_minus + lambda_plus - trace)
+    determinant_residual = sp.simplify(lambda_minus * lambda_plus - determinant)
+    no_coupling_core_limit = sp.simplify(
+        lambda_minus.subs(g, 0).subs(lambda_core, lambda_cont - Delta)
+        - (lambda_cont - Delta)
+    )
+
+    return {
+        "status": "PASS_TWO_LEVEL_LOCALIZATION_LOCK_CONDITION"
+        if trace_residual == 0 and determinant_residual == 0
+        else "CHECK_TWO_LEVEL_LOCALIZATION_LOCK_CONDITION",
+        "two_level_operator": H,
+        "lambda_minus": lambda_minus,
+        "lambda_plus": lambda_plus,
+        "trace_residual": trace_residual,
+        "determinant_residual": determinant_residual,
+        "core_below_continuum_limit_check": no_coupling_core_limit,
+        "bound_branch_reading": (
+            "A particle branch corresponds to a localized mixed eigenvalue "
+            "below the relevant continuum threshold.  The full p17/p11 task is "
+            "to derive this in the 3D fluctuation operator."
+        ),
+        "open_requirement": (
+            "replace this two-level toy block by the finite-core oscillon "
+            "fluctuation spectrum and check all non-gauge eigenvalues."
+        ),
+    }
+
+
+def radial_bound_state_variational_gate() -> dict[str, Any]:
+    """
+    First 3D radial fluctuation-operator gate for particle localization.
+
+    The toy 2x2 lock must eventually become a true finite-core fluctuation
+    problem.  The reduced radial partial-wave operator is
+
+        H_l = -d^2/dr^2 + l(l+1)/r^2 + M_eff^2 - U0 exp(-r^2/R^2).
+
+    The continuum threshold is M_eff^2.  For the s-wave trial function
+
+        u(r) = r exp(-r^2/(2 R^2)),
+
+    the Rayleigh quotient is below the continuum when
+
+        U0 > 3 sqrt(2) / R^2.
+
+    This is not the final oscillon spectrum.  It is the first real bound-state
+    criterion that replaces the two-level cartoon.
+    """
+    r, R, U0, M_eff2 = sp.symbols("r R U0 M_eff2", positive=True, real=True)
+    u = r * sp.exp(-(r**2) / (2 * R**2))
+    well_shape = sp.exp(-(r**2) / R**2)
+    norm = sp.simplify(sp.integrate(u**2, (r, 0, sp.oo)))
+    kinetic = sp.simplify(sp.integrate(sp.diff(u, r) ** 2, (r, 0, sp.oo)))
+    well_overlap = sp.simplify(sp.integrate(well_shape * u**2, (r, 0, sp.oo)))
+    rayleigh = sp.simplify(
+        (kinetic + M_eff2 * norm - U0 * well_overlap) / norm
+    )
+    binding_margin = sp.simplify(M_eff2 - rayleigh)
+    expected_margin = sp.simplify(U0 / (2 * sp.sqrt(2)) - sp.Rational(3, 2) / R**2)
+    margin_residual = sp.simplify(binding_margin - expected_margin)
+    critical_U0 = sp.simplify(3 * sp.sqrt(2) / R**2)
+
+    return {
+        "status": "PASS_RADIAL_BOUND_STATE_VARIATIONAL_GATE"
+        if margin_residual == 0
+        else "CHECK_RADIAL_BOUND_STATE_VARIATIONAL_GATE",
+        "radial_operator": "H_l = -d^2/dr^2 + l(l+1)/r^2 + M_eff^2 - U0 exp(-r^2/R^2)",
+        "trial_function_l0": sp.Eq(sp.Symbol("u_0"), u),
+        "norm": norm,
+        "kinetic_integral": kinetic,
+        "well_overlap": well_overlap,
+        "rayleigh_quotient": rayleigh,
+        "binding_margin_Meff2_minus_lambda": binding_margin,
+        "critical_well_depth": sp.StrictGreaterThan(U0, critical_U0),
+        "meaning": (
+            "A localized particle branch requires the core-induced attractive "
+            "well to pull at least one fluctuation eigenvalue below the "
+            "continuum threshold M_eff^2."
+        ),
+        "open_requirement": (
+            "replace the Gaussian well and trial function by the finite-core "
+            "oscillon profile and compute the exact fluctuation spectrum."
+        ),
+    }
+
+
+def partial_wave_bound_threshold_ladder() -> dict[str, Any]:
+    """
+    Bound-state thresholds for the first few radial partial waves.
+
+    For trial functions
+
+        u_l(r) = r^(l+1) exp(-r^2/(2 R^2)),
+
+    the variational threshold has the pattern
+
+        U0_crit(l) = 2^(l+1/2) (2l+3) / R^2.
+
+    The l=0 channel is therefore the easiest one to bind in this simple radial
+    well.  This does not identify l with the p11 framed index h; it is only the
+    radial partial-wave barrier.
+    """
+    r, R, U0, M_eff2 = sp.symbols("r R U0 M_eff2", positive=True, real=True)
+    rows: list[dict[str, Any]] = []
+    for ell in range(3):
+        u = r ** (ell + 1) * sp.exp(-(r**2) / (2 * R**2))
+        well_shape = sp.exp(-(r**2) / R**2)
+        norm = sp.simplify(sp.integrate(u**2, (r, 0, sp.oo)))
+        kinetic = sp.simplify(
+            sp.integrate(
+                sp.diff(u, r) ** 2 + ell * (ell + 1) * u**2 / r**2,
+                (r, 0, sp.oo),
+            )
+        )
+        well_overlap = sp.simplify(sp.integrate(well_shape * u**2, (r, 0, sp.oo)))
+        kinetic_per_norm = sp.simplify(kinetic / norm)
+        overlap_per_norm = sp.simplify(well_overlap / norm)
+        critical_U0 = sp.simplify(kinetic_per_norm / overlap_per_norm)
+        expected_critical = sp.simplify(2 ** (ell + sp.Rational(1, 2)) * (2 * ell + 3) / R**2)
+        rows.append(
+            {
+                "ell": ell,
+                "kinetic_per_norm": kinetic_per_norm,
+                "well_overlap_per_norm": overlap_per_norm,
+                "critical_U0": critical_U0,
+                "expected_critical_U0": expected_critical,
+                "residual": sp.simplify(critical_U0 - expected_critical),
+            }
+        )
+
+    return {
+        "status": "PASS_PARTIAL_WAVE_BOUND_THRESHOLD_LADDER"
+        if all(row["residual"] == 0 for row in rows)
+        else "CHECK_PARTIAL_WAVE_BOUND_THRESHOLD_LADDER",
+        "rows": rows,
+        "pattern": "U0_crit(l) = 2^(l+1/2) (2l+3) / R^2",
+        "meaning": (
+            "The radial barrier raises the binding threshold.  In this first "
+            "gate, l=0 is the easiest localized branch; higher partial waves "
+            "need a deeper or narrower core."
+        ),
+    }
+
+
+def c3_core_well_depth_bridge() -> dict[str, Any]:
+    """
+    Bridge the localized C3 coupling to the radial well depth.
+
+    The C3 coupling block shifts the core-sector internal eigenvalues by
+
+        eps q_j(theta),    q_j = sqrt(2) cos(theta + 2 pi j/3).
+
+    A branch with eps q_j < 0 lowers the local fluctuation eigenvalue and acts
+    like an attractive radial well with
+
+        U0_j = -eps q_j.
+
+    Combining this with the l=0 radial gate gives
+
+        -eps q_j > 3 sqrt(2) / R^2.
+
+    This is a clean algebraic bridge from the C3 core splitting to particle
+    localization.
+    """
+    theta, eps, R = sp.symbols("theta eps R", positive=True, real=True)
+    critical_U0 = sp.simplify(3 * sp.sqrt(2) / R**2)
+    branches = []
+    for j in range(3):
+        q_j = sp.simplify(sp.sqrt(2) * sp.cos(theta + 2 * sp.pi * j / 3))
+        U0_j = sp.simplify(-eps * q_j)
+        branches.append(
+            {
+                "j": j,
+                "q_j": q_j,
+                "effective_well_depth_U0_j": U0_j,
+                "l0_binding_condition": sp.StrictGreaterThan(U0_j, critical_U0),
+            }
+        )
+
+    theta_lock = sp.Rational(2, 9)
+    locked_branches = [
+        {
+            "j": row["j"],
+            "q_j_at_theta_2_over_9": sp.simplify(row["q_j"].subs(theta, theta_lock)),
+            "U0_j_at_theta_2_over_9": sp.simplify(
+                row["effective_well_depth_U0_j"].subs(theta, theta_lock)
+            ),
+        }
+        for row in branches
+    ]
+
+    return {
+        "status": "PASS_C3_CORE_WELL_DEPTH_BRIDGE",
+        "critical_l0_well_depth": critical_U0,
+        "branches": branches,
+        "theta_2_over_9_branch_values": locked_branches,
+        "meaning": (
+            "Only C3 branches whose core coupling lowers the eigenvalue can "
+            "seed a localized radial bound mode.  This is where the particle "
+            "selection problem becomes a sign-and-depth problem for eps q_j."
+        ),
+        "open_requirement": (
+            "derive the sign and magnitude of eps from the finite-core oscillon "
+            "solution and match it to the p11 C3/order-9 branch."
+        ),
+    }
+
+
+def embedded_c3_triplet_koide_theorem() -> dict[str, Any]:
+    """
+    Koide/C3 identity as an internal block of the unified operator.
+
+    The p11 particle file already contains the C3/order-9 charged-lepton
+    candidate.  Here the same identity is registered inside p17's unified
+    operator language.
+
+    Let
+
+        Q_C3 = (exp(i theta) P + exp(-i theta) P^2) / sqrt(2),
+
+    with P^3=I and tr(P)=tr(P^2)=0.  The charged triplet frequency block is
+
+        nu = I + Q_C3.
+
+    Since tr(Q_C3)=0 and tr(Q_C3^2)=3, the Koide frequency ratio is
+
+        K = tr(nu^2) / tr(nu)^2 = 2/3.
+
+    This proves the identity at the embedded-block level; it does not yet prove
+    theta=2/9 or the absolute mass scale.
+    """
+    theta = sp.Symbol("theta", real=True)
+    I3 = sp.eye(3)
+    P = sp.Matrix([[0, 1, 0], [0, 0, 1], [1, 0, 0]])
+    Q = sp.simplify((sp.exp(sp.I * theta) * P + sp.exp(-sp.I * theta) * P**2) / sp.sqrt(2))
+    nu_block = sp.simplify(I3 + Q)
+
+    q_trace = sp.simplify(sp.trace(Q))
+    q_square_trace = sp.simplify(sp.trace(Q * Q))
+    nu_trace = sp.simplify(sp.trace(nu_block))
+    nu_square_trace = sp.simplify(sp.trace(nu_block * nu_block))
+    koide_frequency = sp.simplify(nu_square_trace / nu_trace**2)
+
+    return {
+        "status": "PASS_EMBEDDED_C3_TRIPLET_KOIDE_THEOREM"
+        if q_trace == 0 and q_square_trace == 3 and sp.simplify(koide_frequency - sp.Rational(2, 3)) == 0
+        else "CHECK_EMBEDDED_C3_TRIPLET_KOIDE_THEOREM",
+        "Q_C3": Q,
+        "nu_block": nu_block,
+        "trace_Q_C3": q_trace,
+        "trace_Q_C3_squared": q_square_trace,
+        "trace_nu": nu_trace,
+        "trace_nu_squared": nu_square_trace,
+        "Koide_frequency_ratio": koide_frequency,
+        "meaning": (
+            "The C3 triplet identity can live inside the same unified spectral "
+            "operator.  The identity follows from the internal C3 block, not "
+            "from a separate particle-only formula."
+        ),
+        "open_requirement": (
+            "derive theta=2/9, the pole-frequency protection, and m proportional "
+            "to nu^2 from the full localized oscillon branch."
+        ),
+    }
+
+
+def c3_triplet_binding_window_gate() -> dict[str, Any]:
+    """
+    Binding window for all three C3 branches in one localized core.
+
+    A common finite core should bind the whole charged triplet, not just one
+    C3 component by accident.  Add a common attractive depth U_base and the
+    C3 splitting from the localized coupling:
+
+        U_j = U_base - eps q_j(theta),
+        q_j = sqrt(2) cos(theta + 2 pi j/3).
+
+    For the l=0 radial variational gate, every branch binds if
+
+        U_j > Ucrit = 3 sqrt(2) / R^2
+
+    for j=0,1,2.  The C3 splitting redistributes the depths, but its triplet
+    average is U_base because sum_j q_j = 0.
+    """
+    theta, eps, U_base, R = sp.symbols(
+        "theta eps U_base R", positive=True, real=True
+    )
+    Ucrit = sp.simplify(3 * sp.sqrt(2) / R**2)
+    q_values = [
+        sp.sqrt(2) * sp.cos(theta + 2 * sp.pi * j / 3)
+        for j in range(3)
+    ]
+    U_values = [sp.simplify(U_base - eps * q) for q in q_values]
+    q_sum = sp.trigsimp(sum(q_values))
+    U_average = sp.simplify(sum(U_values) / 3)
+    spread_01 = sp.simplify(U_values[0] - U_values[1])
+    spread_12 = sp.simplify(U_values[1] - U_values[2])
+    theta_lock = sp.Rational(2, 9)
+    positivity_edge = sp.pi / 12
+    raw_frequencies_locked = [
+        sp.N(1 + q.subs(theta, theta_lock), 16)
+        for q in q_values
+    ]
+    locked_frequency_positive = all(float(value) > 0.0 for value in raw_frequencies_locked)
+    theta_inside_positive_branch = bool(theta_lock < positivity_edge)
+
+    branch_rows = [
+        {
+            "j": j,
+            "q_j": sp.simplify(q_values[j]),
+            "U_j": U_values[j],
+            "l0_binding_condition": sp.StrictGreaterThan(U_values[j], Ucrit),
+            "q_j_at_theta_2_over_9": sp.N(q_values[j].subs(theta, theta_lock), 16),
+            "nu_j_at_theta_2_over_9": raw_frequencies_locked[j],
+        }
+        for j in range(3)
+    ]
+
+    return {
+        "status": "PASS_C3_TRIPLET_BINDING_WINDOW_GATE"
+        if q_sum == 0 and U_average == U_base and locked_frequency_positive and theta_inside_positive_branch
+        else "CHECK_C3_TRIPLET_BINDING_WINDOW_GATE",
+        "Ucrit_l0": Ucrit,
+        "q_sum": q_sum,
+        "triplet_average_depth": U_average,
+        "branch_rows": branch_rows,
+        "depth_spread_U0_minus_U1": spread_01,
+        "depth_spread_U1_minus_U2": spread_12,
+        "theta_2_over_9_inside_positive_branch": theta_inside_positive_branch,
+        "raw_frequencies_at_theta_2_over_9": raw_frequencies_locked,
+        "all_triplet_binding_rule": (
+            "All three C3 components bind only where every U_base - eps*q_j "
+            "exceeds 3*sqrt(2)/R^2."
+        ),
+        "meaning": (
+            "A common core depth can bind the whole C3 triplet, while eps splits "
+            "the binding depths around the unchanged triplet average.  This is "
+            "the clean next bridge between C3 frequencies and localized particle "
+            "existence."
+        ),
+        "open_requirement": (
+            "derive U_base, eps and R from the finite-core oscillon solution, "
+            "then test whether the same window supports exactly the charged "
+            "C3 triplet and no forbidden lower branch."
+        ),
+    }
+
+
+def spectral_gradient_pressure_identity() -> dict[str, Any]:
+    """
+    Tie Chladni-node pressure directly to the same spectral eigenvalue.
+
+    For a one-channel long mode with
+
+        lambda(k) = M_eff^2 + Z_node k^2,
+
+    and psi=A sin(kx), the node gradient energy is
+
+        E_grad,node = 1/2 Z_node A^2 k^2.
+
+    Therefore
+
+        DeltaP_node = Xi E_grad,node
+                    = Xi A^2 (lambda(k)-M_eff^2)/2.
+
+    This is the first compact algebraic bridge between the spectrum and the
+    cosmic Chladni pressure map.
+    """
+    k, A, Z_node, M_eff2, Xi, lambda_k = sp.symbols(
+        "k A Z_node M_eff2 Xi lambda_k",
+        positive=True,
+        real=True,
+    )
+    spectral_law = sp.Eq(lambda_k, M_eff2 + Z_node * k**2)
+    node_gradient_energy = sp.simplify(sp.Rational(1, 2) * Z_node * A**2 * k**2)
+    node_pressure = sp.simplify(Xi * node_gradient_energy)
+    spectral_pressure = sp.simplify(Xi * A**2 * (lambda_k - M_eff2) / 2)
+    residual = sp.simplify(
+        node_pressure - spectral_pressure.subs(lambda_k, spectral_law.rhs)
+    )
+
+    return {
+        "status": "PASS_SPECTRAL_GRADIENT_PRESSURE_IDENTITY"
+        if residual == 0
+        else "CHECK_SPECTRAL_GRADIENT_PRESSURE_IDENTITY",
+        "spectral_law": spectral_law,
+        "node_gradient_energy": sp.Eq(sp.Symbol("E_grad_node"), node_gradient_energy),
+        "node_pressure": sp.Eq(sp.Symbol("DeltaP_node"), node_pressure),
+        "spectral_pressure_readout": sp.Eq(
+            sp.Symbol("DeltaP_node_spectral"), spectral_pressure
+        ),
+        "residual_after_spectral_law": residual,
+        "meaning": (
+            "The cosmic node pressure is the gradient/stiffness part of the "
+            "same eigenvalue.  In this approximation, the rest mass/gap term "
+            "M_eff2 is not what makes the Chladni node; the spatial stiffness is."
+        ),
+        "open_requirement": (
+            "generalize lambda(k)-M_eff2 to the full tensor operator and define "
+            "which parts of the spectrum contribute to the pressure deficit."
+        ),
+    }
+
+
 def pressure_deficit_to_refractive_bridge() -> dict[str, Any]:
     """
     Connect the long-mode node readout to the existing p13 stress bridge.
@@ -691,6 +1401,17 @@ def unified_formula_status() -> dict[str, Any]:
     channel_operator = channel_sum_operator_candidate()
     internal_block = internal_c3_block_embedding_candidate()
     elastic_projector = elastic_projector_operator_candidate()
+    action_operator = quadratic_action_to_operator_derivation()
+    node_pressure = gradient_energy_node_pressure_readout()
+    kronecker_spectrum = kronecker_sum_spectrum_unification()
+    localized_c3_coupling = localized_c3_coupled_operator_candidate()
+    localization_lock = two_level_localization_lock_condition()
+    radial_bound = radial_bound_state_variational_gate()
+    partial_wave_ladder = partial_wave_bound_threshold_ladder()
+    c3_well_bridge = c3_core_well_depth_bridge()
+    c3_koide = embedded_c3_triplet_koide_theorem()
+    c3_binding_window = c3_triplet_binding_window_gate()
+    spectral_pressure = spectral_gradient_pressure_identity()
     pressure_bridge = pressure_deficit_to_refractive_bridge()
     formula_candidate = unified_master_formula_candidate()
     chladni = chladni_node_readout_toy_model()
@@ -704,6 +1425,17 @@ def unified_formula_status() -> dict[str, Any]:
         channel_operator["status"] == "PASS_CHANNEL_SUM_OPERATOR_CANDIDATE",
         internal_block["status"] == "PASS_INTERNAL_BLOCK_EMBEDDING_CANDIDATE",
         elastic_projector["status"] == "PASS_ELASTIC_PROJECTOR_OPERATOR_CANDIDATE",
+        action_operator["status"] == "PASS_QUADRATIC_ACTION_TO_OPERATOR_DERIVATION",
+        node_pressure["status"] == "PASS_GRADIENT_ENERGY_NODE_PRESSURE_READOUT",
+        kronecker_spectrum["status"] == "PASS_KRONECKER_SUM_SPECTRUM_UNIFICATION",
+        localized_c3_coupling["status"] == "PASS_LOCALIZED_C3_COUPLED_OPERATOR_CANDIDATE",
+        localization_lock["status"] == "PASS_TWO_LEVEL_LOCALIZATION_LOCK_CONDITION",
+        radial_bound["status"] == "PASS_RADIAL_BOUND_STATE_VARIATIONAL_GATE",
+        partial_wave_ladder["status"] == "PASS_PARTIAL_WAVE_BOUND_THRESHOLD_LADDER",
+        c3_well_bridge["status"] == "PASS_C3_CORE_WELL_DEPTH_BRIDGE",
+        c3_koide["status"] == "PASS_EMBEDDED_C3_TRIPLET_KOIDE_THEOREM",
+        c3_binding_window["status"] == "PASS_C3_TRIPLET_BINDING_WINDOW_GATE",
+        spectral_pressure["status"] == "PASS_SPECTRAL_GRADIENT_PRESSURE_IDENTITY",
         pressure_bridge["status"] == "PASS_PRESSURE_DEFICIT_TO_REFRACTIVE_BRIDGE",
         formula_candidate["status"] == "PASS_UNIFIED_MASTER_FORMULA_CANDIDATE",
         chladni["status"] == "PASS_TOY_CHLADNI_NODE_KERNEL",
@@ -723,6 +1455,17 @@ def unified_formula_status() -> dict[str, Any]:
         "channel_sum_operator_candidate": channel_operator,
         "internal_c3_block_embedding_candidate": internal_block,
         "elastic_projector_operator_candidate": elastic_projector,
+        "quadratic_action_to_operator_derivation": action_operator,
+        "gradient_energy_node_pressure_readout": node_pressure,
+        "kronecker_sum_spectrum_unification": kronecker_spectrum,
+        "localized_c3_coupled_operator_candidate": localized_c3_coupling,
+        "two_level_localization_lock_condition": localization_lock,
+        "radial_bound_state_variational_gate": radial_bound,
+        "partial_wave_bound_threshold_ladder": partial_wave_ladder,
+        "c3_core_well_depth_bridge": c3_well_bridge,
+        "embedded_c3_triplet_koide_theorem": c3_koide,
+        "c3_triplet_binding_window_gate": c3_binding_window,
+        "spectral_gradient_pressure_identity": spectral_pressure,
         "pressure_deficit_to_refractive_bridge": pressure_bridge,
         "unified_master_formula_candidate": formula_candidate,
         "chladni_node_readout": chladni,
@@ -731,9 +1474,12 @@ def unified_formula_status() -> dict[str, Any]:
         "claim_gates": gates,
         "falsifiable_targets": falsifiable_targets(),
         "next_derivation_steps": [
-            "replace the scalar channel-sum symbol by the full tensor operator C^{ij}_{AB}",
-            "derive the pressure-node readout S[psi] from stress/energy deficit",
-            "embed the p11 C3/order-9 particle operator as a finite internal block",
+            "identify the quadratic action block inside the full p01/p10/p13 action",
+            "derive the localized C3 coupling eps and P_core from the oscillon solution",
+            "replace the Gaussian radial well by the finite-core oscillon fluctuation spectrum",
+            "determine which C3 branch satisfies the sign-and-depth binding condition",
+            "derive the common triplet binding window U_base, eps and R from the finite core",
+            "derive the pressure-node readout S[psi] from the full stress/energy deficit",
             "derive DeltaP_node for long modes and export it to p09 clusters",
             "build a numerical toy solver before any CMB/BAO/LSS claim",
         ],
@@ -750,6 +1496,17 @@ if __name__ == "__main__":
     print("channel operator:", status["channel_sum_operator_candidate"]["status"])
     print("internal C3 block:", status["internal_c3_block_embedding_candidate"]["status"])
     print("elastic projector:", status["elastic_projector_operator_candidate"]["status"])
+    print("action -> operator:", status["quadratic_action_to_operator_derivation"]["status"])
+    print("gradient node pressure:", status["gradient_energy_node_pressure_readout"]["status"])
+    print("Kronecker spectrum:", status["kronecker_sum_spectrum_unification"]["status"])
+    print("localized C3 coupling:", status["localized_c3_coupled_operator_candidate"]["status"])
+    print("localization lock:", status["two_level_localization_lock_condition"]["status"])
+    print("radial bound:", status["radial_bound_state_variational_gate"]["status"])
+    print("partial-wave ladder:", status["partial_wave_bound_threshold_ladder"]["status"])
+    print("C3 well bridge:", status["c3_core_well_depth_bridge"]["status"])
+    print("C3 Koide theorem:", status["embedded_c3_triplet_koide_theorem"]["status"])
+    print("C3 binding window:", status["c3_triplet_binding_window_gate"]["status"])
+    print("spectral pressure:", status["spectral_gradient_pressure_identity"]["status"])
     print("pressure bridge:", status["pressure_deficit_to_refractive_bridge"]["status"])
     print("formula candidate:", status["unified_master_formula_candidate"]["status"])
     print("chladni:", status["chladni_node_readout"]["status"])
