@@ -1634,7 +1634,7 @@ def open_tasks():
         "ორიარხიანი vortex closure-ის RG action/coarse-graining-დან გამოყვანა",
         "a_0 = c·H_0/(2π)-ის 2π ნორმალიზაცია და baryonic/vortex coupling მექანიზმი",
         "SPARC ~175 გალაქტიკის χ^2 fit რეალური rotmod მონაცემებით",
-        "Bullet/Abell 520/El Gordo lensing შედარება (p09_bullet.py)",
+        "Bullet/Abell 520/El Gordo lensing შედარება და გროვების cosmic-node არხი (p09_bullet.py)",
         "χ/Route-B relaxation law-ის RG vortex dynamics-იდან გამოყვანა",
     ]
 
@@ -1930,10 +1930,10 @@ def stage_b4_mond_old_file_status():
         "OLD_13_Relics_status": "migrated into p07_mond.py STAGE B1 chi Route-A/stability ledger",
         "OLD_ISPG_MOND_status": (
             "core migrated into p07_mond.py Phase33 + STAGE B2-B4; "
-            "cluster-merger branch lives in p09_bullet.py"
+            "cluster-merger and cosmic-node cluster branch lives in p09_bullet.py"
         ),
         "safe_to_delete_condition": (
-            "safe after p09 cluster residual-binding audit is marked, because "
+            "safe after p09 cosmic-node cluster residual-binding audit is marked, because "
             "OLD/ISPG_MOND also contains cluster and Bullet follow-up material"
         ),
         "not_claimed_as_finished": [

@@ -7,7 +7,7 @@
 
 """
 ================================================================================
-PHASE 20: Bullet Cluster - chi ველის მეხსიერების მექანიკა
+PHASE 20: Bullet/Cluster Residuals - chi memory and cosmic-node channel
 ================================================================================
 
 სტატუსი:
@@ -23,6 +23,10 @@ frozen-memory short path არის article-ready conditional benchmark:
 tau_rel/tau_cross ~ 2e3, positive screened kernel peak-locking,
 gas-vs-galaxy conditional dominance და corrected mass ledger ერთად აბრუნებს
 PASS_BULLET_FROZEN_MEMORY_SHORT_PATH-ს.
+
+Cluster residual binding is no longer interpreted as tail retention alone.
+Stage B5 uses a three-channel picture: a large-scale cosmic Chladni-node
+low-pressure baseline, local oscillon-tail retention, and vortex/MOND transport.
 
 ეს არ არის სრული N-body+gas+chi time-dependent simulation და არ აცხადებს
 pixel-level Clowe/Bradač shear-map likelihood-ს. მისი სწორი სტატუსია:
@@ -167,15 +171,16 @@ def bullet_claim_gate() -> list[ClaimGate]:
             ),
         ),
         ClaimGate(
-            claim="cluster residual binding",
+            claim="cluster residual binding / cosmic-node channel",
             status="FUTURE_PROGRAM_NOT_PROOF",
             verified_here=(
-                "Stage B5 gives retention-scale arithmetic for a possible rich-cluster "
-                "residual component."
+                "Stage B5 now records a three-channel cluster picture: cosmic-web "
+                "low-pressure node, local oscillon-tail retention, and vortex/MOND transport."
             ),
             open_requirement=(
-                "derive tau_ret/mean-free-path from ICM scattering and test radial "
-                "weak-lensing profiles across clusters."
+                "derive the large-scale resonant node operator and the local "
+                "tau_ret/mean-free-path kernel, then test radial weak-lensing "
+                "profiles across clusters."
             ),
         ),
     ]
@@ -221,6 +226,7 @@ def bullet_central_claim_gate() -> dict[str, object]:
         "direct_RG_derivation_open": [
             "derive chi source from RG action/coarse-grained vortex dynamics",
             "derive sign and normalization of chi contribution to Phi+Psi lensing",
+            "derive the cosmic-web low-pressure node contribution from the same large-scale resonance spectrum",
             "derive or universally calibrate L_chi and f_hyst",
             "run time-dependent N-body + gas hydrodynamics + chi evolution",
             "run pixel-level shear/kappa likelihood against Bullet data",
@@ -734,7 +740,8 @@ def step6_falsifiable_predictions():
         "Bullet Cluster": "two convergence peaks locked to galaxy centroids; gas center remains subdominant",
         "Abell 520 (Train Wreck)": "peak between gas and galaxies (მეხსიერების რელაქსაციის ტესტი)",
         "MACS J0717.5 / El Gordo": "დამატებითი ტესტები tau_chi-ის შესაზღუდად",
-        "Relaxation Law": "tau_rel=c/g_vir must work across cluster mergers without per-cluster tuning",
+        "Cosmic Node Channel": "cluster residuals should correlate with cosmic-web node depth / low-pressure environment",
+        "Relaxation Law": "tau_rel=c/g_vir must work across cluster mergers as the local memory channel, not replace the cosmic-node channel",
         "Screening Length": "L_chi should derive from intracluster thermodynamics, not from Bullet-only fitting",
         "Falsification": "pixel-level kappa maps fail if galaxy-locked chi peaks require cluster-by-cluster parameters",
     }
@@ -788,6 +795,7 @@ def multi_cluster_universality_gate():
     return {
         "universal_parameters_to_hold_fixed_or_derive": [
             "tau_rel=c/g_vir law",
+            "cosmic-node pressure deficit from the same large-scale resonance spectrum",
             "L_chi from ICM/RG transport physics",
             "f_hyst or chi normalization",
             "gas-to-galaxy source-suppression rule after shock heating",
@@ -800,7 +808,8 @@ def multi_cluster_universality_gate():
         ],
         "falsification": (
             "If each cluster needs its own unrelated L_chi/f_hyst/source rule, "
-            "the frozen-memory explanation becomes a fit ansatz rather than a theory."
+            "or if the residual ignores the independently inferred cosmic-web node "
+            "environment, the explanation becomes a fit ansatz rather than a theory."
         ),
         "status": "OPEN_MULTI_CLUSTER_TEST",
     }
@@ -838,6 +847,7 @@ def status_upgrade_audit():
         ],
         "still_open": [
             "derive chi source and lensing coupling from RG action/coarse-grained vortex dynamics",
+            "derive the cosmic-node low-pressure contribution from the large-scale resonance spectrum",
             "full time-dependent N-body+gas+chi simulation",
             "pixel-level weak-lensing likelihood against Clowe et al.",
             "first-principles derivation of L_chi for intracluster plasma conditions",
@@ -846,14 +856,16 @@ def status_upgrade_audit():
     }
 
 
-def stage_b5_cluster_resonant_tail_binding_benchmark():
+def stage_b5_cluster_cosmic_node_binding_benchmark():
     """
     Drain of OLD/ISPG_MOND.tex cluster-binding section.
 
     Standard MOND/AQUAL gives much of the cluster enhancement but leaves a
-    residual rich-cluster binding gap.  The old theory's useful idea is that
-    dense intracluster emitters can retain an enhanced resonant-tail background,
-    adding a local Bernoulli pressure deficit on top of the vortex/MOND channel.
+    residual rich-cluster binding gap.  The legacy retention arithmetic is kept
+    only as a local-tail add-on.  The active interpretation is three-channel:
+    a cluster is also a deep node of the large-scale cosmic Chladni web, where
+    the substrate pressure is already low before the local baryonic tails are
+    added.
     """
     m_bary_msun = 1.0e14
     r_cluster_mpc = 1.0
@@ -877,9 +889,20 @@ def stage_b5_cluster_resonant_tail_binding_benchmark():
     return {
         "source": "OLD/ISPG_MOND.tex cluster-binding section",
         "problem": "simple MOND often leaves about a factor-of-two residual in rich clusters",
+        "active_interpretation": (
+            "a rich cluster is a low-pressure node of the large-scale cosmic "
+            "Chladni web; retained oscillon tails and vortex/MOND transport add "
+            "local structure on top of that node"
+        ),
+        "gravity_channels": [
+            "cosmic-web low-pressure node from long-wavelength substrate resonance",
+            "overlapping local oscillon-tail / resonant-tail background",
+            "galactic vortex/MOND transported response",
+        ],
         "RG_mechanism": (
+            "the large-scale node supplies a background pressure deficit, while "
             "overlapping irreversible resonant tails in dense ICM/galaxy environments "
-            "raise the local background vibration and Bernoulli pressure deficit"
+            "raise the local Bernoulli deficit inside that node"
         ),
         "fiducial_cluster": {
             "M_bary_Msun": m_bary_msun,
@@ -894,14 +917,15 @@ def stage_b5_cluster_resonant_tail_binding_benchmark():
         "tau_ret_50_over_t_dyn": tau_ret_50_gyr / t_dyn_gyr,
         "ell_mfp_50_kpc": ell_mfp_50_kpc,
         "interpretation": (
-            "50% residual binding is reachable if the tail background is retained "
-            "for about 0.4 dynamical times; ballistic escape would not close the gap."
+            "The old 50% retention arithmetic is a local-tail benchmark only. "
+            "A complete cluster account must add the cosmic-node baseline; "
+            "ballistic escape of tails alone is no longer the full cluster story."
         ),
     }
 
 
 def stage_b5_cluster_retention_ode_symbolic():
-    """Symbolic form of the old cluster retention benchmark."""
+    """Symbolic form of the legacy local-tail add-on for cluster binding."""
     H0, rho_de0, delta_w0, delta_cl, z, eps, tau_ret = symbols(
         "H0 rho_DE0 delta_w0 delta_cl z epsilon_cl tau_ret",
         positive=True,
@@ -915,7 +939,11 @@ def stage_b5_cluster_retention_ode_symbolic():
     return {
         "retention_ODE": sp.Eq(Symbol("epsilon_dot_cl"), source - eps / tau_ret),
         "normalization": "epsilon_dot(0)=3*H0*rho_DE0*delta_w0",
-        "free_physical_variable": "tau_ret, the cluster residence time of the resonant-tail background",
+        "free_physical_variable": "tau_ret, the local cluster residence time of the resonant-tail add-on",
+        "cosmic_node_not_in_this_ode": (
+            "the large-scale Chladni-node pressure deficit is a separate "
+            "background channel and must not be hidden inside tau_ret"
+        ),
         "not_a_new_particle": "the retained component is a collective resonant-tail background, not sterile-neutrino DM",
     }
 
@@ -924,20 +952,24 @@ def stage_b5_cluster_predictions_and_open_tasks():
     """Falsifiable outputs and the exact calculations still missing."""
     return {
         "predictions": [
-            "residual binding should correlate with cold-front/sloshing activity at fixed baryonic mass",
+            "residual binding should correlate first with cosmic-web node depth / large-scale low-pressure environment",
+            "at fixed cosmic-node environment, local residuals should correlate with cold-front/sloshing activity",
             "extra binding should correlate with total baryonic density, gas plus galaxies",
-            "rho_extra(r) should look like baryons convolved with a scattering/retention kernel",
-            "clusters with weak ICM scattering should show a larger unresolved residual",
+            "rho_extra(r) should decompose into a smooth cosmic-node baseline plus baryons convolved with a scattering/retention kernel",
+            "clusters in weak cosmic-node environments should show smaller residuals even with similar baryonic mass",
         ],
         "required_calculations": [
+            "construct the large-scale resonance / Chladni-node map from LSS or initial-condition modes",
             "3D scalar solve on Chandra-derived cluster profiles",
             "wave-scattering calculation for ell_mfp from cold-front thickness and ICM power spectra",
+            "joint weak-lensing separation of cosmic-node baseline from local tail-retention residual",
             "weak-lensing comparison of the radial rho_extra/rho_bary profile",
             "joint Bullet/Abell520/ElGordo time-dependent N-body+gas+chi simulations",
         ],
         "status": (
-            "Stage B5 imports the cluster-residual benchmark; it is a strong "
-            "future paper target, not a completed cluster proof."
+            "Stage B5 is now a three-channel cluster programme: cosmic-node "
+            "baseline plus local tail retention plus merger memory. It is a "
+            "strong future paper target, not a completed cluster proof."
         ),
     }
 
@@ -948,7 +980,7 @@ def stage_b5_cluster_predictions_and_open_tasks():
 
 if __name__ == "__main__":
     print("=" * 72)
-    print("PHASE 20: Bullet Cluster - chi ველის მეხსიერების მექანიკა")
+    print("PHASE 20: Bullet/Cluster Residuals - chi memory and cosmic-node channel")
     print("=" * 72)
 
     # ნაბიჯი 1
@@ -1071,8 +1103,8 @@ if __name__ == "__main__":
     for k, v in audit.items():
         print(f"  {k:18s}: {v}")
 
-    print("\n--- ნაბიჯი 8: STAGE B5 cluster residual-binding benchmark ---")
-    cluster = stage_b5_cluster_resonant_tail_binding_benchmark()
+    print("\n--- ნაბიჯი 8: STAGE B5 cosmic-node cluster binding benchmark ---")
+    cluster = stage_b5_cluster_cosmic_node_binding_benchmark()
     for k, v in cluster.items():
         print(f"  {k:30s}: {v}")
 

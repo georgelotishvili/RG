@@ -376,11 +376,11 @@ def old_to_rg_prediction_map():
         {
             "sector": "cluster mergers",
             "old_prediction": "Bullet Cluster lensing peaks lock to galaxies via frozen hysteresis",
-            "rg_status": "candidate merger benchmark",
+            "rg_status": "candidate merger + cosmic-node cluster benchmark",
             "claim_class": "conditional_ledger",
-            "claim_gate": "p09 lensing map, gas model, and merger simulation gate",
+            "claim_gate": "p09 lensing map, gas model, cosmic-node map, and merger simulation gate",
             "current_file": "p09_bullet.py",
-            "formula": "tau_rel=c/g_vir ~ 680 Gyr >> tau_cross ~0.33 Gyr; peaks at x~±715 kpc",
+            "formula": "cluster residual = cosmic-web low-pressure node + retained tails + merger memory; Bullet peaks: tau_rel>>tau_cross",
         },
         {
             "sector": "CMB/cosmology",
@@ -485,7 +485,7 @@ def stage_d5_prediction_priority_order():
         {
             "priority": 2,
             "target": "MOND/cluster articles",
-            "use": "a0(z), SPARC, EFE, Bullet, residual cluster binding",
+            "use": "a0(z), SPARC, EFE, Bullet, cosmic-node cluster binding",
         },
         {
             "priority": 3,
@@ -603,6 +603,7 @@ def p12_prediction_claim_gate():
             "C1: derive N-ladder, q-correction, coupling, width, lifetime, and exclusion map",
             "X17: derive transition/coupling rule or keep as weak harmonic audit",
             "Classical predictions: import each p03-p09 claim gate, not free recovered labels",
+            "Clusters: derive the cosmic-web low-pressure node map and separate it from local tail retention",
             "Cosmology: build Planck/BAO/BBN/LSS likelihood pipeline before empirical pass claims",
             "EHT/GW: use ray-tracing and LVK posterior-level comparisons before observational claims",
             "Particle/quantum: wait for p10/p11 finite-energy, m~nu^2, radiative, and gauge gates",
