@@ -476,9 +476,9 @@ try:
         prediction_table,
     )
 except ImportError:
-    THETA_TOPOLOGICAL = None
-    koide_identity = None
-    prediction_table = None
+    THETA_TOPOLOGICAL = globals().get("THETA_TOPOLOGICAL")
+    koide_identity = globals().get("koide_identity")
+    prediction_table = globals().get("prediction_table")
 
 def analyze_mathieu_resonance():
     t, r, omega, Phi0 = sp.symbols('t r omega Phi0', real=True, positive=True)
@@ -667,11 +667,11 @@ try:
         prediction_table,
     )
 except ImportError:
-    THETA_TOPOLOGICAL = None
-    c3_frequency_ratios = None
-    c3_mass_predictions = None
-    koide_identity = None
-    prediction_table = None
+    THETA_TOPOLOGICAL = globals().get("THETA_TOPOLOGICAL")
+    c3_frequency_ratios = globals().get("c3_frequency_ratios")
+    c3_mass_predictions = globals().get("c3_mass_predictions")
+    koide_identity = globals().get("koide_identity")
+    prediction_table = globals().get("prediction_table")
 
 def get_empirical_indices():
     # TODO: N ინდექსები უნდა გამოვიდეს 3D სფერული/ტოპოლოგიური საზღვრული პირობებიდან.
@@ -1006,10 +1006,10 @@ try:
         prediction_table,
     )
 except ImportError:
-    THETA_TOPOLOGICAL = None
-    axis_ratios_from_c3 = None
-    koide_identity = None
-    prediction_table = None
+    THETA_TOPOLOGICAL = globals().get("THETA_TOPOLOGICAL")
+    axis_ratios_from_c3 = globals().get("axis_ratios_from_c3")
+    koide_identity = globals().get("koide_identity")
+    prediction_table = globals().get("prediction_table")
 
 
 LEPTON_MASSES_MEV = {
@@ -1641,16 +1641,21 @@ def cyclic_lift_gate():
     """
     Mathematical gate for the C3 x C3 -> theta=h/9 step.
 
-    C3 x C3 is not isomorphic to Z9. It only supplies nine slots unless the
-    defect return map is shown to visit those slots as one cyclic orbit.
+    C3 x C3 is not isomorphic to Z9. It only supplies nine slots by itself.
+    p11f closes the finite-map part: a non-split carry return map gives one
+    order-9 orbit iff the total braid/phase carry per axis cycle is nonzero
+    mod 3. The remaining physical theorem is to derive that unit carry from
+    the charged defect field equations.
     """
     return {
         "slot_lattice": "C3 x C3",
         "slot_count": closure_lattice_order(),
         "is_cyclic_Z9_without_extra_theorem": False,
+        "finite_map_criterion": "p11f: carry return map has one 9-orbit iff total_carry_mod3 != 0",
+        "finite_map_status": "PASS_MATH_ORDER9_LIFT_CRITERION__PHYSICAL_ANHOLONOMY_OPEN",
         "allowed_language": "order-9 reduced closure-slot lattice",
         "forbidden_language": "derived Z9 holonomy",
-        "needed_theorem": "construct the charged defect return map and prove it has one order-9 orbit",
+        "needed_theorem": "derive nonzero unit braid anholonomy per full oriented axis cycle from the charged defect field equations",
     }
 
 
@@ -1661,8 +1666,9 @@ def h2_offset_gate():
     return {
         "offset_inserted": SPINOR_CLOSURE_INDEX,
         "derived_from_full_action": False,
-        "current_status": "selection rule / normal-form consistency condition",
-        "needed_theorem": "derive h=2 from the charged oriented-frame coupling, not by choosing the first useful branch",
+        "finite_selection_status": "p11g: h=2 is the first non-trivial oriented closure if the charged sector is oriented, not projective/nematic",
+        "current_status": "conditional oriented-frame selection; action-level charged coupling still open",
+        "needed_theorem": "derive the orientation-sensitive charged-frame coupling from the RG action or localized charged defect equations",
     }
 
 
@@ -2161,11 +2167,12 @@ def h2_selection_summary():
         "reason_h0_rejected": "trivial branch, not a generation-splitting defect",
         "reason_h1_rejected": "projective/nematic closure only: n -> -n",
         "reason_h2_selected": "first non-trivial oriented framed closure: n -> n",
+        "finite_selection_status": "p11g closes the finite selection conditional on an oriented charged-frame coupling",
         "derived_from_action": False,
-        "selection_status": "candidate selection; not yet an RG coupling theorem",
+        "selection_status": "conditional oriented-frame theorem; not yet an RG coupling theorem",
         "theta": theta,
         "theta_formula": "theta = h / 9 = 2 / 9",
-        "remaining_open_point": "derive the oriented-frame requirement from the charged RG coupling, not as a selection rule.",
+        "remaining_open_point": "derive the orientation-sensitive charged-frame coupling from the RG action or localized charged defect equations.",
     }
 
 
@@ -2951,15 +2958,16 @@ def audit_mass_predictions():
 
 def open_theorem_items():
     return [
-        "Prove a cyclic order-9 lift from the C3 x C3 slot lattice, or stop using Z9 language.",
-        "Derive the charged oriented-frame requirement from the RG coupling, not as a postulate.",
+        "Derive the p11f unit braid anholonomy from the charged defect field equations; without it the C3 x C3 slot lattice remains only a conditional order-9 lift candidate.",
+        "Derive the p11g orientation-sensitive charged-frame coupling from the RG action; otherwise h=2 remains only a conditional oriented-frame selection.",
+        "Compute the p11h F_min population first-set attractor solver inside the p01 stability window; otherwise the stable spectrum is not selected by the medium.",
         "Derive the reduced holonomy coordinate theta used by the C3 stiffness operator from the defect moduli space.",
-        "Derive m proportional to nu^2 and the absolute electron scale from the oscillon energy functional.",
-        "Replace the relative-error mass gate with PDG-uncertainty residuals and explain the muon residual.",
+        "Close the p11i mass bridge: derive m proportional to nu^2 and the absolute electron scale from the dressed oscillon energy functional.",
+        "Close the p11i residual budget: explain the muon/tau PDG residuals as calculable dressed-pole/radiative shifts or keep the claim at relative-compression level.",
         "Upgrade phase43 local normal-form stability to a full 3D fluctuation-operator/PDE stability proof.",
         "Show no lower-energy non-leptonic defect branch has the same charge and lower action.",
         "Extend the proof beyond principal-axis/algebraic normal form to full 3D localized oscillon fields.",
-        "Derive radiative protection of the Koide/C3 pole-frequency relation.",
+        "Derive one p11i radiative-protection route for the Koide/C3 pole-frequency relation.",
     ]
 
 
@@ -3339,21 +3347,21 @@ def new_falsifiable_targets():
     return [
         {
             "target": "radiative protection",
-            "test": "derive either dressed pole-frequency theorem or loop cancellation",
+            "test": "derive one p11i route: dressed pole-frequency theorem, Ward/Sumino-like cancellation, or matching-scale flow",
             "fail": "unprotected QED-like generation logs shift Koide by ~1e-3",
-            "file": "p11_particles.py",
+            "file": "p11i_mass_bridge_radiative_residual_gate.py",
         },
         {
             "target": "cyclic order-9 lift",
-            "test": "construct a charged-defect return map whose orbit has order 9",
-            "fail": "C3 x C3 remains only a slot lattice, so theta=h/9 is not derived",
-            "file": "p11_particles.py",
+            "test": "derive the p11f nonzero unit braid carry per oriented axis cycle from the charged defect equations",
+            "fail": "the finite map permits an order-9 lift, but the physical anholonomy is zero or absent, so theta=h/9 is not derived",
+            "file": "p11f_charged_return_map_lift_gate.py",
         },
         {
             "target": "PDG residual gate",
-            "test": "explain or predict the muon/tau residuals with the same dressing/radiative mechanism",
+            "test": "derive the p11i required pole-frequency dressing vector from the same mass/radiative theorem",
             "fail": "theta=2/9 remains only a relative compression and misses PDG precision",
-            "file": "p11_particles.py",
+            "file": "p11i_mass_bridge_radiative_residual_gate.py",
         },
         {
             "target": "h=2 local stability",
@@ -3370,18 +3378,26 @@ def new_falsifiable_targets():
         },
         {
             "target": "no C3-forbidden charged h=1 branch",
-            "test": "charged defects require oriented framed closure, not projective/nematic closure",
-            "fail": "a stable charged h=1 branch appears in the full defect spectrum",
-            "file": "p11_particles.py",
+            "test": "derive an orientation-sensitive charged-frame coupling, excluding projective/nematic h=1 closure for charged defects",
+            "fail": "the charged sector is only projective/nematic, or a stable charged h=1 branch appears in the full defect spectrum",
+            "file": "p11g_charged_oriented_frame_h2_gate.py",
+        },
+        {
+            "target": "F_min population first set",
+            "test": "compute the p11h projected F_min mode-coupling and population fixed-point solver inside the p01 stability window",
+            "fail": "no mutually compatible attractor set contains the charged C3 branch, or the solver selects a lower-action non-leptonic set first",
+            "file": "p11h_fmin_population_first_set_gate.py",
         },
     ]
 
 
 def next_calculation_queue():
     return [
-        "Prove or reject the cyclic order-9 lift from the C3 x C3 slot lattice.",
-        "Derive the h=2 oriented-frame coupling from the RG action.",
-        "Derive m proportional to nu^2 from the dressed oscillon energy functional.",
+        "Derive or reject the p11f unit braid anholonomy from the charged defect field equations.",
+        "Derive or reject the p11g orientation-sensitive charged-frame coupling from the RG action.",
+        "Compute the p11h F_min population first-set attractor solver inside the p01 stability window.",
+        "Close the p11i mass bridge: derive m proportional to nu^2 and the absolute electron scale.",
+        "Close the p11i radiative/dressed-pole theorem and explain or demote the muon residual.",
         "Build the full localized h=2 oscillon ansatz: Phi(t,r), Q(r,beta), framed triad U(x).",
         "Linearize the RG action around that ansatz and compute the fluctuation operator.",
         "Check whether all non-gauge eigenvalues are non-negative.",
@@ -3685,20 +3701,22 @@ def p11_particle_sector_claim_gate():
         "not_article_ready_scope": [
             "cyclic Z9 holonomy theorem",
             "h=2 derivation from the full charged RG action",
+            "F_min population first-set attractor solver",
             "absolute electron mass derivation",
-            "m proportional to nu^2 from the oscillon energy functional",
-            "radiative protection of pole masses",
+            "p11i mass bridge m proportional to nu^2 from the oscillon energy functional",
+            "p11i radiative/dressed-pole protection and residual budget closure",
             "full localized 3D particle/PDE stability proof",
             "SM gauge-sector derivation",
         ],
         "hard_blockers": [
             z9_gate["needed_theorem"],
             h2_gate["needed_theorem"],
-            mass_bridge["needed_theorem"],
-            "derive radiative protection or a dressed pole-frequency theorem",
+            "compute the p11h F_min population first-set attractor solver inside the p01 stability window",
+            "close the p11i mass bridge: " + mass_bridge["needed_theorem"],
+            "close the p11i radiative/dressed-pole theorem and derive the required residual dressing vector",
             "build the full localized h=2 oscillon and fluctuation spectrum",
             "derive EM/gauge sectors rather than importing SM quantum numbers",
-            "resolve the muon PDG-precision residual or demote the claim permanently",
+            "resolve the p11i muon PDG-precision residual or demote the claim permanently",
         ],
         "pdg_precision_pass": precision["pdg_precision_pass"],
         "pdg_chi2_non_anchor": precision["chi2_non_anchor"],

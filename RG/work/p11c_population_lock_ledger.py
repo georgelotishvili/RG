@@ -233,10 +233,10 @@ def status_assessment(t1, t2, t3, d1):
               else "T3_DID_NOT_VERIFY",
         "D1": "PASS_SPECTRUM_RELATIVE_STABILITY_DATA_ANCHORS"
               if d1["all_hold"] else "D1_DID_NOT_VERIFY",
-        "open": "OPEN_FMIN_POPULATION_ATTRACTOR_SETS -- compute the mutually "
-                "compatible oscillon sets admitted by the F_min nonlinearity "
-                "inside the p01 window (the 'first set' problem of the "
-                "population fixed-point programme).",
+        "open": "OPEN_FMIN_POPULATION_ATTRACTOR_SETS -- p11h now supplies "
+                "the first-set programme scaffold; the remaining task is to "
+                "compute the mutually compatible oscillon sets admitted by "
+                "the F_min nonlinearity inside the p01 window.",
     }
 
 
@@ -247,8 +247,8 @@ def do_not_claim():
         "and needs no master clock.",
         "Do not claim the C3 lepton chord is derived from mutual-lock "
         "dynamics; its action-level origin remains open (p11 phase38).",
-        "Do not claim which lock set the medium selects; the F_min "
-        "attractor-set computation is open (task 16).",
+        "Do not claim which lock set the medium selects; p11h makes the "
+        "F_min attractor-set computation explicit, but the solver is open.",
         "Do not claim the kinematic filter F1 is computed here; tail "
         "propagation lives in the p05/p13 weak-field chain.",
         "Do not read the PDG anchors as derivations; they are data "

@@ -76,7 +76,7 @@ def oscillon_claim_gate() -> list[ClaimGate]:
             claim="local population-tempo law (revised stability postulate)",
             status="PASS_POPULATION_TEMPO_TRANSPOSITION__FIXED_POINT_TARGET",
             verified_here="The population-tempo gate encodes the revised postulate: the local stable oscillon population supplies the common resonant tempo, and admissible oscillons sit in harmonic/integer-ratio relation to that local tempo. A pressure or energy-status change transposes the whole local population together, so dimensionless ratios remain locally observable while incompatible rhythms cannot keep resonance.",
-            open_requirement="population-lock fixed points: which mutually compatible oscillon frequency sets does the medium nonlinearity admit (p11c ledger; population fixed-point programme). No independent external frequency standard is a required input of the framework.",
+            open_requirement="population-lock fixed points: which mutually compatible oscillon frequency sets does the medium nonlinearity admit (p11c ledger; p11h first-set programme scaffold). No independent external frequency standard is a required input of the framework.",
         ),
     ]
 
@@ -1393,7 +1393,7 @@ def step12_population_tempo_transposition_gate():
             "population together, so local dimensionless ratios do not require "
             "an independent external frequency standard."
         ),
-        "microphysical_target": "population-lock fixed points (p11c): which mutually compatible oscillon sets the medium nonlinearity admits.",
+        "microphysical_target": "population-lock fixed points (p11c/p11h): which mutually compatible oscillon sets the medium nonlinearity admits.",
     }
 
 
@@ -1540,7 +1540,7 @@ def p10_status_audit():
             "spectral/Floquet stability",
             "full static spherical p01 solution",
             "PPN/Cassini/ephemeris validation",
-            "microscopic medium dynamics selecting G and population-lock fixed points",
+            "microscopic medium dynamics selecting G and p11h population-lock fixed points",
             "particle mass/charge/spin matching",
         ],
     }
@@ -1599,7 +1599,7 @@ def p10_central_claim_gate():
             "spectral/Floquet stability",
             "second-order and full nonlinear exterior continuation",
             "full PPN/Cassini/ephemeris/clock validation",
-            "microscopic G and population-lock selection",
+            "microscopic G and p11h population-lock selection",
             "particle mass/charge/spin matching",
         ],
     }
