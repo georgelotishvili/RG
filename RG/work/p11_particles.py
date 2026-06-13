@@ -103,7 +103,7 @@ def c3_frequency_ratios(theta=THETA_TOPOLOGICAL):
     values = sorted(c3_raw_frequencies(theta))
     base = values[0]
     if base <= 0:
-        raise ValueError("C3 ansatz produced a non-positive base frequency.")
+        raise ValueError("C3 ansatz produced a non-positive normalization frequency.")
     return {
         "electron": values[0] / base,
         "muon": values[1] / base,
@@ -136,27 +136,27 @@ def koide_identity(theta=THETA_TOPOLOGICAL):
     return koide_ratio_from_frequencies(frequencies)
 
 
-def c3_circulant_operator(theta=THETA_TOPOLOGICAL, omega0=1.0):
+def c3_circulant_operator(theta=THETA_TOPOLOGICAL, omega_scale=1.0):
     """
     Return the 3x3 complex circulant operator
 
-        Omega = omega0 * [I + (e^(i theta) P + e^(-i theta) P^2)/sqrt(2)]
+        Omega = omega_scale * [I + (e^(i theta) P + e^(-i theta) P^2)/sqrt(2)]
 
     where P cycles x -> y -> z -> x.
     """
     phase = cmath.exp(1j * theta) / math.sqrt(2.0)
     phase_conj = cmath.exp(-1j * theta) / math.sqrt(2.0)
     return [
-        [omega0, omega0 * phase, omega0 * phase_conj],
-        [omega0 * phase_conj, omega0, omega0 * phase],
-        [omega0 * phase, omega0 * phase_conj, omega0],
+        [omega_scale, omega_scale * phase, omega_scale * phase_conj],
+        [omega_scale * phase_conj, omega_scale, omega_scale * phase],
+        [omega_scale * phase, omega_scale * phase_conj, omega_scale],
     ]
 
 
-def c3_operator_eigenvalues(theta=THETA_TOPOLOGICAL, omega0=1.0):
+def c3_operator_eigenvalues(theta=THETA_TOPOLOGICAL, omega_scale=1.0):
     """Analytic eigenvalues of the C3 circulant operator."""
     return [
-        omega0 * value
+        omega_scale * value
         for value in c3_raw_frequencies(theta)
     ]
 

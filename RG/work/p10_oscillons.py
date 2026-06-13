@@ -10,11 +10,11 @@ p10 status:
 The article-ready part of this file is the symbolic oscillon-to-gravity short
 path: Bernoulli pressure identity, localized 1/r exterior source, asymptotic
 charge normalization, first-order bi-conformal exterior branch, leading
-light/redshift smoke tests, and the nu0 operational firewall.
+light/redshift smoke tests, and the population-tempo transposition gate.
 
 The full finite-energy nonlinear oscillon particle theorem, nonlinear exterior
-continuation, full PPN validation, microscopic G/nu0 selection, and particle
-spectrum matching remain open work targets.
+continuation, full PPN validation, microscopic G and population-lock selection,
+and particle spectrum matching remain open work targets.
 """
 
 from __future__ import annotations
@@ -73,10 +73,10 @@ def oscillon_claim_gate() -> list[ClaimGate]:
             open_requirement="derive PPN gamma/beta plus Shapiro delay, perihelion, Cassini, LLR, and clock/LPI tests.",
         ),
         ClaimGate(
-            claim="substrate energy-status law (revised postulate; formerly 'carrier frequency nu0')",
-            status="PASS_OPERATIONAL_FIREWALL__POPULATION_STANDARD_TARGET",
-            verified_here="The firewall holds a fortiori under the revised postulate (law-level invariance: the energy-status law is universal, not the value): only dimensionless ratios are locally observable; the substrate-time conversion cancels. The frequency STANDARD for oscillon stability is the existing oscillon population itself (mutual lock), not nu0 -- the substrate supplies the coupling channel, the energy status (tension), and the nonlinearity that shapes admissible locks.",
-            open_requirement="population-lock fixed points: which mutually compatible oscillon frequency sets does the medium nonlinearity admit (p11c ledger; population fixed-point programme). The numerical VALUE of nu0 is no longer a required input of the framework.",
+            claim="local population-tempo law (revised stability postulate)",
+            status="PASS_POPULATION_TEMPO_TRANSPOSITION__FIXED_POINT_TARGET",
+            verified_here="The population-tempo gate encodes the revised postulate: the local stable oscillon population supplies the common resonant tempo, and admissible oscillons sit in harmonic/integer-ratio relation to that local tempo. A pressure or energy-status change transposes the whole local population together, so dimensionless ratios remain locally observable while incompatible rhythms cannot keep resonance.",
+            open_requirement="population-lock fixed points: which mutually compatible oscillon frequency sets does the medium nonlinearity admit (p11c ledger; population fixed-point programme). No independent external frequency standard is a required input of the framework.",
         ),
     ]
 
@@ -88,9 +88,9 @@ def oscillon_do_not_claim() -> list[str]:
         "Do not claim the bi-conformal exterior is nonlinear-complete before the second-order/full ODE continuation is done.",
         "Do not claim solar-system tests are fully passed; only leading weak-field checks are present.",
         "Do not claim the microscopic substrate value of G is derived from oscillon parameters here.",
-        "Do not treat nu0 as a directly measured frequency in local oscillon/vortex time.",
-        "Do not treat nu0 as the lock/resonance standard for oscillon stability; under the revised tail-compatibility condition the standard is the existing oscillon population (mutual lock), and the substrate enters only as coupling channel, energy status, and nonlinearity.",
-        "Do not claim any specific numerical value of nu0 (e.g. the legacy 1.91e30 Hz calibration) is required or established; its source gate is unrecovered and no observable now depends on it.",
+        "Do not introduce an independent external frequency standard as a clock or lock standard for oscillon stability.",
+        "Do not assign a universal numerical frequency to the medium; stable oscillons lock to the local population tempo and its admissible harmonics.",
+        "Do not treat pressure/energy-status transposition as changing local dimensionless frequency ratios; the local resonant population shifts together.",
     ]
 
 
@@ -915,7 +915,7 @@ weak-field smoke-tests:
   - Pound-Rebka რედშიფტი:    2.46×10⁻¹⁵      [PR 1960, 1σ შიგნით]
   - ფაქტორი 2 (1911 vs 1915): ემერჯენტული branch identity
   - ლოკალური ფარდობითობის პრინციპი: α და უგანზომილო ფარდობები უცვლელია
-  🟡 ν₀ (სუბსტრატის ფონური რიტმი): ჰიპოთეზა / TODO
+  🟡 Ω_pop(x) (ლოკალური საერთო რეზონანსული ტემპი): population-lock გეითი / TODO
 """
 
 import sympy as sp
@@ -1344,46 +1344,56 @@ def step11_local_invariance():
 
 
 # ==============================================================================
-# დამატებითი: კოსმოლოგიური ν₀ ინვარიანტობის შემოწმება
+# დამატებითი: ლოკალური population-tempo ტრანსპოზიციის ინვარიანტობა
 # ==============================================================================
 
-def step12_cosmological_nu0():
+def step12_population_tempo_transposition_gate():
     """
-    Operational firewall for the substrate layer.
+    Population-tempo transposition gate.
 
     FLRW ფონზე: ds² = -dt² + a(t)² δ_ij dx^i dx^j (არა ბი-კონფორმული)
 
-    Revised postulate (population standard): nu0_sub here denotes the
-    substrate ENERGY-STATUS read in frequency language -- a local state
-    variable, not a universal carrier and not the lock standard for
-    oscillon stability (the standard is the oscillon population itself;
-    mutual lock). The firewall below is unchanged and holds a fortiori:
-    local composite clocks carry the same substrate-time conversion, so
-    only dimensionless ratios are observable and nu0 cancels.
+    Revised postulate: there is no independent external frequency standard.
+    The local stable oscillon population supplies a common resonant tempo
+    Omega_pop(x).  Admissible oscillons are harmonics or rational locks of
+    that local tempo; a rhythm that is not compatible with the population
+    cannot keep resonance.
+
+    A pressure/energy-status change may transpose the local tempo by a common
+    factor xi.  Particle and clock frequencies then shift together, and only
+    dimensionless harmonic ratios remain locally observable.
     """
-    nu0_sub, xi, alpha, q_clock = sp.symbols(
-        "nu0_sub xi alpha q_clock",
+    omega_pop, xi, n_particle, n_clock = sp.symbols(
+        "Omega_pop xi n_particle n_clock",
         positive=True,
     )
-    nu0_oper = sp.simplify(xi * nu0_sub)
-    particle_oper = sp.simplify(xi * alpha * nu0_sub)
-    clock_oper = sp.simplify(xi * q_clock * nu0_sub)
+    omega_pop_oper = sp.simplify(xi * omega_pop)
+    particle_oper = sp.simplify(n_particle * omega_pop_oper)
+    clock_oper = sp.simplify(n_clock * omega_pop_oper)
     local_ratio = sp.simplify(particle_oper / clock_oper)
 
     return {
-        "status": "PASS_SUBSTRATE_NU0_OPERATIONAL_FIREWALL",
-        "substrate_frequency": sp.Eq(sp.Symbol("nu0_sub"), nu0_sub),
-        "operational_projection": sp.Eq(sp.Symbol("nu0_oper"), nu0_oper),
-        "particle_clock_projection": sp.Eq(sp.Symbol("nu_particle_oper"), particle_oper),
-        "local_reference_clock": sp.Eq(sp.Symbol("nu_clock_oper"), clock_oper),
-        "dimensionless_ratio": sp.Eq(sp.Symbol("nu_particle/nu_clock"), local_ratio),
-        "conversion_cancels_identity": sp.simplify(local_ratio - alpha / q_clock) == 0,
-        "meaning": (
-            "nu0 belongs to the substrate layer. Our clocks are composite "
-            "oscillon/vortex clocks, so they do not measure nu0 directly; "
-            "they measure ratios in which the substrate-time conversion cancels."
+        "status": "PASS_POPULATION_TEMPO_TRANSPOSITION_INVARIANCE",
+        "local_common_tempo": sp.Eq(sp.Symbol("Omega_pop"), omega_pop),
+        "operational_common_tempo": sp.Eq(sp.Symbol("Omega_pop_oper"), omega_pop_oper),
+        "particle_harmonic_projection": sp.Eq(
+            sp.Symbol("omega_particle_oper"), particle_oper
         ),
-        "microphysical_target": "population-lock fixed points (p11c): which mutually compatible oscillon sets the medium nonlinearity admits; the value of nu0_sub itself is no longer a required input.",
+        "local_reference_clock": sp.Eq(sp.Symbol("omega_clock_oper"), clock_oper),
+        "dimensionless_ratio": sp.Eq(
+            sp.Symbol("omega_particle/omega_clock"), local_ratio
+        ),
+        "tempo_cancels_identity": sp.simplify(
+            local_ratio - n_particle / n_clock
+        ) == 0,
+        "meaning": (
+            "The local stable oscillon population supplies the common resonant "
+            "tempo; admissible species are harmonic/integer-ratio locks of that "
+            "tempo. A pressure or energy-status shift transposes the local "
+            "population together, so local dimensionless ratios do not require "
+            "an independent external frequency standard."
+        ),
+        "microphysical_target": "population-lock fixed points (p11c): which mutually compatible oscillon sets the medium nonlinearity admits.",
     }
 
 
@@ -1422,8 +1432,9 @@ def oscillon_gravity_short_path_certificate():
     certificate records the central gravity route: Bernoulli pressure gives the
     radial deficit, a localized zero-frequency source fixes the 1/r tail, the
     asymptotic charge normalization gives Newton, the first-order p01 exterior
-    selects the biconformal branch, and nu0 stays behind the operational
-    firewall.  The same certificate also checks the deficit-language factor-two
+    selects the biconformal branch, and the local population-tempo gate blocks
+    any independent external-frequency-standard reading.  The same certificate also checks
+    the deficit-language factor-two
     split: mass, operational size and lapse carry the half exponent, while
     optical light-time carries the full exponent.
     """
@@ -1432,7 +1443,7 @@ def oscillon_gravity_short_path_certificate():
     normalization = poisson_to_newton_normalization_gate()
     branch = static_spherical_first_order_biconformal_branch()
     spherical = static_spherical_theorem_gate()
-    nu0 = step12_cosmological_nu0()
+    tempo_gate = step12_population_tempo_transposition_gate()
     deficit_factor_two = step6b_deficit_scaling_factor_two_gate()
     bernoulli_identity = str(bernoulli["bernoulli_integral"]) == (
         "Eq(P_static + Delta_P, 0)"
@@ -1452,8 +1463,8 @@ def oscillon_gravity_short_path_certificate():
         == "PASS_FIRST_ORDER_STATIC_SPHERICAL_BRANCH__NONLINEAR_CONTINUATION_TARGET"
         and deficit_factor_two["deficit_scaling_factor_two_status"]
         == "PASS_MASS_SIZE_LAPSE_HALF_EXPONENT_AND_LIGHT_FULL_EXPONENT"
-        and nu0["status"] == "PASS_SUBSTRATE_NU0_OPERATIONAL_FIREWALL"
-        and nu0["conversion_cancels_identity"]
+        and tempo_gate["status"] == "PASS_POPULATION_TEMPO_TRANSPOSITION_INVARIANCE"
+        and tempo_gate["tempo_cancels_identity"]
         else "CHECK_OSCILLON_GRAVITY_SHORT_PATH"
     )
 
@@ -1473,12 +1484,13 @@ def oscillon_gravity_short_path_certificate():
         "deficit_factor_two_bending_identity": deficit_factor_two[
             "factor_two_bending_identity"
         ],
-        "nu0_firewall_status": nu0["status"],
+        "population_tempo_status": tempo_gate["status"],
         "short_reading": (
             "Bernoulli pressure -> localized source -> asymptotic charge -> "
             "Newton force; p01 first order selects the biconformal exterior; "
             "the deficit scaling gate gives the optical factor-two split; "
-            "nu0 remains sub-operational."
+            "the local population tempo is a mutual-lock standard, not an "
+            "independent external frequency standard."
         ),
     }
 
@@ -1500,14 +1512,14 @@ def p10_status_audit():
             "asymptotic charge normalization gives the Newtonian coefficient",
             "first-order p01 static spherical equations select the bi-conformal branch",
             "leading weak-field light bending and Pound-Rebka checks",
-            "nu0 is operationally hidden from local dimensionless measurements",
+            "local population-tempo transposition leaves dimensionless harmonic ratios invariant",
         ],
         "not_article_ready_scope": [
             "finite-energy nonlinear oscillon particle theorem",
             "spectral/Floquet stability of the nonlinear solutions",
             "second-order/full nonlinear exterior continuation",
             "full PPN/Cassini/ephemeris/clock validation",
-            "microscopic derivation of G and nu0",
+            "microscopic derivation of G and population-lock fixed points",
             "particle mass/charge/spin spectrum matching",
         ],
         "closed": [
@@ -1516,7 +1528,7 @@ def p10_status_audit():
             "Newton law algebra by asymptotic charge normalization mu_src=2GM/c^2",
             "first-order static spherical equations select the bi-conformal branch a1=1",
             "bi-conformal scaling identities inside the selected branch",
-            "nu0 operational firewall: substrate rhythm is not directly measured by local composite clocks",
+            "population-tempo transposition gate: the local common tempo shifts as a whole, with no independent external frequency standard",
             "leading light-bending and Pound-Rebka smoke tests",
         ],
         "conditional": [
@@ -1528,7 +1540,7 @@ def p10_status_audit():
             "spectral/Floquet stability",
             "full static spherical p01 solution",
             "PPN/Cassini/ephemeris validation",
-            "microscopic substrate dynamics selecting G and nu0",
+            "microscopic medium dynamics selecting G and population-lock fixed points",
             "particle mass/charge/spin matching",
         ],
     }
@@ -1541,7 +1553,7 @@ def p10_central_claim_gate():
     energy_audit = oscillon_energy_status_audit()
     branch = static_spherical_first_order_biconformal_branch()
     normalization = poisson_to_newton_normalization_gate()
-    nu0 = step12_cosmological_nu0()
+    tempo_gate = step12_population_tempo_transposition_gate()
     ppn = ppn_and_observation_gate()
 
     article_ready = (
@@ -1551,7 +1563,7 @@ def p10_central_claim_gate():
         and branch["a1_identity"]
         and branch["biconformal_identity"]
         and branch["branch_residual_identity"]
-        and nu0["status"] == "PASS_SUBSTRATE_NU0_OPERATIONAL_FIREWALL"
+        and tempo_gate["status"] == "PASS_POPULATION_TEMPO_TRANSPOSITION_INVARIANCE"
         and ppn["status"] == "PARTIAL_GR_WEAK_FIELD_SMOKE_TESTS_ONLY"
         and finite_gate["status"] == "OPEN_PDE_EXISTENCE_AND_STABILITY"
     )
@@ -1573,21 +1585,21 @@ def p10_central_claim_gate():
         "finite_energy_particle_status": finite_gate["status"],
         "trial_family_status": energy_audit["status"],
         "ppn_status": ppn["status"],
-        "nu0_firewall_status": nu0["status"],
+        "population_tempo_status": tempo_gate["status"],
         "article_supported_claims": [
             "Bernoulli pressure identity is exact in the static exterior scalar branch",
             "a localized source fixes an exterior 1/r tail",
             "the asymptotic charge normalization reproduces the Newton coefficient",
             "the first-order static spherical p01 branch is bi-conformal",
             "leading light bending and Pound-Rebka checks match the weak-field target",
-            "nu0 remains a substrate rhythm outside direct local measurement",
+            "local stable oscillons share a population tempo whose harmonics transpose together",
         ],
         "open_work_targets": [
             "global regular finite-energy nonlinear oscillon solutions",
             "spectral/Floquet stability",
             "second-order and full nonlinear exterior continuation",
             "full PPN/Cassini/ephemeris/clock validation",
-            "microscopic G/nu0 selection",
+            "microscopic G and population-lock selection",
             "particle mass/charge/spin matching",
         ],
     }
@@ -1701,11 +1713,11 @@ if __name__ == "__main__" and _should_run_main_section("biconformal"):
         print(f"    {k:28s} = {v}")
 
     # ნაბიჯი 12
-    print("\n--- ნაბიჯი 12: ν₀ კოსმოლოგიური ინვარიანტობა ---")
-    nu0_gate = step12_cosmological_nu0()
-    print(f"  status = {nu0_gate['status']}")
-    print(f"  ratio identity = {nu0_gate['conversion_cancels_identity']}")
-    print(f"  meaning = {nu0_gate['meaning']}")
+    print("\n--- ნაბიჯი 12: ლოკალური population-tempo ინვარიანტობა ---")
+    tempo_gate = step12_population_tempo_transposition_gate()
+    print(f"  status = {tempo_gate['status']}")
+    print(f"  ratio identity = {tempo_gate['tempo_cancels_identity']}")
+    print(f"  meaning = {tempo_gate['meaning']}")
 
     # შემაჯამებელი ცხრილი
     print("\n" + "=" * 72)
@@ -1723,7 +1735,7 @@ if __name__ == "__main__" and _should_run_main_section("biconformal"):
         ("[Local] L_loc / L_0",     "1 (INVARIANT)",      "ლოკალური სახაზავი"),
         ("[Local] λ_Compton_loc",   "1 (INVARIANT)",      "ℏ/(m_loc c_loc)"),
         ("[Local] α (fine-struct)", "1 (INVARIANT)",      "უგანზომილო ფარდობა"),
-        ("ν₀ (substrate)",          "directly unmeasured", "ოპერაციული ფარდობებიდან ქრება"),
+        ("Ω_pop(x) local",          "common local tempo",  "ჰარმონიკები ერთად ტრანსპოზირდება"),
     ]
     for row in table:
         print(f"  {row[0]:<22} | {row[1]:<18} | {row[2]}")
@@ -1738,7 +1750,7 @@ if __name__ == "__main__" and _should_run_main_section("biconformal"):
     print(f"     დაკვირვებული: 2.57×10⁻¹⁵ ± 0.26×10⁻¹⁵  [PR 1960]")
     print(f"  ✓ ფაქტორი 2 (1.75″ vs 0.87″):  ემერჯენტული ბი-კონფორმობიდან")
     print(f"  ✓ ლოკალური ფარდობითობის პრინციპი: α და ლოკალური სიდიდეები უცვლელია")
-    print(f"  ✓ ν₀ სუბსტრატის რიტმი:         პირდაპირ არ იზომება; ფარდობებში conversion ქრება")
+    print(f"  ✓ ლოკალური საერთო რიტმი:       ჰარმონიკები ერთად ტრანსპოზირდება; ფარდობები უცვლელია")
 
     print("\n" + "=" * 72)
     print("აგენტთა საბჭოს შენიშვნების დადასტურება:")
@@ -1810,7 +1822,7 @@ def stage_d1_old_quantum_oscillon_status():
     new RG form: Bernoulli gravity is a derivation chain, while the full
     finite-energy oscillon existence theorem remains a PDE task.
     """
-    phi, m0, L0, omega0 = sp.symbols('phi m0 L0 omega0', real=True, positive=True)
+    phi, m0, L0 = sp.symbols('phi m0 L0', real=True, positive=True)
     return {
         "old_file_drained_part": "OLD/ISPG_Quantum.tex: oscillon, Bernoulli, pressure, mass-scaling",
         "new_files": ["p10_oscillons.py", "p01_core.py", "p06_inertia.py", "p02_cosmo.py"],
@@ -1824,10 +1836,10 @@ def stage_d1_old_quantum_oscillon_status():
         ],
         "mass_scaling": sp.Eq(sp.Symbol('m_eff'), m0 * sp.exp(phi / 2)),
         "operational_size_scaling": sp.Eq(sp.Symbol('L_oper'), L0 * sp.exp(phi / 2)),
-        "carrier_frequency_status": (
-            "omega0/nu0 is kept as an internal substrate rhythm, not a directly "
-            "measured local clock frequency; local composite clocks see ratios "
-            "where the substrate-time conversion cancels"
+        "population_tempo_status": (
+            "The local stable oscillon population supplies the common resonant "
+            "tempo; admissible species are harmonic/integer-ratio locks, and "
+            "pressure/energy-status changes transpose the local spectrum together."
         ),
         "already_strengthened": [
             "Bernoulli pressure identity and asymptotic charge normalization are explicit; full gravity proof still requires the p01 exterior branch gate",
@@ -1838,7 +1850,7 @@ def stage_d1_old_quantum_oscillon_status():
         "open_math": [
             "construct global finite-energy oscillon solutions of the full nonlinear PDE",
             "prove spectral stability of the localized source sector",
-            "derive the microscopic substrate dynamics selecting nu0 and particle rest scales",
+            "derive the microscopic medium dynamics selecting population-lock fixed points and particle rest scales",
             "derive the macroscopic resonant-tail/dark-energy normalization nonperturbatively",
         ],
     }
