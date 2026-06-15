@@ -12,7 +12,7 @@ from typing import Iterable
 ROOT = Path(__file__).resolve().parents[2]
 RG_DIR = ROOT / "RG"
 WORK_DIR = RG_DIR / "work"
-INTUITIVE_FILE = RG_DIR / "Intuitive_Theory.md"
+INTUITIVE_FILE = RG_DIR / "Intuitive.md"
 DEFAULT_REPORT = WORK_DIR / "intuition_audit_report.md"
 
 
@@ -65,50 +65,88 @@ INTUITION_ANCHORS = [
         "may interact, but they are not identical variables.",
     ),
     (
-        "operational_stretch_invisibility",
-        "Base-medium internal spacing/stretch is not directly measured by rods "
-        "and clocks built from the same medium. Observable gravity reads the "
-        "pressure/energy deficit, phase delay, time-rate change, and matter "
-        "scale response.",
+        "operational_readout",
+        "The measurable world is the base medium's operational self-distinction. "
+        "Rods, clocks, particles, and detectors are themselves medium modes, so "
+        "pure void, internal spacing, or absolute tempo are not read directly.",
     ),
     (
-        "pressure_deficit_source",
-        "The compact source is the pressure/energy-deficit channel H_Delta, "
-        "through the projected deficit operator. A spatial determinant may be "
-        "an internal label, but it is not the compact source law.",
+        "local_omega_population_lock",
+        "Stable oscillons lock to a local population tempo Omega(x). Ratios are "
+        "the invariant objects; the active framework has no independent universal "
+        "substrate frequency nu0 or hidden master clock.",
+    ),
+    (
+        "bernoulli_refractive_source",
+        "Mass/gravity is the external refractive readout of a Bernoulli "
+        "pressure/energy deficit. The active source is the projected deficit "
+        "channel, not a naked determinant, raw F_min source, or direct pressure "
+        "push on matter.",
+    ),
+    (
+        "internal_external_split",
+        "Proper/internal inventory and external mass/readout are distinct. "
+        "Compact objects may read as lower external active mass without implying "
+        "that the internal material inventory vanished.",
     ),
     (
         "no_double_counting",
-        "If RefG supplies the mechanism of the Einstein geometry, the same "
-        "medium structure must not be counted again as extra matter on the same "
-        "geometry unless the action explicitly defines that additional source.",
+        "Node pressure, local oscillon tails, vortex/MOND transport, clock/unit "
+        "readout, and ADM/bulk readout must stay in separate ledgers unless an "
+        "action-level bridge explicitly combines them.",
     ),
     (
-        "article_self_containment",
-        "Every strong article claim must be hand-checkable from the paper text "
-        "and backed by a concrete work-file calculation.",
+        "three_scale_pressure_ledger",
+        "Compact objects, MOND/galaxies, clusters, and cosmology are read as "
+        "different pressure/readout channels of one medium. MOND, Bullet, CMB/LSS, "
+        "and no-particle-DM claims remain conditional until their fit gates close.",
     ),
     (
-        "population_lock_standard",
-        "Oscillon stability is referenced to the existing particle population "
-        "(mutual lock through the shared medium), not to a substrate frequency "
-        "standard. The substrate enters as coupling channel, energy status, "
-        "and nonlinearity; no numerical value of nu0 is a required input "
-        "(p10 firewall, p11c ledger). Regressions to a nu0-lock or "
-        "invariant-carrier wording are drift.",
+        "process_time_guard",
+        "Process-time language is an internal formation-budget interpretation. "
+        "It must not be inserted into primary H(z), CMB, BBN, photon-redshift, "
+        "observed time-dilation, or atomic-clock channels.",
+    ),
+    (
+        "particle_c3_candidate",
+        "The active charged-lepton route is a C3/order-9 candidate-triplet. "
+        "Koide structure is algebraically strong, but theta=2/9, h=2, "
+        "m~nu^2, the electron scale, and radiative protection are open gates.",
+    ),
+    (
+        "topology_gauge_candidate_map",
+        "Spin, charge, color, and Standard-Model hosting are topological/geometric "
+        "candidate maps. Maxwell/QED, U(1), SU(2), SU(3), fractional charge, "
+        "spin-statistics, g=2, CKM/PMNS, and Born rule are not derived here.",
+    ),
+    (
+        "alpha_open_structural_number",
+        "alpha_EM is an open resonance/topological-lock hypothesis. It must not "
+        "be derived from a substrate base frequency, Planck/Compton ratio, or the "
+        "definition of the classical electron radius.",
     ),
 ]
 
 
 RULES = [
     Rule(
+        "OLD_INTUITIVE_FILE_NAME",
+        "BLOCKER",
+        r"Intuitive_Theory(?:\s*-\s*Copy)?\.md",
+        "Old intuition-file name found.",
+        "The active intuition source is RG/Intuitive.md. Old intuition file "
+        "names are stale references and make the audit miss the live source.",
+        ("old", "legacy", "removed", "renamed", "not used", "migration"),
+    ),
+    Rule(
         "C_DELTA_LOCK",
         "BLOCKER",
         r"\bC[_\\]?Delta\b|\\Lambda[_\\]?Delta\b|\bLambda[_\\]?Delta\b",
         "Old Delta constraint machinery found.",
-        "The current intuition separates the independent pressure-deficit "
-        "channel H_Delta from spatial determinant locking.",
-        ("old", "rejected", "removed", "audit", "forbid", "forbidden", "grep"),
+        "The current intuition uses projected Bernoulli pressure/energy "
+        "deficit as the active source channel. Old C_Delta/Lambda_Delta "
+        "constraint machinery must remain historical or rejected.",
+        ("old", "legacy", "rejected", "removed", "audit", "forbid", "forbidden", "grep"),
     ),
     Rule(
         "H_EQUALS_DETERMINANT",
@@ -116,9 +154,9 @@ RULES = [
         r"H(?:[_\\]?Delta)?\s*=\s*-?\s*(?:sp\.)?(?:log|ln|\\ln)\s*\(?"
         r"(?:I[_\\]?3|\\lambda_r|lambda_r)",
         "H is tied directly to a determinant or spatial stretch.",
-        "H_Delta is the pressure/energy-deficit channel. Direct determinant "
-        "locking was the core intuition mismatch that caused the compact-branch "
-        "dead end.",
+        "The compact/refractive source is the projected Bernoulli "
+        "pressure/energy-deficit channel. Direct determinant locking is not the "
+        "current source law.",
         (
             "not a global",
             "not a global pre-variation",
@@ -139,8 +177,8 @@ RULES = [
         r"(?:source|law).{0,80}(?:I[_\\]?3|determinant|spatial determinant)",
         "A determinant is being described near source-law language.",
         "The determinant can be an internal medium invariant or label. The "
-        "compact active source must be H_Delta through the projected deficit "
-        "operator.",
+        "compact active source must be the projected pressure/energy deficit, "
+        "not a naked determinant.",
         (
             "internal",
             "label",
@@ -161,8 +199,9 @@ RULES = [
         r"(?:Theta[_\\]?F|\\Theta[_\\]?F)|"
         r"raw.{0,40}F[_\\]?min.{0,80}(?:source|matter)",
         "Possible compact double counting between deficit source and raw F_min.",
-        "The compact phase-normalized F_min sector is quiet on the pure-phase "
-        "exterior. Raw F_min may appear only as a rejected audit or obstruction.",
+        "Raw F_min is not itself the compact source. The current intuition "
+        "keeps local deficit, population lock, and action-level selection in "
+        "separate ledgers unless a bridge is explicitly derived.",
         (
             "rejected",
             "audit",
@@ -170,6 +209,8 @@ RULES = [
             "nonzero",
             "residual",
             "phase-normalized",
+            "not a naked",
+            "not the source",
         ),
     ),
     Rule(
@@ -204,6 +245,272 @@ RULES = [
         ("not identical", "not automatic", "different", "not copies"),
     ),
     Rule(
+        "SUBSTRATE_NU0_LOCK",
+        "HIGH",
+        r"(?:nu[_\\]?0|\\nu[_\\]?0|substrate frequency|background frequency|"
+        r"base frequency|universal numerical frequency|master clock).{0,120}"
+        r"(?:lock|standard|input|required|derived|fundamental|absolute|"
+        r"carrier)|(?:137|alpha|alpha[_\\]?EM).{0,120}"
+        r"(?:nu[_\\]?0|\\nu[_\\]?0|substrate frequency|base frequency)",
+        "Old substrate-frequency/master-clock language found.",
+        "The active intuition uses local Omega(x) and population mutual lock. "
+        "There is no independent universal nu0, hidden clock, or 137-from-nu0 "
+        "derivation.",
+        (
+            "old",
+            "legacy",
+            "rejected",
+            "removed",
+            "not",
+            "no ",
+            "without",
+            "does not",
+            "not require",
+            "not a required input",
+            "historical",
+            "metaphor",
+            "firewall",
+        ),
+    ),
+    Rule(
+        "DIRECT_PRESSURE_PUSH",
+        "HIGH",
+        r"(?:pressure|deficit|medium).{0,80}(?:push|wind|drag|friction|"
+        r"direct force)|(?:push|wind|drag|friction|direct force).{0,80}"
+        r"(?:pressure|deficit|medium)",
+        "Gravity is being written as a direct pressure push/wind/drag.",
+        "The current language is pressure/stress source -> metric/index "
+        "readout -> geodesic or refractive motion. Uniform motion has no "
+        "medium drag.",
+        (
+            "not",
+            "no ",
+            "zero",
+            "absence",
+            "without",
+            "not direct",
+            "no direct",
+            "not a direct",
+            "not a pressure push",
+            "no medium drag",
+            "frictionless",
+            "ram pressure",
+            "gas",
+            "hydro",
+        ),
+    ),
+    Rule(
+        "LOCAL_LIGHT_SPEED_CHANGED",
+        "HIGH",
+        r"(?:local|locally|measured|laboratory).{0,80}"
+        r"(?:speed of light|c[_\\]?meas|c_meas).{0,80}"
+        r"(?:changes|varies|slows|decreases|is reduced)|"
+        r"(?:speed of light|c[_\\]?meas|c_meas).{0,80}"
+        r"(?:changes|varies|slows|decreases|is reduced).{0,80}"
+        r"(?:local|locally|measured|laboratory)",
+        "Locally measured light speed is being changed.",
+        "Only coordinate/readout light speed changes. Local dimensionless "
+        "measurements self-calibrate with rods and clocks.",
+        ("not", "no ", "unchanged", "invariant", "does not", "cannot"),
+    ),
+    Rule(
+        "PROPER_INVENTORY_VANISHES",
+        "HIGH",
+        r"(?:proper|internal|interior|material|matter).{0,80}"
+        r"(?:inventory|mass|matter|material).{0,80}"
+        r"(?:vanishes|disappears|is destroyed|is erased|goes to zero|"
+        r"ceases to exist)|(?:mass|matter).{0,80}"
+        r"(?:vanishes|disappears|is destroyed|is erased).{0,80}"
+        r"(?:compact|black hole|merger|interior)",
+        "Internal/proper inventory is being erased.",
+        "Compact deficit language changes external active/readout mass; it "
+        "must not claim that internal material inventory simply disappears.",
+        ("not", "no ", "does not", "without", "not saying", "not mean"),
+    ),
+    Rule(
+        "PROCESS_TIME_PRIMARY_BRANCH_MIX",
+        "HIGH",
+        r"(?:C\(z\)|process[- ]time|process time).{0,140}"
+        r"(?:H\(z\)|CMB|BBN|photon redshift|atomic clocks?|"
+        r"observed time dilation|primary metric|primary FLRW)|"
+        r"(?:H\(z\)|CMB|BBN|photon redshift|atomic clocks?|"
+        r"observed time dilation|primary metric|primary FLRW).{0,140}"
+        r"(?:C\(z\)|process[- ]time|process time)",
+        "Process-time language is mixed into a primary metric/clock channel.",
+        "Process time is allowed only as an intrinsic formation-budget "
+        "interpretation. It must not be inserted into H(z), CMB, BBN, photon "
+        "redshift, observed time dilation, or atomic clocks.",
+        (
+            "not",
+            "no ",
+            "must not",
+            "blocked",
+            "separate",
+            "does not enter",
+            "do not insert",
+            "not added",
+            "not be inserted",
+            "outside the primary",
+            "outside primary",
+            "separate from",
+            "separation",
+            "restriction",
+            "provide bounds",
+            "bounds on",
+            "bookkeeping",
+            "field-space",
+            "postulate",
+            "არ უნდა",
+            "არ არის",
+            "არ შედის",
+            "არ დაემატოს",
+            "დამხმარე",
+        ),
+    ),
+    Rule(
+        "TIRED_LIGHT",
+        "HIGH",
+        r"\btired[- ]light\b|light.{0,40}(?:gets tired|loses energy by tired)",
+        "Tired-light language found.",
+        "The active cosmology keeps FLRW/redshift compatibility. Internal "
+        "pressure/tempo relaxation is not tired light.",
+        ("not", "no ", "rejected", "blocked", "not tired", "would become", "double-count"),
+    ),
+    Rule(
+        "RAW_PSI2_COSMIC_MAP",
+        "HIGH",
+        r"(?:rho|density|matter|cosmic web|large[- ]scale).{0,80}"
+        r"(?:=|is|as|mapped to).{0,40}(?:\|psi\|\^2|\\psi\^2|raw amplitude)|"
+        r"(?:\|psi\|\^2|\\psi\^2|raw amplitude).{0,80}"
+        r"(?:matter|density|cosmic web|large[- ]scale)",
+        "Cosmic matter is mapped to raw amplitude instead of node/pressure readout.",
+        "The Chladni analogy must be node/pressure/gradient readout, not raw "
+        "|psi|^2 amplitude mapping.",
+        ("not", "no ", "instead", "avoid", "blocked", "not raw", "not mapped"),
+    ),
+    Rule(
+        "C3_GENERATION_OVERCLAIM",
+        "HIGH",
+        r"(?:C3|order[- ]9|Koide|theta\s*=\s*2/9|m\s*(?:~|\\propto|propto)"
+        r"\s*nu\^?2).{0,140}(?:complete|final|derived|proved|generation "
+        r"theorem|PDG[- ]precision|electron mass derived|radiative protection "
+        r"closed)",
+        "C3/Koide charged-lepton candidate is being overclaimed.",
+        "The C3/order-9 route is active and strong, but theta=2/9, h=2, "
+        "m~nu^2, electron scale, pole masses, and radiative protection remain "
+        "open or conditional gates.",
+        (
+            "not",
+            "no ",
+            "candidate",
+            "open",
+            "conditional",
+            "not complete",
+            "not final",
+            "not derived",
+            "not a generation theorem",
+            "fail",
+            "fails",
+            "misses",
+            "residual",
+        ),
+    ),
+    Rule(
+        "GAUGE_SM_OVERCLAIM",
+        "HIGH",
+        r"(?:Maxwell|QED|U\(1\)|SU\(2\)|SU\(3\)|QCD|Standard Model|"
+        r"fractional charge|spin[- ]statistics|g\s*=\s*2|CKM|PMNS|"
+        r"Born rule).{0,140}(?:derived|proved|closed|complete|final|solved)",
+        "Gauge/SM/quantum candidate map is being promoted to a derivation.",
+        "The new intuition treats these as hosting/candidate maps until the "
+        "relevant action-level, QFT, and empirical gates are closed.",
+        (
+            "not",
+            "no ",
+            "candidate",
+            "open",
+            "requires",
+            "not derived",
+            "not closed",
+            "not complete",
+            "still open",
+            "do_not_claim",
+            "do not claim",
+            "blacklist",
+            "forbid",
+            "forbidden",
+            "legacy mathieu",
+            "overclaim blacklist",
+        ),
+    ),
+    Rule(
+        "ALPHA_DERIVATION_OVERCLAIM",
+        "HIGH",
+        r"(?:alpha[_\\]?EM|\\alpha[_\\]?EM|fine[- ]structure|1/137|137\b)"
+        r".{0,140}"
+        r"(?:derived|proved|closed|comes from|is predicted by|from substrate "
+        r"frequency|from base frequency|Planck.*Compton|Compton.*Planck|"
+        r"classical electron radius)",
+        "alpha_EM/137 is being overclaimed.",
+        "alpha_EM is an open structural number. It is not derived from a base "
+        "frequency, Planck/Compton ratio, or the definitional classical electron "
+        "radius identity.",
+        (
+            "not",
+            "no ",
+            "open",
+            "not derived",
+            "does not",
+            "fails",
+            "definition",
+            "definitional",
+            "stress-test",
+            "do_not_claim",
+            "do not claim",
+            "legacy mathieu",
+            "overclaim blacklist",
+        ),
+    ),
+    Rule(
+        "OBSERVATIONAL_PASS_OVERCLAIM",
+        "HIGH",
+        r"(?:SPARC|RAR|Bullet|cluster|CMB|LSS|BAO|Planck|LVK|LIGO|EHT|"
+        r"Solar[- ]System|2PN|GW catalog).{0,140}"
+        r"(?:pass|passed|proved|solved|closed|confirmed|validated|likelihood "
+        r"complete|posterior)",
+        "A phenomenology/observational gate may be overclaimed.",
+        "Empirical pass starts only at the relevant fit, likelihood, posterior, "
+        "or benchmark gate. Algebraic or candidate bridges do not count as "
+        "observational passes.",
+        (
+            "not",
+            "no ",
+            "requires",
+            "open",
+            "conditional",
+            "benchmark",
+            "not completed",
+            "not a proof",
+            "not observational",
+            "separate gate",
+            "blocked",
+            "toy",
+            "toy_pass",
+            "toy_fail",
+            "scan",
+            "comparison",
+            "benchmark",
+            "same-input",
+            "same_input",
+            "linear_same_input",
+            "not_article_ready",
+            "not article ready",
+            "particle/quantum predictions before",
+            "requires",
+            "require",
+        ),
+    ),
+    Rule(
         "CLAIM_TOO_STRONG",
         "MEDIUM",
         r"\b(fully closed|complete proof|proved everywhere|final theory|"
@@ -227,7 +534,7 @@ RULES = [
     Rule(
         "BAD_TERMINOLOGY",
         "LOW",
-        r"\b(non-emptiness|coefficiential|coefficientary|toy model)\b",
+        r"\b(non-emptiness|coefficiential|coefficientary)\b",
         "Weak or bad terminology found.",
         "Terminology must stay clean and publication-level.",
         (),
@@ -253,46 +560,128 @@ RULES = [
 
 CLAIM_BACKING = [
     (
-        "phase-normalized F_min",
-        ("phase-normalized", "F_{\\rm min}", "F_min"),
+        "one-medium many-channel foundation",
         (
-            "p05s_phase_normalized_fmin_action_gate.py",
-            "p03d_phase_normalized_solar_global_audit.py",
-            "p05t_single_action_branch_consistency_gate.py",
+            "one base medium",
+            "one medium",
+            "many channels",
+            "phase channel",
+            "pressure channel",
+        ),
+        ("p01_core.py",),
+    ),
+    (
+        "local Omega population lock",
+        (
+            "Omega",
+            "\\Omega",
+            "population lock",
+            "mutual lock",
+            "no master clock",
+            "substrate frequency",
+        ),
+        (
+            "p10_oscillons.py",
+            "p11c_population_lock_ledger.py",
+            "p11h_fmin_population_first_set_gate.py",
+            "p17_unified_spectral_formula.py",
         ),
     ),
     (
-        "single-action branch consistency",
-        ("same covariant EFT action", "same action", "branch action", "H=0"),
-        ("p05t_single_action_branch_consistency_gate.py",),
-    ),
-    (
-        "H Euler source on Solar guard",
-        ("S_H", "H Euler", "H-equation", "partial F_{\\rm branch}/\\partial H"),
-        ("p05t_single_action_branch_consistency_gate.py",),
-    ),
-    (
-        "independent H_Delta compact source",
-        ("H_\\Delta", "H_Delta", "projected deficit"),
-        ("p05g_exponential_source_eom.py", "p05i_spatial_medium_eom_gate.py"),
-    ),
-    (
-        "no double counting",
-        ("double count", "additional compact matter", "raw F"),
-        ("p05q_no_double_count_reprocessing_audit.py", "p05r_variational_no_double_count_projector_gate.py"),
-    ),
-    (
-        "NEC deficit interpretation",
-        ("NEC", "null energy", "deficit"),
-        ("p14_nec_deficit.py",),
-    ),
-    (
-        "strong-field prediction",
-        ("ISCO", "photon sphere", "b_c", "golden"),
+        "Bernoulli/refractive gravity chain",
         (
-            "p05_compact.py",
+            "Bernoulli",
+            "pressure deficit",
+            "refractive",
+            "n_eff",
+            "h_eff",
+            "factor 2",
+        ),
+        (
+            "p10_oscillons.py",
+            "p13_refractive_force.py",
+            "p15h_metric_readout_filters_gate.py",
+        ),
+    ),
+    (
+        "internal/external compact readout split",
+        (
+            "proper inventory",
+            "external readout",
+            "mass deficit",
+            "finite core",
+            "horizonless",
+        ),
+        (
+            "p15e_internal_external_readout_split_gate.py",
+            "p15h_metric_readout_filters_gate.py",
             "p16j_geodesic_completeness_regular_object.py",
-            "p16l_inner_light_ring_structure.py",
+        ),
+    ),
+    (
+        "projected compact deficit source",
+        ("H_\\Delta", "H_Delta", "projected deficit", "naked determinant", "F_min"),
+        (
+            "p05g_exponential_source_eom.py",
+            "p05i_spatial_medium_eom_gate.py",
+            "p05q_no_double_count_reprocessing_audit.py",
+            "p05r_variational_no_double_count_projector_gate.py",
+        ),
+    ),
+    (
+        "MOND/vortex/coherence bridge",
+        ("MOND", "BTFR", "vortex", "coherence", "SPARC", "RAR"),
+        ("p07_mond.py", "p13_refractive_force.py"),
+    ),
+    (
+        "cluster/Bullet three-channel pressure ledger",
+        ("Bullet", "cluster", "cosmic-node", "tail retention", "merger memory"),
+        ("p09_bullet.py", "p17_unified_spectral_formula.py"),
+    ),
+    (
+        "FLRW/process-time/CMB separation",
+        ("process time", "C(z)", "FLRW", "CMB", "BBN", "redshift"),
+        (
+            "p02_cosmo.py",
+            "p02b_process_time_ledger.py",
+            "p02c_dynamic_phase_clock.py",
+            "p08_cmb.py",
+        ),
+    ),
+    (
+        "charged-lepton C3/Koide candidate",
+        ("C3", "Koide", "theta=2/9", "order-9", "m\\propto\\nu^2"),
+        (
+            "p11_particles.py",
+            "p11b_c3_triplet_inversion.py",
+            "p11d_koide_structure_reduction.py",
+            "p11i_mass_bridge_radiative_residual_gate.py",
+        ),
+    ),
+    (
+        "topological/gauge candidate map",
+        (
+            "spin",
+            "charge",
+            "color",
+            "Maxwell",
+            "QED",
+            "SU(3)",
+            "Standard Model",
+        ),
+        ("p11_particles.py", "p17_unified_spectral_formula.py"),
+    ),
+    (
+        "unified micro-macro spectral skeleton",
+        ("unified spectral", "Chladni", "node pressure", "cosmic web", "Kronecker"),
+        ("p17_unified_spectral_formula.py",),
+    ),
+    (
+        "prediction/status discipline",
+        ("prediction", "observational pass", "article-ready", "claim gate"),
+        (
+            "p12_predictions.py",
+            "p17_unified_spectral_formula.py",
         ),
     ),
 ]
@@ -327,7 +716,7 @@ def discover_targets(include_articles: bool) -> list[Path]:
     return targets
 
 
-def context_lines(lines: list[str], index: int, radius: int = 2) -> str:
+def context_lines(lines: list[str], index: int, radius: int = 5) -> str:
     start = max(0, index - radius)
     end = min(len(lines), index + radius + 1)
     return "\n".join(lines[start:end]).lower()
@@ -518,6 +907,7 @@ def render_report(
     lines.append("# Intuition Consistency Audit")
     lines.append("")
     lines.append("## Summary")
+    lines.append(f"- Active intuition source: `{rel(INTUITIVE_FILE)}`")
     if counts:
         for severity in ["BLOCKER", "HIGH", "MEDIUM", "LOW", "INFO_ALLOWED"]:
             if severity in counts:
@@ -619,7 +1009,16 @@ def exit_code_for(findings: list[Finding], fail_on: str) -> int:
     return 0
 
 
+def configure_output_encoding() -> None:
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except AttributeError:
+            pass
+
+
 def main() -> int:
+    configure_output_encoding()
     args = parse_args()
     include_articles = not args.no_article
     targets = discover_targets(include_articles=include_articles)
@@ -627,6 +1026,19 @@ def main() -> int:
     article_paths = [path for path in ARTICLE_CANDIDATES if path.exists()]
 
     findings, suppressed = scan_static(targets, show_allowed=args.show_allowed)
+    if not INTUITIVE_FILE.exists():
+        findings.append(
+            Finding(
+                severity="BLOCKER",
+                rule_id="INTUITIVE_FILE_MISSING",
+                path=INTUITIVE_FILE,
+                line_no=1,
+                message="Active intuition file is missing.",
+                snippet=str(INTUITIVE_FILE),
+                rationale="The audit must scan RG/Intuitive.md; otherwise it can "
+                "silently compare work files against stale assumptions.",
+            )
+        )
     ledger = status_ledger(work_files)
     if args.strict_status:
         findings.extend(status_findings_from_ledger(ledger))
