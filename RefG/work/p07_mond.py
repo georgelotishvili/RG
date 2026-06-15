@@ -46,8 +46,8 @@ SPARC-ის სრული chi-square verdict დარჩება მონ�
   ჩასმული a0 და chi_coupling მნიშვნელობების აღდგენა. ეს არ არის ემპირიული შედეგი.
 
 მოსალოდნელი ლოკალური მონაცემების სტრუქტურა:
-    RG/data/SPARC/*_rotmod.dat
-    RG/work/data/SPARC/*_rotmod.dat
+    RefG/data/SPARC/*_rotmod.dat
+    RefG/work/data/SPARC/*_rotmod.dat
     data/SPARC/*_rotmod.dat
 ან გამოიყენეთ SPARC_DATA_DIR გარემოს ცვლადი.
 """
@@ -74,8 +74,8 @@ SPARC_SUMMARY = {
 }
 
 DEFAULT_DATA_DIRS = (
-    Path("RG/data/SPARC"),
-    Path("RG/work/data/SPARC"),
+    Path("RefG/data/SPARC"),
+    Path("RefG/work/data/SPARC"),
     Path("data/SPARC"),
     Path("SPARC"),
 )

@@ -4094,5 +4094,5 @@ if __name__ == "__main__" and _should_run_main_section("audit"):
 
 if __name__ == "__main__" and not _requested_main_sections():
     print("p01_core.py loaded. Run a section explicitly:")
-    print("  python RG\\work\\p01_core.py base|spherical|moduli|stress|horndeski|hyperbolicity|eft|lorentz|old|audit")
+    print("  python RefG\\work\\p01_core.py base|spherical|moduli|stress|horndeski|hyperbolicity|eft|lorentz|old|audit")
 

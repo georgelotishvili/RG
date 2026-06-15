@@ -76,7 +76,7 @@ DESI_DR2 = {
     "status": "DR2 replaces the earlier DR1 placeholder; use full likelihood for parameter fitting.",
 }
 
-DEFAULT_ALPHA_TABLE = Path("RG/work/cmb_alpha_table.dat")
+DEFAULT_ALPHA_TABLE = Path("RefG/work/cmb_alpha_table.dat")
 
 
 @dataclass

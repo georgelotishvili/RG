@@ -10,9 +10,9 @@ from typing import Iterable
 
 
 ROOT = Path(__file__).resolve().parents[2]
-RG_DIR = ROOT / "RG"
-WORK_DIR = RG_DIR / "work"
-INTUITIVE_FILE = RG_DIR / "Intuitive.md"
+REFG_DIR = ROOT / "RefG"
+WORK_DIR = REFG_DIR / "work"
+INTUITIVE_FILE = ROOT / "Intuitive.md"
 DEFAULT_REPORT = WORK_DIR / "intuition_audit_report.md"
 
 
@@ -134,9 +134,28 @@ RULES = [
         "BLOCKER",
         r"Intuitive_Theory(?:\s*-\s*Copy)?\.md",
         "Old intuition-file name found.",
-        "The active intuition source is RG/Intuitive.md. Old intuition file "
+        "The active intuition source is Intuitive.md. Old intuition file "
         "names are stale references and make the audit miss the live source.",
         ("old", "legacy", "removed", "renamed", "not used", "migration"),
+    ),
+    Rule(
+        "OLD_REFG_ROOT_DOC_PATH",
+        "BLOCKER",
+        r"RefG[/\\]+(?:Intuitive\.md|CODES\.md)",
+        "Moved root document is still referenced inside RefG.",
+        "Intuitive.md and CODES.md now live at the workspace root. RefG/... "
+        "is reserved for work files and data paths.",
+        ("old", "legacy", "removed", "renamed", "moved", "not used", "migration", "grep"),
+    ),
+    Rule(
+        "OLD_RG_FOLDER_PATH",
+        "BLOCKER",
+        r"RG[/\\]+(?:Intuitive\.md|CODES\.md|work[/\\]+|data[/\\]+)",
+        "Old RG folder path found.",
+        "Work/data file references must use RefG/..., while Intuitive.md and "
+        "CODES.md live at the workspace root. The conceptual theory name RG "
+        "may remain unchanged.",
+        ("old", "legacy", "removed", "renamed", "not used", "migration", "grep"),
     ),
     Rule(
         "C_DELTA_LOCK",
@@ -989,7 +1008,7 @@ def parse_args() -> argparse.Namespace:
         "--write",
         nargs="?",
         const=str(DEFAULT_REPORT),
-        help="Write the Markdown report. Optional path defaults to RG/work/intuition_audit_report.md.",
+        help="Write the Markdown report. Optional path defaults to RefG/work/intuition_audit_report.md.",
     )
     parser.add_argument(
         "--fail-on",
@@ -1035,7 +1054,7 @@ def main() -> int:
                 line_no=1,
                 message="Active intuition file is missing.",
                 snippet=str(INTUITIVE_FILE),
-                rationale="The audit must scan RG/Intuitive.md; otherwise it can "
+                rationale="The audit must scan Intuitive.md; otherwise it can "
                 "silently compare work files against stale assumptions.",
             )
         )

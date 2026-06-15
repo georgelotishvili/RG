@@ -382,7 +382,7 @@ def full_theory_sector_coverage_ledger() -> dict[str, Any]:
 
 def current_work_python_scope_ledger() -> dict[str, Any]:
     """
-    Current RG/work Python-family scope that p17 must not silently bypass.
+    Current RefG/work Python-family scope that p17 must not silently bypass.
 
     The filenames are grouped by theory family.  p17 is allowed to unify source
     formulas, but it is not allowed to erase family gates that were already
@@ -508,7 +508,7 @@ def current_work_python_scope_ledger() -> dict[str, Any]:
         "ignored_files": ignored_files,
         "uncovered_families": uncovered_families,
         "meaning": (
-            "Every active RG/work Python family visible in the current workspace "
+            "Every active RefG/work Python family visible in the current workspace "
             "has an explicit p17 compatibility binding or an explicit exclusion."
         ),
     }
