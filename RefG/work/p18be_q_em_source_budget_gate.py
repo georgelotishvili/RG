@@ -29,8 +29,8 @@ class QEMBudget:
     eta_c3_to_pdg_thresholds: float
     eta_pdg_to_observed_readout: float
     eta_product: float
-    naive_next_order_q_equivalent: float
-    naive_next_order_abs_over_total: float
+    lepton_two_loop_q_equivalent: float
+    lepton_two_loop_abs_over_total: float
 
 
 @dataclass(frozen=True)
@@ -67,11 +67,11 @@ def q_em_source_budget() -> QEMBudget:
     eta_threshold = math.exp(-q_threshold)
     eta_boundary = math.exp(-q_pdg)
 
-    # A schematic positive next-order beta shift moves alpha^-1 upward.  In
-    # readout-filter language that is a negative q, so it has the wrong sign
-    # for the residual.
+    # Standard two-loop lepton-QED running moves alpha^-1 upward.  In
+    # readout-filter language that is a negative q, so it cannot supply the
+    # positive residual and also makes this one-loop budget non-precision.
     next_guard = next_order_guard()
-    q_next = -next_guard.schematic_next_order_shift / QED_B1_THREE_LEPTONS
+    q_next = -next_guard.two_loop_running_shift / QED_B1_THREE_LEPTONS
 
     return QEMBudget(
         exact_c3_alpha_inv=exact,
@@ -86,8 +86,8 @@ def q_em_source_budget() -> QEMBudget:
         eta_c3_to_pdg_thresholds=eta_threshold,
         eta_pdg_to_observed_readout=eta_boundary,
         eta_product=eta_threshold * eta_boundary,
-        naive_next_order_q_equivalent=q_next,
-        naive_next_order_abs_over_total=abs(q_next / q_total),
+        lepton_two_loop_q_equivalent=q_next,
+        lepton_two_loop_abs_over_total=abs(q_next / q_total),
     )
 
 
@@ -117,14 +117,15 @@ def source_verdicts() -> tuple[SourceVerdict, ...]:
             ),
         ),
         SourceVerdict(
-            source="naive_positive_next_order_QED_beta_term",
-            q_value=b.naive_next_order_q_equivalent,
+            source="standard_lepton_two_loop_running_without_full_matching",
+            q_value=b.lepton_two_loop_q_equivalent,
             independent_of_observed_alpha=True,
             sign_correct=False,
             size_reasonable=False,
             verdict=(
-                "REJECT_AS_STANDALONE_SOURCE: wrong sign and far too large; "
-                "only a completed matching theorem may use higher-order pieces"
+                "NOT_A_STANDALONE_MATCH: the standard lepton two-loop term is "
+                "far too large to omit, while full EW/nonleptonic and finite "
+                "matching is still absent"
             ),
         ),
         SourceVerdict(
@@ -153,8 +154,9 @@ def next_step_contract() -> dict[str, object]:
             "from a fully specified QED/EW matching convention"
         ),
         "do_not_do": (
-            "do not tune C3, do not add a naive two-loop term, and do not "
-            "declare q_boundary derived just because its target value is known"
+            "do not tune C3, do not omit standard two-loop running or treat "
+            "lepton-only running as the full match, and do not declare "
+            "q_boundary derived just because its target value is known"
         ),
         "next_gate": (
             "derive or constrain q_boundary from a finite charged-core "
@@ -181,8 +183,8 @@ def run_gate() -> None:
     )
     assert 0.10 < budget.threshold_fraction_of_total < 0.25
     assert 0.75 < budget.boundary_fraction_of_total < 0.90
-    assert budget.naive_next_order_q_equivalent < 0.0
-    assert budget.naive_next_order_abs_over_total > 30.0
+    assert budget.lepton_two_loop_q_equivalent < 0.0
+    assert budget.lepton_two_loop_abs_over_total > 100.0
 
     print("p18be q_EM source budget gate")
     print("budget")

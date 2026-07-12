@@ -9,10 +9,15 @@ ALPHA_INV_BARE_H2 = 81.0 * math.pi / 2.0
 
 QED_B1_PER_UNIT_CHARGE = 2.0 / (3.0 * math.pi)
 
-# Schematic mass-independent QED-like next beta coefficient per unit charged
-# lepton. This is used only as a size/sign guard, not as a final threshold
-# theorem.
-QED_B2_PER_UNIT_CHARGE_SCHEMATIC = 1.0 / (4.0 * math.pi**2)
+# Standard mass-independent Dirac-QED coefficients are
+#
+#   d alpha/d ln(mu) = (2/(3*pi))*sum(Q_f^2)*alpha^2
+#                    + (1/(2*pi^2))*sum(Q_f^4)*alpha^3 + ... .
+#
+# All three intervals below contain only unit-charge leptons, so the active
+# Q^2 and Q^4 sums are both 3, 2, 1.  Finite threshold and scheme matching
+# are still separate from this running coefficient.
+QED_B2_PER_UNIT_CHARGE = 1.0 / (2.0 * math.pi**2)
 
 LEPTON_MASSES_MEV = {
     "electron": 0.51099895069,
@@ -37,11 +42,11 @@ class NextOrderGuard:
     one_loop_alpha_inv: float
     observed_alpha_inv: float
     one_loop_residual_observed_minus_candidate: float
-    schematic_next_order_shift: float
-    next_order_over_residual_abs: float
-    alpha_inv_with_schematic_next_order: float
-    miss_with_schematic_next_order: float
-    effective_b2_scale_needed: float
+    two_loop_running_shift: float
+    two_loop_over_one_loop_residual_abs: float
+    alpha_inv_with_two_loop_running: float
+    miss_with_two_loop_running: float
+    b2_rescaling_needed_to_close_one_loop_residual: float
     intervals: tuple[IntervalCorrection, ...]
 
 
@@ -70,11 +75,11 @@ def next_order_guard() -> NextOrderGuard:
     for label, high, low, charge_sum in one_loop_intervals():
         log_ratio = math.log(high / low)
         b1 = QED_B1_PER_UNIT_CHARGE * charge_sum
-        b2 = QED_B2_PER_UNIT_CHARGE_SCHEMATIC * charge_sum
+        b2 = QED_B2_PER_UNIT_CHARGE * charge_sum
 
         one_loop_shift = b1 * log_ratio
 
-        # With y=alpha^-1, a schematic next order beta term gives
+        # With y=alpha^-1, the standard two-loop lepton-QED beta term gives
         # d y / dL = b1 + b2/y while running downward across L.
         # Evaluate it on the one-loop y(L)=y0+b1*L trajectory.
         next_order_shift = (b2 / b1) * math.log((y + one_loop_shift) / y)
@@ -98,7 +103,7 @@ def next_order_guard() -> NextOrderGuard:
     residual = ALPHA_INV_OBSERVED_LOW - one_loop_alpha_inv
     alpha_inv_with_next = one_loop_alpha_inv + next_order_total
 
-    effective_b2_scale_needed = (
+    b2_rescaling_needed = (
         residual / next_order_total if next_order_total != 0.0 else float("nan")
     )
 
@@ -106,12 +111,11 @@ def next_order_guard() -> NextOrderGuard:
         one_loop_alpha_inv=one_loop_alpha_inv,
         observed_alpha_inv=ALPHA_INV_OBSERVED_LOW,
         one_loop_residual_observed_minus_candidate=residual,
-        schematic_next_order_shift=next_order_total,
-        next_order_over_residual_abs=abs(next_order_total / residual),
-        alpha_inv_with_schematic_next_order=alpha_inv_with_next,
-        miss_with_schematic_next_order=alpha_inv_with_next
-        - ALPHA_INV_OBSERVED_LOW,
-        effective_b2_scale_needed=effective_b2_scale_needed,
+        two_loop_running_shift=next_order_total,
+        two_loop_over_one_loop_residual_abs=abs(next_order_total / residual),
+        alpha_inv_with_two_loop_running=alpha_inv_with_next,
+        miss_with_two_loop_running=alpha_inv_with_next - ALPHA_INV_OBSERVED_LOW,
+        b2_rescaling_needed_to_close_one_loop_residual=b2_rescaling_needed,
         intervals=tuple(intervals),
     )
 
@@ -119,9 +123,9 @@ def next_order_guard() -> NextOrderGuard:
 def interpretation() -> list[str]:
     return [
         "The leading one-loop/C3/h=2 candidate is already within about one ppm.",
-        "A naive positive next-order beta contribution is much larger than the residual and moves in the wrong direction.",
-        "Therefore the last ppm should not be treated as simply adding a bare two-loop term.",
-        "The completion must be a full matching calculation: scheme constants, finite thresholds, EW/U1 matching and RefG boundary normalization may cancel or reshape the naive term.",
+        "The standard two-loop lepton-QED running contribution is much larger than the residual and moves the one-loop value upward.",
+        "Therefore the close one-loop digits are not a precision closure and cannot be repaired by omitting the two-loop term.",
+        "A valid completion requires a stated renormalization scheme, finite thresholds, EW/U1 matching and a derived RefG boundary normalization.",
         "This gate protects the alpha chain from overclaiming a residual closure before the real matching theorem exists.",
     ]
 
@@ -130,7 +134,7 @@ def open_tasks() -> list[str]:
     return [
         "derive the correct RefG-to-Maxwell matching scheme",
         "derive the threshold convention for pole masses versus running masses",
-        "compute the full QED/EW bridge rather than adding a schematic next-order term",
+        "compute the full QED/EW bridge rather than treating lepton-only two-loop running as the complete match",
         "derive whether RefG boundary normalization supplies a finite counterterm at the matching scale",
     ]
 
@@ -139,9 +143,9 @@ def run_gate() -> None:
     guard = next_order_guard()
 
     assert guard.one_loop_alpha_inv > ALPHA_INV_OBSERVED_LOW
-    assert guard.schematic_next_order_shift > 0.0
-    assert guard.next_order_over_residual_abs > 50.0
-    assert guard.effective_b2_scale_needed < 0.0
+    assert guard.two_loop_running_shift > 0.0
+    assert guard.two_loop_over_one_loop_residual_abs > 100.0
+    assert guard.b2_rescaling_needed_to_close_one_loop_residual < 0.0
 
     print("p18ax next-order matching guard gate")
     print(f"one-loop candidate alpha^-1 = {guard.one_loop_alpha_inv:.12f}")
@@ -151,23 +155,23 @@ def run_gate() -> None:
         f"{guard.one_loop_residual_observed_minus_candidate:.12f}"
     )
     print()
-    print("schematic next-order audit")
-    print(f"schematic next-order shift = {guard.schematic_next_order_shift:.12f}")
+    print("two-loop lepton-QED running audit")
+    print(f"two-loop running shift = {guard.two_loop_running_shift:.12f}")
     print(
-        "next-order / residual magnitude = "
-        f"{guard.next_order_over_residual_abs:.6f}"
+        "two-loop / one-loop residual magnitude = "
+        f"{guard.two_loop_over_one_loop_residual_abs:.6f}"
     )
     print(
-        "alpha^-1 with schematic next order = "
-        f"{guard.alpha_inv_with_schematic_next_order:.12f}"
+        "alpha^-1 with two-loop lepton running = "
+        f"{guard.alpha_inv_with_two_loop_running:.12f}"
     )
     print(
-        "miss with schematic next order = "
-        f"{guard.miss_with_schematic_next_order:.12f}"
+        "miss with two-loop lepton running = "
+        f"{guard.miss_with_two_loop_running:.12f}"
     )
     print(
-        "effective b2 scale needed to close residual = "
-        f"{guard.effective_b2_scale_needed:.12f}"
+        "b2 rescaling needed to close one-loop residual = "
+        f"{guard.b2_rescaling_needed_to_close_one_loop_residual:.12f}"
     )
     print()
     print("intervals")

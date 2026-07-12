@@ -30,6 +30,8 @@ class ConditionalAlphaRelation:
     historically_target_exposed: bool
     retrospectively_blind: bool
     independent_validation_completed: bool
+    one_loop_threshold_only: bool
+    precision_ready: bool
     relation_status: str
 
 
@@ -41,7 +43,7 @@ def evaluate_conditional_relation() -> ConditionalAlphaRelation:
     formula = (
         "Y=4*pi*9^2/(n*eta_*h^2)"
         "+(2/(3*pi))*ln(((3h)^2)^3*(m_tau/m_e)^5/(m_mu/m_e)); "
-        "N=dim ker(R_gamma); q=(1/2)Tr(C^*rho C)=alpha/N; "
+        "N=dim ker(R_gamma); q=(1/2)Tr(C^T rho C)=alpha/N; "
         "alpha^-1=(Y+sqrt(Y^2-8/(pi*N)))/2. "
         "Working conditional branch: h=2, n=h, eta_*=1, N=34."
     )
@@ -58,6 +60,8 @@ def evaluate_conditional_relation() -> ConditionalAlphaRelation:
         independent_validation_completed=bool(
             firewall["independent_validation_completed"]
         ),
+        one_loop_threshold_only=True,
+        precision_ready=False,
         relation_status=(
             "The formula is now evaluated through a target-isolated kernel, "
             "with exact-C3 and empirical-mass branches kept separate.  It is "
@@ -75,12 +79,29 @@ def comparison_ledger() -> tuple[ObservationComparison, ObservationComparison]:
     )
 
 
+def reporting_ledger() -> dict[str, object]:
+    relation = evaluate_conditional_relation()
+    empirical = relation.empirical_mass_branch
+    sigma = empirical.mass_input_sigma_inverse_alpha
+    assert sigma is not None
+    return {
+        "exact_C3_branch": f"{relation.exact_c3_branch.inverse_alpha:.6f}; theory error unquantified",
+        "empirical_mass_branch": (
+            f"{empirical.inverse_alpha:.6f} +/- {sigma:.6f} "
+            "(mass-input uncertainty only)"
+        ),
+        "internal_full_precision_retained_for_equation_tests": True,
+        "full_precision_is_not_a_physical_precision_claim": True,
+        "precision_ready": False,
+    }
+
+
 def proof_chain() -> tuple[str, ...]:
     return (
         "The diagonal-sheet reduction gives q0^2=n*eta_* and exposes n=h, eta_*=1 as separate working hypotheses.",
         "The lepton threshold identity reduces to the scale-free logarithm in the displayed Y once the core-scale and lepton-only matching prescription are supplied.",
         "p18bh proves N=34 by rank-nullity inside B=Herm(C^3 tensor C^2) with a rank-two generation-blind photon map.",
-        "p18bj proves q_boundary=alpha/N from the unique U(N)-isotropic trace-constrained density and a unit-isometric two-helicity interface.",
+        "p18bj proves q_boundary=alpha/N from the unique O(N)-isotropic trace-constrained density and a unit-isometric two-helicity interface.",
         "The boundary equation y=Y-(2/pi)/(N*y) has the displayed unique large positive quadratic root.",
         "p18bl computes both mass-ratio branches before p18bm introduces the reference value.",
     )
@@ -90,7 +111,7 @@ def unclosed_derivations() -> tuple[str, ...]:
     return (
         "derive an additive gauge-sheet level n equal to the oriented return index h",
         "derive the unit-sheet Maxwell/source normalization eta_*=k_*^2/K_*=1 from a completed action",
-        "derive B=Herm(C^3 tensor C^2), its generation-blind photon projection and the U(34) hidden kernel from the localized core",
+        "derive B=Herm(C^3 tensor C^2), its generation-blind photon projection and the O(34) hidden kernel from the localized core",
         "derive the trace budget and unit-isometric photon interface, including symmetry-breaking error bounds",
         "derive the core matching scale and justify the lepton-only threshold register in a full QED/EW/nonleptonic scheme",
         "obtain an independent charged-sector observable without reselecting h, N or the readout law",
@@ -115,6 +136,8 @@ def run_gate() -> None:
     assert relation.historically_target_exposed is True
     assert relation.retrospectively_blind is False
     assert relation.independent_validation_completed is False
+    assert relation.one_loop_threshold_only is True
+    assert relation.precision_ready is False
     assert prediction_digest(relation.exact_c3_branch) == prediction_digest(
         predict_exact_c3_branch()
     )
@@ -125,8 +148,12 @@ def run_gate() -> None:
     assert empirical_comparison.observational_pass_claimed is False
 
     print("p18bk conditional alpha relation gate")
-    print("relation")
-    print(relation)
+    print("formula")
+    print(relation.formula)
+    print("relation status")
+    print(relation.relation_status)
+    print("reporting ledger")
+    print(reporting_ledger())
     print()
     print("proof chain")
     for item in proof_chain():

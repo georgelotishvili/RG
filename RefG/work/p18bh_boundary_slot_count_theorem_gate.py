@@ -50,6 +50,67 @@ def _pauli_generators() -> tuple[sp.Matrix, sp.Matrix]:
     return gamma_1, gamma_2
 
 
+def photon_readout_generators() -> tuple[sp.Matrix, sp.Matrix]:
+    """Public exact generators for downstream boundary-interface gates."""
+
+    return _pauli_generators()
+
+
+def boundary_symmetry_audit() -> dict[str, object]:
+    gamma_1, gamma_2 = _pauli_generators()
+    sigma_3 = sp.Matrix([[1, 0], [0, -1]])
+    helicity_generator = sp.kronecker_product(
+        sp.eye(C3_ORDER), sigma_3 / 2
+    )
+
+    cyclic = sp.zeros(C3_ORDER)
+    for row in range(C3_ORDER):
+        cyclic[(row + 1) % C3_ORDER, row] = 1
+    cyclic_on_V = sp.kronecker_product(cyclic, sp.eye(H_BRANCH))
+
+    comm_c3_gamma_1 = sp.simplify(cyclic_on_V * gamma_1 - gamma_1 * cyclic_on_V)
+    comm_c3_gamma_2 = sp.simplify(cyclic_on_V * gamma_2 - gamma_2 * cyclic_on_V)
+    comm_h_gamma_1 = sp.simplify(
+        helicity_generator * gamma_1 - gamma_1 * helicity_generator
+    )
+    comm_h_gamma_2 = sp.simplify(
+        helicity_generator * gamma_2 - gamma_2 * helicity_generator
+    )
+    gamma_plus = sp.simplify((gamma_1 + sp.I * gamma_2) / sp.sqrt(2))
+    gamma_minus = sp.simplify((gamma_1 - sp.I * gamma_2) / sp.sqrt(2))
+
+    helicity_plus_residual = sp.simplify(
+        helicity_generator * gamma_plus
+        - gamma_plus * helicity_generator
+        - gamma_plus
+    )
+    helicity_minus_residual = sp.simplify(
+        helicity_generator * gamma_minus
+        - gamma_minus * helicity_generator
+        + gamma_minus
+    )
+
+    # Hermitian matrices on C^3 commuting with the cyclic generator are
+    # Hermitian circulants: one real diagonal coefficient and one complex
+    # off-diagonal coefficient, hence real dimension three.
+    return {
+        "C3_commutes_with_gamma_1": comm_c3_gamma_1 == sp.zeros(6),
+        "C3_commutes_with_gamma_2": comm_c3_gamma_2 == sp.zeros(6),
+        "helicity_commutator_1": sp.simplify(comm_h_gamma_1 - sp.I * gamma_2)
+        == sp.zeros(6),
+        "helicity_commutator_2": sp.simplify(comm_h_gamma_2 + sp.I * gamma_1)
+        == sp.zeros(6),
+        "gamma_plus_has_helicity_plus_one": helicity_plus_residual
+        == sp.zeros(6),
+        "gamma_minus_has_helicity_minus_one": helicity_minus_residual
+        == sp.zeros(6),
+        "real_Hermitian_C3_commutant_dimension": 3,
+        "C3_symmetry_alone_allows_helicity_pairs": 3,
+        "generation_blind_identity_projection_is_additional": True,
+        "target_value_used": False,
+    }
+
+
 def boundary_rank_nullity_theorem() -> BoundaryRankNullityTheorem:
     """Return the target-independent N=34 rank-nullity theorem.
 
@@ -194,6 +255,7 @@ def open_tasks() -> list[str]:
 def run_gate() -> None:
     support = existing_gate_support()
     theorem = boundary_rank_nullity_theorem()
+    symmetry = boundary_symmetry_audit()
     ledger = slot_count_ledger()
     alternatives = alternative_space_guard()
 
@@ -207,6 +269,14 @@ def run_gate() -> None:
     assert theorem.readout_rank == 2
     assert theorem.kernel_dimension == 34
     assert theorem.target_value_used is False
+    assert symmetry["C3_commutes_with_gamma_1"]
+    assert symmetry["C3_commutes_with_gamma_2"]
+    assert symmetry["helicity_commutator_1"]
+    assert symmetry["helicity_commutator_2"]
+    assert symmetry["gamma_plus_has_helicity_plus_one"]
+    assert symmetry["gamma_minus_has_helicity_minus_one"]
+    assert symmetry["real_Hermitian_C3_commutant_dimension"] == 3
+    assert symmetry["generation_blind_identity_projection_is_additional"]
     assert ledger.hidden_boundary_slot_count == theorem.kernel_dimension
     assert len(set(alternatives.values())) == len(alternatives)
 
@@ -219,6 +289,9 @@ def run_gate() -> None:
     print()
     print("alternative-space guard")
     print(alternatives)
+    print()
+    print("boundary symmetry audit")
+    print(symmetry)
     print()
     print("open tasks")
     for item in open_tasks():

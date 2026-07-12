@@ -26,8 +26,9 @@ class ObservationComparison:
     reference_sigma: float
     mass_input_sigma: float | None
     combined_input_sigma: float
-    difference_in_combined_input_sigma: float
+    difference_in_reference_plus_mass_input_sigma: float
     theory_systematic_sigma: float | None
+    not_a_goodness_of_fit: bool
     observational_pass_claimed: bool
 
 
@@ -50,8 +51,9 @@ def compare_with_reference(
         reference_sigma=reference_sigma,
         mass_input_sigma=mass_sigma,
         combined_input_sigma=combined,
-        difference_in_combined_input_sigma=difference / combined,
+        difference_in_reference_plus_mass_input_sigma=difference / combined,
         theory_systematic_sigma=prediction.theory_systematic_sigma,
+        not_a_goodness_of_fit=True,
         observational_pass_claimed=False,
     )
 
@@ -97,6 +99,7 @@ def interpretation() -> tuple[str, ...]:
         "The exact-C3 and empirical-pole-mass branches are distinct predictions and are never merged.",
         "The reference value is introduced only after each prediction record and digest already exist.",
         "The empirical branch carries a propagated pole-mass input uncertainty; its unquantified matching uncertainty remains open.",
+        "The standardized difference uses only reference and mass-input errors; it is not a goodness-of-fit statistic because theory uncertainty is unknown.",
         "Historical target exposure of h=2, N=34 and the readout-law search is retained in provenance, so this run is target-free but not retrospectively blind.",
         "No numerical closeness threshold is used as a gate-pass condition.",
     )
@@ -125,6 +128,8 @@ def run_gate() -> None:
     )
     assert exact.observational_pass_claimed is False
     assert empirical.observational_pass_claimed is False
+    assert exact.not_a_goodness_of_fit
+    assert empirical.not_a_goodness_of_fit
     assert exact.theory_systematic_sigma is None
     assert empirical.theory_systematic_sigma is None
     assert firewall["exact_digest_unchanged"]
