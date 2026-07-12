@@ -2,140 +2,152 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from p18bf_boundary_alpha_over_34_lock_gate import best_integer_rows
-from p18bg_closed_alpha_formula_boundary_lock_gate import (
-    closed_alpha_candidate_with_sigma,
-)
 from p18bh_boundary_slot_count_theorem_gate import (
-    h_branch_audit,
-    slot_count_ledger,
+    boundary_rank_nullity_theorem,
 )
-from p18bj_hidden_slot_variational_readout_gate import (
-    competing_functionals,
-    variational_hidden_slot_readout,
+from p18bj_hidden_slot_variational_readout_gate import hidden_density_readout
+from p18bl_target_free_alpha_kernel_gate import (
+    PredictionRecord,
+    derivation_hypotheses,
+    predict_empirical_mass_branch,
+    predict_exact_c3_branch,
+    prediction_digest,
+    source_firewall,
+)
+from p18bm_alpha_observation_comparison_gate import (
+    ObservationComparison,
+    compare_with_reference,
+    observation_perturbation_firewall,
 )
 
 
 @dataclass(frozen=True)
-class FinalAlphaClosure:
+class ConditionalAlphaRelation:
     formula: str
-    h_branch: int
-    boundary_N: int
-    alpha_inv_predicted: float
-    alpha_inv_observed: float
-    miss_alpha_inv: float
-    miss_ppm: float
-    input_mass_sigma_alpha_inv: float
-    miss_in_input_sigma: float
-    q_boundary: float
-    closure_status: str
+    exact_c3_branch: PredictionRecord
+    empirical_mass_branch: PredictionRecord
+    runtime_target_free: bool
+    historically_target_exposed: bool
+    retrospectively_blind: bool
+    independent_validation_completed: bool
+    relation_status: str
 
 
-def final_alpha_closure() -> FinalAlphaClosure:
-    closed = closed_alpha_candidate_with_sigma()
-    law = variational_hidden_slot_readout()
+def evaluate_conditional_relation() -> ConditionalAlphaRelation:
+    exact = predict_exact_c3_branch()
+    empirical = predict_empirical_mass_branch()
+    firewall = source_firewall()
+    perturbation = observation_perturbation_firewall()
     formula = (
-        "Y = 324*pi/h^3 + (2/(3*pi))*ln(((3h)^2)^3"
-        "*(m_tau/m_e)^5/(m_mu/m_e)); "
-        "N=(3h)^2-h; "
-        "alpha^-1=(Y+sqrt(Y^2-8/(pi*N)))/2; h=2."
+        "Y=4*pi*9^2/(n*eta_*h^2)"
+        "+(2/(3*pi))*ln(((3h)^2)^3*(m_tau/m_e)^5/(m_mu/m_e)); "
+        "N=dim ker(R_gamma); q=(1/2)Tr(C^*rho C)=alpha/N; "
+        "alpha^-1=(Y+sqrt(Y^2-8/(pi*N)))/2. "
+        "Working conditional branch: h=2, n=h, eta_*=1, N=34."
     )
 
-    return FinalAlphaClosure(
+    return ConditionalAlphaRelation(
         formula=formula,
-        h_branch=closed.h_branch,
-        boundary_N=closed.boundary_hidden_count,
-        alpha_inv_predicted=closed.predicted_alpha_inv,
-        alpha_inv_observed=closed.observed_alpha_inv,
-        miss_alpha_inv=closed.miss_alpha_inv,
-        miss_ppm=closed.miss_alpha_inv_ppm,
-        input_mass_sigma_alpha_inv=closed.input_mass_sigma_alpha_inv,
-        miss_in_input_sigma=closed.miss_in_input_sigma,
-        q_boundary=law.per_slot_readout,
-        closure_status=(
-            "alpha chain closed at the effective boundary-action level; "
-            "microscopic derivation of the hidden-slot quadratic functional "
-            "from the full localized charged h=2 core action remains a deeper "
-            "theory-construction layer, not a missing alpha number"
+        exact_c3_branch=exact,
+        empirical_mass_branch=empirical,
+        runtime_target_free=bool(firewall["runtime_target_free"]),
+        historically_target_exposed=bool(
+            firewall["historically_target_exposed"]
         ),
+        retrospectively_blind=bool(perturbation["retrospectively_blind"]),
+        independent_validation_completed=bool(
+            firewall["independent_validation_completed"]
+        ),
+        relation_status=(
+            "The formula is now evaluated through a target-isolated kernel, "
+            "with exact-C3 and empirical-mass branches kept separate.  It is "
+            "a conditional relation until the listed action, matching and "
+            "interface hypotheses are derived independently."
+        ),
+    )
+
+
+def comparison_ledger() -> tuple[ObservationComparison, ObservationComparison]:
+    relation = evaluate_conditional_relation()
+    return (
+        compare_with_reference(relation.exact_c3_branch),
+        compare_with_reference(relation.empirical_mass_branch),
     )
 
 
 def proof_chain() -> tuple[str, ...]:
     return (
-        "p18at/p18aw: h=2 plus lepton threshold bridge gives the scale-free internal Y.",
-        "p18be: the remaining correction splits into physical threshold and boundary readout pieces.",
-        "p18bf/p18bh: the boundary hidden-slot count is N=(3h)^2-h=34.",
-        "p18bi/p18bj: weak Maxwell readout over indistinguishable hidden slots gives q_boundary=alpha/N.",
-        "p18bg: solving y=Y-(2/pi)/(N*y) gives the final closed alpha value.",
+        "The diagonal-sheet reduction gives q0^2=n*eta_* and exposes n=h, eta_*=1 as separate working hypotheses.",
+        "The lepton threshold identity reduces to the scale-free logarithm in the displayed Y once the core-scale and lepton-only matching prescription are supplied.",
+        "p18bh proves N=34 by rank-nullity inside B=Herm(C^3 tensor C^2) with a rank-two generation-blind photon map.",
+        "p18bj proves q_boundary=alpha/N from the unique U(N)-isotropic trace-constrained density and a unit-isometric two-helicity interface.",
+        "The boundary equation y=Y-(2/pi)/(N*y) has the displayed unique large positive quadratic root.",
+        "p18bl computes both mass-ratio branches before p18bm introduces the reference value.",
     )
 
 
-def adversarial_guards() -> dict[str, object]:
-    h_rows = h_branch_audit()
-    best_h = min(h_rows, key=lambda row: abs(row.miss_alpha_inv))
-    best_N = best_integer_rows(1)[0]
-    competitors = competing_functionals()
-
-    return {
-        "best_h_branch": best_h.h_branch,
-        "best_integer_N": best_N.N,
-        "competitor_miss_ppm": {
-            row.label: row.miss_ppm for row in competitors
-        },
-        "no_observed_alpha_input": (
-            "observed alpha enters only in the final comparison and guard "
-            "assertions; the formula uses h=2, lepton ratios, N=34 and the "
-            "variational alpha/N law"
-        ),
-    }
-
-
-def remaining_work() -> tuple[str, ...]:
+def unclosed_derivations() -> tuple[str, ...]:
     return (
-        "derive the hidden-slot quadratic boundary functional from the full localized charged h=2 core action",
-        "derive the lepton threshold bridge from the same charged-core theory rather than importing physical lepton masses as inputs",
-        "audit full QED/EW/non-leptonic matching around the effective threshold convention",
-        "look for an independent charged-sector observable that uses the same N=34 alpha/N rule",
+        "derive an additive gauge-sheet level n equal to the oriented return index h",
+        "derive the unit-sheet Maxwell/source normalization eta_*=k_*^2/K_*=1 from a completed action",
+        "derive B=Herm(C^3 tensor C^2), its generation-blind photon projection and the U(34) hidden kernel from the localized core",
+        "derive the trace budget and unit-isometric photon interface, including symmetry-breaking error bounds",
+        "derive the core matching scale and justify the lepton-only threshold register in a full QED/EW/nonleptonic scheme",
+        "obtain an independent charged-sector observable without reselecting h, N or the readout law",
     )
 
 
 def run_gate() -> None:
-    closure = final_alpha_closure()
-    guards = adversarial_guards()
-    law = variational_hidden_slot_readout()
-    slots = slot_count_ledger()
+    relation = evaluate_conditional_relation()
+    exact_comparison, empirical_comparison = comparison_ledger()
+    boundary = boundary_rank_nullity_theorem()
+    readout = hidden_density_readout(relation.empirical_mass_branch.alpha)
 
-    assert closure.h_branch == 2
-    assert closure.boundary_N == 34
-    assert slots.hidden_boundary_slot_count == 34
-    assert guards["best_h_branch"] == 2
-    assert guards["best_integer_N"] == 34
-    assert abs(closure.miss_ppm) < 1.0e-4
-    assert abs(closure.miss_in_input_sigma) < 1.0e-3
-    assert law.stationary_residual_max == 0.0
-    assert law.constraint_residual == 0.0
-    assert all(
-        abs(miss) > 0.5
-        for miss in guards["competitor_miss_ppm"].values()
+    assert relation.exact_c3_branch.h_branch == 2
+    assert relation.empirical_mass_branch.h_branch == 2
+    assert boundary.kernel_dimension == 34
+    assert relation.exact_c3_branch.hidden_dimension == 34
+    assert relation.empirical_mass_branch.hidden_dimension == 34
+    assert abs(relation.exact_c3_branch.equation_residual) < 1.0e-14
+    assert abs(relation.empirical_mass_branch.equation_residual) < 1.0e-14
+    assert readout.target_value_used is False
+    assert relation.runtime_target_free is True
+    assert relation.historically_target_exposed is True
+    assert relation.retrospectively_blind is False
+    assert relation.independent_validation_completed is False
+    assert prediction_digest(relation.exact_c3_branch) == prediction_digest(
+        predict_exact_c3_branch()
     )
+    assert prediction_digest(
+        relation.empirical_mass_branch
+    ) == prediction_digest(predict_empirical_mass_branch())
+    assert exact_comparison.observational_pass_claimed is False
+    assert empirical_comparison.observational_pass_claimed is False
 
-    print("p18bk final alpha closure gate")
-    print("closure")
-    print(closure)
+    print("p18bk conditional alpha relation gate")
+    print("relation")
+    print(relation)
     print()
     print("proof chain")
     for item in proof_chain():
         print(f"- {item}")
     print()
-    print("adversarial guards")
-    print(guards)
+    print("observation comparison ledger")
+    print(f"- {exact_comparison}")
+    print(f"- {empirical_comparison}")
     print()
-    print("remaining deeper work")
-    for item in remaining_work():
+    print("explicit hypotheses")
+    for item in derivation_hypotheses():
         print(f"- {item}")
     print()
-    print("STATUS: PASS_FINAL_ALPHA_CLOSURE__MICROSCOPIC_CORE_FUNCTIONAL_DERIVATION_REMAINS")
+    print("unclosed derivations")
+    for item in unclosed_derivations():
+        print(f"- {item}")
+    print()
+    print(
+        "STATUS: OPEN_ACTION_DERIVATION_AND_INDEPENDENT_VALIDATION__"
+        "PASS_TARGET_FREE_CONDITIONAL_ALPHA_RELATION"
+    )
 
 
 if __name__ == "__main__":

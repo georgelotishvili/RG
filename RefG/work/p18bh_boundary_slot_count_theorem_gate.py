@@ -1,19 +1,9 @@
 from __future__ import annotations
 
-import math
 from dataclasses import dataclass
 
-from p18bb_internal_external_em_readout_split_gate import (
-    ALPHA_INV_OBSERVED_LOW,
-    C3_ORDER,
-    H_BRANCH,
-)
-from p18bf_boundary_alpha_over_34_lock_gate import (
-    solve_alpha_inv_with_boundary_N,
-)
-from p18bg_closed_alpha_formula_boundary_lock_gate import (
-    internal_threshold_alpha_inv_from_masses,
-)
+import sympy as sp
+
 from p18f_oriented_axis_completion_gate import (
     derive_oriented_axis_completion_gate,
 )
@@ -22,11 +12,8 @@ from p18h_frame_connection_u1_gate import (
 )
 
 
-LEPTON_MASSES_MEV = {
-    "electron": 0.51099895069,
-    "muon": 105.6583755,
-    "tau": 1776.93,
-}
+C3_ORDER = 3
+H_BRANCH = 2
 
 
 @dataclass(frozen=True)
@@ -41,103 +28,96 @@ class SlotCountLedger:
 
 
 @dataclass(frozen=True)
-class SubtractionAudit:
-    subtracted_external_channels: int
-    boundary_N: int
-    predicted_alpha_inv: float
-    miss_alpha_inv: float
-    miss_ppm: float
-    physical_status: str
+class BoundaryRankNullityTheorem:
+    state_space: str
+    response_space: str
+    response_real_dimension: int
+    photon_readout_generators: tuple[str, str]
+    readout_rank: int
+    kernel_dimension: int
+    gamma_gram_matrix: tuple[tuple[int, int], tuple[int, int]]
+    exact_sequence: str
+    target_value_used: bool
 
 
-@dataclass(frozen=True)
-class BranchAudit:
-    h_branch: int
-    boundary_N: int
-    internal_alpha_inv: float
-    predicted_alpha_inv: float
-    miss_alpha_inv: float
-    miss_ppm: float
+def _pauli_generators() -> tuple[sp.Matrix, sp.Matrix]:
+    sigma_1 = sp.Matrix([[0, 1], [1, 0]])
+    sigma_2 = sp.Matrix([[0, -sp.I], [sp.I, 0]])
+    identity_c3 = sp.eye(C3_ORDER)
+    normalization = sp.sqrt(C3_ORDER * H_BRANCH)
+    gamma_1 = sp.kronecker_product(identity_c3, sigma_1) / normalization
+    gamma_2 = sp.kronecker_product(identity_c3, sigma_2) / normalization
+    return gamma_1, gamma_2
 
 
-def slot_count_ledger(h: int = int(H_BRANCH)) -> SlotCountLedger:
-    c3 = int(C3_ORDER)
-    core_step = c3 * h
+def boundary_rank_nullity_theorem() -> BoundaryRankNullityTheorem:
+    """Return the target-independent N=34 rank-nullity theorem.
+
+    The conditional boundary model is
+
+        V = C^3 tensor C^2,
+        B = Herm(V),
+        R(X)_a = Tr(Gamma_a X),  a=1,2.
+
+    Herm(V) has real dimension 6^2=36.  The generation-blind helicity
+    generators Gamma_1 and Gamma_2 are Hilbert--Schmidt orthonormal, so R has
+    rank two.  Rank-nullity then gives dim_R ker(R)=36-2=34.
+
+    No value of alpha, measured or otherwise, enters this calculation.
+    """
+
+    gamma_1, gamma_2 = _pauli_generators()
+    gammas = (gamma_1, gamma_2)
+    gram = sp.Matrix(
+        [
+            [sp.simplify(sp.trace(left.H * right)) for right in gammas]
+            for left in gammas
+        ]
+    )
+    rank = int(gram.rank())
+    response_dim = (C3_ORDER * H_BRANCH) ** 2
+    kernel_dim = response_dim - rank
+
+    return BoundaryRankNullityTheorem(
+        state_space="V=C^3 tensor C^2",
+        response_space="B=Herm(V), viewed as a real Hilbert space",
+        response_real_dimension=response_dim,
+        photon_readout_generators=(
+            "Gamma_1=I_3 tensor sigma_1/sqrt(6)",
+            "Gamma_2=I_3 tensor sigma_2/sqrt(6)",
+        ),
+        readout_rank=rank,
+        kernel_dimension=kernel_dim,
+        gamma_gram_matrix=(
+            (int(gram[0, 0]), int(gram[0, 1])),
+            (int(gram[1, 0]), int(gram[1, 1])),
+        ),
+        exact_sequence="0 -> ker(R) -> Herm(C^3 tensor C^2) -> R^2 -> 0",
+        target_value_used=False,
+    )
+
+
+def slot_count_ledger(h: int = H_BRANCH) -> SlotCountLedger:
+    """Dimension ledger for the selected h=2 oriented charged branch.
+
+    The exact matrix theorem above is specific to the two-helicity h=2
+    branch.  The formula is retained for downstream symbolic use, while the
+    gate rejects treating other h values as already established branches.
+    """
+
+    core_step = C3_ORDER * h
     internal_slots = core_step**2
     external_helicity = h
     hidden = internal_slots - external_helicity
     return SlotCountLedger(
         h_branch=h,
-        c3_order=c3,
+        c3_order=C3_ORDER,
         core_step_count=core_step,
         internal_core_slot_count=internal_slots,
         external_helicity_count=external_helicity,
         hidden_boundary_slot_count=hidden,
-        slot_formula="N_boundary=(3h)^2-h",
+        slot_formula="dim_R Herm(C^(3h)) - rank(R_gamma) = (3h)^2-h",
     )
-
-
-def _alpha_internal_for_h(h: int) -> float:
-    return internal_threshold_alpha_inv_from_masses(
-        LEPTON_MASSES_MEV["electron"],
-        LEPTON_MASSES_MEV["muon"],
-        LEPTON_MASSES_MEV["tau"],
-        h=float(h),
-    )
-
-
-def subtraction_audit(max_subtraction: int = 6) -> tuple[SubtractionAudit, ...]:
-    ledger = slot_count_ledger()
-    alpha_internal = _alpha_internal_for_h(ledger.h_branch)
-    rows: list[SubtractionAudit] = []
-    for subtracted in range(max_subtraction + 1):
-        boundary_N = ledger.internal_core_slot_count - subtracted
-        predicted = solve_alpha_inv_with_boundary_N(alpha_internal, boundary_N)
-        miss = predicted - ALPHA_INV_OBSERVED_LOW
-        if subtracted == 0:
-            status = "NO_EXTERNAL_MODE_REMOVAL"
-        elif subtracted == 1:
-            status = "ONE_MODE_REMOVAL_NOT_PHOTON"
-        elif subtracted == 2:
-            status = "PHYSICAL_HELICITY_PAIR_REMOVAL"
-        elif subtracted == 3:
-            status = "REMOVES_GAUGE_COORDINATE_TOO_MUCH"
-        else:
-            status = "NO_SUPPORTED_MODE_COUNT"
-        rows.append(
-            SubtractionAudit(
-                subtracted_external_channels=subtracted,
-                boundary_N=boundary_N,
-                predicted_alpha_inv=predicted,
-                miss_alpha_inv=miss,
-                miss_ppm=1.0e6 * miss / ALPHA_INV_OBSERVED_LOW,
-                physical_status=status,
-            )
-        )
-    return tuple(rows)
-
-
-def h_branch_audit(h_min: int = 1, h_max: int = 6) -> tuple[BranchAudit, ...]:
-    rows: list[BranchAudit] = []
-    for h in range(h_min, h_max + 1):
-        ledger = slot_count_ledger(h)
-        internal = _alpha_internal_for_h(h)
-        predicted = solve_alpha_inv_with_boundary_N(
-            internal,
-            ledger.hidden_boundary_slot_count,
-        )
-        miss = predicted - ALPHA_INV_OBSERVED_LOW
-        rows.append(
-            BranchAudit(
-                h_branch=h,
-                boundary_N=ledger.hidden_boundary_slot_count,
-                internal_alpha_inv=internal,
-                predicted_alpha_inv=predicted,
-                miss_alpha_inv=miss,
-                miss_ppm=1.0e6 * miss / ALPHA_INV_OBSERVED_LOW,
-            )
-        )
-    return tuple(rows)
 
 
 def existing_gate_support() -> dict[str, object]:
@@ -159,99 +139,95 @@ def existing_gate_support() -> dict[str, object]:
             "axis_pair_remains_double_luminal"
         ],
         "supported_external_physical_channels": 2,
-        "reading": (
-            "p18f supplies the two helicity modes; p18h promotes theta to a "
-            "local frame-section coordinate and leaves only the two helicity "
-            "modes as physical quadratic EM readout channels"
-        ),
+    }
+
+
+def model_assumptions() -> tuple[str, ...]:
+    return (
+        "The charged boundary state is V=C^3 tensor C^2.",
+        "Its complete quadratic response register is Herm(V), not V, Sym^2(V), wedge^2(V), or Herm_0(V).",
+        "The external photon reads only the generation-blind pair I_3 tensor sigma_1,2.",
+        "The h=2 oriented-frame return is the same two-state factor that carries the photon helicity pair.",
+    )
+
+
+def alternative_space_guard() -> dict[str, int]:
+    """Show why the response-space identification is a real physical input."""
+
+    d = C3_ORDER * H_BRANCH
+    external_rank = H_BRANCH
+    return {
+        "V_hidden_dimension": d - external_rank,
+        "wedge2V_hidden_dimension": d * (d - 1) // 2 - external_rank,
+        "sym2V_hidden_dimension": d * (d + 1) // 2 - external_rank,
+        "Herm0V_hidden_dimension": d * d - 1 - external_rank,
+        "HermV_hidden_dimension": d * d - external_rank,
     }
 
 
 def theorem_statement() -> dict[str, object]:
-    ledger = slot_count_ledger()
+    theorem = boundary_rank_nullity_theorem()
     return {
-        "claim": (
-            "For the h=2 charged orientation-frame core, the boundary count "
-            "used by the alpha/34 lock is N_boundary=(3h)^2-h."
+        "conditional_claim": (
+            "For B=Herm(C^3 tensor C^2) and the generation-blind two-helicity "
+            "readout R, rank-nullity gives dim ker(R)=34."
         ),
-        "internal_count": (
-            "(3h)^2 counts the squared C3-by-h finite core step structure "
-            "already present in the h=2 threshold bridge."
-        ),
-        "external_subtraction": (
-            "h=2 supplies exactly two physical external helicity/readout "
-            "channels after the U(1) redundancy removes theta as a third mode."
-        ),
-        "result": ledger,
+        "result": theorem,
+        "assumptions": model_assumptions(),
         "status": (
-            "This is now a supported slot-count theorem inside the current "
-            "work-file ledger; the deeper action derivation of why every "
-            "hidden slot carries alpha/N remains open."
+            "The N=34 count is now proved without an alpha fit inside this "
+            "boundary representation.  Deriving the representation and "
+            "readout map from the localized charged-core action remains open."
         ),
     }
 
 
 def open_tasks() -> list[str]:
     return [
-        "derive the squared core slot count (3h)^2 from the localized charged-core action, not only from the threshold bridge",
-        "derive the h external-channel subtraction as the general rule, with h=2 giving the photon helicity pair",
-        "derive q_boundary=alpha/N_boundary from the boundary-to-Maxwell readout functional",
-        "check whether any independent charged observable uses the same N_boundary=34",
+        "derive V=C^3 tensor C^2 as the charged boundary state space from the localized core",
+        "derive Herm(V) as the complete quadratic response register",
+        "derive the generation-blind photon projection I_3 tensor sigma_1,2",
+        "exclude the alternative response spaces in alternative_space_guard from the microscopic action",
     ]
 
 
 def run_gate() -> None:
     support = existing_gate_support()
+    theorem = boundary_rank_nullity_theorem()
     ledger = slot_count_ledger()
-    subtractions = subtraction_audit()
-    branches = h_branch_audit()
-
-    physical_row = next(
-        row
-        for row in subtractions
-        if row.subtracted_external_channels == ledger.external_helicity_count
-    )
-    best_subtraction = min(subtractions, key=lambda row: abs(row.miss_alpha_inv))
-    best_branch = min(branches, key=lambda row: abs(row.miss_alpha_inv))
+    alternatives = alternative_space_guard()
 
     assert support["p18f_two_luminal_modes"]
     assert support["p18f_helicity_pair"]
     assert support["p18h_u1_redundancy"]
     assert support["p18h_no_third_quadratic_mode"]
     assert support["p18h_axis_pair_double_luminal"]
-    assert ledger.internal_core_slot_count == 36
-    assert ledger.external_helicity_count == 2
-    assert ledger.hidden_boundary_slot_count == 34
-    assert best_subtraction.subtracted_external_channels == 2
-    assert best_branch.h_branch == 2
-    assert abs(physical_row.miss_ppm) < 1.0e-4
-    assert abs(
-        subtractions[1].miss_ppm
-    ) > 1000.0 * abs(physical_row.miss_ppm)
-    assert abs(
-        subtractions[3].miss_ppm
-    ) > 1000.0 * abs(physical_row.miss_ppm)
+    assert theorem.gamma_gram_matrix == ((1, 0), (0, 1))
+    assert theorem.response_real_dimension == 36
+    assert theorem.readout_rank == 2
+    assert theorem.kernel_dimension == 34
+    assert theorem.target_value_used is False
+    assert ledger.hidden_boundary_slot_count == theorem.kernel_dimension
+    assert len(set(alternatives.values())) == len(alternatives)
 
-    print("p18bh boundary slot-count theorem gate")
+    print("p18bh boundary rank-nullity theorem gate")
     print("support")
     print(support)
     print()
     print("theorem")
     print(theorem_statement())
     print()
-    print("subtraction audit")
-    for row in subtractions:
-        print(f"- {row}")
-    print()
-    print("h-branch audit")
-    for row in branches:
-        print(f"- {row}")
+    print("alternative-space guard")
+    print(alternatives)
     print()
     print("open tasks")
     for item in open_tasks():
         print(f"- {item}")
     print()
-    print("STATUS: OPEN_ALPHA_OVER_N_READOUT_LAW_REQUIRED__PASS_BOUNDARY_SLOT_COUNT_THEOREM")
+    print(
+        "STATUS: OPEN_MICROSCOPIC_BOUNDARY_REPRESENTATION__"
+        "PASS_TARGET_INDEPENDENT_CONDITIONAL_N34_RANK_NULLITY_THEOREM"
+    )
 
 
 if __name__ == "__main__":
