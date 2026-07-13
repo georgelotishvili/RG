@@ -8,7 +8,7 @@
 
 **ელფოსტა:** g_lotishvili@eeu.edu.ge
 
-**Zenodo DOI:** [10.5281/zenodo.20633284](https://doi.org/10.5281/zenodo.20633284)
+**Zenodo DOI:** [10.5281/zenodo.21325652](https://doi.org/10.5281/zenodo.21325652)
 
 ## სარჩევი
 
