@@ -200,8 +200,9 @@ def derive_compact_branch_minimal_stability_gate():
         "article_supported_claim": (
             "the static compact phase branch has source closure, active-deficit "
             "NEC accounting, no standalone phantom scalar from L_Delta_perp, positive "
-            "static projected-deficit stiffness, and a repaired full-gradient "
-            "p01 principal-symbol hyperbolicity gate"
+            "static projected-deficit stiffness; the coupled p01 principal-symbol "
+            "stability gate remains CHECK because the proposed W repair has no "
+            "quadratic contribution"
         ),
         "not_claimed": [
             "full background-dependent coupled compact perturbation spectrum",
