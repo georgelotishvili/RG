@@ -114,10 +114,13 @@ INVESTIGATION CHAIN THAT LED HERE (so context is not lost)
   spherical branch OPEN.  This file supports the generic 1PN branch and exposes
   why the restricted 2PN ansatz is not enough.
 
-Status: PASS_SOLAR_EXTERIOR_MASTER_SHORT_PATH for the local weak-field branch.
+Status:
+PASS_STATIC_SOLAR_EXTERIOR_MASTER_SHORT_PATH__UNREDUCED_DYNAMICS_AND_PPN_OPEN.
 The restricted frozen-solid ansatz remains diagnostic-only; the augmented
 system absorbs its angular residual.  Matching the exact-GR exterior branch to
-the finite oscillon core remains the next tightening step.
+the finite oscillon core and reducing the selected p05z action through its
+ADM/Dirac constraints remain the next tightening steps.  ESS is an optional
+completion candidate, not part of the selected p05z action.
 """
 
 from __future__ import annotations
@@ -126,6 +129,16 @@ from dataclasses import dataclass
 from typing import Any
 
 import sympy as sp
+
+
+OPTIONAL_ESS_CANDIDATE_STATUS = (
+    "PASS_OPTIONAL_STATIC_SILENT_ESS_COEFFICIENT_LIFT_CANDIDATE__"
+    "NOT_SELECTED_P05Z_ACTION__ADM_DIRAC_AND_PPN_OPEN"
+)
+STATIC_SOLAR_MASTER_STATUS = (
+    "PASS_STATIC_SOLAR_EXTERIOR_MASTER_SHORT_PATH__"
+    "UNREDUCED_DYNAMICS_AND_PPN_OPEN"
+)
 
 
 @dataclass(frozen=True)
@@ -439,11 +452,18 @@ def augmented_medium_strain_2pn_system() -> dict[str, Any]:
             "value_on_gr_candidate_slice": sp.simplify(
                 solid_kinetic_prefactor.subs(cYI1, 2 * cY2)
             ),
+            "status": (
+                "OPEN_UNREDUCED_KPI_ZERO_DEGENERACY__"
+                "ADM_DIRAC_REDUCTION_AND_STRONG_COUPLING_AUDIT_REQUIRED"
+            ),
             "reading": (
                 "the exact-GR 2PN candidate is algebraically clean.  In the "
-                "minimal polynomial it sits on K_pi=0; the static-silent ESS "
-                "kinetic lift below supplies positive solid kinetic energy "
-                "without changing the static exterior equations."
+                "fixed-background velocity block it sits on K_pi=0.  This is an "
+                "unreduced degeneracy, not a demonstrated ghost: it may become "
+                "a gauge/constraint direction or a strongly coupled mode after "
+                "the metric, phase and H constraints are reduced.  The optional "
+                "ESS candidate below can lift that isolated coefficient, but is "
+                "not part of the selected p05z action."
             ),
         },
         "meaning": (
@@ -457,8 +477,7 @@ def augmented_medium_strain_2pn_system() -> dict[str, Any]:
 
 def static_silent_ess_kinetic_lift_theorem() -> dict[str, Any]:
     """
-    Lift the exact-GR candidate's minimal-polynomial K_pi=0 without changing
-    the static Solar exterior.
+    Optional isolated K_pi coefficient lift, not a health theorem.
 
     Supersolid/ESS allows the operator
 
@@ -467,7 +486,11 @@ def static_silent_ess_kinetic_lift_theorem() -> dict[str, Any]:
     where u^mu is the unit phase-time direction.  For a static spherical
     exterior phi^A=F(r)n^A, u^mu d_mu phi^A=0, so L_ESS and its first stress
     variation vanish on the background.  For perturbations, it contributes a
-    positive phonon kinetic term eta_ESS/B * dot(pi)^2.
+    positive phonon time-kinetic coefficient.  Covariantly the perturbation is
+    eta_ESS*|q0i+dot(pi_i)-d_i chi|^2, so it also changes the moving vector
+    operator.  The selected p05z action does not contain this term.  This
+    function proves only that the optional addition lifts one coefficient; it
+    is not a reduced principal-symbol or physical no-ghost proof.
     """
     eta = sp.Symbol("eta_ESS", positive=True)
     B_metric = sp.Symbol("B_metric", positive=True)
@@ -487,20 +510,33 @@ def static_silent_ess_kinetic_lift_theorem() -> dict[str, Any]:
     Kpi_lifted = sp.simplify(Kpi_minimal_on_gr_slice + eta / B_metric)
 
     return {
-        "status": "PASS_STATIC_SILENT_ESS_KINETIC_LIFT",
+        "status": OPTIONAL_ESS_CANDIDATE_STATUS,
+        "selection_status": "OPTIONAL_NOT_IN_SELECTED_P05Z_ACTION",
         "operator": "L_ESS = eta_ESS * delta_AB (u.d phi^A)(u.d phi^B)",
         "static_background_value": L_static,
         "static_first_stress_variation": static_stress_variation,
         "static_exterior_unchanged": L_static == 0 and static_stress_variation == 0,
         "quadratic_perturbation_term": L2_pert,
         "minimal_Kpi_on_exact_GR_slice": Kpi_minimal_on_gr_slice,
+        "minimal_Kpi_interpretation": (
+            "zero eigenvalue of an unreduced fixed-background velocity block; "
+            "neither a physical ghost nor a health pass before ADM/Dirac reduction"
+        ),
         "lifted_Kpi": Kpi_lifted,
         "positive_for_eta_positive": sp.Gt(Kpi_lifted, 0),
+        "unreduced_coefficient_only": True,
+        "requires_ADM_Dirac_reduction": True,
         "meaning": (
-            "The exact-GR 2PN branch does not have to be discarded because the "
-            "minimal polynomial gives K_pi=0.  A static-silent ESS completion "
-            "stabilizes the solid phonons and leaves the static Solar exterior "
-            "calculation untouched."
+            "If selected as a new action branch, ESS raises the isolated solid "
+            "time-kinetic coefficient and leaves the static exterior unchanged. "
+            "It is not required by the current static theorem, is absent from "
+            "the selected p05z action, and does not establish a nondefective "
+            "constraint-reduced principal symbol."
+        ),
+        "not_closed_here": (
+            "ADM/Dirac constraint algebra and reduced Hamiltonian of the selected "
+            "p05z action; if ESS is selected, its full scalar/vector response, "
+            "preferred-frame PPN and frame dragging"
         ),
     }
 
@@ -538,14 +574,27 @@ def solar_2pn_short_path_certificate() -> dict[str, Any]:
         "metric_branch": {"f": 0, "g": 0},
         "strain_equation": sp.Eq(common_residual, 0),
         "medium_strain_solution": sp.Eq(s, strain_solution),
+        "solid_exterior_charge_C_fixed_by_this_gate": False,
+        "finite_source_selects_this_exterior": False,
         "residuals_after_strain": solved_residuals,
         "residual_identity": all(residual == 0 for residual in solved_residuals),
+        "static_certificate_depends_on_ESS": False,
         "static_silent_ESS_lifted_Kpi": lifted_K_pi,
+        "static_silent_ESS_lift_scope": (
+            "optional diagnostic retained for API continuity; not used in the "
+            "static residual identity or selected p05z action"
+        ),
+        "dynamical_status": (
+            "OPEN_UNREDUCED_KPI_ZERO_DEGENERACY__"
+            "ADM_DIRAC_REDUCTION_AND_STRONG_COUPLING_AUDIT_REQUIRED"
+        ),
         "meaning": (
             "The Solar 2PN statement can be made directly: the frozen-solid "
             "residual is the radial medium-strain equation; on c_YI1=2*c_Y2 it "
-            "selects the GR metric branch, with ESS supplying positive solid "
-            "kinetic energy without changing the static exterior."
+            "admits the GR metric branch without using ESS.  The decaying C/r "
+            "solid charge remains to be fixed by finite-source matching. "
+            "K_pi=0 is an unreduced degeneracy whose constraint/strong-coupling "
+            "status and moving PPN response remain open."
         ),
     }
 
@@ -587,14 +636,12 @@ def solar_exterior_master_short_path_certificate() -> dict[str, Any]:
     from p03b_s6_exterior_scale import s6_solar_scale_short_path_certificate
 
     local = solar_2pn_short_path_certificate()
-    lift = static_silent_ess_kinetic_lift_theorem()
     scale = lambda_scale_suppression_estimate()
     s6_scale = s6_solar_scale_short_path_certificate()
 
     status = (
-        "PASS_SOLAR_EXTERIOR_MASTER_SHORT_PATH"
+        STATIC_SOLAR_MASTER_STATUS
         if local["status"] == "PASS_SOLAR_2PN_SHORT_PATH_CERTIFICATE"
-        and lift["status"] == "PASS_STATIC_SILENT_ESS_KINETIC_LIFT"
         and scale["Lambda_times_Rsun_squared"] < 1.0e-30
         and s6_scale["status"] == "PASS_S6_SOLAR_SCALE_SHORT_PATH"
         else "CHECK_SOLAR_EXTERIOR_MASTER_SHORT_PATH"
@@ -603,14 +650,19 @@ def solar_exterior_master_short_path_certificate() -> dict[str, Any]:
     return {
         "status": status,
         "local_2pn_status": local["status"],
-        "static_silent_lift_status": lift["status"],
+        "static_silent_lift_status": OPTIONAL_ESS_CANDIDATE_STATUS,
+        "static_pass_depends_on_ESS": False,
+        "optional_ESS_diagnostic_executed_by_static_master": False,
+        "ESS_selection_status": "OPTIONAL_NOT_IN_SELECTED_P05Z_ACTION",
         "lambda_scale_status": scale["status"],
         "s6_scale_status": s6_scale["status"],
         "physical_q_2PN": s6_scale["physical_q_2PN"],
         "short_reading": (
             "augmented p03c admits the GR-compatible Solar 2PN branch; p03b "
             "shows S=6 completion is Lambda-scale at the Sun; q=10 remains a "
-            "diagnostic branch, not the physical Solar exterior."
+            "diagnostic branch.  The static pass does not use ESS.  The selected "
+            "p05z action retains an unreduced K_pi=0 degeneracy, so its ADM/Dirac "
+            "health, strong-coupling status and moving PPN remain open."
         ),
     }
 
@@ -623,8 +675,9 @@ def q2pn_branch_ledger() -> dict[str, Any]:
             "scale theorem, and the augmented-medium result: the old angular "
             "residual is absorbed once the solid deformation is allowed, and an "
             "exact GR 2PN metric candidate exists on c_YI1=2*c_Y2.  Its "
-            "minimal K_pi=0 degeneracy is lifted by a static-silent ESS kinetic "
-            "operator that leaves the static exterior unchanged."
+            "minimal K_pi=0 is an unreduced degeneracy.  ESS can be studied as "
+            "an optional static-silent completion, but it is not required by the "
+            "static theorem or present in the selected p05z action."
         ),
         "q_2PN = 2": (
             "Bi-conformal exponential refractive index n=exp(-phi). Not selected "
@@ -739,7 +792,10 @@ def branch_selection_criterion_gate() -> dict[str, Any]:
         junction["junction_status"]
         == "C2_MATCHING_GIVES_ZERO_THIN_SHELL_STRESS_AT_R_C"
     )
-    solar_pass = solar["status"] == "PASS_SOLAR_EXTERIOR_MASTER_SHORT_PATH"
+    solar_pass = (
+        solar["status"]
+        == STATIC_SOLAR_MASTER_STATUS
+    )
 
     status = (
         "PASS_BRANCH_SELECTION_CRITERION_SOLAR_AND_COMPACT"
@@ -873,16 +929,21 @@ def exterior_claim_gate() -> list[ClaimGate]:
             ),
         ),
         ClaimGate(
-            claim="The exact-GR candidate's K_pi=0 minimal degeneracy can be stabilized",
-            status="PASS_STATIC_SILENT_ESS_KINETIC_LIFT",
+            claim=(
+                "An optional ESS branch can lift the exact-GR candidate's "
+                "isolated K_pi coefficient without changing the static exterior"
+            ),
+            status=OPTIONAL_ESS_CANDIDATE_STATUS,
             verified_here=(
                 "the ESS operator eta*(u.d phi)^2 vanishes with its first stress "
                 "variation on every static exterior, but adds eta/B*dot(pi)^2 "
-                "to solid perturbations."
+                "to the isolated unreduced solid time-kinetic coefficient.  It "
+                "is not part of the selected p05z action."
             ),
             open_requirement=(
-                "carry the same ESS completion into the full perturbation ledger "
-                "and observational stability filters."
+                "first perform the ADM/Dirac reduction of the selected p05z "
+                "action; if ESS is then selected, solve its full covariant "
+                "principal symbol and moving q0i response."
             ),
         ),
         ClaimGate(
@@ -891,12 +952,12 @@ def exterior_claim_gate() -> list[ClaimGate]:
             verified_here=(
                 "diagnostic correction scale = c_Y2/M_Pl^2 ~ Lambda; "
                 "Lambda*R_sun^2 ~ 1e-35; augmented system also admits exact GR "
-                "2PN metric on c_YI1=2*c_Y2 with s=-1/2; ESS lift stabilizes "
-                "the minimal K_pi=0 degeneracy without changing the static exterior."
+                "2PN metric on c_YI1=2*c_Y2 with s=-1/2.  This static result is "
+                "independent of the optional ESS coefficient-lift candidate."
             ),
             open_requirement=(
                 "match the exact-GR exterior branch to the finite oscillon core "
-                "and carry the ESS lift through the global stability ledger."
+                "and derive the selected action's reduced constraint dynamics."
             ),
         ),
         ClaimGate(
@@ -927,17 +988,23 @@ def do_not_claim() -> list[str]:
         "Do not collapse the Solar weak-field q=7/4 branch and the p05 phase-vacuum q=2 branch into one unnamed static spherical vacuum exterior.",
         "Do not phrase Solar GR-compatibility as a rejection of the refractive mechanism.",
         "Do not import this as a new article result until the exact-GR branch is matched to the finite oscillon core.",
-        "Do not use the minimal polynomial alone as the perturbation-health proof; include the static-silent ESS lift.",
+        "Do not call K_pi=0 a physical ghost or a healthy gauge mode before ADM/Dirac constraint reduction.",
+        "Do not call ESS required or part of the selected p05z action; it is an optional completion candidate.",
+        "Do not use the optional ESS K_pi coefficient lift as a full perturbation-health or preferred-frame proof.",
     ]
 
 
 def module_status() -> dict[str, Any]:
     return {
         "file": "p03c_exterior_field_equation.py",
-        "export_status": "PARTIAL_ARTICLE_EXPORT_READY_FOR_SOLAR_EXTERIOR_MASTER_SHORT_PATH",
+        "export_status": (
+            "PARTIAL_ARTICLE_EXPORT_READY_FOR_STATIC_SOLAR_EXTERIOR__"
+            "UNREDUCED_DYNAMICS_AND_PPN_OPEN"
+        ),
         "exterior_solution": solve_exterior_field_equation(),
         "augmented_medium_strain_2pn_system": augmented_medium_strain_2pn_system(),
         "static_silent_ess_kinetic_lift": static_silent_ess_kinetic_lift_theorem(),
+        "selected_p05z_action_includes_ESS": False,
         "solar_2pn_short_path_certificate": solar_2pn_short_path_certificate(),
         "solar_exterior_master_short_path": solar_exterior_master_short_path_certificate(),
         "lambda_scale_estimate": lambda_scale_suppression_estimate(),
@@ -985,9 +1052,10 @@ if __name__ == "__main__":
     print("  GR 2PN candidate identity:", gr_candidate["identity"])
     print("  health check:", aug["health_check"]["reading"])
 
-    print("\n3. Static-silent ESS kinetic lift")
+    print("\n3. Optional static-silent ESS coefficient-lift candidate")
     lift = static_silent_ess_kinetic_lift_theorem()
     print("  status:", lift["status"])
+    print("  selection:", lift["selection_status"])
     print("  static exterior unchanged:", lift["static_exterior_unchanged"])
     print("  lifted K_pi:", lift["lifted_Kpi"])
     print("  meaning:", lift["meaning"])

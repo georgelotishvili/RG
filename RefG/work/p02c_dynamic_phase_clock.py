@@ -7,13 +7,16 @@ p02c: dynamic phase-clock branch ledger.
 
 Scope:
 - derive the normalized and canonical Phi-current on FLRW;
-- record the dynamic Phi_dot(a) branch and its exact LCDM/S6 completion status;
+- record the dynamic Phi_dot(a) branch and the separate extended S6/Z
+  background-algebra status;
 - check the late nonzero zero-current algebraic w=-1 result;
 - show how dynamic Phi_dot(a) reshuffles early scaling terms;
 - keep process-time identification separate until channel separation, perturbations, and fit.
 
 This file is not a second metric branch. Do not import its clock factor into
 H(z), CMB, BBN, BAO, or SN calculations without a separate fit.
+The isolated S/Z symbol is not a full dynamic completion and does not override
+the defective/overconstrained coupled C6/Z verdict inherited from p01.
 """
 
 import sympy as sp
@@ -511,17 +514,60 @@ def completion_origin_and_operator_audit():
     }
 
 
+def p01_c6_z_coupled_dynamic_status_bridge():
+    """
+    Inherit the active p01 verdict for the coupled Solar F_min+C6/Z block.
+
+    The S/Z calculation below is an isolated extended-branch diagnostic.  Its
+    positive diagonal coefficients and determinant cannot override the coupled
+    p01 result, where the current C6/Z realization is both defective at the
+    luminal boundary and overconstrains the phase/spatial response.
+    """
+    from p01_core import (
+        phase_spatial_channel_independence_audit,
+        solar_branch_combined_dispersion_gate,
+    )
+
+    combined = solar_branch_combined_dispersion_gate()
+    independence = phase_spatial_channel_independence_audit()
+    inherited_defect = (
+        combined["status"]
+        == "BOUNDARY_LUMINAL_DOUBLE_ROOT_DEFECTIVE_IN_CURRENT_COMPLETION"
+        and independence["status"]
+        == "FAIL_OLD_C6_Z_OVERCONSTRAINS_PHASE_AND_SPATIAL_RESPONSE"
+    )
+
+    return {
+        "status": (
+            "OPEN_SEPARATE_S6_Z_FULL_DYNAMICS__"
+            "INHERITS_P01_DEFECTIVE_OVERCONSTRAINED_C6_Z"
+            if inherited_defect
+            else "CHECK_P01_C6_Z_COUPLED_DYNAMIC_STATUS"
+        ),
+        "p01_combined_solar_status": combined["status"],
+        "p01_phase_spatial_independence_status": independence["status"],
+        "full_dynamic_completion_closed": False,
+        "scope": (
+            "the p02c S/Z symbol is isolated; the active coupled Solar dynamic "
+            "verdict is inherited from p01 and remains defective/open"
+        ),
+    }
+
+
 def global_lcdm_solar_completion_theorem():
     """
-    Common late-cosmology and Solar-1PN completion branch.
+    Separate extended S=6 late-cosmology/Solar-1PN algebraic branch.
 
     The minimal zero-current LCDM branch and the strict Minkowski Solar branch
-    do not share a healthy coefficient point. The common branch is recovered by
-    using S = Y + 2 I1 - I3 and by allowing the local Solar exterior to carry
-    the homogeneous Lambda stress already present in the cosmological
-    background. The extra phase-solid kinetic invariant Z vanishes on the
-    homogeneous and static backgrounds, so it does not change the background
-    algebra, but it supplies the missing solid kinetic term.
+    do not share a coefficient point satisfying the displayed fixed-background
+    positivity conditions. The separate extended branch uses
+    S = Y + 2 I1 - I3 and allows the local Solar exterior to carry the
+    homogeneous Lambda stress already present in the cosmological background.
+    The extra phase-solid kinetic invariant Z vanishes on the homogeneous and
+    static backgrounds, so it does not change the background algebra and adds a
+    positive coefficient in the isolated fixed-background velocity block.  This
+    does not close the coupled dynamics: the current p01 F_min+C6/Z realization
+    is defective and overconstrained.
     """
     x, U = sp.symbols("x U", nonnegative=True, real=True)
     Y, I1, I2, I3 = sp.symbols("Y I1 I2 I3", real=True)
@@ -631,12 +677,17 @@ def global_lcdm_solar_completion_theorem():
         "K_solid_from_Z": sp.simplify(
             (sp.diff(L_perturb, pi_dot, 2) / 2).subs({d_phi: 0, pi_dot: 0})
         ),
+        "coefficient_scope": (
+            "isolated fixed-background diagonal velocity coefficients; not a "
+            "constraint-reduced no-ghost theorem"
+        ),
         "no_ghost_conditions": [sp.Gt(lambda_S, 0), sp.Gt(c_Z, 0)],
         "Z_background_value": 0,
     }
 
-    status = (
-        "PASS_GLOBAL_LCDM_SOLAR_1PN_COMPLETION"
+    algebraic_status = (
+        "PASS_SEPARATE_EXTENDED_S6_BACKGROUND_SOLAR1PN_ALGEBRA_AND_"
+        "ISOLATED_Z_COEFFICIENT__FULL_DYNAMICS_OPEN"
         if cosmology["S_minus_S0_on_branch"] == 0
         and cosmology["L_Y_on_branch"] == 0
         and sp.simplify(cosmology["rho_on_branch"] - rho_0) == 0
@@ -645,11 +696,21 @@ def global_lcdm_solar_completion_theorem():
         and all(value == 0 for value in solar["O1_residuals"].values())
         and kinetic["K_phase"] == 4 * lambda_S
         and kinetic["K_solid_from_Z"] == c_Z
-        else "CHECK_GLOBAL_LCDM_SOLAR_1PN_COMPLETION"
+        else "CHECK_SEPARATE_EXTENDED_S6_BACKGROUND_SOLAR1PN_ALGEBRA"
     )
+    coupled_dynamics = p01_c6_z_coupled_dynamic_status_bridge()
 
     return {
-        "status": status,
+        "status": algebraic_status,
+        "branch_scope": "SEPARATE_EXTENDED_S6_Z_BRANCH_NOT_SELECTED_P05Z_SOLAR_ACTION",
+        "legacy_background_status": (
+            "PASS_GLOBAL_LCDM_SOLAR_1PN_COMPLETION"
+            if algebraic_status.startswith("PASS_")
+            else "CHECK_GLOBAL_LCDM_SOLAR_1PN_COMPLETION"
+        ),
+        "full_dynamic_completion_status": coupled_dynamics["status"],
+        "p01_c6_z_coupled_dynamic_status": coupled_dynamics,
+        "full_dynamic_completion_closed": False,
         "completion_invariant": sp.Eq(sp.Symbol("S"), S),
         "kinetic_invariant_Z": (
             "Z = delta_AB (u^mu partial_mu phi^A)(u^nu partial_nu phi^B), "
@@ -663,8 +724,10 @@ def global_lcdm_solar_completion_theorem():
         "solar_1PN_with_Lambda_stress": solar,
         "kinetic_completion": kinetic,
         "article_use": (
-            "single extended branch: exact positive zero-current LCDM "
-            "background plus Solar 1PN closure up to homogeneous Lambda stress"
+            "separate extended S=6/Z branch: exact positive zero-current LCDM "
+            "background plus Solar 1PN algebra up to homogeneous Lambda stress; "
+            "the isolated Z coefficient does not repair the defective coupled "
+            "p01 Solar dynamics"
         ),
     }
 
@@ -696,11 +759,14 @@ def s6_lcdm_solar_short_path_certificate():
     solar = completion["solar_1PN_with_Lambda_stress"]
 
     status = (
-        "PASS_S6_LCDM_SOLAR_SHORT_PATH"
+        "PASS_SEPARATE_EXTENDED_S6_LCDM_SOLAR1PN_BACKGROUND_SHORT_PATH__"
+        "FULL_DYNAMICS_OPEN"
         if s_flrw_minus_6 == 0
         and s_solar_minus_6.coeff(U, 0) == 0
         and s_solar_minus_6.coeff(U, 1) == 0
-        and completion["status"] == "PASS_GLOBAL_LCDM_SOLAR_1PN_COMPLETION"
+        and completion["status"].startswith(
+            "PASS_SEPARATE_EXTENDED_S6_BACKGROUND_SOLAR1PN_ALGEBRA"
+        )
         and all(value == 0 for value in solar["O0_anisotropy_residuals"])
         and all(value == 0 for value in solar["O1_residuals"].values())
         else "CHECK_S6_LCDM_SOLAR_SHORT_PATH"
@@ -717,9 +783,13 @@ def s6_lcdm_solar_short_path_certificate():
         ).removeO().expand(),
         "Solar_first_nonzero_order_hint": s_solar_minus_6,
         "global_completion_status": completion["status"],
+        "full_dynamic_completion_status": completion[
+            "full_dynamic_completion_status"
+        ],
         "short_reading": (
-            "S=6 gives the LCDM background exactly and is silent through "
-            "Solar 1PN; the detailed theorem above keeps the stress audit."
+            "On the separate extended branch, S=6 gives the LCDM background "
+            "exactly and is silent through Solar 1PN.  This is background/static "
+            "algebra only; the coupled C6/Z dynamics inherit p01's defect."
         ),
     }
 
@@ -872,6 +942,10 @@ def completion_branch_local_perturbation_theorem():
         "kinetic_matrix": kinetic_matrix,
         "kinetic_eigenvalues": kinetic_eigenvalues,
         "no_ghost_conditions": [sp.Gt(lambda_S, 0), sp.Gt(c_Z, 0)],
+        "no_ghost_conditions_scope": (
+            "legacy API label for positivity of the isolated unreduced diagonal "
+            "velocity block; not a coupled or constraint-reduced health theorem"
+        ),
         "scalar_longitudinal_principal_matrix": principal_matrix,
         "scalar_longitudinal_determinant": determinant,
         "scalar_longitudinal_determinant_in_s": determinant_in_s,
@@ -887,9 +961,9 @@ def completion_branch_local_perturbation_theorem():
             "POSITIVE_KINETIC_ZERO_LEADING_GRADIENT_IN_SCALAR_COMPLETION"
         ),
         "article_use": (
-            "local no-ghost diagnostic for the isolated S/Z completion; combine "
-            "with F_min and the independent dynamic-channel repair before using "
-            "it as a Solar scalar-speed gate"
+            "unreduced local coefficient diagnostic for the isolated S/Z "
+            "completion; the combined Solar F_min+C6/Z gate inherits p01's "
+            "defective/overconstrained verdict"
         ),
     }
 
@@ -1056,9 +1130,9 @@ def completion_q2pn_scope_gate():
         "isotropic_2PN_unitary_ansatz_S_minus_6_series": S_iso_series,
         "minimal_truncation_q2PN_status": "q_2PN=10 belongs to p03 minimal isotropic stress-free closure",
         "completion_status": (
-            "S=6 completion closes LCDM and Solar 1PN; a separate isotropic "
-            "2PN exterior solution is required before assigning q_2PN to this "
-            "completion branch"
+            "the separate S=6 branch closes only the displayed LCDM-background "
+            "and Solar-1PN algebra; a coupled dynamic audit and a separate "
+            "isotropic 2PN exterior solution are required"
         ),
     }
 
@@ -1109,7 +1183,8 @@ def clock_completion_roadmap_gate():
         "branch_reading": (
             "the minimal seven-term dynamic clock is the economical background "
             "candidate; the S=6/Z sector is an extended completion branch that "
-            "closes exact LCDM plus Solar 1PN at background level"
+            "closes exact LCDM plus Solar 1PN only at background/static algebra "
+            "level, while its coupled C6/Z dynamics inherit the p01 defect"
         ),
     }
 
@@ -1192,16 +1267,25 @@ def process_time_match_gate():
 
 def module_status():
     """Council-facing status for the dynamic phase-clock file."""
+    coupled_dynamics = p01_c6_z_coupled_dynamic_status_bridge()
     return {
-        "scope": "dynamic phase-clock algebra, exact LCDM background, and S6/Solar 1PN completion; not a second metric branch",
+        "scope": (
+            "dynamic phase-clock algebra and exact LCDM background; S6/Z is a "
+            "separate extended background/Solar-1PN algebraic branch, not the "
+            "selected p05z Solar action or a full dynamic completion"
+        ),
         "current_self_check": phase_current_self_check(),
         "dynamic_branch": dynamic_phase_clock_branch(),
         "late_zero_current_candidate": late_zero_current_candidate(),
         "s6_lcdm_solar_short_path": s6_lcdm_solar_short_path_certificate(),
+        "p01_c6_z_coupled_dynamic_status": coupled_dynamics,
         "dark_energy_balance_short_path": dark_energy_balance_short_path_certificate(),
         "early_scaling_after_zero_current": early_scaling_after_zero_current(),
         "process_time_match_gate": process_time_match_gate(),
-        "export_status": "PARTIAL_ARTICLE_EXPORT_READY_FOR_BACKGROUND_AND_1PN_COMPLETION",
+        "export_status": (
+            "PARTIAL_ARTICLE_EXPORT_READY_FOR_BACKGROUND_ALGEBRA__"
+            "SEPARATE_S6_Z_COUPLED_DYNAMICS_DEFECTIVE_OPEN"
+        ),
     }
 
 
@@ -1231,6 +1315,7 @@ def article_dynamic_phase_clock_theorem():
     completion_current = completion_phase_current_theorem()
     completion_q2pn_scope = completion_q2pn_scope_gate()
     clock_completion_roadmap = clock_completion_roadmap_gate()
+    coupled_dynamics = p01_c6_z_coupled_dynamic_status_bridge()
     early = early_scaling_after_zero_current()
 
     return {
@@ -1269,6 +1354,7 @@ def article_dynamic_phase_clock_theorem():
         "completion_phase_current": completion_current,
         "completion_q2pn_scope": completion_q2pn_scope,
         "clock_completion_roadmap": clock_completion_roadmap,
+        "p01_c6_z_coupled_dynamic_status": coupled_dynamics,
         "background_observables": {
             "status": observables["status"],
             "rho_RG": observables["rho_RG"],
@@ -1299,8 +1385,16 @@ def article_dynamic_phase_clock_theorem():
             "completion_phase_current": completion_current["status"],
             "completion_q2pn_scope": completion_q2pn_scope["status"],
             "clock_completion_roadmap": clock_completion_roadmap["status"],
+            "s6_z_full_dynamic_completion": coupled_dynamics["status"],
+            "p01_combined_solar_c6_z": coupled_dynamics[
+                "p01_combined_solar_status"
+            ],
+            "p01_phase_spatial_independence": coupled_dynamics[
+                "p01_phase_spatial_independence_status"
+            ],
             "observational_fit": (
-                "GLOBAL_BACKGROUND_1PN_COMPLETION_CLOSED__LIKELIHOOD_REQUIRED"
+                "SEPARATE_S6_BACKGROUND_SOLAR1PN_ALGEBRA_PASS__"
+                "FULL_DYNAMICS_AND_LIKELIHOOD_OPEN"
             ),
         },
     }

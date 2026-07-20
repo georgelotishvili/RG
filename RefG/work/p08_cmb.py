@@ -972,15 +972,14 @@ def exact_lcdm_branch_boltzmann_source_theorem() -> dict[str, object]:
 
 def s_completion_same_input_boltzmann_source_theorem() -> dict[str, object]:
     """
-    Linear CMB source check for the S/Z completion branch.
+    Restricted same-input identity for the optional S/Z branch.
 
-    The p02c completion closes the background with S=6 and supplies a healthy
-    local scalar-longitudinal symbol.  For the same-input CMB branch the
-    completion perturbation is set to the same-input condition delta S=0,
-    and Z has no linear
-    background value.  Then the completion contributes only the homogeneous
-    Lambda stress and no linear Poisson, slip, lensing, ISW, or photon-baryon
-    force source.
+    The p02c branch closes the displayed background algebra with S=6, but its
+    isolated S/Z velocity symbol is not a coupled, constraint-reduced health
+    theorem.  Here delta S=0 and delta Z=0 are imposed as same-input
+    restrictions.  Under precisely those assumptions the extra linear sources
+    vanish identically.  This does not derive the active S/Z perturbations or
+    close their Boltzmann likelihood.
     """
     from p02c_dynamic_phase_clock import (
         completion_branch_local_perturbation_theorem,
@@ -1044,11 +1043,14 @@ def s_completion_same_input_boltzmann_source_theorem() -> dict[str, object]:
     ]
 
     status = (
-        "PASS_S_COMPLETION_SAME_INPUT_BOLTZMANN_SOURCES_ZERO"
-        if completion["status"] == "PASS_GLOBAL_LCDM_SOLAR_1PN_COMPLETION"
+        "PASS_OPTIONAL_S6_Z_RESTRICTED_SAME_INPUT_SOURCES_ZERO__"
+        "ACTIVE_PERTURBATIONS_OPEN"
+        if completion["status"].startswith(
+            "PASS_SEPARATE_EXTENDED_S6_BACKGROUND_SOLAR1PN_ALGEBRA"
+        )
         and perturbations.get("raw_symbol_status") == "PASS_COMPLETION_LOCAL_PERTURBATION_SYMBOL"
         and all(simplify(value) == 0 for value in residuals)
-        else "CHECK_S_COMPLETION_SAME_INPUT_BOLTZMANN_SOURCES"
+        else "CHECK_OPTIONAL_S6_Z_RESTRICTED_SAME_INPUT_SOURCES"
     )
 
     return {
@@ -1088,12 +1090,13 @@ def s_completion_same_input_boltzmann_source_theorem() -> dict[str, object]:
             ),
         },
         "conclusion": (
-            "on the S=6 same-input branch, the S/Z completion behaves as "
-            "a cosmological constant in the linear Einstein-Boltzmann sources"
+            "after imposing delta S=delta Z=0, the optional S=6/Z branch has "
+            "the same linear source values as a cosmological constant"
         ),
         "scope": (
-            "same matter content including standard CDM; active completion "
-            "perturbations require a separate Boltzmann likelihood"
+            "restricted same-input identity with standard CDM, not an active-"
+            "mode solution; the coupled constraint reduction, active "
+            "perturbations and Boltzmann likelihood remain open"
         ),
     }
 
@@ -1104,8 +1107,9 @@ def cmb_same_input_short_path_certificate() -> dict[str, object]:
 
     The detailed CMB ledger remains below.  This function is the short path:
     when H(a), matter content, recombination history and primordial spectrum
-    are the LCDM inputs, the same-input RG metric/EFT sources and the S/Z completion
-    sources all vanish at linear order.
+    are the LCDM inputs, the RG metric/EFT sources vanish.  The optional S/Z
+    terms also vanish after the additional same-input restrictions
+    delta S=delta Z=0 are imposed; their active dynamics is not derived here.
     """
     same_input = same_input_cmb_identity_theorem()
     s_completion = s_completion_same_input_boltzmann_source_theorem()
@@ -1131,20 +1135,22 @@ def cmb_same_input_short_path_certificate() -> dict[str, object]:
         "zero_source_residuals": zero_source_residuals,
         "short_reading": (
             "same H(a), same matter, same recombination and same-input RG linear "
-            "sources give the LCDM Einstein-Boltzmann hierarchy."
+            "sources give the LCDM Einstein-Boltzmann hierarchy; the optional "
+            "S/Z zero-source statement additionally assumes delta S=delta Z=0."
         ),
     }
 
 
 def active_s_completion_linear_source_order_theorem() -> dict[str, object]:
     """
-    Active S/Z completion source order around the exact S=6 background.
+    Tadpole-order diagnostic for the optional S/Z candidate.
 
-    The completion has a healthy scalar-longitudinal quadratic action, but the
-    background sits at the minimum S=6 and Z=0.  Therefore an active
-    perturbation supplies no linear Einstein-Boltzmann density, momentum, or
-    shear source unless a nonzero background displacement, direct coupling, or
-    different effective fluid branch is supplied.
+    Around S=6 and Z=0 the displayed completion Lagrangian begins at quadratic
+    order, so its isolated expansion has no linear tadpole.  Its old
+    scalar-longitudinal determinant is a defective luminal double root in the
+    coupled p01 audit; it is not a healthy active propagation theorem.
+    Consequently this coefficient-order check cannot replace the full
+    constraint-reduced Einstein-Boltzmann perturbation system.
     """
     eps, s1, z2, rho0 = sp.symbols("eps s_1 z_2 rho_0", real=True)
     lambda_S, c_Z = sp.symbols("lambda_S c_Z", positive=True)
@@ -1167,10 +1173,11 @@ def active_s_completion_linear_source_order_theorem() -> dict[str, object]:
     )
 
     status = (
-        "PASS_ACTIVE_S_COMPLETION_LINEAR_SOURCE_ZERO_ORDER"
+        "DIAGNOSTIC_OPTIONAL_S6_Z_NO_LINEAR_TADPOLE__"
+        "COUPLED_DYNAMICS_DEFECTIVE_OPEN"
         if simplify(linear_lagrangian_source) == 0
         and simplify(determinant - expected_det) == 0
-        else "CHECK_ACTIVE_S_COMPLETION_LINEAR_SOURCE_ORDER"
+        else "CHECK_OPTIONAL_S6_Z_LINEAR_TADPOLE_ORDER"
     )
 
     return {
@@ -1184,9 +1191,9 @@ def active_s_completion_linear_source_order_theorem() -> dict[str, object]:
         },
         "active_mode_principal_symbol": determinant,
         "source_order_result": (
-            "active S/Z perturbations propagate in the local quadratic action, "
-            "but around S=6,Z=0 they do not supply a linear "
-            "Einstein-Boltzmann source"
+            "the isolated optional S/Z Lagrangian has no linear tadpole around "
+            "S=6,Z=0; no healthy active mode or fully reduced metric source is "
+            "established"
         ),
         "no_particle_dm_implication": (
             "zero-background S/Z completion cannot replace particle-CDM "
@@ -1210,7 +1217,10 @@ def no_particle_dm_cmb_decision_gate() -> dict[str, object]:
     status = (
         "NO_PARTICLE_DM_REQUIRES_NONZERO_ACTIVE_SOURCE_BRANCH"
         if active_order["status"]
-        == "PASS_ACTIVE_S_COMPLETION_LINEAR_SOURCE_ZERO_ORDER"
+        == (
+            "DIAGNOSTIC_OPTIONAL_S6_Z_NO_LINEAR_TADPOLE__"
+            "COUPLED_DYNAMICS_DEFECTIVE_OPEN"
+        )
         else "CHECK_NO_PARTICLE_DM_CMB_SOURCE_BRANCH"
     )
 
@@ -1226,8 +1236,9 @@ def no_particle_dm_cmb_decision_gate() -> dict[str, object]:
         ],
         "open_register": open_register,
         "article_rule": (
-            "same-input CMB is closed as a safety identity; no-particle-DM CMB "
-            "is not claimed from the zero-background S=6 completion"
+            "same-input CMB is a restricted safety identity; no-particle-DM CMB "
+            "and healthy active S/Z modes are not claimed from the isolated "
+            "zero-background expansion"
         ),
     }
 
@@ -1261,11 +1272,12 @@ def article_cmb_theorem() -> dict[str, object]:
             "same-input Phi_0=X_0 branch gives zero Bellini-Sawicki alpha_i",
             "linear metric scalar stress vanishes at first order on the same-input branch",
             "exact LCDM branch contributes no extra linear Boltzmann sources",
-            "S/Z completion contributes no same-input Poisson, slip, lensing, ISW, or photon-baryon source",
+            "optional S/Z terms contribute no extra source after delta S=delta Z=0 are imposed",
             "same-input CMB short path passes with zero source residuals",
             "CMB-comoving age calibration is a frame calibration, not a new substrate claim",
         ],
         "not_article_claims": [
+            "healthy or constraint-reduced active S/Z perturbation dynamics",
             "no-particle-DM CMB replacement",
             "Planck TT/TE/EE+lensing likelihood pass",
             "BAO/DESI/LSS empirical pass",

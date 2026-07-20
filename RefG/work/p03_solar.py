@@ -7,17 +7,24 @@
 p03: solar-system / weak-field ledger.
 
 Status:
-- nontrivial 1PN Solar branch is machine-checked through O(U^1).
-- gamma=beta=1 and alpha_1=alpha_2=alpha_3=0 are closed in the current
-  minimal moving-source chain; xi/zeta rows remain standard-PPN export tasks.
+- the local nontrivial coefficient branch is checked here through O(U^1);
+  p05z supplies the stronger static action/EOM check through O(U^2).
+- gamma=beta=1 are derived on that selected on-shell static spherical
+  exterior; finite-source branch selection and uniqueness are not closed.  The former
+  alpha_1=alpha_2=alpha_3=0 chain is a conditional Einstein-branch matcher:
+  it inserts, rather than derives, the full inhomogeneous PPN vector
+  coefficients.
+- full inhomogeneous moving-source PPN, including xi/zeta rows, remains open.
 - the areal-radius time-coefficient convention is separated from the standard
   isotropic PPN beta convention; on the gamma=1 Solar branch the two beta
   readings coincide.
-- Mercury and 1PN Shapiro are standard consequences of the closed 1PN branch.
+- Mercury and 1PN Shapiro take their standard values conditionally on that
+  selected metric branch.
 - 2PN Shapiro/light-bending is a candidate discriminator until the active RG
   exterior optical index is derived.
-- Leading 1.5PN frame dragging matches GR in the minimal one-metric chain;
-  strong-field/nonperturbative rotation remains separate.
+- Leading 1.5PN frame dragging matches GR in the conditional Einstein-branch
+  matcher; the full moving-source derivation and strong-field rotation remain
+  separate.
 """
 
 import math
@@ -257,11 +264,11 @@ def weak_field_stress_constraint_gate():
 
 def solar_1pn_closure_branch():
     """
-    Nontrivial stress closure through O(U^1) on the GR-like 1PN branch.
+    Nontrivial response-stress closure through O(U^1) on a GR-like 1PN branch.
 
-    This strengthens the solar ledger: 1PN compatibility has a concrete
-    coefficient branch. It does not close 2PN; the remaining residual is the
-    next prediction/obstruction target.
+    This is a coefficient-branch existence result.  It does not select a
+    finite-source exterior or close 2PN; the remaining residual is the next
+    prediction/obstruction target.
     """
     c_Y2, c_YI1 = sp.symbols("c_Y2 c_YI1", real=True)
     branch = {
@@ -280,25 +287,39 @@ def solar_1pn_closure_branch():
         - c_YI1
     )
 
+    positive_unreduced_window = [
+        sp.Gt(K_phi, 0),
+        sp.Gt(K_pi, 0),
+    ]
+
     return {
         "status": "NONTRIVIAL_1PN_STRESS_CLOSURE_BRANCH",
         "branch": branch,
         "free_parameters": [c_Y2, c_YI1],
+        "phase_unreduced_velocity_prefactor": K_phi,
+        "solid_unreduced_velocity_prefactor": K_pi,
+        "unreduced_positive_hessian_window_diagnostic": positive_unreduced_window,
+        "constraint_warning": (
+            "K_pi=0 is a zero eigenvalue of a fixed-metric, unreduced velocity "
+            "block of the +F response.  The selected action contains "
+            "-M_*^4 F, so the nonzero response-Hessian sign also cannot be "
+            "read as its kinetic sign.  Physical classification requires the "
+            "ADM/Dirac constraint reduction."
+        ),
+        # Backward-compatible aliases.  Their names predate the constraint audit.
         "phase_no_ghost_prefactor": K_phi,
         "solid_no_ghost_prefactor": K_pi,
-        "healthy_window_needed": [
-            sp.Gt(K_phi, 0),
-            sp.Gt(K_pi, 0),
-        ],
+        "healthy_window_needed": positive_unreduced_window,
         "O2_residual_on_this_branch": {
             "T^t_t O(U^2)": 16 * c_Y2,
             "T^r_r O(U^2)": 16 * c_Y2,
             "T^theta_theta O(U^2)": 8 * c_YI1,
         },
         "interpretation": (
-            "1PN Solar-System compatibility can be supported by a nontrivial "
-            "coefficient branch; exact GR-like 2PN stress-free closure cannot "
-            "be kept unless c_Y2=c_YI1=0, which collapses this branch"
+            "a nontrivial coefficient branch supports an on-shell static 1PN "
+            "Solar metric; source selection and uniqueness are separate. "
+            "Exact GR-like 2PN stress-free closure cannot be kept unless "
+            "c_Y2=c_YI1=0, which collapses this branch"
         ),
     }
 
@@ -367,27 +388,35 @@ def ppn_scope_and_preferred_frame_gate():
     """
     Article-facing boundary for Solar-System claims.
 
-    The current p03 theorem closes the static 1PN branch and the minimal
-    moving-source alpha_i chain.  The remaining boundary is the full standard
-    PPN table/gauge export and the 2PN exterior.
+    The current p03 theorem establishes the unloaded H=0 on-shell static 1PN
+    branch.  Finite-source branch selection and uniqueness remain separate.
+    The old minimal F_min moving-source algebra gives a conditional alpha_i=0
+    matcher, but it does not derive the inhomogeneous vector potentials of the
+    selected action.  ESS/Z is a separate optional completion candidate, not a
+    required operator in the p05z Solar action.
     """
     return {
-        "status": "PASS_GAMMA_BETA_ALPHA_I_MINIMAL_CHAIN__FULL_PPN_TABLE_HAS_XI_ZETA_TASKS",
+        "status": "PASS_STATIC_GAMMA_BETA__FULL_ACTION_PREFERRED_FRAME_AND_STANDARD_PPN_OPEN",
         "closed_here": (
-            "gamma=beta=1 on the nontrivial static spherical branch; "
-            "alpha_1=alpha_2=alpha_3=0 in the minimal moving-source chain; "
-            "leading 1.5PN frame-dragging equals GR"
+            "gamma=beta=1 on the unloaded on-shell static spherical branch"
         ),
+        "source_selected_unique_exterior": False,
         "coordinate_warning": (
             "standard Solar-System bounds are quoted in isotropic PPN gauge; "
             "the final table still needs the explicit gauge/export text"
         ),
-        "preferred_frame_risk": (
-            "static spherical reasoning alone is insufficient, but the current "
-            "moving-source chain derives alpha_1=alpha_2=alpha_3=0"
+        "preferred_frame_status": (
+            "no preferred-frame obstruction has been derived; the existing "
+            "flat/co-boost algebra is insufficient to close the full PPN table"
         ),
         "required_before_full_solar_claim": [
+            "match a finite source and fix the H and solid exterior charges",
+            "prove existence/uniqueness in a uniformly controlled PN domain",
+            "bound M_*^4*r^2/M_Pl^2 over that domain",
             "write the explicit final coordinate/gauge export",
+            "solve the selected-action inhomogeneous g0i/Phi/phiA/H system",
+            "derive rather than insert the V_i, W_i and preferred-frame terms",
+            "perform the reduced ADM/Dirac audit before classifying K_pi=0",
             "complete xi/zeta matter-potential rows in the standard PPN table",
             "derive the active 2PN exterior/optical index",
             "solve nonperturbative stationary rotating compact-source geometry",
@@ -1131,9 +1160,10 @@ def standard_ppn_alpha_i_export_table():
     """
     Article-ready preferred-frame PPN table.
 
-    The symbolic matcher fixes alpha_i=0 after the RG moving-source vector
-    source has vanished on the Solar 1PN branch.  This function packages the
-    result with the observational bounds used in the text.
+    The symbolic matcher returns alpha_i=0 after GR vector coefficients are
+    supplied and the minimal-F_min flat vector block vanishes.  This table is
+    conditional because the selected action's full inhomogeneous moving-source
+    equations have not been solved.
     """
     matcher = standard_ppn_alpha_i_matcher()
     chain = preferred_frame_alpha_i_closure_chain()
@@ -1153,8 +1183,9 @@ def standard_ppn_alpha_i_export_table():
         )
 
     status = (
-        "PASS_STANDARD_PPN_ALPHA_I_EXPORT_TABLE"
-        if chain["status"] == "PASS_MINIMAL_MOVING_SOURCE_ALPHA_I_CHAIN"
+        "CONDITIONAL_STANDARD_PPN_ALPHA_I_TABLE__FULL_INHOMOGENEOUS_SOLUTION_OPEN"
+        if chain["status"]
+        == "CONDITIONAL_EINSTEIN_BRANCH_ALPHA_I_MATCH__FULL_INHOMOGENEOUS_PPN_OPEN"
         and matcher["status"] == "PASS_STANDARD_PPN_MATCH_FORCES_ALPHA_I_ZERO"
         and all(row["passes_bound"] for row in rows)
         else "CHECK_STANDARD_PPN_ALPHA_I_EXPORT_TABLE"
@@ -1166,8 +1197,9 @@ def standard_ppn_alpha_i_export_table():
         "matcher_status": matcher["status"],
         "closure_chain_status": chain["status"],
         "scope": (
-            "standard PPN alpha_i export after the minimal moving-source RG "
-            "vector-source check; full solar-system likelihood remains separate"
+            "conditional standard-PPN alpha_i table for the selected "
+            "Einstein-compatible branch; the inhomogeneous derivation and "
+            "likelihood remain open"
         ),
     }
 
@@ -1176,9 +1208,9 @@ def standard_ppn_status_ledger():
     """
     Full standard-PPN parameter status ledger for the first article.
 
-    This is not a new fit.  It records which PPN entries are already derived in
-    the active weak-field files and which entries are formal export tasks for a
-    complete standard-PPN table.
+    This is not a new fit.  It distinguishes the static beta/gamma derivation,
+    the conditional minimal-F_min alpha matcher, and the entries still requiring
+    a complete full-action standard-PPN solution.
     """
     one_pn = solar_1pn_closure_branch()
     alpha_export = standard_ppn_alpha_i_export_table()
@@ -1188,13 +1220,19 @@ def standard_ppn_status_ledger():
         {
             "parameter": "gamma",
             "RG_value_or_condition": sp.Integer(1),
-            "status": "DERIVED_STATIC_SPHERICAL_1PN_BRANCH",
+            "status": (
+                "DERIVED_ON_SELECTED_ZERO_H_STATIC_SPHERICAL_BRANCH__"
+                "SOURCE_SELECTION_OPEN"
+            ),
             "support": one_pn["status"],
         },
         {
             "parameter": "beta",
             "RG_value_or_condition": sp.Integer(1),
-            "status": "DERIVED_STATIC_SPHERICAL_1PN_BRANCH",
+            "status": (
+                "DERIVED_ON_SELECTED_ZERO_H_STATIC_SPHERICAL_BRANCH__"
+                "SOURCE_SELECTION_OPEN"
+            ),
             "support": one_pn["status"],
         },
     ]
@@ -1202,7 +1240,7 @@ def standard_ppn_status_ledger():
         {
             "parameter": row["parameter"],
             "RG_value_or_condition": row["RG_minimal_value"],
-            "status": "DERIVED_MOVING_SOURCE_VECTOR_CHAIN",
+            "status": "CONDITIONAL_EINSTEIN_BRANCH_MATCHER__FULL_PPN_SOLUTION_OPEN",
             "support": alpha_export["status"],
         }
         for row in alpha_export["rows"]
@@ -1231,9 +1269,10 @@ def standard_ppn_status_ledger():
     )
 
     status = (
-        "PASS_STANDARD_PPN_STATUS_LEDGER"
+        "OPEN_STANDARD_PPN_STATUS_LEDGER__STATIC_BETA_GAMMA_ONLY"
         if one_pn["status"] == "NONTRIVIAL_1PN_STRESS_CLOSURE_BRANCH"
-        and alpha_export["status"] == "PASS_STANDARD_PPN_ALPHA_I_EXPORT_TABLE"
+        and alpha_export["status"]
+        == "CONDITIONAL_STANDARD_PPN_ALPHA_I_TABLE__FULL_INHOMOGENEOUS_SOLUTION_OPEN"
         and {row["parameter"] for row in rows}
         >= {"gamma", "beta", "alpha_1", "alpha_2", "alpha_3", "xi"}
         else "CHECK_STANDARD_PPN_STATUS_LEDGER"
@@ -1242,19 +1281,30 @@ def standard_ppn_status_ledger():
     return {
         "status": status,
         "rows": rows,
-        "derived_now": ["gamma", "beta", "alpha_1", "alpha_2", "alpha_3"],
-        "standard_ppn_export_tasks": ["xi", "zeta_1", "zeta_2", "zeta_3", "zeta_4"],
+        "derived_now": ["gamma", "beta"],
+        "conditional_minimal_Fmin_matcher": ["alpha_1", "alpha_2", "alpha_3"],
+        "standard_ppn_export_tasks": [
+            "alpha_1",
+            "alpha_2",
+            "alpha_3",
+            "xi",
+            "zeta_1",
+            "zeta_2",
+            "zeta_3",
+            "zeta_4",
+        ],
         "article_rule": (
-            "state the closed gamma,beta,alpha_i results and keep xi/zeta as "
-            "formal standard-PPN export rows until the full matter-potential "
-            "matching is written"
+            "state the closed static gamma,beta result; label alpha_i as a "
+            "Einstein-branch conditional matcher until the selected action's "
+            "moving equations are solved; keep xi/zeta open until full "
+            "matter-potential matching"
         ),
     }
 
 
 def preferred_frame_alpha_i_appendix_payload():
     """
-    Full article appendix payload for alpha_1=alpha_2=alpha_3=0.
+    Conditional minimal-F_min appendix payload for alpha_i=0.
 
     This collects the four steps a reader needs to reproduce the preferred-
     frame claim without hunting through the code: boosted background stress,
@@ -1267,12 +1317,16 @@ def preferred_frame_alpha_i_appendix_payload():
     chain = preferred_frame_alpha_i_closure_chain()
 
     status = (
-        "PASS_ALPHA_I_APPENDIX_PAYLOAD"
-        if background["status"] == "PASS_BACKGROUND_PREFERRED_FRAME_STRESS_ON_1PN_BRANCH"
-        and vector_source["status"] == "PASS_RG_VECTOR_SOURCE_ABSENT_ON_1PN_BRANCH"
+        "CONDITIONAL_ALPHA_I_APPENDIX__FULL_INHOMOGENEOUS_PPN_OPEN"
+        if background["status"]
+        == "PASS_MINIMAL_FMIN_HOMOGENEOUS_COBOOST_BACKGROUND_STRESS"
+        and vector_source["status"]
+        == "PASS_MINIMAL_FMIN_VECTOR_TADPOLE_AND_HESSIAN_ZERO_ON_1PN_BRANCH"
         and matcher["status"] == "PASS_STANDARD_PPN_MATCH_FORCES_ALPHA_I_ZERO"
-        and export_table["status"] == "PASS_STANDARD_PPN_ALPHA_I_EXPORT_TABLE"
-        and chain["status"] == "PASS_MINIMAL_MOVING_SOURCE_ALPHA_I_CHAIN"
+        and export_table["status"]
+        == "CONDITIONAL_STANDARD_PPN_ALPHA_I_TABLE__FULL_INHOMOGENEOUS_SOLUTION_OPEN"
+        and chain["status"]
+        == "CONDITIONAL_EINSTEIN_BRANCH_ALPHA_I_MATCH__FULL_INHOMOGENEOUS_PPN_OPEN"
         else "CHECK_ALPHA_I_APPENDIX_PAYLOAD"
     )
 
@@ -1312,8 +1366,8 @@ def preferred_frame_alpha_i_appendix_payload():
         },
         "step_4_alpha_table": export_table["rows"],
         "scope": (
-            "minimal one-metric moving-source alpha_i proof; raw solar-system "
-            "ephemeris likelihood remains outside this appendix"
+            "conditional Einstein-branch alpha_i matcher; the complete "
+            "moving-source solution and raw ephemeris likelihood remain outside"
         ),
     }
 
@@ -1491,7 +1545,7 @@ def preferred_frame_background_stress_theorem():
     branch_prefactor = sp.simplify(common_prefactor.subs(branch))
 
     status = (
-        "PASS_BACKGROUND_PREFERRED_FRAME_STRESS_ON_1PN_BRANCH"
+        "PASS_MINIMAL_FMIN_HOMOGENEOUS_COBOOST_BACKGROUND_STRESS"
         if branch_prefactor == 0
         and all(value == 0 for value in branch_residuals.values())
         and all(value == 0 for value in branch_spatial_anisotropy_residuals.values())
@@ -1517,14 +1571,15 @@ def preferred_frame_background_stress_theorem():
             branch_spatial_anisotropy_residuals
         ),
         "closed_here": (
-            "the normalized boosted background has no O(v_i) RG momentum flux "
+            "the minimal-F_min normalized co-boosted homogeneous background has "
+            "no O(v_i) RG momentum flux "
             "and no O(v_i v_j) spatial anisotropic stress on the nontrivial "
             "1PN stress-closure branch"
         ),
         "not_closed_here": (
-            "full alpha_1, alpha_2, alpha_3 PPN proof still requires the "
-            "moving-source metric solution, matter velocity potentials, and "
-            "standard PPN gauge matching"
+            "full alpha_i PPN proof still requires the inhomogeneous moving-source "
+            "metric solution, matter velocity potentials and standard PPN gauge. "
+            "The whole-solution boost identity is checked separately in p03e."
         ),
     }
 
@@ -1621,7 +1676,7 @@ def standard_ppn_alpha_i_matcher():
 
 def moving_source_rg_vector_source_theorem():
     """
-    RG-sector vector-source check for the 1.5PN moving-source equation.
+    Minimal-F_min vector tadpole/Hessian check for the 1.5PN equation.
 
     We include both a small inverse-metric vector q_0i=h_i and a small boost
     velocity v_i of the normalized phase-solid background.  The mixed vector
@@ -1708,7 +1763,7 @@ def moving_source_rg_vector_source_theorem():
     ]
     all_branch_values = [value for row in h_branch + v_branch for value in row]
     status = (
-        "PASS_RG_VECTOR_SOURCE_ABSENT_ON_1PN_BRANCH"
+        "PASS_MINIMAL_FMIN_VECTOR_TADPOLE_AND_HESSIAN_ZERO_ON_1PN_BRANCH"
         if all(value == 0 for value in all_branch_values)
         else "CHECK_RG_VECTOR_SOURCE_ON_1PN_BRANCH"
     )
@@ -1731,20 +1786,24 @@ def moving_source_rg_vector_source_theorem():
         "h_linear_matrix_on_1PN_branch": h_branch,
         "v_linear_matrix_on_1PN_branch": v_branch,
         "closed_here": (
-            "the minimal RG sector adds no linear q_0i source and no linear "
+            "the minimal F_min polynomial adds no linear q_0i source and no linear "
             "boost-velocity vector source on the nontrivial Solar 1PN branch"
         ),
         "not_closed_here": (
             "the Einstein-Hilbert vector Green function and matter velocity "
-            "potentials are still represented by the standard one-metric GR "
-            "side of the PPN matcher"
+            "potentials are still represented by the GR side of the matcher "
+            "rather than derived from the selected p05z action"
+        ),
+        "action_scope": (
+            "minimal seven-term F_min local algebra only; p05z H and the full "
+            "inhomogeneous Einstein/matter solution are outside this smoke test"
         ),
     }
 
 
 def preferred_frame_alpha_i_closure_chain():
     """
-    Combine the RG vector-source checks with the standard PPN matcher.
+    Combine the minimal-F_min vector checks with the conditional PPN matcher.
 
     The chain is intentionally split into machine-checkable pieces:
     RG background preferred-frame stress, RG vector-source absence, and the
@@ -1755,9 +1814,11 @@ def preferred_frame_alpha_i_closure_chain():
     matcher = standard_ppn_alpha_i_matcher()
 
     status = (
-        "PASS_MINIMAL_MOVING_SOURCE_ALPHA_I_CHAIN"
-        if background["status"] == "PASS_BACKGROUND_PREFERRED_FRAME_STRESS_ON_1PN_BRANCH"
-        and vector_source["status"] == "PASS_RG_VECTOR_SOURCE_ABSENT_ON_1PN_BRANCH"
+        "CONDITIONAL_EINSTEIN_BRANCH_ALPHA_I_MATCH__FULL_INHOMOGENEOUS_PPN_OPEN"
+        if background["status"]
+        == "PASS_MINIMAL_FMIN_HOMOGENEOUS_COBOOST_BACKGROUND_STRESS"
+        and vector_source["status"]
+        == "PASS_MINIMAL_FMIN_VECTOR_TADPOLE_AND_HESSIAN_ZERO_ON_1PN_BRANCH"
         and matcher["status"] == "PASS_STANDARD_PPN_MATCH_FORCES_ALPHA_I_ZERO"
         else "CHECK_MINIMAL_MOVING_SOURCE_ALPHA_I_CHAIN"
     )
@@ -1769,12 +1830,15 @@ def preferred_frame_alpha_i_closure_chain():
         "standard_ppn_matcher": matcher["status"],
         "alpha_i_values": matcher["alpha_i_values"],
         "claim_scope": (
-            "minimal one-metric 1.5PN chain: no RG vector/preferred-frame "
-            "source on the Solar 1PN branch, so the standard GR vector matcher "
-            "forces alpha_1=alpha_2=alpha_3=0"
+            "conditional Einstein-branch chain: the minimal-F_min flat/co-boost "
+            "tadpole vanishes and a GR-coefficient matcher returns alpha_i=0; "
+            "the full inhomogeneous coefficients are not yet derived"
         ),
         "remaining_for_full_ppn": [
             "write the explicit coordinate/gauge map in final PPN notation",
+            "include the selected p05z H sector in the moving-source equations",
+            "derive rather than assume the V_i and W_i Green-function coefficients",
+            "complete the ADM/Dirac reduction of the exact-GR K_pi=0 branch",
             "derive the stationary rotating compact-source g_0i solution",
             "keep 2PN q_2PN discriminator separate from alpha_i",
         ],
@@ -1783,7 +1847,7 @@ def preferred_frame_alpha_i_closure_chain():
 
 def ppn_preferred_frame_short_path_certificate():
     """
-    Compact preferred-frame PPN certificate.
+    Compact conditional preferred-frame PPN certificate.
 
     The detailed appendix payload keeps the boosted-background and moving-source
     matrices.  This short path keeps the logic in one place: no RG vector source
@@ -1795,9 +1859,11 @@ def ppn_preferred_frame_short_path_certificate():
     alpha_values = chain["alpha_i_values"]
 
     status = (
-        "PASS_PPN_PREFERRED_FRAME_SHORT_PATH"
-        if chain["status"] == "PASS_MINIMAL_MOVING_SOURCE_ALPHA_I_CHAIN"
-        and table["status"] == "PASS_STANDARD_PPN_ALPHA_I_EXPORT_TABLE"
+        "CONDITIONAL_PPN_PREFERRED_FRAME_SHORT_PATH__FULL_INHOMOGENEOUS_PPN_OPEN"
+        if chain["status"]
+        == "CONDITIONAL_EINSTEIN_BRANCH_ALPHA_I_MATCH__FULL_INHOMOGENEOUS_PPN_OPEN"
+        and table["status"]
+        == "CONDITIONAL_STANDARD_PPN_ALPHA_I_TABLE__FULL_INHOMOGENEOUS_SOLUTION_OPEN"
         and all(value == 0 for value in alpha_values.values())
         else "CHECK_PPN_PREFERRED_FRAME_SHORT_PATH"
     )
@@ -1808,8 +1874,9 @@ def ppn_preferred_frame_short_path_certificate():
         "export_table_status": table["status"],
         "alpha_i_values": alpha_values,
         "short_reading": (
-            "boosted background stress plus RG vector-source absence feeds the "
-            "standard PPN matcher and fixes alpha_1=alpha_2=alpha_3=0."
+            "The whole-solution boost and minimal-F_min checks feed a conditional "
+            "standard PPN matcher.  The selected action's inhomogeneous solution "
+            "is required before alpha_i can be promoted to derived values."
         ),
     }
 
@@ -2192,9 +2259,10 @@ def gr_lense_thirring_formula():
 def rg_gravitomagnetic_open():
     """RG bi-conformal gravitomagnetic sector — tightening tasks."""
     return [
-        "Leading 1.5PN Lense-Thirring is closed in the minimal one-metric moving-source chain.",
+        "The selected p05z action gives a conditional GR-like 1.5PN matcher after the Einstein-branch vector coefficients are inserted.",
         "Full stationary rotating bi-conformal compact-source solution remains separate.",
-        "Preferred-frame parameters are derived as α_1=α_2=α_3=0 in the minimal chain.",
+        "Preferred-frame α_i=0 values are conditional until the selected action's full inhomogeneous moving-source solution is derived.",
+        "No ESS/Z operator is required by the fixed-metric unreduced phase zero mode; its constraint interpretation needs an ADM/Dirac reduction.",
         "MOND rotational bridge must remain inert in the Solar System: Z_rot≈a0/g << 1.",
         "LARES/LARES-2/GINGER are observational context only, not RG proof.",
     ]
@@ -2215,7 +2283,7 @@ def rg_predictions():
     """RG-ის ცდა Lense-Thirring-ისთვის."""
     return {
         "PPN_gamma_1PN": "γ=1 branch — geodetic precession matches GR only after stress gate closes",
-        "Lense_Thirring_RG": "leading 1.5PN chain: Ω_LT = GR under the closed vector-source/alpha_i checks",
+        "Lense_Thirring_RG": "conditional Einstein-branch result; full moving-source derivation remains open",
         "MOND_rotational_slot": "Z_rot≈a0/g, so Solar-System correction is <10^-8 to 10^-11",
         "preferred_frame_PPN": preferred_frame_alpha_i_closure_chain()["status"],
         "current_status": frame_dragging_minimal_1p5pn_chain()["status"],
@@ -2224,12 +2292,13 @@ def rg_predictions():
 
 def frame_dragging_minimal_1p5pn_chain():
     """
-    Minimal leading-order RG frame-dragging chain.
+    Conditional leading-order RG frame-dragging chain.
 
-    At 1.5PN order, the one-metric Einstein-Hilbert vector operator is the GR
-    operator.  The only possible minimal-RG obstruction would be an additional
-    RG vector source or preferred-frame vector term.  Those are checked by the
-    moving-source vector-source theorem and the alpha_i closure chain.
+    At 1.5PN order the Einstein-Hilbert vector operator is the GR operator, but
+    the current calculation inserts the Einstein-branch vector coefficients
+    rather than deriving the selected p05z action's complete inhomogeneous
+    moving-source solution.  Therefore this is a conditional matcher, not yet
+    a full PPN derivation.  ESS/Z is not part of that selected action.
     """
     G, c, r = sp.symbols("G c r", positive=True)
     S_parallel_term, S_vector = sp.symbols("3S_parallel_rhat S_vector", real=True)
@@ -2247,10 +2316,14 @@ def frame_dragging_minimal_1p5pn_chain():
     gp_b_geodetic_sigma = abs(gp_b_geodetic_delta) / GP_B["geodetic_precession_err"]
 
     status = (
-        "PASS_MINIMAL_1P5PN_FRAME_DRAGGING_CHAIN"
+        "CONDITIONAL_EINSTEIN_BRANCH_1P5PN_FRAME_DRAGGING__"
+        "FULL_MOVING_SOURCE_SOLUTION_OPEN"
         if residual == 0
-        and vector_source["status"] == "PASS_RG_VECTOR_SOURCE_ABSENT_ON_1PN_BRANCH"
-        and alpha_chain["status"] == "PASS_MINIMAL_MOVING_SOURCE_ALPHA_I_CHAIN"
+        and vector_source["status"]
+        == "PASS_MINIMAL_FMIN_VECTOR_TADPOLE_AND_HESSIAN_ZERO_ON_1PN_BRANCH"
+        and alpha_chain["status"]
+        == "CONDITIONAL_EINSTEIN_BRANCH_ALPHA_I_MATCH__"
+        "FULL_INHOMOGENEOUS_PPN_OPEN"
         else "CHECK_MINIMAL_1P5PN_FRAME_DRAGGING_CHAIN"
     )
 
@@ -2270,12 +2343,13 @@ def frame_dragging_minimal_1p5pn_chain():
             "geodetic_sigma": gp_b_geodetic_sigma,
         },
         "closed_here": (
-            "leading 1.5PN Lense-Thirring equals GR in the minimal one-metric "
-            "branch because RG contributes no vector source and alpha_i=0"
+            "the Einstein-branch algebra reproduces the GR leading "
+            "Lense-Thirring coefficient after GR vector coefficients are inserted"
         ),
         "not_closed_here": (
-            "nonperturbative Kerr-like strong-field rotation and high-order "
-            "spin corrections remain separate strong-field work"
+            "the selected p05z action's full moving H/metric/phase solution, "
+            "full PPN gauge matching, nonperturbative rotation and "
+            "higher-spin corrections"
         ),
     }
 
@@ -2286,17 +2360,20 @@ def frame_dragging_gate():
     return {
         "status": chain["status"],
         "GP_B_reference": GP_B,
-        "closed_for_leading_1p5PN": [
-            "RG vector source absent on the Solar 1PN branch",
-            "alpha_1=alpha_2=alpha_3=0 in the minimal moving-source chain",
-            "one-metric Einstein-Hilbert vector operator gives the GR Lense-Thirring coefficient",
+        "conditional_Einstein_branch_1p5PN": [
+            "the selected p05z correction has no independent vector coefficient derived here",
+            "conditional Einstein-branch matcher returns alpha_1=alpha_2=alpha_3=0",
+            "Einstein-Hilbert vector operator alone gives the GR Lense-Thirring coefficient",
         ],
         "remaining_beyond_this_gate": [
+            "derive the selected p05z action's complete H/metric/phase response",
+            "derive the full inhomogeneous preferred-frame PPN potentials",
+            "perform the ADM/Dirac constraint reduction and reduced-symbol audit",
             "nonperturbative stationary rotating compact-source solution",
             "higher-spin/higher-PN corrections",
             "strong-field rotating black-hole/neutron-star regime",
         ],
-        "not_claimed": "strong-field Kerr-like rotating solution",
+        "not_claimed": "fully derived leading frame-dragging pass or strong-field Kerr-like solution",
     }
 
 
@@ -2329,8 +2406,8 @@ if __name__ == "__main__":
 
     print("\n6. სტატუსი")
     print("  - GR L-T 39.2 mas/yr vs GP-B 37.2±7.2 — within 1σ")
-    print("  - RG leading 1.5PN frame-dragging is closed in the minimal one-metric chain.")
-    print("  - preferred-frame α_1, α_2, α_3 are zero in the minimal moving-source chain.")
+    print("  - the Einstein branch gives a conditional GR-like 1.5PN matcher.")
+    print("  - full α_i/frame dragging remains open pending the inhomogeneous moving-source solve.")
     print("  - gate:", frame_dragging_gate()["status"])
 
 
@@ -2362,10 +2439,10 @@ def stage_c1_old_solar_precision_status():
             "core": "PPN factor (2+2gamma-beta)/3=1 gives Mercury 42.98 arcsec/century",
         },
         "OLD_8_frame_dragging": {
-            "status": "migrated_and_strengthened_to_minimal_1p5PN_pass",
+            "status": "migrated_to_conditional_Einstein_branch_1p5PN_matcher",
             "target": "p03_solar.py PHASE 30",
-            "core": "leading 1.5PN Lense-Thirring matches GR after vector-source and alpha_i checks",
-            "open": "nonperturbative stationary rotating compact-source solution",
+            "core": "Einstein-branch algebra matches GR after conditional vector/alpha_i inputs",
+            "open": "selected-action inhomogeneous moving response plus nonperturbative stationary rotating solution",
         },
         "rotational_MOND_bridge": {
             "status": "kept_as_speculative_and_inert_in_solar_system",
@@ -2377,13 +2454,15 @@ def stage_c1_old_solar_precision_status():
 def stage_c1_solar_falsification_targets():
     """What remains observationally useful after the 1PN GR match."""
     return {
-        "closed_1PN": [
+        "closed_static_1PN": [
             "light bending on the closed gamma=1 branch",
             "Shapiro logarithmic delay on the closed gamma=1 branch",
             "perihelion precession on the closed gamma=beta=1 branch",
             "geodetic precession on the closed gamma=1 branch",
-            "alpha_1=alpha_2=alpha_3=0 in the minimal moving-source chain",
-            "leading 1.5PN frame-dragging equals GR in the minimal chain",
+        ],
+        "conditional_moving_1p5PN": [
+            "alpha_1=alpha_2=alpha_3=0 in the Einstein-branch coefficient matcher only",
+            "leading frame dragging equals GR conditionally; the complete moving-source solution is not yet derived",
         ],
         "precision_discriminators": [
             "candidate 2PN Shapiro finite differential Delta_B=pi/4",
@@ -2394,6 +2473,8 @@ def stage_c1_solar_falsification_targets():
             "solve RG weak-field stress constraints through O(U^2)",
             "derive active RG exterior optical index and coordinate bridge",
             "full stationary rotating compact-source solution beyond leading 1.5PN",
+            "selected p05z action's full preferred-frame and vector Green-function solution",
+            "ADM/Dirac constraint reduction and reduced principal-symbol audit",
             "xi/zeta standard-PPN matter-potential export",
             "nonperturbative null geodesics for compact-object imaging",
         ],
@@ -2437,7 +2518,10 @@ def article_solar_theorem():
     isotropic_closure = isotropic_2pn_stress_closure_theorem()
 
     return {
-        "article_use": "closed 1PN Solar branch, alpha_i/frame-dragging chain, and 2PN discriminator",
+        "article_use": (
+            "closed static 1PN Solar branch; conditional Einstein-branch "
+            "alpha_i/frame-dragging matcher; separate 2PN ledger"
+        ),
         "geometry_branch": {
             "status": geometry["status"],
             "coordinate_system": geometry["coordinate_system"],
@@ -2577,16 +2661,24 @@ def article_solar_theorem():
 
 def solar_system_claim_gate():
     """Top-level status ledger for p03."""
+    from p03e_full_ppn_closure_gate import full_1pn_ppn_closure_status
+
     stress_gate = weak_field_stress_constraint_gate()
     one_pn_branch = solar_1pn_closure_branch()
+    full_ppn = full_1pn_ppn_closure_status()
     return {
-        "file_export_status": "PARTIAL_ARTICLE_EXPORT_READY_FOR_1PN_ALPHA_I_AND_LEADING_FRAME_DRAGGING",
+        "file_export_status": (
+            "PARTIAL_ARTICLE_EXPORT_READY_FOR_STATIC_1PN__"
+            "FULL_INHOMOGENEOUS_PPN_AND_FRAME_DRAGGING_OPEN"
+        ),
         "ppn_time_coefficient_convention": (
             ppn_time_coefficient_convention_bridge()["status"]
         ),
         "ppn_geometry": ppn_geometry_gate()["status"],
         "rg_stress_constraints": stress_gate["status"],
         "solar_1PN_closure_branch": one_pn_branch["status"],
+        "full_action_1PN_PPN_master_gate": full_ppn["status"],
+        "full_standard_PPN_closed": full_ppn["full_PPN_closed"],
         "strict_2PN_stress_free_branch": (
             "TRIVIAL_ONLY" if stress_gate["strict_O0_O1_O2_solution"] else "CHECK"
         ),
@@ -2622,6 +2714,8 @@ def solar_system_claim_gate():
         ),
         "do_not_claim": [
             "do not claim full raw Solar-System likelihood pass",
+            "do not claim alpha_i=0 as a derived result until the selected action's full inhomogeneous moving-source solution is solved",
+            "do not claim a fully derived leading frame-dragging pass from the Einstein-branch coefficient matcher",
             "do not claim exact GR-like 2PN stress-free exterior for nonzero coefficients",
             "do not claim 2PN Delta_B=pi/4 as final until optical index is derived",
             "do not merge the Solar weak-field q_2PN=7/4 branch with the p05 phase-vacuum q_2PN=2 strong-field branch",

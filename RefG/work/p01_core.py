@@ -121,6 +121,19 @@ def calculate_stress_tensor(L, metric_inverse_diagonal):
     ]
 
 def analyze_no_ghost() -> NoGhostResult:
+    """
+    Legacy fixed-metric velocity-Hessian diagnostic of the polynomial entered
+    here as L_poly.
+
+    The historical function name is kept for API compatibility.  These four
+    coefficients are computed before lapse, shift, metric and gauge
+    constraints are reduced.  Moreover, the selected p05z medium action is
+    -M_*^4 F_min, whereas this historical helper differentiates +F_min.
+    Consequently its signs cannot be imported as selected-action no-ghost
+    signs.  A zero eigenvalue is only an unreduced degeneracy: by itself it is
+    neither a ghost theorem nor evidence that a new kinetic operator is
+    required.
+    """
     a = sp.Symbol('a', real=True, positive=True) # FLRW scale factor
     dPhi_dot = sp.Symbol('dPhi_dot', real=True)
     pi1_dot, pi2_dot, pi3_dot = sp.symbols('pi1_dot pi2_dot pi3_dot', real=True)
@@ -155,8 +168,11 @@ def analyze_no_ghost() -> NoGhostResult:
 
 def analyze_lorentz_constrained_stability():
     """
-    ამოწმებს No-Ghost პირობებს Lorentz (T_01=0) და PPN (gamma=1) 
-    კონსტრეინტების ჩასმის შემდეგ.
+    Legacy fixed-metric Hessian after the Lorentz/PPN coefficient relations.
+
+    This is an unreduced diagnostic.  Its zero mode on the Solar coefficient
+    branch must be interpreted only after the ADM/Dirac constraints are
+    classified and eliminated.
     """
     c_Y, c_Y2, c_I1, c_I1sq, c_I2, c_I3, c_YI1 = sp.symbols('c_Y c_Y2 c_I1 c_I1sq c_I2 c_I3 c_YI1', real=True)
     K_PhiPhi, K_pipi, K_PhiPhi_Mink, K_pipi_Mink = analyze_no_ghost()
@@ -174,6 +190,72 @@ def analyze_lorentz_constrained_stability():
     K_pi_constr = sp.simplify(K_pipi_Mink.subs(subs_dict))
     
     return K_Phi_constr, K_pi_constr
+
+
+def solar_branch_unreduced_kinetic_degeneracy_gate():
+    """
+    Correct logical reading of the Solar-branch K_pi=0 result.
+
+    The calculation varies the matter/Stueckelberg velocities while holding
+    the metric fixed.  It therefore precedes the lapse/shift equations, gauge
+    reduction and the Dirac constraint analysis.  On the Solar coefficient
+    branch the spatial Stueckelberg entry vanishes exactly, but zero is not a
+    negative kinetic eigenvalue.  The result is diagnostic and cannot select
+    an ESS/Z completion.
+    """
+    c_Y, c_Y2, c_YI1 = sp.symbols("c_Y c_Y2 c_YI1", real=True)
+    K_phi_unreduced, K_pi_unreduced = analyze_lorentz_constrained_stability()
+    solar_relations = {
+        c_Y: -8 * c_Y2,
+        c_YI1: 2 * c_Y2,
+    }
+    K_phi_solar = sp.simplify(K_phi_unreduced.subs(solar_relations))
+    K_pi_solar = sp.simplify(K_pi_unreduced.subs(solar_relations))
+    exact_zero = K_pi_solar == 0
+
+    return {
+        "status": (
+            "OPEN_SOLAR_BRANCH_UNREDUCED_ZERO_MODE__"
+            "ADM_DIRAC_REDUCTION_REQUIRED"
+            if exact_zero
+            else "CHECK_SOLAR_BRANCH_UNREDUCED_KINETIC_GATE"
+        ),
+        "calculation_level": (
+            "fixed-metric, unreduced matter/Stueckelberg velocity Hessian"
+        ),
+        "solar_relations": {
+            "c_Y": sp.Eq(c_Y, solar_relations[c_Y]),
+            "c_YI1": sp.Eq(c_YI1, solar_relations[c_YI1]),
+        },
+        "K_Phi_unreduced_on_solar_branch": K_phi_solar,
+        "K_pi_unreduced_on_solar_branch": K_pi_solar,
+        "quantity_differentiated_here": "+F_min response polynomial",
+        "selected_p05z_medium_lagrangian": "-M_*^4*F_min",
+        "selected_action_fixed_metric_clock_entry_before_reduction": (
+            -sp.Symbol("M_*", positive=True) ** 4 * K_phi_solar
+        ),
+        "exact_zero": exact_zero,
+        "logical_reading": (
+            "K_pi=0 is an unreduced degeneracy.  The historical K_Phi and "
+            "K_pi are Hessian entries of +F_min, while the selected action "
+            "contains -M_*^4 F_min, so even the nonzero sign must be remapped. "
+            "The null direction may represent a primary constraint, a gauge/"
+            "nondynamical direction, or a strong-coupling issue; this Hessian "
+            "alone does not decide which."
+        ),
+        "forbidden_inferences": [
+            "do not label the zero mode a ghost",
+            "do not import the +F_min response-Hessian sign as the selected-action kinetic sign",
+            "do not infer that ESS/Z or any other kinetic lift is required",
+            "do not infer a preferred-frame observable from this zero alone",
+        ],
+        "required_closure": [
+            "expand the selected p05z action including lapse, shift and metric perturbations",
+            "construct and classify the primary/secondary Dirac constraints",
+            "eliminate nondynamical variables and gauge directions",
+            "test the reduced kinetic matrix, principal symbol and strong-coupling scale",
+        ],
+    }
 
 
 def foundational_axiom_bridge():
@@ -268,8 +350,8 @@ def homogeneous_vacuum_derivation_attempt():
     - Constant-gradient field equations do not select y=b=1 by themselves;
       they are automatically solved when the currents are constant.
     - Zero stress gives an algebraic vacuum branch.
-    - If we also demand phase stationarity L_y=0 at y=b=1, the solid kinetic
-      coefficient K_pi becomes zero on that branch.
+    - If we also demand phase stationarity L_y=0 at y=b=1, the fixed-metric
+      unreduced solid velocity-Hessian entry K_pi becomes zero on that branch.
 
     This is a guardrail against over-claiming, not a required closure route.
     In the current theory stack, y=b=1 is the effective normalized background
@@ -338,15 +420,23 @@ def homogeneous_vacuum_derivation_attempt():
         "K_pi_full_modulus_stationary": sp.simplify(
             K_pi.subs(full_modulus_stationary_solution)
         ) if full_modulus_stationary_solution else None,
+        "unreduced_degeneracy": (
+            "zero-stress plus L_y=0 gives the fixed-metric unreduced K_pi=0. "
+            "This does not prove a ghost or an obstruction; it only means that "
+            "a health claim on this route requires the ADM/Dirac-reduced "
+            "quadratic system."
+        ),
         "obstruction": (
-            "zero-stress plus L_y=0 gives K_pi=0; therefore the current "
-            "polynomial core must not claim to derive the healthy Y=1, "
-            "B=delta background as a simple homogeneous modulus extremum."
+            "legacy key retained for compatibility: there is no identified "
+            "obstruction from K_pi=0 alone.  The polynomial core simply does "
+            "not derive a fully reduced healthy spectrum from homogeneous "
+            "modulus stationarity."
         ),
         "guardrail": (
             "do not add homogeneous phase-stationarity as a p01 axiom-closure "
             "requirement; keep Y=1, B=delta as axiomatic normalized input and "
-            "test its effective consequences"
+            "test its effective consequences; do not introduce ESS/Z merely "
+            "to lift an unreduced zero mode"
         ),
     }
 
@@ -440,7 +530,7 @@ if __name__ == "__main__" and _should_run_main_section("base"):
     print("ენერგიის სიმკვრივე:", rho_poly)
 
     K_PhiPhi, K_pipi, K_PhiPhi_Mink, K_pipi_Mink = analyze_no_ghost()
-    print("\n--- No-ghost პირობები (კინეტიკური მატრიცის დიაგონალი ფონზე) ---")
+    print("\n--- Legacy +F response Hessian (not a selected-action no-ghost theorem) ---")
     print("Minkowski ფონი:")
     print("K_PhiPhi > 0 =>", K_PhiPhi_Mink, "> 0")
     print("K_pipi > 0 =>", K_pipi_Mink, "> 0")
@@ -491,13 +581,12 @@ if __name__ == "__main__" and _should_run_main_section("base"):
         print("სიმბოლური ფესვები default რეჟიმში არ იხსნება; გამოიყენება პოლინომი და decoupled ლიმიტი.")
 
     K_Phi_c, K_pi_c = analyze_lorentz_constrained_stability()
-    print("\n--- აქსიომატურად ნორმალიზებული ფონის სტაბილურობა ---")
-    print("კონსტრეინტების (c_Y2 = c_I1sq და PPN) ჩასმის შემდეგ No-Ghost პირობები:")
-    print(f"K_PhiPhi > 0 => {K_Phi_c} > 0")
-    print(f"K_pipi > 0   => {K_pi_c} > 0")
-    print("დასკვნა: შერჩეულ ფონზე ორი დიაგონალური no-ghost პირობა ერთდროულად სრულდება, თუ c_Y2 > 0 და")
-    print("-6*c_Y2 < (c_Y + 3*c_YI1) < -2*c_Y2.")
-    print("ეს არის აუცილებელი ფანჯარა; gradient/cross-mode/eigenmode სტაბილურობა ცალკე ღიაა.")
+    print("\n--- ნორმალიზებული ფონის legacy +F response Hessian ---")
+    print("კონსტრეინტების (c_Y2 = c_I1sq და PPN) ჩასმის შემდეგ:")
+    print(f"K_PhiPhi[F] = {K_Phi_c}")
+    print(f"K_pipi[F]   = {K_pi_c}")
+    print("შენიშვნა: selected p05z action-ში L_med=-M_*^4 F_min, ამიტომ ნიშნები")
+    print("უნდა შემოტრიალდეს და მხოლოდ ADM/Dirac reduction-ის შემდეგ შეფასდეს.")
 
     print("\n--- აგენტთა საბჭოს შენიშვნები ---")
     print("- ფონი (Y=1, B=δ) არის გაზომვადობის აქსიომის ნორმალიზებული ეფექტური ფონი;")
@@ -2549,7 +2638,7 @@ def solar_branch_full_gradient_strong_hyperbolicity_gate():
             "matrix_matches_repair"
         ],
         "finite_window": region_gate["status"]
-        == "PASS_REPAIRED_DYNAMIC_CHANNEL_HAS_FINITE_SUBLUMINAL_REGION",
+        == "PASS_ALGEBRAIC_DYNAMIC_CHANNEL_TARGET_HAS_FINITE_SUBLUMINAL_REGION",
         "old_double_root_recorded_defective": old_combined["status"]
         == "BOUNDARY_LUMINAL_DOUBLE_ROOT_DEFECTIVE_IN_CURRENT_COMPLETION",
         "witness_roots_match_closed_form": root_match,
@@ -2645,7 +2734,7 @@ def scalar_speed_referee_audit():
         and dynamic_operator_gate["status"]
         == "PASS_COVARIANT_STATIC_SILENT_DYNAMIC_OPERATOR_EXPANDS_TO_REPAIR"
         and admissible_region["status"]
-        == "PASS_REPAIRED_DYNAMIC_CHANNEL_HAS_FINITE_SUBLUMINAL_REGION"
+        == "PASS_ALGEBRAIC_DYNAMIC_CHANNEL_TARGET_HAS_FINITE_SUBLUMINAL_REGION"
         and full_gradient_hyperbolicity["status"]
         == "PASS_FULL_GRADIENT_REPAIRED_STRONG_HYPERBOLICITY_GATE"
         else "CHECK_OLD_C6_Z_OVERCONSTRAINED__DYNAMIC_CHANNEL_REPAIR_TARGET_AVAILABLE"
@@ -2896,9 +2985,10 @@ def status_assessment():
         "minkowski": "det M(s)=0 computed; mixed-mode algebraic positivity criteria and one luminal Solar-family point are explicit",
         "flrw": "comoving det M(s)=0 computed; physical speed is a^2*s; same algebraic criteria apply after scaling",
         "schwarzschild": "local orthonormal determinant equals Minkowski; coordinate radial redshift added",
-        "scalar_speed": "old t=-6/5 point and isolated C6/Z determinant are diagnostic only; the current Solar F_min+C6/Z block has a defective luminal boundary; the proposed covariant W repair is invalid and the subluminal matrix remains an algebraic target",
+        "scalar_speed": "old t=-6/5 and C6/Z calculations diagnose a rejected optional completion, not the selected p05z action; the selected action's reduced scalar symbol remains to be derived",
+        "solar_zero_mode": solar_branch_unreduced_kinetic_degeneracy_gate()["status"],
         "foundation": "one base medium has many independent channels; couplings are derived as couplings and not imposed as identities",
-        "remaining": "global curved-background perturbation system remains open",
+        "remaining": "selected-action ADM/Dirac reduction and global curved-background perturbation system remain open; no ESS obstruction is identified",
     }
 
 
@@ -2915,7 +3005,7 @@ def p01_proof_gap_register():
             "risk": (
                 "the only risk is mislabeling this axiom as a p01-derived "
                 "polynomial minimum; the homogeneous modulus-extremum route "
-                "would give K_pi=0 if incorrectly imposed"
+                "gives an unreduced K_pi=0 whose constraint meaning is not yet classified"
             ),
             "next_step": (
                 "keep it declared as a foundational axiom and strengthen only "
@@ -2924,15 +3014,15 @@ def p01_proof_gap_register():
         },
         {
             "gap": "mixed_mode_stability",
-            "current_status": "local 2x2 principal-symbol algebraic criteria are explicit; the physical Solar slice has a defective luminal double root; the proposed W repair is invalid because W^(1)A=0",
-            "risk": "the finite subluminal shifted matrix has no current covariant operator realization, and the full constraint system is open",
-            "next_step": "construct an independent covariant dynamic operator and then derive the reduced curved-background principal symbol",
+            "current_status": "the defective luminal double root belongs to the old optional F_min+C6/Z completion; it is not a result for the selected p05z action",
+            "risk": "the selected action's reduced principal symbol is still unknown until the full metric-field constraint system is reduced",
+            "next_step": "derive the selected p05z action's ADM/Dirac-reduced curved-background principal symbol",
         },
         {
             "gap": "phase_spatial_channel_overconstraint",
-            "current_status": "single_field_many_capabilities_principle and phase_spatial_channel_independence_audit mark the old C6/Z block as overconstraining phase-clock delay and longitudinal deformation",
-            "risk": "using the old block as a final foundation would force the scalar roots onto a defective luminal boundary and would contradict the one-medium-many-channels principle",
-            "next_step": "replace the old single-constraint completion by independent phase, pressure, compression, shear, rotation/topology, resonance and lag channels in the extended core",
+            "current_status": "the old C6/Z block is rejected as an overconstrained optional candidate and is not part of the selected p05z action",
+            "risk": "re-importing that rejected candidate would recreate an artificial defective-root problem",
+            "next_step": "keep C6/Z out of the selected-action proof chain and derive only channels that follow from the canonical action",
         },
         {
             "gap": "lorentz_invariance",
@@ -2948,9 +3038,9 @@ def p01_proof_gap_register():
         },
         {
             "gap": "dirac_bergmann_closure",
-            "current_status": "candidate DOF count only",
-            "risk": "second-class bracket non-degeneracy/anomaly closure is open",
-            "next_step": "construct the constraint matrix and check non-degeneracy/anomaly closure",
+            "current_status": "candidate DOF count only; the Solar branch has K_pi=0 only in the fixed-metric unreduced Hessian",
+            "risk": "without reduction the zero mode cannot be classified as constrained, gauge/nondynamical, or strongly coupled",
+            "next_step": "construct the selected-action constraint matrix, classify it, eliminate nondynamical directions and test the reduced kinetic/principal matrices",
         },
     ]
 
@@ -3217,6 +3307,7 @@ def article_core_theorem():
     symmetry_gate = covariance_and_spontaneous_breaking_gate()
     many_channels_principle = single_field_many_capabilities_principle()
     K_Phi_c, K_pi_c = analyze_lorentz_constrained_stability()
+    unreduced_solar_gate = solar_branch_unreduced_kinetic_degeneracy_gate()
     horndeski_map = rg_to_horndeski()
     alphas = bellini_sawicki_alphas()
     coeffs_m, _s, _det, _roots = minkowski_principal_symbol()
@@ -3276,6 +3367,10 @@ def article_core_theorem():
             ),
         },
         "necessary_no_ghost_window": {
+            "scope": (
+                "legacy fixed-metric unreduced positivity diagnostic; it is "
+                "not a substitute for the ADM/Dirac-reduced kinetic matrix"
+            ),
             "K_PhiPhi_after_relations": K_Phi_c,
             "K_pipi_after_relations": K_pi_c,
             "article_window": [
@@ -3284,6 +3379,7 @@ def article_core_theorem():
                 sp.Lt(c_Y + 3 * c_YI1, -2 * c_Y2),
             ],
         },
+        "solar_branch_unreduced_kinetic_degeneracy": unreduced_solar_gate,
         "mixed_mode_gate": mixed_conditions,
         "nonempty_local_stability_example": nonempty_stability,
         "solar_branch_combined_dispersion": solar_combined_dispersion,
@@ -3294,10 +3390,18 @@ def article_core_theorem():
         "article_status": {
             "action": "CLOSED_MINIMAL_POLYNOMIAL",
             "sign_convention": "CLOSED_Y_TO_X_BRIDGE",
-            "no_ghost": "LOCAL_NO_GHOST_WINDOW_WITH_EXPLICIT_NONEMPTY_POINT",
+            "no_ghost": (
+                "UNREDUCED_LOCAL_POSITIVITY_DIAGNOSTIC_ONLY__"
+                "ADM_DIRAC_REDUCTION_OPEN"
+            ),
+            "unreduced_kinetic_diagnostic": (
+                "LOCAL_POSITIVE_WINDOW_EXISTS_OFF_SOLAR_SLICE; "
+                "SOLAR_ZERO_MODE_REQUIRES_ADM_DIRAC_REDUCTION"
+            ),
+            "solar_zero_mode": unreduced_solar_gate["status"],
             "eft_cutoff_power_counting": eft_power_counting["status"],
             "foundation": many_channels_principle["status"],
-            "mixed_modes": "OLD_C6_Z_BLOCK_HAS_DEFECTIVE_LUMINAL_ROOT; PROPOSED_W_REPAIR_INVALID; SUBLUMINAL_MATRIX_IS_ALGEBRAIC_TARGET_ONLY",
+            "mixed_modes": "OLD_C6_Z_OPTIONAL_BLOCK_REJECTED; SELECTED_P05Z_REDUCED_SYMBOL_OPEN",
             "scalar_speed": scalar_speed_audit["status"],
             "local_stability_short_path": local_stability_short["status"],
             "global_stability": "SEPARATE_PROOF_TARGET",

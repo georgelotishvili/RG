@@ -329,8 +329,11 @@ def derive_unified_H_weak_solar_static_gate() -> dict[str, Any]:
         "phiA_euler": solid_euler,
         "Einstein_residuals_through_O_U2": einstein_residuals,
         "scope": (
-            "weak static Solar branch through quadratic order O(U^2); the "
-            "imported p03c/p03d function names retain their legacy 2PN label"
+            "coefficient-wise existence check for the unloaded H=0 weak "
+            "static Solar exterior through O(U^2); finite-source selection, "
+            "exterior-charge matching and a uniform dimensionful hierarchy "
+            "are separate requirements.  The imported p03c/p03d function "
+            "names retain their legacy 2PN label"
         ),
     }
 
@@ -552,11 +555,13 @@ def unified_deficit_field_static_branch_status() -> dict[str, Any]:
         "article_safe_claim": (
             "A single projected deficit field H can both normalize the elastic "
             "invariants and source the compact exterior.  The unloaded H=0 "
-            "configuration preserves the existing static Solar equations "
-            "through O(U^2), while H=r_s/(2r) solves the exact compact exterior "
-            "field equations at omega_H=1."
+            "zero-charge configuration is an on-shell static Solar exterior "
+            "through coefficient-wise O(U^2), while H=r_s/(2r) solves the "
+            "exact compact exterior field equations at omega_H=1."
         ),
         "open_requirements": [
+            "match a finite matter source and determine the exterior H and solid charges",
+            "bound M_*^4*r^2/M_Pl^2 uniformly over the weak-field matching domain",
             "derive the off-branch constraint/degree-of-freedom algebra",
             "establish curved-background hyperbolicity and coupled stability",
             "derive a physical-EOS or medium-action core",
@@ -565,6 +570,7 @@ def unified_deficit_field_static_branch_status() -> dict[str, Any]:
         "do_not_claim": [
             "do not call H a propagating healthy scalar; the displayed operator is spatially projected",
             "do not claim a global stability theorem from the two static solutions",
+            "do not call the H=0 exterior a unique source-selected Solar prediction",
             "do not claim the C2 core follows from this action",
             "do not claim physical objects dynamically select the compact branch",
         ],
