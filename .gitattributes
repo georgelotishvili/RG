@@ -1,0 +1,2 @@
+# Keep SHA-256-pinned Work 2 research artifacts byte-stable on every platform.
+"RefG/work 2/**" text eol=lf

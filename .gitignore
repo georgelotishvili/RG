@@ -3,13 +3,14 @@
 CLAUDE.md
 council.md
 COUNCIL.md
+CODES.md
+Theory_Canon.md
 
-# Drafts, notes, and legacy material not included in the code-only snapshot
+# Drafts, internal research governance, working notes, and legacy material
+# not included in the public/Zenodo snapshot
 OLD/
 დამუშავება/
-CODES.md
 Intuitive.md
-Theory_Canon.md
 იდეა.txt
 რეზერვი.md
 პრომპტი გემინი.md
@@ -29,7 +30,9 @@ Intuitive_Article დედანი.md
 Intuitive_Theory_Old.md
 სხვა სტატიები/
 figures/
-RefG/work/*.md
+# Legacy computational workspace: excluded in full
+/RefG/work/
+
 artikle/*
 !artikle/article_ge.md
 !artikle/article_en.tex
