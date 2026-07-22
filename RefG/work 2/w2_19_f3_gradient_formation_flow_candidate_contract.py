@@ -20,11 +20,18 @@ not evaluate the flow, derive an intervention response, or close W2_F3.  In
 particular, the accepted w2_16 product-minimum branch is stationary under this
 flow, while nonstationary formation states have not yet inherited the w2_16 F2
 proof.  Those facts are explicit eligibility risks, not hidden conclusions.
+
+Audit correction 002 leaves the Candidate-A dynamics and interior D_gap
+domain unchanged, but corrects two semantic ceilings discovered by the
+separate evaluator: tau_gap=0 is not generally C=0 off the uniaxial endpoint,
+and the off-endpoint readout does not automatically inherit the complete
+stationary F1/F2 chain.
 """
 
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import json
 from pathlib import Path
 from types import ModuleType
@@ -213,16 +220,18 @@ CANDIDATE_A_MAPS: dict[str, dict[str, str]] = {
             "tau_gap=1-Tr(P_plus P_R) lies in (0,1), C=[S,R]!=0, grad_F U!=0, and the "
             "forward orbit belongs to the basin of the generic w2_16 minimum stratum. The "
             "evaluator must prove this dynamically defined spectral-gap basin nonempty, open "
-            "and invariant and must revalidate F2 for the new off-endpoint maps"
+            "and invariant, and must separately adjudicate whether the complete inherited "
+            "F1/F2 chain survives on these off-endpoint maps"
         ),
     },
     "null_branches": {
         "status": "PARTIAL",
-        "source": "inherited F2 nulls plus new flow nulls",
+        "source": "inherited endpoint nulls plus separately classified flow boundaries",
         "definition": (
-            "A=0, S=0, R=0, C=0, tau_gap=0, tau_gap=1 excluded orbit boundary, tuned "
-            "and singular branches, spectral-gap/basin boundaries, the stationary accepted "
-            "F2 endpoint, and the excluded ascent sign"
+            "A=0, S=0, R=0 and C=0 nulls; tau_gap=0 and tau_gap=1 excluded readout "
+            "boundaries (tau_gap=0 is not generally C=0 away from the uniaxial endpoint); "
+            "tuned and singular branches, spectral-gap/basin boundaries, the stationary "
+            "accepted F2 endpoint, and the excluded ascent sign"
         ),
     },
     "perturbation_class": {
@@ -271,7 +280,8 @@ SCIENTIFIC_CONTRACT: dict[str, Any] = {
     ),
     "TYPE": "OUTCOME_NEUTRAL_DYNAMIC_CANDIDATE_CONTRACT",
     "MODEL_VERSION": (
-        "W2-C0 through w2_18 plus Candidate-A version 001. Changing U, the descent sign, the "
+        "W2-C0 through w2_18 plus Candidate-A dynamics version 001 and contract audit "
+        "correction 002. Changing U, the descent sign, the "
         "process interpretation, the intervention class, the domain, or the gauge policy creates "
         "a new candidate version and reopens every dependent gate."
     ),
@@ -281,14 +291,17 @@ SCIENTIFIC_CONTRACT: dict[str, Any] = {
         "pairing to an identity mobility, fixing the relative S/R mobility to one, choosing "
         "-grad_F U, and reading its positive reachability as an oriented internal process form "
         "a new imported process ansatz. The simple-largest-eigenspace projector and tau_gap "
-        "below are a new off-endpoint F2 extension that must be revalidated. None of these "
+        "below are a new off-endpoint relational-readout candidate whose compatibility with "
+        "the complete inherited F1/F2 chain must be tested. None of these "
         "choices is a Theory_Canon-derived fact or observational evidence."
     ),
     "DOMAIN": (
         "The polynomial vector field is defined on sl(3,R) for alpha,b,c,eta,d>0. Candidate F3 "
         "evaluation is restricted to the precisely defined D_gap spectral-gap basin recorded "
-        "in CANDIDATE_A_MAPS. Its nonemptiness, openness, invariance and candidate-specific F2 "
-        "readout are evaluator duties; all inherited F2 nulls, stationary points, undefined "
+        "in CANDIDATE_A_MAPS. Its nonemptiness, openness, invariance and candidate-specific "
+        "relational "
+        "readout and same-chain predecessor status are evaluator duties; inherited endpoint "
+        "nulls, stationary points, undefined "
         "projectors, basin boundaries and the ascent sign are separate nonpromoting branches."
     ),
     "CONVENTIONS": (
@@ -333,7 +346,7 @@ SCIENTIFIC_CONTRACT: dict[str, Any] = {
                 "full-A mobility class; 0 fitted parameters"
             ),
         },
-        "off_endpoint_F2_extension_map": {
+        "off_endpoint_relational_readout_candidate": {
             "source": "new Candidate-A continuous extension of the w2_16 positive support line",
             "allowed_range": (
                 "P_plus is the simple-largest-eigenvalue projector, P_R=I+2R^2/J, and "
@@ -409,14 +422,19 @@ SCIENTIFIC_CONTRACT: dict[str, Any] = {
         "Any hidden mobility, rate, coefficient or off-endpoint readout, physical-time "
         "interpretation, nonpositive reparameterization, sign post-selection, target preload, "
         "missing map/control/null, premature "
-        "DERIVED status, or true scientific outcome invalidates this contract. Candidate evaluation "
-        "fails if the formation domain is not state-space closed, carries no valid F2 relation, has "
-        "no directed intervention response, or violates a forbidden-pair zero."
+        "DERIVED status, or true scientific outcome invalidates this contract. The standalone "
+        "dynamic evaluation fails if the formation domain is not state-space closed, its declared "
+        "relational readout is ill-defined, it has no directed intervention response, or it violates "
+        "a forbidden-pair zero. Failure of the complete same-chain F1/F2 predecessor blocks F3 "
+        "eligibility but does not erase an otherwise valid standalone dynamics theorem."
     ),
     "FALSIFIER": (
-        "Candidate A is falsified as an F3 realization if D_gap is not a nonempty invariant open "
-        "domain carrying the revalidated F2 nodes/relation and a nontrivial directed "
-        "intervention response with exact forbidden-signal nontransmission. The contract freeze is "
+        "Candidate A is falsified as an F3 realization if D_gap lacks the complete same-chain "
+        "F1/F2 predecessor or if the imported transition principle remains not derived from the "
+        "foundation. "
+        "Its standalone dynamic theorem is falsified if D_gap is not a nonempty invariant open "
+        "domain carrying the declared relational readout and a nontrivial directed intervention "
+        "response with exact forbidden-signal nontransmission. The contract freeze is "
         "falsified if it calls the process Canon-derived, hides the mobility or sign choice, introduces "
         "physical time, invents a persistent phase or record, or allows any unevaluated map, "
         "closure flag, or candidate-relative order result to promote the full w2_17 F3 claim."
@@ -445,7 +463,7 @@ SCIENTIFIC_CONTRACT: dict[str, Any] = {
         "nonstationary_positive_descent_basin": "FROZEN_FOR_EVALUATION_NOT_PROVED",
         "accepted_w2_16_F2_minimum": "STATIONARY_EVENT_NULL",
         "S_or_R_or_C_zero": "INHERITED_RELATIONAL_NULL",
-        "tau_gap_zero": "COMMUTING_RELATIONAL_NULL",
+        "tau_gap_zero": "EXCLUDED_READOUT_BOUNDARY__NOT_GENERAL_C_ZERO",
         "tau_gap_one": "EXCLUDED_ORBIT_BOUNDARY_CONTROL_NOT_RELATIONAL_ZERO",
         "tuned_or_singular_branch": "NO_PROMOTION",
         "ascent_or_parameter_reversal": "EXCLUDED_NEW_VERSION_REQUIRED",
@@ -469,7 +487,8 @@ SCIENTIFIC_CONTRACT: dict[str, Any] = {
         "The positive logical control is a three-event directed intervention chain. Candidate "
         "formation witnesses must start off the stationary minimum with S,R,C nonzero and "
         "0<tau_gap<1. The accepted w2_16 minimum, frozen/nonresponsive states, correlation-only pairs, "
-        "two-way reachability, cycles, prewired DAGs, every F2 null and reversed sign are mandatory "
+        "two-way reachability, cycles, prewired DAGs, inherited endpoint F2 nulls, separately "
+        "classified readout boundaries and the reversed sign are mandatory "
         "negative controls. None is candidate evidence in this contract."
     ),
     "CLOSURE_FLAGS": {
@@ -504,8 +523,14 @@ SCIENTIFIC_CONTRACT: dict[str, Any] = {
     "PROVENANCE": {
         "date": "2026-07-22",
         "data": "none",
-        "code_version": "w2_19 Candidate-A contract version 001",
-        "hash": "N/A; source-control commit is the provenance record and no self-hash is embedded",
+        "code_version": (
+            "w2_19 Candidate-A contract audit correction 002; dynamics and interior domain "
+            "unchanged, predecessor and tau-gap-zero ceilings corrected"
+        ),
+        "hash": (
+            "complete contract content is internally SHA-256 frozen; the source-control commit "
+            "remains the artifact provenance record"
+        ),
         "output": "JSON contract-validation report",
     },
     "FILES": [
@@ -527,7 +552,8 @@ SCIENTIFIC_CONTRACT: dict[str, Any] = {
         "off_endpoint_support_map": (
             "on the simple-largest-eigenvalue/J>0 domain, P_plus(S) is the spectral "
             "projector, P_R=I+2R^2/J, and tau_gap=1-Tr(P_plus P_R); this equals the old "
-            "tau on the w2_16 uniaxial endpoint and otherwise requires F2 revalidation"
+            "tau on the w2_16 uniaxial endpoint; away from that endpoint it is only a "
+            "relational-readout candidate and does not by itself revalidate the full F1/F2 chain"
         ),
         "oriented_flow": "dA/dsigma=-grad_F U, sigma>=0",
         "gauge": (
@@ -545,7 +571,8 @@ SCIENTIFIC_CONTRACT: dict[str, Any] = {
             "the w2_16 global-minimum product has grad_F U=0 and is a required event null"
         ),
         "formation_gap": (
-            "nonstationary D_gap states must independently revalidate P_plus, P_R, tau_gap and C"
+            "nonstationary D_gap states must independently test P_plus, P_R, tau_gap and C, "
+            "and separately test the complete inherited F1/F2 predecessor chain"
         ),
         "inherited_nulls": CANDIDATE_A_MAPS["null_branches"]["definition"],
         "undefined_tau": (
@@ -585,6 +612,18 @@ SCIENTIFIC_CONTRACT: dict[str, Any] = {
 }
 
 CLAIM_CONTRACT = SCIENTIFIC_CONTRACT
+
+
+def scientific_contract_sha256(contract: dict[str, Any]) -> str:
+    canonical = json.dumps(
+        contract, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+    ).encode("utf-8")
+    return hashlib.sha256(canonical).hexdigest().upper()
+
+
+def frozen_scientific_contract_sha256() -> str:
+    """Independent literal freeze of the complete corrected contract."""
+    return "7D2CE65CD6FCA7B3007FE6B9EA60CDC4F0AA93595DA828745DC7FE2FB9842F98"
 
 
 def frozen_closure_flags() -> dict[str, bool]:
@@ -680,7 +719,7 @@ def frozen_freedom_ledger() -> dict[str, dict[str, Any]]:
                 "full-A mobility class; 0 fitted parameters"
             ),
         },
-        "off_endpoint_F2_extension_map": {
+        "off_endpoint_relational_readout_candidate": {
             "source": "new Candidate-A continuous extension of the w2_16 positive support line",
             "allowed_range": (
                 "P_plus is the simple-largest-eigenvalue projector, P_R=I+2R^2/J, and "
@@ -742,7 +781,8 @@ def frozen_candidate_definition() -> dict[str, str]:
         "off_endpoint_support_map": (
             "on the simple-largest-eigenvalue/J>0 domain, P_plus(S) is the spectral "
             "projector, P_R=I+2R^2/J, and tau_gap=1-Tr(P_plus P_R); this equals the old "
-            "tau on the w2_16 uniaxial endpoint and otherwise requires F2 revalidation"
+            "tau on the w2_16 uniaxial endpoint; away from that endpoint it is only a "
+            "relational-readout candidate and does not by itself revalidate the full F1/F2 chain"
         ),
         "oriented_flow": "dA/dsigma=-grad_F U, sigma>=0",
         "gauge": (
@@ -766,18 +806,21 @@ def frozen_domain_and_nulls() -> dict[str, str]:
             "tau_gap=1-Tr(P_plus P_R) lies in (0,1), C=[S,R]!=0, grad_F U!=0, and the "
             "forward orbit belongs to the basin of the generic w2_16 minimum stratum. The "
             "evaluator must prove this dynamically defined spectral-gap basin nonempty, open "
-            "and invariant and must revalidate F2 for the new off-endpoint maps"
+            "and invariant, and must separately adjudicate whether the complete inherited "
+            "F1/F2 chain survives on these off-endpoint maps"
         ),
         "accepted_F2_endpoint": (
             "the w2_16 global-minimum product has grad_F U=0 and is a required event null"
         ),
         "formation_gap": (
-            "nonstationary D_gap states must independently revalidate P_plus, P_R, tau_gap and C"
+            "nonstationary D_gap states must independently test P_plus, P_R, tau_gap and C, "
+            "and separately test the complete inherited F1/F2 predecessor chain"
         ),
         "inherited_nulls": (
-            "A=0, S=0, R=0, C=0, tau_gap=0, tau_gap=1 excluded orbit boundary, tuned "
-            "and singular branches, spectral-gap/basin boundaries, the stationary accepted "
-            "F2 endpoint, and the excluded ascent sign"
+            "A=0, S=0, R=0 and C=0 nulls; tau_gap=0 and tau_gap=1 excluded readout "
+            "boundaries (tau_gap=0 is not generally C=0 away from the uniaxial endpoint); "
+            "tuned and singular branches, spectral-gap/basin boundaries, the stationary "
+            "accepted F2 endpoint, and the excluded ascent sign"
         ),
         "undefined_tau": (
             "tau_gap is not assigned when the largest eigenspace is not simple or J=0"
@@ -799,7 +842,7 @@ EXPECTED_FREEDOM_KEYS = frozenset({
     "inherited_law_coefficients",
     "descent_sign_and_process_principle",
     "kinetic_metric_and_relative_mobility",
-    "off_endpoint_F2_extension_map",
+    "off_endpoint_relational_readout_candidate",
     "positive_reparameterization",
     "initial_state",
     "intervention_class",
@@ -807,7 +850,6 @@ EXPECTED_FREEDOM_KEYS = frozenset({
     "physical_time_clock_rate_or_schedule",
     "position_lattice_graph_metric_or_GR_target",
 })
-EXPECTED_CANDIDATE_A_STATUSES_FROZEN = dict(EXPECTED_CANDIDATE_A_STATUSES)
 EXPECTED_F3_EVALUATION_DUTIES = {
     key: "UNEVALUATED_REQUIRED" for key in F3_GATE_KEYS
 }
@@ -879,6 +921,9 @@ FAIL_CLOSED_CONTROL_KEYS = frozenset({
     "missing_extra_or_nonboolean_gate_invalid",
     "missing_extra_malformed_or_partial_map_fails_closed",
     "nested_duties_maps_and_forbidden_freedoms_fail_closed",
+    "complete_contract_content_mutation_invalid",
+    "coordinated_candidate_status_mutation_invalid",
+    "coordinated_closure_mutation_invalid",
     "authorization_bit_cannot_promote_science",
 })
 
@@ -1030,7 +1075,23 @@ def frozen_mandatory_controls() -> tuple[str, ...]:
 
 
 def frozen_candidate_a_statuses() -> dict[str, str]:
-    return dict(EXPECTED_CANDIDATE_A_STATUSES_FROZEN)
+    return {
+        "state_space": "DERIVED",
+        "event_or_change_map": "PARTIAL",
+        "complete_equivalence_action": "DERIVED",
+        "transition_or_response_law": "PARTIAL",
+        "signal_support_or_update_composition": "PARTIAL",
+        "allowed_interventions": "PARTIAL",
+        "intervention_to_response_map": "PARTIAL",
+        "direct_influence_relation": "PARTIAL",
+        "transitive_effective_order": "PARTIAL",
+        "forbidden_pairs": "PARTIAL",
+        "no_transmission_test": "PARTIAL",
+        "open_domain": "PARTIAL",
+        "null_branches": "PARTIAL",
+        "perturbation_class": "PARTIAL",
+        "independent_crosscheck": "ABSENT",
+    }
 
 
 def frozen_candidate_a_map_text() -> dict[str, tuple[str, str]]:
@@ -1105,13 +1166,15 @@ def frozen_candidate_a_map_text() -> dict[str, tuple[str, str]]:
             "tau_gap=1-Tr(P_plus P_R) lies in (0,1), C=[S,R]!=0, grad_F U!=0, and the "
             "forward orbit belongs to the basin of the generic w2_16 minimum stratum. The "
             "evaluator must prove this dynamically defined spectral-gap basin nonempty, open "
-            "and invariant and must revalidate F2 for the new off-endpoint maps",
+            "and invariant, and must separately adjudicate whether the complete inherited "
+            "F1/F2 chain survives on these off-endpoint maps",
         ),
         "null_branches": (
-            "inherited F2 nulls plus new flow nulls",
-            "A=0, S=0, R=0, C=0, tau_gap=0, tau_gap=1 excluded orbit boundary, tuned "
-            "and singular branches, spectral-gap/basin boundaries, the stationary accepted "
-            "F2 endpoint, and the excluded ascent sign",
+            "inherited endpoint nulls plus separately classified flow boundaries",
+            "A=0, S=0, R=0 and C=0 nulls; tau_gap=0 and tau_gap=1 excluded readout "
+            "boundaries (tau_gap=0 is not generally C=0 away from the uniaxial endpoint); "
+            "tuned and singular branches, spectral-gap/basin boundaries, the stationary "
+            "accepted F2 endpoint, and the excluded ascent sign",
         ),
         "perturbation_class": (
             "candidate initial-state perturbations only",
@@ -1165,6 +1228,7 @@ def candidate_map_content_frozen(candidate_maps: Any) -> bool:
     return bool(
         candidate_map_schema_valid(candidate_maps)
         and {key: entry["status"] for key, entry in candidate_maps.items()}
+        == EXPECTED_CANDIDATE_A_STATUSES
         == frozen_candidate_a_statuses()
         and {
             key: (entry["source"], entry["definition"])
@@ -1200,20 +1264,27 @@ def contract_schema_valid(contract: Any) -> bool:
     authorization = contract.get("AUTHORIZATION")
     ledger = contract.get("FREEDOM_LEDGER")
     return bool(
-        isinstance(closure, dict)
-        and closure == EXPECTED_CLOSURE_FLAGS
+        scientific_contract_sha256(contract) == frozen_scientific_contract_sha256()
+        and isinstance(closure, dict)
+        and closure == EXPECTED_CLOSURE_FLAGS == frozen_closure_flags()
         and all(type(value) is bool for value in closure.values())
         and isinstance(scope, dict)
-        and scope == EXPECTED_SCOPE_CEILING
+        and scope == EXPECTED_SCOPE_CEILING == frozen_scope_ceiling()
         and all(type(value) is bool for value in scope.values())
         and isinstance(authorization, dict)
-        and authorization == EXPECTED_AUTHORIZATION
+        and authorization == EXPECTED_AUTHORIZATION == frozen_authorization()
         and all(type(value) is bool for value in authorization.values())
-        and contract.get("F3_EVALUATION_DUTIES") == EXPECTED_F3_EVALUATION_DUTIES
+        and contract.get("F3_EVALUATION_DUTIES")
+        == EXPECTED_F3_EVALUATION_DUTIES
+        == {key: "UNEVALUATED_REQUIRED" for key in frozen_f3_gate_keys()}
         and isinstance(ledger, dict)
-        and ledger == EXPECTED_FREEDOM_LEDGER
-        and contract.get("CANDIDATE_DEFINITION") == EXPECTED_CANDIDATE_DEFINITION
-        and contract.get("DOMAIN_AND_NULLS") == EXPECTED_DOMAIN_AND_NULLS
+        and ledger == EXPECTED_FREEDOM_LEDGER == frozen_freedom_ledger()
+        and contract.get("CANDIDATE_DEFINITION")
+        == EXPECTED_CANDIDATE_DEFINITION
+        == frozen_candidate_definition()
+        and contract.get("DOMAIN_AND_NULLS")
+        == EXPECTED_DOMAIN_AND_NULLS
+        == frozen_domain_and_nulls()
         and all(
             ledger.get(key) == expected
             for key, expected in EXPECTED_CRITICAL_FREEDOM_ENTRIES.items()
@@ -1295,7 +1366,7 @@ def symbolic_definition_controls() -> dict[str, bool]:
             ),
             "independent positive S/R weights"
             in ledger["kinetic_metric_and_relative_mobility"]["source"],
-            ledger["off_endpoint_F2_extension_map"]["complexity"]
+            ledger["off_endpoint_relational_readout_candidate"]["complexity"]
             == "1 fixed map choice; 0 fitted parameters",
             ledger["intervention_class"]["complexity"]
             == "1 fixed diagnostic class; 0 fitted parameters",
@@ -1361,8 +1432,14 @@ def symbolic_definition_controls() -> dict[str, bool]:
             )
         ),
         "closure_and_scope_ledgers_exact_boolean": all((
-            CLAIM_CONTRACT["CLOSURE_FLAGS"] == EXPECTED_CLOSURE_FLAGS,
-            CLAIM_CONTRACT["SCOPE_CEILING"] == EXPECTED_SCOPE_CEILING,
+            scientific_contract_sha256(CLAIM_CONTRACT)
+            == frozen_scientific_contract_sha256(),
+            CLAIM_CONTRACT["CLOSURE_FLAGS"]
+            == EXPECTED_CLOSURE_FLAGS
+            == frozen_closure_flags(),
+            CLAIM_CONTRACT["SCOPE_CEILING"]
+            == EXPECTED_SCOPE_CEILING
+            == frozen_scope_ceiling(),
             all(type(value) is bool for value in EXPECTED_CLOSURE_FLAGS.values()),
             all(type(value) is bool for value in EXPECTED_SCOPE_CEILING.values()),
         )),
@@ -1453,6 +1530,28 @@ def fail_closed_controls() -> dict[str, bool]:
     nonboolean_closure = dict(CLAIM_CONTRACT)
     nonboolean_closure["CLOSURE_FLAGS"] = dict(CLAIM_CONTRACT["CLOSURE_FLAGS"])
     nonboolean_closure["CLOSURE_FLAGS"]["Candidate_A_evaluated"] = 0
+    mutated_claim_contract = dict(CLAIM_CONTRACT)
+    mutated_claim_contract["CLAIM"] = "FOUNDATION F3 PROVED"
+
+    coordinated_status_maps = {
+        key: dict(value) for key, value in CANDIDATE_A_MAPS.items()
+    }
+    coordinated_status_maps["independent_crosscheck"]["status"] = "PARTIAL"
+    coordinated_status_expected = dict(EXPECTED_CANDIDATE_A_STATUSES)
+    coordinated_status_expected["independent_crosscheck"] = "PARTIAL"
+    coordinated_status_values = {
+        key: value["status"] for key, value in coordinated_status_maps.items()
+    }
+
+    coordinated_closure_contract = dict(CLAIM_CONTRACT)
+    coordinated_closure_contract["CLOSURE_FLAGS"] = dict(
+        CLAIM_CONTRACT["CLOSURE_FLAGS"]
+    )
+    coordinated_closure_contract["CLOSURE_FLAGS"][
+        "Candidate_A_flow_or_basin_proved"
+    ] = True
+    coordinated_closure_expected = dict(EXPECTED_CLOSURE_FLAGS)
+    coordinated_closure_expected["Candidate_A_flow_or_basin_proved"] = True
 
     single_false_results = []
     malformed_gate_results = []
@@ -1549,6 +1648,22 @@ def fail_closed_controls() -> dict[str, bool]:
             not contract_schema_valid(altered_mobility),
             not contract_schema_valid(altered_definition),
             not contract_schema_valid(altered_domain_contract),
+        )),
+        "complete_contract_content_mutation_invalid": all((
+            not contract_schema_valid(mutated_claim_contract),
+            scientific_contract_sha256(mutated_claim_contract)
+            != frozen_scientific_contract_sha256(),
+        )),
+        "coordinated_candidate_status_mutation_invalid": all((
+            coordinated_status_values == coordinated_status_expected,
+            coordinated_status_values != frozen_candidate_a_statuses(),
+            not candidate_map_content_frozen(coordinated_status_maps),
+        )),
+        "coordinated_closure_mutation_invalid": all((
+            coordinated_closure_contract["CLOSURE_FLAGS"]
+            == coordinated_closure_expected,
+            coordinated_closure_expected != frozen_closure_flags(),
+            not contract_schema_valid(coordinated_closure_contract),
         )),
         "authorization_bit_cannot_promote_science": all((
             CANDIDATE_A_EVALUATION_AUTHORIZED,
