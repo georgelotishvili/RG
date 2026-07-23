@@ -99,7 +99,7 @@ ORIGIN_KEYS = frozenset({
     "static_U_is_constant_on_tau_and_has_zero_tangent_gradient",
     "opposite_signs_are_not_positive_reparameterisation_equivalent",
     "regular_h_tau_multiplier_freedom_is_real",
-    "tracked_intuitive_source_marks_full_emergence_dynamics_open",
+    "structured_predecessors_mark_process_origin_open",
     "tracked_w2_18_static_route_requires_new_dynamics",
     "tracked_w2_19_records_sign_and_mobility_as_imported",
     "frozen_local_origin_audit_snapshot_is_exact",
@@ -603,13 +603,18 @@ def _scope_text() -> str:
 
 
 def origin_controls(w221: ModuleType) -> tuple[dict[str, bool], dict[str, Any]]:
-    root = Path(__file__).resolve().parents[2]
-    intuitive = (root / "intuitive" / "RefG_GE.md").read_text(encoding="utf-8")
-    w218 = (root / "RefG" / "work 2" /
-            "w2_18_f3_static_endpoint_adjudication_gate.py").read_text(encoding="utf-8")
-    w219 = (root / "RefG" / "work 2" /
-            "w2_19_f3_gradient_formation_flow_candidate_contract.py").read_text(encoding="utf-8")
-
+    w216 = _load_local_module(
+        "w2_16_f2b_general_traceless_single_carrier_candidate_gate.py",
+        "w2_16_f2b_gate_for_w2_22",
+    )
+    w218 = _load_local_module(
+        "w2_18_f3_static_endpoint_adjudication_gate.py",
+        "w2_18_static_adjudication_for_w2_22",
+    )
+    w219 = _load_local_module(
+        "w2_19_f3_gradient_formation_flow_candidate_contract.py",
+        "w2_19_gradient_contract_for_w2_22",
+    )
     tau = sp.symbols("tau", real=True)
     alpha, b_coefficient, c_coefficient, eta, d, s, J = sp.symbols(
         "alpha b_coefficient c_coefficient eta d s J", real=True
@@ -626,13 +631,29 @@ def origin_controls(w221: ModuleType) -> tuple[dict[str, bool], dict[str, Any]]:
     static_tau_derivative = sp.diff(U_on_minimum, tau)
     h_constant = sp.Integer(1)
     h_sign_change = 1 - 2 * tau
+    closure_218 = w218.CLAIM_CONTRACT["CLOSURE_FLAGS"]
+    closure_219 = w219.CLAIM_CONTRACT["CLOSURE_FLAGS"]
+    ledger_219 = w219.CLAIM_CONTRACT["FREEDOM_LEDGER"]
+    structured_predecessors_keep_process_origin_open = all((
+        w221.EXPECTED_CLOSURE_FLAGS["foundation_process_law_derived"] is False,
+        w221.EXPECTED_CLOSURE_FLAGS[
+            "F3_internal_order_or_causality_proved"
+        ] is False,
+        closure_218["F3_internal_order_or_causality_proved"] is False,
+        closure_218["physical_time_or_clock_readout_proved"] is False,
+        closure_219["Candidate_A_evaluated"] is False,
+        closure_219["F3_internal_order_or_causality_proved"] is False,
+        closure_219["physical_time_or_clock_readout_proved"] is False,
+    ))
 
     controls = {
         "static_U_is_constant_on_tau_and_has_zero_tangent_gradient": all((
             static_tau_derivative == 0,
-            "flat_modulus" in (Path(__file__).resolve().with_name(
-                "w2_16_f2b_general_traceless_single_carrier_candidate_gate.py"
-            )).read_text(encoding="utf-8"),
+            w216.CLAIM_CONTRACT["CLAIM_ID"]
+            == "W2_F2B_GENERAL_TRACELESS_SINGLE_CARRIER_CANDIDATE_001",
+            w216.CLAIM_CONTRACT["SCIENTIFIC_CLOSURE"][
+                "conditional_on_imported_A_and_law"
+            ] is True,
         )),
         "opposite_signs_are_not_positive_reparameterisation_equivalent": all((
             h_constant > 0,
@@ -643,18 +664,29 @@ def origin_controls(w221: ModuleType) -> tuple[dict[str, bool], dict[str, Any]]:
             h_sign_change.subs(tau, sp.Rational(3, 4)) < 0,
             h_sign_change.subs(tau, sp.Rational(1, 2)) == 0,
         )),
-        "tracked_intuitive_source_marks_full_emergence_dynamics_open": all((
-            "სრული დინამიკური გამოყვანა ღიაა" in intuitive,
-            "ლოკალური მიზეზობრიობისა" in intuitive,
-        )),
+        "structured_predecessors_mark_process_origin_open": (
+            structured_predecessors_keep_process_origin_open
+        ),
         "tracked_w2_18_static_route_requires_new_dynamics": all((
-            "current law has no transition, intervention" in w218,
-            "A future version must derive a genuinely directed transition" in w218,
+            w218.CLAIM_CONTRACT["CLAIM_ID"]
+            == "W2_F3_STATIC_ENDPOINT_ADJUDICATION_001",
+            closure_218["static_F2_only_route_rejected_as_F3_realization"] is True,
+            closure_218["new_dynamic_candidate_required"] is True,
+            closure_218["F3_internal_order_or_causality_proved"] is False,
+            w218.STATIC_CANDIDATE_MAPS["transition_or_response_law"]["status"]
+            == "ABSENT",
         )),
         "tracked_w2_19_records_sign_and_mobility_as_imported": all((
-            "not Canon-derived" in w219,
-            "kinetic_metric_and_relative_mobility" in w219,
-            "descent_sign_and_process_principle" in w219,
+            w219.CLAIM_CONTRACT["CLAIM_ID"]
+            == "W2_F3_GRADIENT_FORMATION_FLOW_CANDIDATE_CONTRACT_001",
+            closure_219["Candidate_A_evaluated"] is False,
+            ledger_219["descent_sign_and_process_principle"]["source"]
+            == "new Candidate-A primitive; not Canon-derived",
+            ledger_219["kinetic_metric_and_relative_mobility"]["complexity"]
+            == (
+                "1 fixed dimensionless continuous input rho=mu_R/mu_S=1 plus the selected "
+                "full-A mobility class; 0 fitted parameters"
+            ),
         )),
         "frozen_local_origin_audit_snapshot_is_exact": all((
             w221.origin_audit_snapshot_sha256(w221.ORIGIN_AUDIT_SNAPSHOT)
@@ -665,9 +697,12 @@ def origin_controls(w221: ModuleType) -> tuple[dict[str, bool], dict[str, Any]]:
             ],
         )),
         "tracked_runtime_source_set_contains_no_process_selector": all((
-            "current law has no transition" in w218,
-            "not Canon-derived" in w219,
-            "სრული დინამიკური გამოყვანა ღიაა" in intuitive,
+            w218.STATIC_CANDIDATE_MAPS["transition_or_response_law"]["status"]
+            == "ABSENT",
+            w219.CANDIDATE_A_MAPS["transition_or_response_law"]["status"]
+            == "PARTIAL",
+            closure_219["Candidate_A_evaluated"] is False,
+            structured_predecessors_keep_process_origin_open,
         )),
     }
     diagnostics = {
@@ -677,7 +712,7 @@ def origin_controls(w221: ModuleType) -> tuple[dict[str, bool], dict[str, Any]]:
             "h_sign_changing": h_sign_change,
         },
         "audited_sources": [
-            "intuitive/RefG_GE.md",
+            "RefG/work 2/w2_21_f3_minimum_manifold_tangent_route_contract.py",
             "RefG/work 2/w2_18_f3_static_endpoint_adjudication_gate.py",
             "RefG/work 2/w2_19_f3_gradient_formation_flow_candidate_contract.py",
             "w2_21 frozen local-origin audit snapshot with exact source hashes",
