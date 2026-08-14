@@ -67,3 +67,8 @@ env/
 Thumbs.db
 .idea/
 .vscode/
+
+# RefG work 3 generated outputs
+/RefG/work 3/**/*.json
+/RefG/work 3/**/*.png
+/RefG/work 3/w3_00_strategic_plan.md

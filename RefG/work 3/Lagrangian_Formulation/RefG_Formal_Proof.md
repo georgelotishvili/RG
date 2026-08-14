@@ -1,4 +1,4 @@
-# RefG: From Substrate Defects to Einstein Gravity — An Effective Field Theory Construction
+# RefG: The Formal Mathematical Proof (Effective Field Theory Derivation of GR)
 
 ## 1. Introduction
 This document provides the effective macroscopic formulation of General Relativity (GR) bridging from the Reference Gravity (RefG) axioms. Rather than attempting to derive 4D continuous geometry directly from 3D microscopic solid mechanics via infinite algebraic expansions, we adopt the standard, rigorous approach of **Effective Field Theory (EFT)**. 
