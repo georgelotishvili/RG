@@ -1,0 +1,7 @@
+{
+  "claim_id": "W3_09_SPECIAL_RELATIVITY_DEFORMATION",
+  "model_version": "W3-09-v1.0-LORENTZ-ETHER",
+  "status": "PASS",
+  "Length_Contraction": "L_0*sqrt(c**2 - v**2)/c",
+  "Time_Dilation": "2*L_0/sqrt(c**2 - v**2)"
+}
