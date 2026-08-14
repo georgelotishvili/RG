@@ -11,6 +11,8 @@ def derive_galactic_dynamics():
     results = {}
 
     # 1. The Low-Energy Postulate: Vortex Loading Potential
+    # We adopt a0 as a universal coherence scale constant in this regime. 
+    # (While a0 may be derivable from deeper cosmology, here we treat it as an adopted parameter).
     g_v, g_N, a0 = sp.symbols("g_v g_N a0", positive=True, real=True)
 
     # The chosen loading potential that dictates the response of the topological
@@ -31,22 +33,16 @@ def derive_galactic_dynamics():
     g = sp.symbols("g", positive=True, real=True)
     g_total_expr = g_N + gv_sol
 
-    # We want to express g_N in terms of total g to find the interpolating function
-    # Note: gv_sol = (-g_N + sqrt(g_N^2 + 4 a0 g_N))/2
-    # So g = (g_N + sqrt(g_N^2 + 4 a0 g_N))/2
-    # 2g - g_N = sqrt(g_N^2 + 4 a0 g_N)
-    # 4g^2 - 4g g_N + g_N^2 = g_N^2 + 4 a0 g_N
-    # 4g^2 = 4 g_N (g + a0) => g_N = g^2 / (g + a0)
+    # Express g_N in terms of total g
     g_N_sol = g**2 / (g + a0)
     
-    # Verify the algebraic closure
-    closure_expr = (g_total_expr).subs(g_N, g_N_sol)
-    # Sympy needs help with square roots of squared positive polynomials
-    closure_check = sp.simplify(closure_expr)
-    closure_check = closure_check.replace(sp.sqrt(g**2 * (g + 2*a0)**2 / (a0 + g)**2), g * (g + 2*a0) / (a0 + g))
-    # To be safe, we can just check it numerically at a random positive point:
-    num_check = float(abs(closure_expr.subs({g: 2.5, a0: 1.2}) - 2.5))
-    assert num_check < 1e-9, f"Algebraic closure failed numerically. Diff: {num_check}"
+    # Verify the algebraic closure robustly
+    # If g = g_N + g_v, then by substituting g_N = g^2 / (g + a0), 
+    # we should recover g_v = a0 * g / (g + a0).
+    # Let's check if the original equation dW_dgv = 0 is satisfied for g_N_sol and g_v_sol = g - g_N_sol
+    g_v_target = g - g_N_sol
+    closure_check = sp.simplify(dW_dgv.subs({g_N: g_N_sol, g_v: g_v_target}))
+    assert closure_check == 0, "Algebraic closure failed symbolically."
     results["effective_newtonian_source"] = str(sp.Eq(g_N, g_N_sol))
 
     # MOND interpolation function mu(x) where x = g/a0 and g_N = g * mu(x)
@@ -78,21 +74,29 @@ def derive_galactic_dynamics():
     g_deep_sol = sp.solve(gauss_eq, g_deep)[0]
     results["far_field_acceleration"] = str(sp.Eq(g_deep, g_deep_sol))
 
-    # 4. Exact BTFR Derivation
-    # For circular orbits in the disk plane, centrifugal acceleration is v^2 / r
-    v = sp.symbols("v", positive=True, real=True)
+    # 4. Baryonic Tully-Fisher Relation (BTFR) Derivation
+    # The asymptotic velocity v for circular orbits is given by v^2 / r = g
+    v, M = sp.symbols("v M", positive=True, real=True)
     orbit_eq = sp.Eq(v**2 / r, g_deep_sol)
+    
+    # Solve for v
     v_sol = sp.solve(orbit_eq, v)[0]
-    v4_sol = sp.simplify(v_sol**4)
     
-    # We prove that v^4 is EXACTLY G * M * a0, and the radius r drops out completely,
-    # leaving no free parameters and no v0 assumption.
-    btfr_eq = sp.Eq(v**4, v4_sol)
+    # Compute v^4 symbolically
+    v4_expr = sp.simplify(v_sol**4)
+    
+    # Mathematically prove it exactly equals G * M * a0 (and r drops out completely)
+    btfr_target = G * M * a0
+    assert sp.simplify(v4_expr - btfr_target) == 0, "BTFR derivation failed! v^4 is not G*M*a0"
+    
+    btfr_eq = sp.Eq(v**4, v4_expr)
     results["baryonic_tully_fisher_relation"] = str(btfr_eq)
-    
-    # Verifying r is totally eliminated
-    assert v4_sol.diff(r) == 0, "Radius 'r' did not cancel out. BTFR is not flat!"
-    results["btfr_flatness_verified"] = True
+
+    # Note: BTFR holds EXACTLY in the deep asymptotic regime.
+    # We do not use any tuned free parameters (v0 is eliminated). a0 is a universal constant.
+    # The mass dependence M is strictly linear with v^4.
+    results["btfr_flatness_verified"] = bool(v4_expr.diff(r) == 0)
+    results["asymptotic_note"] = "The BTFR v^4 = G*M*a0 is an exact derivation for the deep asymptotic regime (up to the environmental coherence boundary), containing no galaxy-specific free tuning parameters under the universal a0 condition."
 
     return results
 
