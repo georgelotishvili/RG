@@ -1,0 +1,7 @@
+{
+  "claim_id": "W3_03_OSCILLON_KOIDE_RESONANCE",
+  "model_version": "W3-03-v1.0-KOIDE",
+  "status": "PASS",
+  "Koide_Ratio": "2/3",
+  "Dependent_on_phase": "False"
+}

@@ -1,0 +1,8 @@
+{
+  "claim_id": "W3_04_GALACTIC_ROTATION_PRESSURE",
+  "model_version": "W3-04-v1.0-DARK-MATTER",
+  "status": "PASS",
+  "v2_3D_dependence": "G*M/r",
+  "v2_2D_dependence": "v0**2",
+  "is_flat": true
+}
