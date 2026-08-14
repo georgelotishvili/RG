@@ -1,0 +1,7 @@
+{
+  "claim_id": "W4_05_DEFECT_STRAIN_CURVATURE",
+  "model_version": "W4-05-v1.0-DEFECT-TENSOR",
+  "status": "PASS",
+  "num_polarizations": 2,
+  "curvature_component": "-k**2*A[1, 1]"
+}

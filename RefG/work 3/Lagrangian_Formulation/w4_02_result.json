@@ -1,0 +1,8 @@
+{
+  "claim_id": "W4_02_BICONFORMAL_METRIC_GAMMA",
+  "model_version": "W4-02-v1.0-ELASTIC-TENSOR",
+  "status": "PASS",
+  "Weak_Field_g00": "-2*U - 1",
+  "Weak_Field_gii": "1 - 2*U",
+  "PPN_Gamma": "1"
+}
