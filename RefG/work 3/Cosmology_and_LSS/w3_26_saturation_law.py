@@ -101,7 +101,7 @@ def main():
         source_hash = hashlib.sha256(f.read()).hexdigest()
         
     res_json = {
-        "status": "PASS (Phantom Big Rip replaced by Thermodynamic Equilibrium / Saturation)",
+        "status": "OPEN (Vacuum Saturation is a theoretical expectation; exact dynamic law remains to be derived)",
         "model_version": "RefG_NonLinear_tau_branch",
         "data_provenance": {
             "dependency": "w3_24_result.json"

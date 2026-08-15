@@ -109,7 +109,7 @@ def main():
         source_hash = hashlib.sha256(f.read()).hexdigest()
         
     res_json = {
-        "status": "PASS (JWST Paradox Naturally Resolved by Mass Enhancement)",
+        "status": "OPEN (JWST Paradox Resolution requires exact structural growth equation; Age enhancement is a Hypothesis)",
         "model_version": "RefG_NonLinear_tau_branch",
         "data_provenance": {
             "dependency": "w3_24_result.json"
