@@ -76,3 +76,9 @@ Thumbs.db
 /RefG/work 3/**/*.json
 /RefG/work 3/**/*.png
 /RefG/work 3/w3_00_strategic_plan.md
+
+# PHANGS observational products and generated analysis tables.
+# Source code and the frozen preregistration remain version-controlled.
+/RefG/work 3/Galactic_Dynamics/PHANGS_data/raw/
+/RefG/work 3/Galactic_Dynamics/PHANGS_data/derived/
+/RefG/work 3/Galactic_Dynamics/PHANGS_data/manifests/
