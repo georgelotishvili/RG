@@ -34,6 +34,9 @@ Intuitive_Article დედანი.md
 Intuitive_Theory_Old.md
 სხვა სტატიები/
 figures/
+!intuitive/figures/
+intuitive/figures/*
+!intuitive/figures/nonlinear_joint_fit.png
 # Legacy computational workspace: excluded in full
 /RefG/work/
 
