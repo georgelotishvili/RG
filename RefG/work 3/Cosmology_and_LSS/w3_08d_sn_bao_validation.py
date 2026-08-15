@@ -7,6 +7,7 @@ import os
 import hashlib
 import urllib.request
 import sys
+from pathlib import Path
 
 # Speed of light in km/s
 c = 299792.458
@@ -98,7 +99,35 @@ def d_v(z, model_func, *args):
     return (z * d_m**2 / E_z)**(1/3)
 
 def main():
-    print("=== RefG Cosmology: SN Ia & BAO Full Covariance VALIDATION ===")
+    print("=== RefG Cosmology: Supernova Ia and BAO Validation (DS17f Binned) ===\n")
+    
+    # Check upstream gate W3_09 with strict validation
+    gate_script = Path(__file__).parent / "w3_09_process_to_metric_bridge_gate.py"
+    gate_path = Path(__file__).parent / "w3_09_result.json"
+    
+    if not gate_path.exists() or not gate_script.exists():
+        print("ERROR: Upstream validation gate W3_09 (Process to Metric Bridge) is missing.")
+        sys.exit(1)
+        
+    with open(gate_path, "r") as f:
+        gate_data = json.load(f)
+        
+    if gate_data.get("claim_id") != "W3_09_PROCESS_TO_METRIC_BRIDGE" or "CONDITIONAL PASS" not in gate_data.get("status", ""):
+        print("ERROR: Upstream validation gate W3_09 FAILED or invalid claim_id. Stopping pipeline.")
+        sys.exit(1)
+        
+    if gate_data.get("model_version") != "W3-09-v3.0-RIGOROUS-BRIDGE":
+        print("ERROR: Upstream validation gate W3_09 has an outdated model_version.")
+        sys.exit(1)
+        
+    script_content = gate_script.read_text('utf-8')
+    computed_hash = hashlib.sha256(script_content.encode('utf-8')).hexdigest()
+    if gate_data.get("source_hash") != computed_hash:
+        print("ERROR: Upstream validation gate W3_09 source_hash mismatch.")
+        sys.exit(1)
+        
+    print(f"[PRE-CHECK] Upstream Gate {gate_data['claim_id']} verified (PASS).")
+    print(f"[PRE-CHECK] True Source Hash Match: {computed_hash[:8]}...\n")
     
     # Load parameters from previous fit
     json_path = "w3_08c_results.json"
@@ -254,7 +283,11 @@ def main():
             "chi2_sn": chi2_refg,
             "chi2_bao": chi2_bao_refg
         },
-        "source_hash": file_hash
+        "source_hash": file_hash,
+        "upstream_provenance": {
+            "w3_09_gate_hash": gate_data.get("source_hash"),
+            "w3_09_gate_version": gate_data.get("model_version")
+        }
     }
     
     out_path = os.path.join(os.path.dirname(script_path), "w3_08d_results.json")

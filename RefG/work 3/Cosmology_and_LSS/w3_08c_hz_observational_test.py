@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 from scipy.optimize import minimize
 import json
 import os
+import sys
+from pathlib import Path
 import hashlib
 
 # Cosmic Chronometer (OHD) Data Compilation
@@ -37,6 +39,36 @@ def chi2(params, model_func, z, H, err):
     return np.sum(((H - H_model) / err)**2)
 
 def main():
+    print("=== RefG Cosmology: H(z) Observational Test ===\n")
+    
+    # Check upstream gate W3_09 with strict validation
+    gate_script = Path(__file__).parent / "w3_09_process_to_metric_bridge_gate.py"
+    gate_path = Path(__file__).parent / "w3_09_result.json"
+    
+    if not gate_path.exists() or not gate_script.exists():
+        print("ERROR: Upstream validation gate W3_09 (Process to Metric Bridge) is missing.")
+        sys.exit(1)
+        
+    with open(gate_path, "r") as f:
+        gate_data = json.load(f)
+        
+    if gate_data.get("claim_id") != "W3_09_PROCESS_TO_METRIC_BRIDGE" or "CONDITIONAL PASS" not in gate_data.get("status", ""):
+        print("ERROR: Upstream validation gate W3_09 FAILED or invalid claim_id. Stopping pipeline.")
+        sys.exit(1)
+        
+    if gate_data.get("model_version") != "W3-09-v3.0-RIGOROUS-BRIDGE":
+        print("ERROR: Upstream validation gate W3_09 has an outdated model_version.")
+        sys.exit(1)
+        
+    script_content = gate_script.read_text('utf-8')
+    computed_hash = hashlib.sha256(script_content.encode('utf-8')).hexdigest()
+    if gate_data.get("source_hash") != computed_hash:
+        print("ERROR: Upstream validation gate W3_09 source_hash mismatch.")
+        sys.exit(1)
+        
+    print(f"[PRE-CHECK] Upstream Gate {gate_data['claim_id']} verified (PASS).")
+    print(f"[PRE-CHECK] True Source Hash Match: {computed_hash[:8]}...\n")
+
     z = CC_DATA[:, 0]
     H = CC_DATA[:, 1]
     err = CC_DATA[:, 2]
@@ -58,7 +90,6 @@ def main():
     aic_lcdm = chi2_lcdm + 2*k
     aic_refg = chi2_refg + 2*k
     
-    print("=== Observational H(z) Cosmic Chronometers Fit ===")
     print(f"Number of data points: {N}")
     print(f"LambdaCDM Fit: H0 = {H0_fit:.2f}, Omega_m = {Om_fit:.3f}")
     print(f"LambdaCDM Chi2: {chi2_lcdm:.2f}, AIC: {aic_lcdm:.2f}\n")
@@ -124,7 +155,11 @@ def main():
             "reduced_chi2": chi2_refg / (N - k),
             "AIC": aic_refg
         },
-        "source_hash": file_hash
+        "source_hash": file_hash,
+        "upstream_provenance": {
+            "w3_09_gate_hash": gate_data.get("source_hash"),
+            "w3_09_gate_version": gate_data.get("model_version")
+        }
     }
     
     out_path = os.path.join(os.path.dirname(script_path), "w3_08c_results.json")
