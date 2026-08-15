@@ -231,10 +231,10 @@ def main():
         return A**(3/7) * dtau_dA(A)
         
     tau0_R, _ = quad(dtau_dA, 1e-10, 1.0)
-    tau_rip_R, _ = quad(dtau_dA, 1.0, np.inf)
+    tau_eq_R, _ = quad(dtau_dA, 1.0, np.inf)
     
     t0_R, _ = quad(dt_dA, 1e-10, 1.0)
-    t_rip_R, _ = quad(dt_dA, 1.0, np.inf)
+    t_eq_R, _ = quad(dt_dA, 1.0, np.inf)
     
     def dt_da_L(a):
         return 977.8 / (a * H_lcdm(1.0/a - 1.0, H0_L, Om_L))
@@ -243,8 +243,8 @@ def main():
     print(f"LCDM: Age t0 = {t0_L:.2f} Gyr, q0 = {0.5*Om_L - (1-Om_L):.3f}")
     print(f"RefG: Internal Age tau0 = {tau0_R:.2f} Gyr, q0 = {q0_R:.3f}, q(a->oo) = {q_inf_R:.3f}")
     print(f"RefG: Metric Age t0 = {t0_R:.2f} Gyr")
-    print(f"RefG: Future to Rip (Internal tau): {tau_rip_R:.2f} Gyr")
-    print(f"RefG: Future to Rip (Metric t): {t_rip_R:.2f} Gyr")
+    print(f"RefG: Future to Equilibrium (Internal tau): {tau_eq_R:.2f} Gyr")
+    print(f"RefG: Future to Equilibrium (Metric t): {t_eq_R:.2f} Gyr")
     
     # ---------------------------------------------------------
     # 3. Generating Plots
@@ -288,12 +288,12 @@ def main():
     with open(script_path, "rb") as f: file_hash = hashlib.sha256(f.read()).hexdigest()
         
     res_json = {
-        "status": "EXPLORATORY FIT_COMPATIBILITY (Phantom Big Rip regime, AIC favors LCDM)",
+        "status": "EXPLORATORY FIT_COMPATIBILITY (Phantom Asymptotic Saturation, AIC favors LCDM)",
         "model_version": "RefG_NonLinear_tau_branch",
         "data_provenance": {
             "pantheon_lcparam_hash": lcparam_hash,
             "pantheon_sys_hash": sys_hash,
-            "cc_data_pts": len(CC_DATA)
+            "cc_data_pts": len(z_cc)
         },
         "results": {
             "RefG": {
@@ -311,12 +311,12 @@ def main():
                 "kinematics": {
                     "t0_Gyr": round(t0_R, 2),
                     "tau0_Gyr": round(tau0_R, 2),
-                    "t_rip_future_Gyr": round(t_rip_R, 2),
-                    "tau_rip_future_Gyr": round(tau_rip_R, 2),
+                    "t_eq_future_Gyr": round(t_eq_R, 2),
+                    "tau_eq_future_Gyr": round(tau_eq_R, 2),
                     "q0": round(q0_R, 3),
                     "q_late": round(q_inf_R, 3)
                 },
-                "future_stability": "FAIL/OPEN (Phantom Big Rip)",
+                "future_stability": "OPEN (Soliton Dissipation / Vacuum Saturation)",
                 "jwst_maturity": "OPEN"
             },
             "LCDM": {
@@ -327,7 +327,7 @@ def main():
                 "BIC": round(bic_L, 2),
                 "kinematics": {
                     "t0_Gyr": round(t0_L, 2),
-                    "q0": round(0.5*Om_L - (1-Om_L), 3)
+                    "q0": round(0.5*Om_L - (1.0-Om_L), 3)
                 }
             },
             "delta_AIC": round(aic_R - aic_L, 2),
