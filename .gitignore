@@ -36,6 +36,7 @@ Intuitive_Theory_Old.md
 figures/
 !intuitive/figures/
 intuitive/figures/*
+!intuitive/figures/logo.pdf
 !intuitive/figures/nonlinear_joint_fit.png
 # Legacy computational workspace: excluded in full
 /RefG/work/
