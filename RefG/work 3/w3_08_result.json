@@ -1,7 +1,0 @@
-{
-  "claim_id": "W3_08_DARK_ENERGY_EXPANSION",
-  "model_version": "W3-08-v1.0-DARK-ENERGY",
-  "status": "PASS",
-  "Hubble_parameter": "H",
-  "Acceleration": "H**2*exp(H*t)/Delta_P"
-}
