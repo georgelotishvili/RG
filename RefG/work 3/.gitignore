@@ -1,0 +1,22 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Internal Notes and Planning Documents
+w3_00_strategic_plan.md
+
+# Downloaded Datasets (fetched at runtime)
+lcparam_DS17f.txt
+sys_DS17f.txt
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
