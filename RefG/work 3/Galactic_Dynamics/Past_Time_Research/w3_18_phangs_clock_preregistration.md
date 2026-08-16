@@ -64,7 +64,7 @@ Observational numerical test with a circular forward model. Any positive result 
 
 ### DEPENDENCIES
 
-`W3_17_PHANGS_DATA_INTEGRITY` must pass. Every raw file must match its W3-17 manifest hash and schema. W3-14, W3-15, and W3-16 are not inputs.
+`W3_17_PHANGS_DATA_INTEGRITY` must pass. Every raw file must match its W3-17 manifest hash and schema. No earlier clock-model calculation is an input.
 
 ### METHOD
 
