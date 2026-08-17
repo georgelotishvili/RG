@@ -75,6 +75,8 @@ Thumbs.db
 # RefG work 3 generated outputs
 /RefG/work 3/**/*.json
 /RefG/work 3/**/*.png
+!/RefG/work 3/Cosmology_and_LSS/w3_34_result.json
+!/RefG/work 3/Cosmology_and_LSS/w3_35_result.json
 /RefG/work 3/w3_00_strategic_plan.md
 
 # PHANGS observational products and generated analysis tables.

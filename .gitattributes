@@ -1,2 +1,8 @@
 # Keep SHA-256-pinned Work 2 research artifacts byte-stable on every platform.
 "RefG/work 2/**" text eol=lf
+
+# Keep SHA-256-pinned Work 3 cosmology gates byte-stable on every platform.
+"RefG/work 3/Cosmology_and_LSS/w3_32*" text eol=lf
+"RefG/work 3/Cosmology_and_LSS/w3_33*" text eol=lf
+"RefG/work 3/Cosmology_and_LSS/w3_34*" text eol=lf
+"RefG/work 3/Cosmology_and_LSS/w3_35*" text eol=lf

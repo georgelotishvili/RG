@@ -1,0 +1,371 @@
+{
+  "artifact_valid": true,
+  "blocking_reasons": [
+    "No derived activation-field action, initial spectrum, or threshold.",
+    "No foundation energy balance or foundation-to-thermal transfer law.",
+    "No material-radiation EOS history or physical temperature history.",
+    "No atomic, stellar-clock, photon-flux, H_CC, or D_L forward model.",
+    "No CMB, recombination, BBN, supernova, BAO, or JWST validation."
+  ],
+  "claim": "The finite-birth RefG dictionary is internally consistent and exactly identifies its physical, thermal, and observational closure boundary.",
+  "claim_id": "W3_36_BIRTH_THRESHOLD_THERMAL_CLOSURE",
+  "classifications": {
+    "activation_scope": {
+      "R_act": "LOCAL_THRESHOLD_OR_CORRELATION_SCALE",
+      "cosmic_birth": "GLOBAL_NO_PREFERRED_CENTER",
+      "homogeneous_birth_radial_speed": "UNDEFINED",
+      "null_leading_edge_equals_threshold": "NOT_DERIVED",
+      "same_null_condition": "Phi_t+(c0 p^2/a)Phi_chi=0 must follow from a PDE"
+    },
+    "conditional_front_crosscheck": {
+      "assumptions": "constant E, spherical V, same-null threshold, q=d ln(a)/d ln(P_F), D=1+3q",
+      "elapsed_process_interval": "8*T_0/5",
+      "local_identity": "d_tau/dR=D/(c0 p)",
+      "normalization_subbranch": "constant D=D0>0, equivalently constant q",
+      "p_equals_one_boundary": "checked exactly: the positive gap is D_gap/[c0(1+D_gap)]",
+      "p_vs_t": "p=(T0/t)^(3/8)",
+      "ratio_to_metric_interval": "8/5",
+      "regular_relaxation_bound": "if 0<D<1 and p>=1, then 0<Delta_tau<R_final/c0",
+      "status": "CONDITIONAL_ALGEBRAIC_BENCHMARK__NOT_CURRENT_BIRTH_MODEL"
+    },
+    "process_time_origin": {
+      "beta_not_one_antiderivative": "C t^(1-beta)/(1-beta)",
+      "candidate_asymptotic": "p(t)~C t^(-beta)",
+      "finite": "beta<1",
+      "finite_example_beta_half": "2*C*sqrt(T_0)",
+      "log_divergent": "beta=1",
+      "power_divergent": "beta>1"
+    },
+    "scale_split": {
+      "allowed_branch": "a_dot>0 and p_dot<0",
+      "dynamics_status": "ALLOWED_BY_IDENTITY__NOT_DERIVED",
+      "observable_effect": "both increase A=a/p"
+    },
+    "thermal_source_history": {
+      "J_e_negative": "HIGHER_THAN_ADIABATIC_REFERENCE",
+      "J_e_positive": "LOWER_THAN_ADIABATIC_REFERENCE",
+      "J_e_zero": "EQUAL_TO_ADIABATIC_REFERENCE",
+      "identity": "T_e/[T_today(A0/Ae)]=exp(-J_e), J_e=int_e^today Q_gamma/(4rho_gamma)d_tau",
+      "prediction_status": "OPEN_UNTIL_Q_GAMMA_IS_DERIVED",
+      "sign_proof": "exp(-J_e) is strictly decreasing because its derivative is -exp(-J_e)<0 and its value at J_e=0 is 1"
+    }
+  },
+  "closure_flags": {
+    "adiabatic_Tz_no_go_exact": true,
+    "aggregate_identity_pass": true,
+    "already_activated_null_identity_exact": true,
+    "cadence_pressure_identity_exact": true,
+    "common_cadence_rate_H_cancellation_exact": true,
+    "conditional_front_assumption_crosscheck_exact": true,
+    "constant_active_energy_condition_exposed": true,
+    "finite_process_origin_classified": true,
+    "foundation_thermal_pressures_independent": true,
+    "foundation_threshold_radius_chain_rule_exact": true,
+    "high_cadence_process_bound_exact": true,
+    "lower_temperature_nonidentifiability_exact": true,
+    "lower_temperature_sign_classifier_exact": true,
+    "metric_process_dictionary_exact": true,
+    "moving_boundary_energy_ledger_exact": true,
+    "mutation_controls_pass": true,
+    "observable_definitions_recorded": true,
+    "operational_scale_rate_identity_exact": true,
+    "radiation_temperature_identity_exact": true,
+    "radiation_temperature_source_identity_exact": true,
+    "same_null_residual_exposed": true,
+    "schema_keysets_exact": true,
+    "simultaneous_expansion_and_ruler_shrinkage_consistent": true,
+    "threshold_level_set_speed_exact": true,
+    "two_sector_conservation_sum_exact": true,
+    "volume_measure_jacobian_exact": true
+  },
+  "contract": {
+    "ASSUMPTIONS": "Finite t-origin; positive p; p^2=P_F/P_F0; d_tau=p dt; A=a/p; global centerless birth; differentiable local threshold; P_F and P_th independent; conditional radiation EOS; local flat spherical continuity ledger with a regular center.",
+    "BENCHMARK": "Exact metric, threshold, energy, thermal, origin, and constant-D checks plus fail-fast negative mutations.",
+    "BRANCHES": [
+      "process_time_origin",
+      "conditional_front_crosscheck",
+      "activation_scope",
+      "scale_split",
+      "thermal_source_history"
+    ],
+    "CLAIM": "The finite-birth RefG dictionary is internally consistent and exactly identifies its physical, thermal, and observational closure boundary.",
+    "CLAIM_ID": "W3_36_BIRTH_THRESHOLD_THERMAL_CLOSURE",
+    "CLOSURE_FLAGS": {
+      "adiabatic_Tz_no_go_exact": true,
+      "aggregate_identity_pass": true,
+      "already_activated_null_identity_exact": true,
+      "cadence_pressure_identity_exact": true,
+      "common_cadence_rate_H_cancellation_exact": true,
+      "conditional_front_assumption_crosscheck_exact": true,
+      "constant_active_energy_condition_exposed": true,
+      "finite_process_origin_classified": true,
+      "foundation_thermal_pressures_independent": true,
+      "foundation_threshold_radius_chain_rule_exact": true,
+      "high_cadence_process_bound_exact": true,
+      "lower_temperature_nonidentifiability_exact": true,
+      "lower_temperature_sign_classifier_exact": true,
+      "metric_process_dictionary_exact": true,
+      "moving_boundary_energy_ledger_exact": true,
+      "mutation_controls_pass": true,
+      "observable_definitions_recorded": true,
+      "operational_scale_rate_identity_exact": true,
+      "radiation_temperature_identity_exact": true,
+      "radiation_temperature_source_identity_exact": true,
+      "same_null_residual_exposed": true,
+      "schema_keysets_exact": true,
+      "simultaneous_expansion_and_ruler_shrinkage_consistent": true,
+      "threshold_level_set_speed_exact": true,
+      "two_sector_conservation_sum_exact": true,
+      "volume_measure_jacobian_exact": true
+    },
+    "CONVENTIONS": {
+      "activation_radius": "local threshold scale, not cosmic edge",
+      "metric_signature": "(+---)",
+      "moving_boundary_radius": "local flat physical Eulerian radius; F_0=0 regular center",
+      "source_signs": "J_b>0 outward; R_dot and Q_V signed; Q>0 foundation-to-thermal; Q_gamma>0 radiation injection; Pi_F>0 pressure",
+      "time_metric": "dot=d/dt; prime=d/dtau; tau(0)=0",
+      "units": "c0: speed; P and rho: energy/volume; J_b: signed energy flux/area; Q_V: signed energy-rate per solid angle"
+    },
+    "CROSSCHECK": "general beta antiderivative; beta=1/2,1,3/2; constant-D beta=3/8 interval; moving boundary; two thermal states at fixed cadence.",
+    "DATA_ROLE": "No observational data.",
+    "DEPENDENCIES": "None. This self-contained gate derives dictionary/continuity consequences and checks labeled assumption-consequence branches.",
+    "DOMAIN": "t in (0,T0], positive differentiable background functions, nonzero threshold gradient, local flat Eulerian boundary patch, equilibrium radiation branch.",
+    "ERROR_BOUND": "Zero for symbolic identities; N/A otherwise.",
+    "FAIL_CONDITION": "Any identity/schema/mutation fails or an unclosed numerical temperature, age, H_CC, D_L, or birth model is promoted.",
+    "FALSIFIER": "A counterexample under frozen assumptions falsifies the exact identity; no RefG-wide falsifier is defined here.",
+    "FILES": [
+      "w3_36_birth_threshold_thermal_preregistration.md",
+      "w3_36_birth_threshold_thermal.py",
+      "w3_36_result.json",
+      "w3_36_result.sha256"
+    ],
+    "FORWARD_MODEL": "N/A: no synthetic observable or real-data fit.",
+    "FREEDOM_LEDGER": {
+      "activation_and_threshold": {
+        "domain": "global birth and regular threshold neighborhoods",
+        "effective_complexity_measure": "functional/infinite-dimensional field and initial spectrum, one threshold scalar, one topology index",
+        "scale": "universal",
+        "source": "foundation action and initial state"
+      },
+      "atomic_SPS_response": {
+        "domain": "each transition, population, or response family",
+        "effective_complexity_measure": "functional/infinite-dimensional per response family",
+        "scale": "group",
+        "source": "atomic response and SPS calibration"
+      },
+      "background_dynamics": {
+        "domain": "positive homogeneous histories on (0,T0]",
+        "effective_complexity_measure": "functional/infinite-dimensional P_F(t), a(t), stress, and transfer histories",
+        "scale": "universal",
+        "source": "foundation action and energy balance"
+      },
+      "current_fitted_effective_dimension": 0,
+      "datum_selection_and_noise": {
+        "domain": "individual measurements or catalog entries",
+        "effective_complexity_measure": "N_nuisance declared by a future forward model; zero here",
+        "scale": "data",
+        "source": "datum-level likelihood and selection model"
+      },
+      "photon_propagation_law": {
+        "domain": "universal massless propagation sector",
+        "effective_complexity_measure": "functional/infinite-dimensional dispersion and coupling laws",
+        "scale": "universal",
+        "source": "foundation radiative action"
+      },
+      "source_history_and_luminosity": {
+        "domain": "each astrophysical source",
+        "effective_complexity_measure": "one functional history per object, or k_object after preregistration",
+        "scale": "object",
+        "source": "individual emitter history"
+      },
+      "survey_instrument_calibration": {
+        "domain": "each survey or instrument configuration",
+        "effective_complexity_measure": "N_calibration per survey/instrument group",
+        "scale": "group",
+        "source": "survey and instrument calibration model"
+      },
+      "thermal_species_closure": {
+        "domain": "each thermal species or sector",
+        "effective_complexity_measure": "functional/infinite-dimensional per species or sector",
+        "scale": "group",
+        "source": "stress tensor and kinetic/EOS closure"
+      }
+    },
+    "IDENTIFIABILITY": {
+      "adiabatic_branch": "Q_gamma=0 and 1+z=A0/Ae imply T_e=T_today(1+z)",
+      "common_clock_result": "a universal p rescales reaction rates and H equally",
+      "faster_cadence_implication": "p>1 alone does not order T_RefG and T_standard",
+      "foundation_pressure": "P_F controls p through p^2=P_F/P_F0",
+      "lower_temperature_hypothesis": "OPEN_NOT_DERIVED",
+      "radiation_equilibrium": "rho_gamma=a_R T^4 and P_gamma=rho_gamma/3",
+      "required_dimensionless_tests": [
+        "k_B T/E_atom",
+        "h nu/(k_B T)",
+        "Gamma_reaction/H_tau"
+      ],
+      "source_driven_branch": "T_e/[T_today(1+z)]=exp(-J_e); Q_gamma history is open",
+      "temperature_ratio": "T_RefG/T_standard=(P_gamma_RefG/P_gamma_standard)^(1/4)",
+      "thermodynamic_pressure": "P_th must come from the material-radiation stress tensor or EOS"
+    },
+    "METHOD": {
+      "operations": "SymPy differentiation, local continuity, Leibniz/FTC, substitution, integration, inequality checks, mutations, and schema checks",
+      "output": "strict atomic JSON plus external SHA-256",
+      "selection_rationale": "The claim concerns exact identities and identifiability, so symbolic rather than statistical methods are required."
+    },
+    "MODEL_VERSION": {
+      "change_boundary": "Any change to the finite origin, cadence-pressure bridge, scale split, threshold/moving-boundary/thermal domain, observable definitions, claim scope, or closure keys.",
+      "id": "W3-36-v1.2-FINITE-BIRTH"
+    },
+    "OBSERVABLE_MAP": {
+      "cosmic_chronometer": "H_CC=-(1+z_spec)^-1 dz_spec/dtau_SPS",
+      "luminosity_distance": "OPEN: requires photon flux, energy, arrival rate, reciprocity, and source-luminosity maps",
+      "prediction_status": "DEFINITIONS_ONLY__NO_NUMERICAL_CURVES",
+      "spectroscopic_geometric_factorization": "OPEN: nu_observed=nu_Ae Ae/A0 is not assumed or derived",
+      "spectroscopic_redshift": "1+z_spec=nu_A0/nu_observed"
+    },
+    "PASS_CONDITION": "All exact flags and mutations pass; schema is exact; every physical/observational closure remains false.",
+    "PROVENANCE": "Pinned preregistration, source hash, runtime versions, UTC, strict LF JSON, and external result checksum.",
+    "RESIDUAL": {
+      "adiabatic_log_TA_derivative": "0",
+      "adiabatic_temperature_redshift": "0",
+      "already_activated_null": "0",
+      "cadence_pressure": "0",
+      "common_cadence_cycle_count": "0",
+      "common_cadence_rate_ratio": "0",
+      "conditional_front_bound_gap": "0",
+      "conditional_front_bound_p_equals_one": "0",
+      "conditional_front_identity": "0",
+      "conditional_front_integral": "0",
+      "foundation_radius_chain": "0",
+      "high_cadence_bound": "0",
+      "high_cadence_equality": "0",
+      "metric_space": "0",
+      "metric_time": "0",
+      "moving_boundary_energy": "0",
+      "moving_boundary_general_center": "0",
+      "moving_boundary_leibniz_ftc": "0",
+      "operational_scale_rate": "0",
+      "process_time_power_antiderivative": "0",
+      "radiation_temperature": "0",
+      "radiation_temperature_source": "0",
+      "same_cadence_two_thermal_states": "0",
+      "spectroscopic_definition": "0",
+      "temperature_ratio": "0",
+      "temperature_source_ratio_derivative": "0",
+      "thermal_pressure_cadence_independence": "0",
+      "threshold_level_set": "0",
+      "two_sector_conservation": "0",
+      "volume_measure_jacobian": "0"
+    },
+    "TYPE": "EXACT_IDENTITY_CONDITIONAL_NO_GO_AND_CLOSURE_LEDGER",
+    "VALIDITY_HEALTH": "Bookkeeping and identifiability only; no physical cosmology or observational validation."
+  },
+  "evidence_type": "EXACT_IDENTITY",
+  "falsifier_triggered_for_refg": false,
+  "files": {
+    "preregistration": "w3_36_birth_threshold_thermal_preregistration.md",
+    "result": "w3_36_result.json",
+    "result_checksum": "w3_36_result.sha256",
+    "source": "w3_36_birth_threshold_thermal.py"
+  },
+  "finite_process_time_status": "FINITE_ALLOWED__NUMERICAL_VALUE_NOT_PREDICTED",
+  "identities": {
+    "already_activated_null": "dchi/dt=+/-c0 p^2/a; dchi/dtau=+/-c0/A",
+    "cadence": "p^2=P_F/P_F0; d_tau=p dt",
+    "common_cadence_cancellation": "Gamma_t/H_t=Gamma_tau/H_tau; int Gamma_t dt=int Gamma_tau d_tau",
+    "conditional_front_assumption_consequence": "assume constant E, spherical V, and a same-null front; with q=d ln(a)/d ln(P_F), D=1+3q: D(R)dR/dt=c0 p^2 and d_tau/dR=D(R)/(c0 p)",
+    "constant_energy_condition": "Q_V=R**2*(J_b - R_dot*rho_b)",
+    "finite_birth": "tau_0=int_0^T0 p(t)dt; finite iff p is integrable at t=0",
+    "high_cadence_bound": "if p>=1, tau_0=T0+int_0^T0[p(t)-1]dt>=T0",
+    "metric": "ds^2=p^2 c0^2 dt^2-(a^2/p^2)dchi^2=c0^2 d_tau^2-A^2 dchi^2",
+    "moving_boundary_energy": "local conservation plus Leibniz/FTC, with regular center F_0=0, gives dE_act/dt=4pi[R^2(rho_b R_dot-J_b)+Q_V]",
+    "moving_boundary_general_center": "before the regular-center specialization, add +4pi F_0",
+    "operational_scale": "A=a/p",
+    "operational_scale_rate": "H_A^(tau)=p^-1[a_dot/a-P_F_dot/(2P_F)]",
+    "radiation_temperature": "T=(3P_gamma/a_R)^(1/4)",
+    "radiation_temperature_source": "d ln(TA)/d_tau=Q_gamma/(4rho_gamma)",
+    "simultaneous_scale_evolution": "a_dot>0 and p_dot<0 both contribute positively to H_A^(tau)=p^-1(a_dot/a-p_dot/p)",
+    "threshold_coordinate_speed": "dchi_act/dt=-Phi_t/Phi_chi",
+    "threshold_foundation_radius_speed": "dR_act/dt=H_a R_act-a Phi_t/Phi_chi",
+    "two_sector_conservation": "rho_th'+rho_F'+3H_tau(rho_th+rho_F+P_th+Pi_F)=0",
+    "volume_measure": "V_F/V_op=p^3 for the same active cells"
+  },
+  "mechanism_status": "OPEN",
+  "model_version": "W3-36-v1.2-FINITE-BIRTH",
+  "negative_controls": {
+    "energy_missing_boundary_sweep": "4*pi*R**2*R_dot*rho_b",
+    "energy_nonregular_center_omitted": "4*pi*F_0",
+    "lower_temperature_assumed_from_cadence": "P_gamma_RefG**(1/4)/P_gamma_standard**(1/4) - 1/p",
+    "metric_time_missing_cadence": "p**2 - 1",
+    "null_front_wrong_power": "c_0*p*(1 - p)/a",
+    "spectroscopic_factorization_assumed": "nu_observed - A_e*nu_Ae/A_0",
+    "thermal_pressure_conflation": "P_probe",
+    "threshold_forced_to_null_without_PDE": "Phi_chi*c_0*p**2/a + Phi_t",
+    "threshold_wrong_sign": "2*Phi_t"
+  },
+  "observable_definitions": {
+    "cosmic_chronometer": "H_CC=-(1+z_spec)^-1 dz_spec/dtau_SPS",
+    "luminosity_distance": "OPEN: requires photon flux, energy, arrival rate, reciprocity, and source-luminosity maps",
+    "prediction_status": "DEFINITIONS_ONLY__NO_NUMERICAL_CURVES",
+    "spectroscopic_geometric_factorization": "OPEN: nu_observed=nu_Ae Ae/A0 is not assumed or derived",
+    "spectroscopic_redshift": "1+z_spec=nu_A0/nu_observed"
+  },
+  "observational_status": "OPEN_NOT_EXECUTED",
+  "physical_closure_flags": {
+    "CMB_recombination_BBN_validated": false,
+    "H_CC_curve_derived": false,
+    "JWST_structural_growth_validated": false,
+    "a_of_P_F_derived": false,
+    "activation_front_eom_derived": false,
+    "amplitude_action_derived": false,
+    "finite_process_age_numerically_predicted": false,
+    "foundation_energy_balance_derived": false,
+    "foundation_to_thermal_transfer_derived": false,
+    "initial_spectrum_and_topology_derived": false,
+    "luminosity_distance_derived": false,
+    "spectroscopic_redshift_derived": false,
+    "stellar_population_clock_derived": false,
+    "temperature_below_standard_derived": false,
+    "temperature_history_derived": false,
+    "threshold_value_derived": false
+  },
+  "provenance": {
+    "generated_utc": "2026-08-16T13:58:59.416150+00:00",
+    "line_endings": "LF",
+    "platform": "Windows-10-10.0.22000-SP0",
+    "preregistration": {
+      "expected_sha256": "ada6b4790a5072d1f9b019b14e52b79157e2fbfd5672a839026c9786783afb47",
+      "path": "RefG/work 3/Cosmology_and_LSS/w3_36_birth_threshold_thermal_preregistration.md",
+      "sha256": "ada6b4790a5072d1f9b019b14e52b79157e2fbfd5672a839026c9786783afb47",
+      "valid": true
+    },
+    "python": "3.10.6",
+    "source": {
+      "path": "RefG/work 3/Cosmology_and_LSS/w3_36_birth_threshold_thermal.py",
+      "sha256": "dc3f8a14e459f30d65ed47065b5d8dad80f3b79bfec78e3208eb61932b34b440"
+    },
+    "sympy": "1.13.3"
+  },
+  "refg_status": "OPEN",
+  "schema_version": "1.0",
+  "scope_status": "PASS_EXACT_IDENTITIES__FINITE_BIRTH_COMPATIBLE__PHYSICAL_AND_THERMAL_CLOSURES_OPEN",
+  "status": "PASS",
+  "temperature_claim_status": "GENUINELY_HOT_BRANCH_ALLOWED__LOWER_THAN_STANDARD_OPEN",
+  "thermal_identifiability": {
+    "adiabatic_branch": "Q_gamma=0 and 1+z=A0/Ae imply T_e=T_today(1+z)",
+    "common_clock_result": "a universal p rescales reaction rates and H equally",
+    "faster_cadence_implication": "p>1 alone does not order T_RefG and T_standard",
+    "foundation_pressure": "P_F controls p through p^2=P_F/P_F0",
+    "lower_temperature_hypothesis": "OPEN_NOT_DERIVED",
+    "radiation_equilibrium": "rho_gamma=a_R T^4 and P_gamma=rho_gamma/3",
+    "required_dimensionless_tests": [
+      "k_B T/E_atom",
+      "h nu/(k_B T)",
+      "Gamma_reaction/H_tau"
+    ],
+    "source_driven_branch": "T_e/[T_today(1+z)]=exp(-J_e); Q_gamma history is open",
+    "temperature_ratio": "T_RefG/T_standard=(P_gamma_RefG/P_gamma_standard)^(1/4)",
+    "thermodynamic_pressure": "P_th must come from the material-radiation stress tensor or EOS"
+  },
+  "type": "EXACT_IDENTITY_CONDITIONAL_NO_GO_AND_CLOSURE_LEDGER"
+}
