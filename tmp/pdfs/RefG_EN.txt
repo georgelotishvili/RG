@@ -1,0 +1,2565 @@
+Refractive Gravity: An Ontological Picture and the
+     Foundations of Mathematical Formalism
+                                       George Lotishvili
+                           Associate Professor, East European University
+                                          Tbilisi, Georgia
+                                    g_lotishvili@eeu.edu.ge
+
+                                                2026
+
+
+                            Zenodo DOI: 10.5281/zenodo.21325652
+
+                                              Abstract
+    This monograph develops the systematic ontological architecture of Refractive Gravity (RefG),
+a unified physical framework in which gravitation, discrete matter, and the operational structure
+of measurability emerge from one universal pre-spatial foundation. Its working Genesis scenario
+begins at a centerless initial boundary common to the entire foundation, assigned t = 0 and τ = 0,
+where the first minimally distinguishable relations appear. Nonlinear modes subsequently localize as
+oscillon seeds; overlap of their resonant fields and thresholded resonant coupling can increase network
+connectivity, while stable matter forms only through later locking. This causal ordering is internally
+consistent under the tested assumptions, but the transition action, actual topology, coupling
+dynamics, and initial thermal state remain open. Locally confined nonlinear wave configurations—
+oscillons—induce a static pressure deficit in the surrounding medium through Bernoulli-type
+dynamics (−∆P ∝ ρdyn ), registered externally as active gravitational mass. Gravitational attraction
+and light deflection emerge as universal refraction across this inhomogeneous pressure landscape; on
+the static weak-field first post-Newtonian branch, the biconformal mechanism yields β = γ = 1 and
+recovers the classic predictions of General Relativity. Across astrophysical scales, the framework
+develops a conditional finite-core map for compact interiors, connects a macroscopic polarization
+potential to MOND and the asymptotic Baryonic Tully–Fisher relation, and reports a fixed-input
+comparison with 2,788 SPARC measurements, with an RMS scatter of 0.141 dex and a mean residual
+of −0.012 dex. Cosmologically, the selected expansion–relaxation branch distinguishes growth of
+the foundation link scale a from contraction of the material standard p, with observable scale
+A = a/p and a finite process history whose duration remains to be derived. Type Ia supernova
+time dilation and early-galaxy maturity are separate tests of this branch. At microscopic scales,
+a candidate three-dimensional volumetric resonator and population-locked phase synchronization
+provide a spectral map for discrete particle modes and a candidate C3 /Koide construction, while
+Lk = W r + T w organizes geometric candidate readings of spin-1/2, Dirac g = 2, electric charge,
+and color confinement.
+
+
+
+
+                                                  1
+Contents
+Preface                                                                                                 4
+
+Introduction                                                                                            4
+   Operational Foundations and Three Fundamental Principles . . . . . . . . . . . . . . . . . .         5
+   Lorentz Invariance and Historical Precedents . . . . . . . . . . . . . . . . . . . . . . . . . .     5
+   Seven Core Theoretical Contributions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .     5
+   Historical Lineage and Priority Boundaries . . . . . . . . . . . . . . . . . . . . . . . . . . . .   7
+
+1 The Ontological Foundation                                                                            7
+  1.1 A Single Foundation and Its Manifested Medium: Substance, Void, and the Dynamics of
+      Existence . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .    7
+  1.2 From Single Existence to Multiplicity: The Emergence of Measurability and Operational
+      Space . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .    8
+  1.3 Nodal Transmission: Waves, Time, and Self-Calibration . . . . . . . . . . . . . . . . .           10
+  1.4 Local Collective Cadence and Resonant Locking . . . . . . . . . . . . . . . . . . . . . .         11
+  1.5 Oscillons, Pressure Deficits, and the Origin of Mass . . . . . . . . . . . . . . . . . . . .      12
+
+2 Gravity as Refraction                                                                                 13
+  2.1 Three Simultaneous Operational Shifts . . . . . . . . . . . . . . . . . . . . . . . . . . .       13
+  2.2 Quadratic Coupling and the Factor of Two . . . . . . . . . . . . . . . . . . . . . . . . .        15
+  2.3 Refractive Attraction, Inertia, and the Absence of Friction . . . . . . . . . . . . . . . .       16
+  2.4 Local Unobservability and the Principle of Relativity . . . . . . . . . . . . . . . . . . .       17
+  2.5 Historical Context and the Role of RefG . . . . . . . . . . . . . . . . . . . . . . . . . .       18
+
+3 Three Scales and Cosmological Horizons                                                                19
+  3.1 The Local Scale: Compact Objects, Internal State, and External Readout . . . . . . .              19
+  3.2 The Galactic Scale: Vortical Flow and MOND . . . . . . . . . . . . . . . . . . . . . . .          20
+  3.3 The Cosmological Scale: Expansion of the Manifested Domain, Foundation Relaxation,
+      and Two Descriptions of Time . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .      23
+  3.4 Quantum Randomness and Two-Level Time . . . . . . . . . . . . . . . . . . . . . . . .             26
+
+4 Oscillons and the Origin of Matter                                                                    26
+  4.1 Many Patterns in One Ocean . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .        26
+  4.2 Localized Confinement: Massive and Massless Modes . . . . . . . . . . . . . . . . . . .           27
+  4.3 Self-Forming Resonators and the Two-Level Filter . . . . . . . . . . . . . . . . . . . . .        28
+  4.4 The Global Resonator: Unity of Micro- and Macro-Spectra . . . . . . . . . . . . . . . .           29
+  4.5 Discreteness and the C3 Generation Symmetry . . . . . . . . . . . . . . . . . . . . . .           30
+
+5 Topology and Quantum Numbers                                                                          31
+  5.1 Phase, Orientation, and Topological Quantization . . . . . . . . . . . . . . . . . . . . .        31
+  5.2 Spin and Fermionic Statistics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .     32
+  5.3 Charge, the Photon, and the Electromagnetic Channel . . . . . . . . . . . . . . . . . .           33
+  5.4 Color Confinement and Three Generations . . . . . . . . . . . . . . . . . . . . . . . . .         33
+  5.5 Geometric Map of the Standard Model . . . . . . . . . . . . . . . . . . . . . . . . . . .         34
+  5.6 Fundamental Constants: α and the Gravitational Hierarchy . . . . . . . . . . . . . . .            35
+
+6 Epilogue: Boundaries of Knowledge                                                                     36
+  6.1 Why One Foundation and One Manifested Medium? . . . . . . . . . . . . . . . . . . .               36
+  6.2 Three Operational Boundaries . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .      37
+  6.3 Methodological Principles . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .     38
+  6.4 Where This Program Could Die (The Falsification Map) . . . . . . . . . . . . . . . . .            38
+
+
+                                                    2
+Conclusion                                   39
+
+Current Status of the Research Program       40
+
+References                                   42
+
+
+
+
+                                         3
+Preface
+This monograph presents an ontological account of Refractive Gravity (RefG), unifying diverse lines of
+theoretical inquiry into a single, coherent physical vision. RefG is a research program under stepwise,
+disciplined development. The central aim of this text is to provide the reader with a deep, intuitive
+picture of the fundamental architecture of the Universe; the underlying computational formalism and
+executable verification gates are preserved in the public scientific archive on Zenodo [Lotishvili, 2026a,b].
+    For the current status of the hypotheses, formal proofs, and empirical boundaries discussed through-
+out this work, the reader is referred to the concluding section, “Current Status of the Research Program.”
+
+
+Introduction
+Modern fundamental physics rests upon a monumental, yet internally divided, architecture. On the
+one hand, Albert Einstein’s General Relativity describes gravitational interaction as the dynamic
+geometry of a smooth, four-dimensional pseudo-Riemannian spacetime; on the other, Quantum Field
+Theory represents matter and gauge forces as operator-valued excitations on a fixed, predominantly flat
+Minkowski background. Both pillars enjoy unprecedented levels of empirical confirmation, yet their
+internal ontological foundations remain fundamentally incompatible: gravity rejects a static background
+and dynamically generates the arena itself, whereas quantum mechanics, to preserve unitarity and its
+probabilistic structure, a priori requires a pre-determined, external temporal parameter.
+    At the interface of this profound disconnection, contemporary physics confronts a cluster of unresolved
+foundational crises:
+
+   1. The Singularity Problem: At the cores of black holes and at the cosmological origin, the
+      continuous geometry of classical spacetime terminates in infinite curvature, signaling a breakdown
+      of physical predictability.
+
+   2. Astrophysical and Cosmological Anomalies: Galactic rotation curves, the Radial Accel-
+      eration Relation (RAR), and the Baryonic Tully–Fisher Relation (BTFR) are conventionally
+      accommodated by postulating dark matter halos, while the accelerated expansion of the Universe
+      is attributed to dark energy (the cosmological constant Λ), whose theoretical vacuum expectation
+      value exceeds observational limits by 120 orders of magnitude.
+
+   3. Structural and Hierarchical Puzzles: The origin of quantum measurement randomness, the
+      physical nature of the arrow of time, the pronounced mass hierarchy among charged leptons and
+      quarks, the unexplained values of dimensionless coupling constants (such as the fine-structure
+      constant α ≈ 1/137), and the extreme weakness of gravity relative to the electroweak scale
+      (MPl /me ∼ 1022 ) remain arbitrary, disconnected inputs in the Standard Model.
+
+    The history of physics demonstrates that such persistent, isolated paradoxes typically indicate the
+absence of a deeper ontological substrate. Numerous grand unifications have sought to bridge this
+divide: Albert Einstein spent his final decades attempting to subsume electromagnetism and matter
+into an extended spacetime geometry; John Archibald Wheeler explored the nexus of geometry and
+information through the guiding principles of Mass without Mass and It from Bit [Wheeler, 1955, 1990];
+Andrei Sakharov interpreted gravity as an elastic resistance (“induced gravity”) emerging from the
+quantum fluctuations of the vacuum [Sakharov, 1967]; Ted Jacobson derived Einstein’s field equations
+directly from the thermodynamic equation of state of local causal horizons [Jacobson, 1995]; Erik
+Verlinde formulated gravitation as an emergent holographic entropic force [Verlinde, 2011]; and Roger
+Penrose formalized the inescapable connection between global causal structure, gravitational collapse,
+and spacetime singularities [Penrose, 1965].
+    While these frameworks employ distinct mathematical vocabularies, they share a singular, founda-
+tional question: Is it possible that the entire tapestry of physical phenomena—space, time,
+
+
+
+                                                     4
+gravity, and the particle spectrum—is the dynamic manifestation of a single primary
+ontological substrate?
+   This monograph answers this question in the affirmative, presenting the unified conceptual and
+ontological framework of Refractive Gravity (RefG).
+
+Operational Foundations and Three Fundamental Principles
+The standard language of physics typically begins with an established measuring apparatus: smooth
+coordinates, a continuous time axis, and operator fields are treated as axiomatic primitives. RefG
+grounds its inquiry in the strict operationalism of Percy Bridgman [Bridgman, 1927]: Before speaking
+of space, time, or mass, what physical process generates the local, distinguishable differences upon which
+rulers and clocks function?
+    In 1905, Einstein dismantled the concept of absolute time by operationally defining simultaneity via
+clocks and light signals [Einstein, 1905]. RefG pushes this operational critique to a more primordial
+level: What physical mechanism constructs the stable clock, the material particle, and the
+propagating wave signal upon which all such measurements fundamentally depend?
+    In response to this question, RefG formulates three fundamental postulates:
+   1. Monistic Ontological Foundation: Nature possesses strictly one universal, pre-spatial, and
+      pre-temporal foundation. Its resonant self-distinction generates a manifested medium whose
+      phase, pressure, shear, rotational, and topological modes are operationalized as elementary fields,
+      forces, and particles.
+
+   2. The Oscillon Nature of Matter: A stable massive material unit is an oscillon—a locally
+      confined, self-sustaining nonlinear wave configuration of the manifested medium. Massless
+      carrier modes are the freely propagating radiation waves of the same medium. The localized
+      oscillatory action of an oscillon generates a persistent, long-range static pressure-deficit profile in
+      the surrounding substrate.
+
+   3. Gravity as Effective Refraction: Oscillon matter establishes an inhomogeneous pressure-
+      deficit landscape throughout the medium. This deficit alters the effective geometry, causing the
+      wavepaths of light and matter to bend refractively. Gravitational attraction is thus revealed as
+      the physical mechanism of spacetime curvature.
+
+Lorentz Invariance and Historical Precedents
+The Michelson–Morley experiment of 1887 detected no “aether wind” from the Earth’s orbital motion,
+placing stringent constraints on 19th-century models of a rigid, matter-independent “luminiferous aether”
+[Michelson and Morley, 1887]. The RefG foundation-medium belongs to an entirely different ontological
+category: here, measuring rods, clocks, the observer, and propagating light are themselves collective
+wave excitations woven from this very medium.
+    When an observer and their apparatus are co-emergent wave modes of the medium, uniform
+translational motion corresponds to a uniform phase transformation of the wavepacket. Along the
+Lorentz-covariant branch, this motion leaves no dissipative wake or detectable “wind.” This realization
+revitalizes Lord Kelvin’s (William Thomson’s) visionary intuition regarding “vortex atoms” [Thomson,
+1867]: Matter is not a foreign body inserted into a passive background—matter is the
+organized, self-sustaining motion of the medium itself.
+
+Seven Core Theoretical Contributions
+This text establishes the ontological architecture of RefG, endowing the computational formalism
+archived on Zenodo with unambiguous physical meaning. While medium-based unifications have
+notable precedents—such as Winterberg’s Planck aether model [Winterberg, 2002]—RefG places
+particular emphasis on the operational genesis of measurability and population-level resonant locking.
+
+                                                     5
+The core theoretical findings of this work are distilled into seven principal points:
+1. The Birth of Time and a Common Oscillon Cadence: In the working origin scenario
+   of RefG, time begins at a centerless initial transition common to the entire foundation, which
+   produces the first minimally distinguishable relations. Physical duration and event order are
+   undefined on the pre-origin side of this boundary. Nonlinear modes localize as oscillon seeds only
+   within the relational layer that has already formed, while stable material oscillons arise through
+   later locking. Their local collective cadence, Ω(x), is established by nonlinear mutual locking
+   and resonant synchronization (νi = ni Ω(x)). Gravitational time dilation is the coordinated
+   reconfiguration of this local resonant network in response to a change in foundation pressure.
+2. Two-Channel Mass Accounting: The theory rigorously decouples two physical quantities:
+   the oscillon’s internal topological state (its invariant internal energy store) and its externally
+   read gravitational mass, which represents the volume-integrated pressure deficit induced in the
+   surrounding medium.
+3. Biconformal p/p2 Scaling and the Factor-of-Two Deflection: Along the first-order biconfor-
+   mal branch, operational length, externally read mass, and clock rates scale linearly with substrate
+   pressure (p), whereas the coordinate propagation of light scales quadratically (p2 ), rooted in the
+   differing geometrical nature of network nodes versus interconnecting links. In the weak-field
+   regime, this mechanism exactly reproduces the metric predictions of General Relativity, yielding
+   the double deflection of light and Shapiro time delay (PPN β = γ = 1). At macroscopic scales,
+   this scalar-pressure channel, augmented by the non-integrable strain of topological defects and
+   the effective field theory (EFT) framework of Fierz–Pauli and Deser [Deser, 1970], closes into the
+   full Einstein–Hilbert action.
+4. The Koide C3 Phase Geometry: In the three-phase mass map of charged leptons (e, µ, τ ),
+   the mass angle θ = h/9 represents the reduced coordinate of a ninth-order holonomic return
+   cycle. On the selected candidate branch, the first non-trivial topological return gives h = 2 and
+   θ = 2/9, while internal vibrational-channel
+                                 √             equipartition is associated with Koide’s dimensionless
+   modulation amplitude AK = 2.
+5. The Nodal Origin of the Fine-Structure Constant (α): The fine-structure constant
+   α ≈ 1/137 is interpreted as the dimensionless impedance ratio of the substrate’s electric-flux and
+   transverse-photon response channels, remaining invariant under local pressure transformations.
+6. A Candidate Genesis, Physical Expansion, and the Global Slowing of Time: The
+   selected scenario begins with a centerless initial boundary common to the entire foundation,
+   assigned t = 0 and τ = 0. The first distinguishable relations and the first physical ordering of events
+   arise there. Resonant fields extending from oscillon seeds within the already formed relational
+   layer overlap; the resonant coupling produced when a physical distinguishability threshold is
+   crossed increases the connectivity and operational extent of the network. Stable matter, radiation,
+   and long-term relaxation belong to later phases. The internal W3-37–W3-39 reports test only
+   three narrow conditions: the selected event ordering contains no closed causal cycle; connectivity
+   without a unique center is possible on a finite periodic graph; and a conditional post-origin
+   ledger of energy-transfer signs closes exactly. They do not derive the physical trigger of the
+   first transition, the actual topology of the Universe, the propagation and coupling dynamics of
+   resonant fields, or the initial thermal state. A separate post-origin cosmological branch considers
+   simultaneous growth of the foundation link-length scale and contraction of material standards,
+   combined in the operational scale A = a/p. The history measured by present-day clocks spans
+   approximately 13.8 Gyr; process history is also finite on the selected branch, while its exact
+   duration remains to be derived.
+7. Two Readouts of a Single Spectral Operator—A Central Hypothesis: The short-
+   wavelength eigenfunctions of a unified volumetric Helmholtz/Laplace-type spatial resonator are
+
+                                                  6
+      read as microscopic particle states, whereas its long-wavelength modes are read as candidate
+      organizers of the cosmic web and galaxy-cluster structure.
+
+Historical Lineage and Priority Boundaries
+Every component of RefG is anchored in the established heritage of theoretical physics:
+    • The p/p2 biconformal scaling shares conceptual kinship with the Polarizable Vacuum (PV)
+      frameworks of Dicke and Puthoff [Dicke, 1957, Puthoff, 2002]; in RefG, it arises from the discrete
+      ontology of a nodal network and two-channel mass accounting rather than phenomenological
+      dielectric permittivity.
+
+    • The three-phase geometric reading of Koide’s formula extends the pioneering work of Brannen
+      and Foot [Brannen, 2010, Foot, 1994], while the holonomic origin of 2/9 resonates with Shulga’s
+      compact family cycles [Shulga, 2026]. RefG unifies this structure with θ-blindness arguments and
+      the C3 tetrahedral symmetry of a 3D volumetric resonator.
+
+    • Cosmological vacuum-pressure relaxation builds upon the q-theory of Klinkhamer and Volovik
+      and its tendency toward saturation [Klinkhamer and Volovik, 2008], while the motivation for
+      three spatial dimensions is related to studies of topological knotting and vortex-line stability
+      [Whitrow, 1955, Berera et al., 2017].
+    The defining contribution of this monograph is the synthesis of these disparate threads into a single,
+logically connected research program: tracing the path from the operational birth of measurability and
+oscillon mass to galactic vortex dynamics and cosmological horizons.
+    The text invites the reader to follow this chain and see how a unified physical intuition unfolds into
+a broad panorama of contemporary fundamental physics.
+
+
+1     The Ontological Foundation
+1.1    A Single Foundation and Its Manifested Medium: Substance, Void, and the
+       Dynamics of Existence
+Modern fundamental physics describes the Universe as an assembly of mutually independent fields. In
+the Standard Model, each field is equipped with its own internal gauge symmetry, intrinsic degrees of
+freedom, and coupling parameters. Refractive Gravity (RefG) replaces this pluralistic ontology with a
+single, uncompromising monistic principle: Nature possesses strictly one universal, pre-spatial
+ontological foundation. Its resonant self-distinction generates a measurable, multi-channel medium.
+What we observe as distinct fundamental fields, gauge interactions, and elementary particles are the
+topological, phase, pressure, shear, and rotational modes of this single manifested medium. Throughout
+this monograph, the term “foundation-medium” denotes this self-distinguished, physically manifested
+state of the primary substrate.
+    This monistic vision possesses deep historical roots in theoretical physics. As early as 1870, William
+Kingdon Clifford formulated the prophetic hypothesis that matter consists of small, propagating ripples
+of spatial curvature [Clifford, 1876]. RefG endows this geometric intuition with a concrete physical
+mechanism: the self-distinguished medium supports not only geometric curvature responses, but also
+pressure, shear, hydrodynamic, and resonant channels.
+    A prominent theoretical precedent for the emergence of diverse particle and gauge sectors from
+a single substrate is the string-net condensation framework of Michael Levin and Xiao-Gang Wen
+[Levin and Wen, 2005]. In their model, collective many-body entanglement within a simple bosonic
+system naturally gives rise to both gauge bosons (photons, gluons) and fractional fermionic excitations
+(electrons, quarks). While the Levin–Wen model presupposes a pre-existing spatial lattice, RefG grounds
+this unifying capacity in the dynamic self-distinction of a single, pre-spatial foundation.
+    Conceptualizing the Universe as a unified continuum requires two asymptotic dynamical bounds:
+
+                                                    7
+   1. The Absolute Maximum of Substance: A saturation limit characterized by maximal pressure,
+      mass-energy potential, and operational nodal density.
+
+   2. The Zero (Vacuum) Bound: A limit in which interaction and physical measurability vanish
+      entirely.
+    This “void” is not an abstract metaphysical nothingness, but the operational limit where physical
+distinguishability ceases. Objective physical reality unfolds as the bounded, nonlinear oscillatory
+dynamics between these two poles, wherein stable local units of the foundation—“nodes of existence”—
+are formed.
+    The working background φ = 0 is the quiescent yet physically active state situated between these
+two extrema. At the limit of zero distinguishability, nodal interactions and measurable traces completely
+vanish; φ = 0 designates the unperturbed baseline state of the manifested medium.
+    The ontological unity of the manifested medium is accompanied by a rich multi-channel capacity. The
+medium can compress (volumetric pressure), twist (topological torsion), establish vortical circulation,
+and support transverse wave excitations. A hydrodynamic analogy provides useful intuition: a single
+fluid concurrently supports isotropic hydrostatic pressure, vortex circulation, shear stress, and surface
+waves. Similarly, the RefG manifested medium integrates phase, pressure, shear, and topological
+responses, providing the dynamic substrate upon which electric charge, spin, and the particle spectrum
+are constructed.
+    The unperturbed state (φ = 0) represents the baseline vacuum regime. The foundation is om-
+nipresent; what varies locally is its degree of excitation, the operational density of distinguishable nodes,
+and the coupling strength between them. A drop in pressure, or rarefaction, corresponds to an increase
+in the unmeasured operational intervals separating nodes.
+    Here, “pressure” serves as the effective state variable of energy density in RefG. The baseline φ = 0
+allows deviations in both directions: φ > 0 corresponds to a compressed, high-pressure branch, while
+φ < 0 denotes a rarefied, deficit branch. The entire gravitational readout in RefG is constructed
+upon the gradient profile of this deficit branch (φ < 0). Classical Bernoulli pressure serves as the
+direct physical analogue: for an external observer, a local shift in φ is simultaneously registered as
+gravitational time dilation, coordinate retardation of light, operational length contraction, and effective
+gravitational mass.
+
+1.2   From Single Existence to Multiplicity: The Emergence of Measurability and
+      Operational Space
+Under the working postulate of RefG, physical change, event order, duration, and geometry are not yet
+assigned to the foundation’s initially undifferentiated state. In this picture there is no elapsed time
+before the birth of the Universe: birth establishes the first physical event and the origin of temporal
+reckoning.
+    The most coherent working origin scenario adopted here is a centerless initial transition common
+to the entire foundation. It is one initial condition with no distinguished spatial center. It does not
+describe a signal propagating through an already existing space, because physical distance, propagation
+speed, and an external vantage point are undefined on its pre-origin side.
+    At this boundary the foundation first produces minimally distinguishable relations. The physical
+ordering of events and both temporal measures begin there, with t = 0 and τ = 0. This first layer of
+distinguishable connections is the minimal network of existence; material particles and stable oscillons
+have not yet formed.
+    Once these relations exist, some nonlinear modes localize as oscillon seeds. Resonant fields generated
+by those seeds propagate over the existing relational layer and overlap. In the working scenario, when
+a physical distinguishability threshold is crossed, the resulting resonant coupling joins operationally
+separated regions into one connected network. The first distinguishable relation therefore precedes this
+coupling. Local locking and network-wide connection may be partly contemporaneous; their actual
+ordering must follow from the dynamics of the resonant fields and the physical coupling threshold.
+
+                                                     8
+    The most natural candidate form of the Universe is an interconnected network with neither a
+boundary nor a distinguished center. An exact finite periodic-graph construction shows only that
+finiteness, connectivity, and the absence of a unique center are mathematically compatible. It is an
+existence witness, not a derivation of the Universe’s dimension or topology.
+    Energy in the initial coherent state may be redistributed among oscillon seeds, their resonant fields,
+freely propagating waves, a thermal sector, and the collective deformation of the foundation. In the
+conditional post-origin local ledger of W3-39, assuming a continuity law and a moving boundary, the
+energy change separates into a volume source, outward boundary flux, a possible central term, and the
+energy swept into the enlarging domain. Antisymmetric transfers among predeclared sectors cancel
+in the total. The actual genesis energy law remains open. At this stage melting is only a working
+metaphor: whether conversion releases or absorbs energy depends on phase energies and the equation
+of state.
+    In this scenario the first collective change initiates the foundation’s self-distinction. Operational
+space becomes measurable when a stable relation between nodes reaches the minimum distinguishability
+scale ℓ∗ . The interval between any two distinguishable nodes is the physical embryo of space; signal delay
+across their relation produces measurable duration, while the local energetic strain of differentiation is
+the ontological embryo of mass. Externally read gravitational mass is defined later by integrating the
+deficit profile that this strain induces in the surrounding foundation.
+    Physical meaning invariably requires comparison. At the ontological origin, three indivisible elements
+emerge:
+
+   • Node: A locally distinguishable, discrete state of the foundation;
+
+   • Trace: The energetic and phase alteration imparted by a node to the surrounding medium;
+
+   • Relation: The operational capacity to compare one local state with another.
+
+    From this foundational triad unfolds the entire operational network that macroscopically manifests
+as space, time, and matter.
+    A completely undistinguished foundation possesses a single, indivisible identity. Its resonant
+self-distinction generates the first persistent difference, marking the birth of quantity and counting.
+Distinguishable manifestations are registered as separate physical units without the foundation frag-
+menting into disconnected parts—multiplicity consists of the stable, mutually distinct states of one
+fundamental identity.
+    The primary unit of measurement is not an isolated object, but a preserved relation. In an
+undistinguished state, no second entity exists for comparison. Self-distinction yields two distinct states
+of the same foundation and establishes the primary link between them; here begin counting, spatial
+extension, and the relative ordering of events.
+    In information-theoretic terms, the first preserved distinction is analogous to a bit: a distinguishable
+trace is registered as “1”, and its absence within a given relational frame as “0”. Complex arrangements
+of these binary states generate rich macroscopic structures, just as the mutually distinct states of the
+foundation generate the diversity of the observable cosmos.
+    The concept of a single object existing at different locations at different times illustrates this logic.
+If the temporal labels along its worldline are removed, a single identity leaves traces across multiple
+locations. RefG elevates this intuition to the pre-spatial domain: persistent self-distinctions of the
+foundation construct the very locations that can subsequently be counted and compared. The atemporal
+status of the foundation and the metric age of the observable Universe thus belong to distinct conceptual
+levels.
+    This perspective is crucial for understanding the nature of the observer. Observers and their
+measurement instruments are themselves complex, composite wavepackets built from this nodal network.
+This deepens Percy Bridgman’s operationalism, which asserts that physical concepts are defined solely by
+the operations required to measure them [Bridgman, 1927]. RefG provides this operational philosophy
+
+
+
+                                                     9
+with an ontological substrate, investigating the physical conditions that make measurement operations
+possible in the first place.
+    The observable Universe is not matter placed inside an empty geometric container; it is the ongoing
+process of self-distinction within the foundation-medium. Operational space emerges along the traces
+of this distinguishability. Beyond these traces, the foundation may persist, but as a physical object it
+manifests only where it leaves an operational, measurable imprint.
+    The absolute separation between nodes cannot be measured directly, because no observer possesses
+a measuring rod external to the medium. What is measurable is strictly the operational trace of the
+inter-node interval. Operational space is born when the relation between at least two nodes becomes
+physically distinguishable. Below this threshold, variation remains an unmanifested internal state;
+above it, it registers as shifts in clock rates, operational sizes, mass readouts, and signal propagation.
+    RefG posits a dynamic lower bound of minimal operational distinguishability, denoted by ℓ∗ :
+   • At scales smaller than ℓ∗ , no independent measurable relation can form (information is indistin-
+     guishable);
+   • At the scale ℓ∗ , the first stable, physically distinguishable record emerges;
+   • At scales larger than ℓ∗ , inter-node intervals are operationalized as changes in pressure, clock
+     rates, and signal propagation.
+
+                                 p bound is that an infinitely fine record would lack dynamical stability.
+    The physical rationale for this
+While the Planck length ℓPl = ℏG/c3 is a dimensional scale constructed from fundamental constants,
+ℓ∗ represents the dynamical threshold for stable record formation. Their potential coincidence depends
+on the microdynamics of the foundation.
+    Consequently, the ontological origin of the Universe is not a pre-existing manifold of geometric
+points. Prior to the emergence of inter-node intervals, there are neither distinct points nor spatial
+extension. Such a state cannot even be termed a “single point,” as a point is a concept belonging to an
+already realized geometry; it is a completely undifferentiated primary foundation-state. Multiplicity
+and geometry emerge only when an asymmetry generates a stable trace, rendering inter-node relations
+operationally readable.
+    Here lies the physical essence of gravity: when local coupling between nodes weakens (pressure
+falls), this state is simultaneously registered by an external observer as clock retardation, contraction
+of operational scale, and signal delay. This coordinated triad of physical responses is precisely what
+macroscopic observers perceive as a “gravitational field.”
+
+1.3   Nodal Transmission: Waves, Time, and Self-Calibration
+The foundation’s first collective change creates a minimal relational layer. Each node is a functionally
+distinguishable state that preserves the trace of a physical change and can relay it to adjacent nodes.
+Subsequent transmission, together with resonant coupling produced by overlapping resonant fields
+of oscillon seeds once the distinguishability threshold is crossed, joins this layer into an operational
+network. Spatial proximity and operational distance emerge from the stable organization of these
+physical couplings.
+    A wave in this network is the sequential transmission of state and phase. Light is a freely propagating
+transverse phase trace, whereas an oscillon is a locally confined, self-sustaining configuration of the
+same transmission mechanism. When matter moves, this confined wavepacket is transferred from node
+to node, reconstructing its phase integrity at each successive location. Light and matter are thus the
+propagating and localized modes of a single medium.
+    In the working origin scenario, the first foundation-wide self-distinction creates the first ordering of
+events and begins time. Every subsequent transmission within the formed network extends that order.
+Recurrent phase relations establish a process cadence, while comparisons among stable oscillon cycles
+make clock measurement possible. The local rate of time is the network’s collective rhythm: the rate at
+which the medium relays state and an oscillon completes its internal cycle.
+
+                                                    10
+    Thermal insulation in double-pane windows provides a helpful analogy. Rarefying the intermediate
+gas reduces molecular collisions and slows the rate of heat conduction. RefG extends this intuition to
+the nodal network, linking the transmission rate directly to nodal density and coupling strength.
+    The observer’s body, clocks, rulers, light, and matter are all modes of this same medium. In a deficit
+region, nodal density, transmission rates, oscillon cycles, and operational sizes undergo a coordinated
+shift. Local measuring devices reconfigure synchronously with their environment; consequently, an
+observer using local standards measures normal clock rates, standard dimensions, and the invariant
+local speed of light (c). Comparing processes that have traversed different environments, however,
+reveals objective differences in accumulated time, operational size, and mass.
+    Along the selected Lorentz-covariant low-energy branch, this transmission is isotropic, non-dissipative,
+and strictly respects Lorentz symmetry: the local speed of light remains constant, and uniform motion
+leaves no frictional wake.
+
+1.4   Local Collective Cadence and Resonant Locking
+The birth of time and the formation of a local collective cadence are distinct stages. In the working
+scenario, time begins with the first foundation-wide self-distinction. A local common cadence forms
+later, when the intrinsic frequencies of stable material oscillons settle into fixed, persistent ratios. In
+that collective state, the temporal rate is governed by the internal coordination and nonlinear mutual
+locking of the local network, in a manner analogous to Kuramoto-type synchronization.
+    At a deeper ontological level, the foundation possesses neither a preassigned tone nor a ready-made
+clock. After the connection network has formed, the manifested medium may behave like an acoustic
+instrument—a vibrating volumetric resonator whose connection operator and boundary conditions
+determine the admissible modes. The three-dimensionality of this resonator belongs to the candidate
+physical map of RefG.
+    The physics of a bell offers a vivid illustration: the acoustic signature of a bell is not determined
+by isolated, arbitrary frequencies, but by the normal modes of a continuous elastic body resonating
+in collective harmony. Similarly, the frequencies of elementary particles are coupled through mutual
+balance within the energetic reservoir of the foundation. The universal foundation sets the allowed
+modal arena, while particle modes mutually equilibrate across this arena to form a stable, resonantly
+locked system.
+    Denoting the local collective cadence by Ω(x), the frequency spectrum of stable oscillons is expressed
+as:
+                                              νi (x) = ni Ω(x),                                         (1)
+where ni is a fixed, dimensionless structural factor characteristic of a specific particle mode. In general,
+ni is non-integer, so particle mass and frequency spectra do not reduce to simple one-dimensional
+overtones. Within the candidate three-dimensional volumetric-resonator map, they correspond to a
+complex, slightly anharmonic eigenspectrum, examined below through the C3 symmetry of charged
+leptons.
+    The relation νi (x) = ni Ω(x) preserves individual mode identities while locking every mode to the
+shared local cadence Ω(x). Consequently, the frequency ratios:
+
+                                           νi (x)   ni
+                                                  =    = const                                          (2)
+                                           νj (x)   nj
+
+remain strictly invariant under resonant locking. Any oscillatory rhythm incompatible with the collective
+network loses phase coherence and cannot persist as a stable particle mode.
+   In a region of low pressure (gravitational deficit), the collective cadence Ω(x) of the entire local
+network decreases. In a dense, high-pressure substrate, inter-node coupling is robust and Ω(x) has a
+higher value; in a rarefied substrate, coupling weakens and Ω(x) slows down:
+
+   • The retardation of inter-node signal transmission,
+
+
+                                                    11
+   • The reduction in substrate pressure-energy density, and
+
+   • The reduction of the collective cadence Ω(x)
+
+represent three distinct operational readouts of a single ontological reality; within the formal mathe-
+matical chain, each enters exactly once.
+    When Ω(x) shifts locally, all local clocks, atomic transitions, and particle processes scale syn-
+chronously. Consequently, a local observer cannot detect any variation in their own rate of temporal
+passage. Under this collective rescaling, all dimensionless ratios—including the fine-structure constant
+α and mass ratios mi /mj —remain strictly invariant, reflecting the internal geometric-topological
+proportions of the network rather than its absolute rate.
+    The historical precursor to this relational approach is Ernst Mach’s principle [Mach, 1883]. RefG
+gives that principle a local, dynamical form: the common cadence of time is governed directly by the
+collective state of the local resonant network, while the influence of distant masses must be encoded in
+that local state. Relationality and local causality are therefore properties of the same local network.
+    In the RefG framework, the fine-structure constant α ≈ 1/137 is interpreted as the dimensionless
+impedance ratio of the substrate’s electric-flux and transverse-photon response channels, remaining
+invariant under local shifts in substrate pressure.
+    Now consider a wavepacket propagating between two pressure regimes of the foundation, for
+example from a gravitational well to a distant observer. Its observed frequency is computed from the
+effective metric. In the ontological language of RefG, the local cadences of source and receiver are
+compared through phase translation. On a cosmological background the operational scale is A = a/p,
+so spectroscopic and metric redshift follow the same ratio,
+
+                                                A0     a0 /p0
+                                       1+z =        =          .                                      (3)
+                                                Aem   aem /pem
+
+The signal’s phase relation is translated into the local Ω(x) cadence in each region. A compatible
+signal locks into the new resonant network, whereas an incompatible signal dephases or scatters and
+redistributes its energy among the pressure–energy channels of the foundation.
+    In summary, the rate of time in RefG is the ontological state of the local resonant network. When
+substrate pressure shifts, the network undergoes a collective rescaling: all compatible processes scale
+synchronously, leaving dimensionless ratios strictly invariant. An independent, abstract universal time
+possesses neither operational utility nor physical meaning: every physical measurement is executed
+strictly from within the network itself.
+    This principle establishes a rigorous empirical falsification criterion: If any dimensionless ratio
+changes under a local pressure shift—for example, if a reliably established nonzero ∆α/α
+is found—the postulate of a population-locked collective cadence is falsified.
+
+1.5   Oscillons, Pressure Deficits, and the Origin of Mass
+What traditional physics designates as an “elementary particle”—whether an electron, proton, or
+quark—is recognized in RefG as an oscillon. An oscillon is a locally confined, self-sustaining, nonlinear
+topological wavepacket (a soliton-like state) supported by the foundation-medium. It is not an isolated,
+solid corpuscle distinct from the background; rather, it is a highly organized, coherent oscillatory state
+of the medium itself.
+    This concept continues the profound lineage of Lord Kelvin’s (William Thomson’s) “vortex atoms”
+[Thomson, 1867]. While 19th-century mechanical aether models were superseded, Kelvin’s core
+insight—that particles are dynamic, self-confined topological modes of a continuous medium—remains a
+foundational concept that oscillon physics formalizes within modern nonlinear field theory and topology.
+    When an oscillon oscillates intensely, rotates, or confines energy within its localized geometry, the
+static pressure of the surrounding foundation-medium decreases. This behavior is illuminated by Daniel
+Bernoulli’s hydrodynamic principle [Bernoulli, 1738]: An increase in internal dynamic intensity
+
+
+                                                   12
+(velocity, oscillation amplitude) induces a corresponding drop in local static pressure. On
+the weak, static gravitational branch of RefG, this hydrodynamic analogue corresponds to the schematic
+pressure-energy relation:
+                                             ∆P ∝ −ρdyn .                                          (4)
+    Through its continuous oscillatory action, an oscillon imprints a stable static pressure-deficit gradient
+upon the surrounding foundation. Within this framework, this pressure deficit is nothing other than
+the direct external profile of gravitational mass: integrating this deficit over all space yields the
+total gravitational mass of the system. The more intense the oscillon’s internal dynamics, the deeper
+the induced pressure deficit and the stronger the resulting refractive gradient. Simultaneously, the
+oscillon’s internal topological energy store is accounted for as a separate, decoupled physical channel.
+    The core of an oscillon is localized, but its oscillatory trace extends throughout the connected
+medium. The component phase-locked to the source establishes a static gravitational profile, requiring
+zero net outward energy flux. When the source undergoes rapid dynamic reconfiguration, the coherent
+oscillatory component released from this channel propagates outward as a gravitational wave, carrying
+energy and momentum.
+    The local depth of the deficit and the asymptotically measured total mass of a system are distinct
+physical quantities. The former characterizes central gradient and compactness; the latter integrates
+the active core, substrate dressing, binding energy, and radiated flux into a single asymptotic balance.
+Consequently, following a binary merger, the central deficit deepens while the total externally read
+mass decreases by the exact amount of radiated gravitational-wave energy.
+    This perspective shares structural parallels with John Archibald Wheeler’s concept of Mass without
+Mass, in which a “geon” represents a massive entity bound entirely by the self-energy of its gravitational
+and electromagnetic fields [Wheeler, 1955]. While classical Wheeler geons are unstable to radiative
+decay, RefG stabilizes oscillons through topological charge conservation, resonant phase locking, and
+the topological knot invariant Lk = W r + T w.
+    Consequently, the term “effective refractive mass” (meff ) designates the externally read gravitational
+mass of an individual oscillon within a specified background medium. Under adiabatic background
+variations, the oscillon’s topological structure, internal energy, and phase ratios preserve their identity,
+while its operational scale and externally read mass adapt to the new substrate state. Rapid reconfigu-
+ration represents an independent dynamical process that redistributes energy into radiation channels.
+The total asymptotic mass of an extended system requires a volume integration and is not simply the
+linear sum of uncoupled single-oscillon meff values. Through this decoupling, the origin of mass is
+revealed as the establishment of the medium’s refractive response.
+    At this foundational level, gravitational attraction is the refractive bending of one oscillon’s
+wavepacket within the pressure deficit generated by another. A relaxed string provides an
+intuitive picture of a gravitational well: locally diminished pressure-energy weakens the effective wave
+propagation stiffness of the substrate. The deficit profile defines the effective geometry, and any matter
+wavepacket bends along geodesics of minimal optical path length according to the eikonal equation.
+    This defines the central dynamical reciprocity proposed by RefG: An oscillon creates a pressure
+deficit through its internal oscillation, while this deficit determines its effective mass,
+operational scale, and trajectory through the medium. Matter dictates the pressure state of
+the medium, and the altered medium dictates the refractive geometry of matter.
+
+
+2     Gravity as Refraction
+2.1    Three Simultaneous Operational Shifts
+As established in the preceding chapter, the inter-node separation within the foundation-medium is not
+directly accessible to external measurement; an observer can access only its operational, physical traces.
+Around an oscillon, this trace manifests as a localized depression in the pressure-energy state of the
+substrate: distinguishable nodes are rarefied, and the informational and wave coupling between them
+
+
+                                                     13
+is attenuated. For an external, macroscopic observer, this single ontological state manifests as three
+simultaneous, coordinated operational shifts:
+  1. Deceleration of the Coordinate Speed of Light: In a pressure-deficit zone, nodes are rarefied
+     and the rate of inter-node transmission drops. Consequently, the propagation of light and all
+     other massless wave signals is retarded in coordinate description. The locally measured speed of
+     light remains strictly invariant (c) for a local observer; what changes is the effective propagation
+     rate evaluated in the coordinate language of a distant observer.
+  2. Contraction of Oscillon Operational Size: While the oscillon’s intrinsic topological form (its
+     nodal winding configuration) remains invariant, it is populated by a reduced volumetric density
+     of interacting nodes within the rarefied substrate. In external observational description, this
+     is registered directly as a contracted operational size, manifesting as a modified effective mass
+     readout.
+  3. Retardation of the Local Resonant Clock Cadence: Real physical clocks are composed
+     of oscillon systems (atoms, molecules) whose internal tick rate depends directly on local nodal
+     coupling. In a rarefied environment, this coupling weakens, decelerating the clock rate in coordinate
+     time relative to an asymptotic observer. Locally, the clock continues to measure its own cadence
+     normally and invariantly.
+    A physical analogy is provided by double-pane vacuum insulation: evacuating the intermediate
+space reduces molecular collision frequency and suppresses the rate of thermal transport. In the RefG
+framework, this corresponds to the relation between nodal coupling strength and coordinate clock
+speed.
+    These three shifts are distinct operational readouts of a single underlying pressure deficit. Cru-
+cially, they scale with substrate pressure according to different powers, establishing the foundation of
+biconformal geometry.
+
+
+
+
+Figure 1: Operational readout of an oscillon within a pressure-deficit zone. (A) In an
+unperturbed, high-pressure foundation-medium, an oscillon resides in a dense nodal network; inter-node
+coupling is robust and local processes proceed at maximal cadence. (B) Within a pressure-deficit zone,
+substrate nodes are rarefied; operational inter-node distance increases, transmission rates decrease,
+and local temporal passage decelerates. (C) In external readout, an oscillon in a pressure deficit is
+registered with a slowed clock rate, contracted operational size, and shifted effective mass, while the
+internal separation does not enter as an independent direct observable.
+
+   Nodal rarefaction does not generate a “secondary space.” The inter-node interval is not an indepen-
+dent physical substance; macroscopic “void” is operationalized entirely through the language of pressure
+
+                                                   14
+variables. The sole objective manifestation of substrate rarefaction is the localized reduction of its
+pressure-energy state.
+
+2.2   Quadratic Coupling and the Factor of Two
+These three operational shifts do not scale with substrate pressure under a uniform power law. In the
+ontological architecture of RefG:
+
+   • Operational size and single-oscillon effective mass belong to the volumetric nodal capacity
+     channel (extensive quantities);
+
+   • The coordinate speed of light belongs to the inter-node coupling strength and transmission
+     delay channel (intensive quantity).
+
+   Denoting the dimensionless pressure factor by p, this biconformal scaling is formalized as:
+                        Loper   meff   Ω                ccoord
+                              =      =    = p,                 = p2 ,   p = eφ/2 .                    (5)
+                         L0     m0     Ω0                 c0
+    A similar power-law scaling appears historically in the Polarizable Vacuum (PV) models of Robert
+Dicke and Harold Puthoff [Dicke, 1957, Puthoff, 2002]. In RefG, these powers are assigned to distinct
+nodal-capacity and link-transmission channels rather than introduced through a phenomenological
+dielectric ansatz.
+    Formally, the external macroscopic readout of a single oscillon couples to the substrate pressure
+deficit through an exponential half-factor:
+
+                                             meff = m0 eφ/2 .                                         (6)
+
+    On the deficit branch, φ < 0, confining the pressure factor to 0 < p < 1. This relation describes the
+local external readout of an individual oscillon embedded within an inhomogeneous background: as φ
+deepens (pressure drops), its operational size and meff contract. Simultaneously, the total gravitational
+charge of the extended source generating the deficit is determined via a separate volumetric integration.
+This scaling follows directly from the theory’s first-order biconformal branch.
+    Here, four physical quantities must be rigorously distinguished:
+
+   1. Oscillon internal state and proper energy (Mproper );
+
+   2. Single-oscillon effective refractive mass in a given background (meff );
+
+   3. Active source profile of the induced pressure deficit (Mactive );
+
+   4. Total asymptotic gravitational charge of the system (ADM/Komar mass: Arnowitt et al.
+      1962, Komar 1959).
+
+    These four quantities organize into two nested accounting channels: the first distinguishes proper
+internal content from background-read mass; the second relates the externally read mass to the active
+core and substrate dressing. At the asymptotic boundary, these contributions combine into a single
+conserved charge, ensuring that every deficit trace is counted exactly once.
+    This self-consistent dynamic is captured by an intuitive physical analogy: Imagine a crystal of
+colored ice dissolving in pure water. The crystal is a locally frozen, ordered phase of the same
+water—just as an oscillon is a localized resonant locking of the universal foundation-medium. As the
+crystal melts, its dye disperses throughout the water, coloring the medium while the crystal itself
+shrinks in size. Energy is conserved: like the dissolved dye, localized binding energy transitions into an
+extended substrate pressure-energy state.
+    The more intensely the foundation is “colored” by this trace (i.e., the deeper the pressure deficit),
+the further local pressure drops, altering the externally read mass, operational size, clock cadence, and
+
+                                                   15
+coordinate speed of light. This is a self-regulating relaxation process: the more trace an oscillon imparts
+to the medium, the lower its capacity for further emission. This negative feedback provides a natural
+mechanism for deficit saturation, with its precise boundary governed by full nonlinear dynamics.
+    This p/p2 scaling is formalized through the biconformal metric:
+
+                                                                           2U
+                                 ds2 = eφ c2 dt2 − e−φ dσ 2 ,        φ=−      ,                            (7)
+                                                                           c2
+where U > 0 is the gravitational potential of the selected exponential branch, coinciding at leading
+order with the Newtonian potential. In the weak-field limit (U/c2 ≪ 1), the metric components expand
+in a Taylor series:
+
+                                 2U 2
+                                                                                    
+                          2U                                                2U
+            g00 = eφ ≈ 1 − 2 + 4 + · · · ,        gij = −e−φ δij ≈ − 1 + 2 + · · · δij .          (8)
+                           c       c                                        c
+
+   On the selected static, spherically symmetric first post-Newtonian (1PN) branch, expanding this
+metric yields the Parameterized Post-Newtonian (PPN) coefficients:
+
+                                              β = 1,        γ = 1.                                         (9)
+
+    A complete clock cycle is operationalized by the ratio of operational size to coordinate velocity
+(∆t ∼ Loper /ccoord ). If a pressure drop halves the operational size (p = 1/2) while reducing coordinate
+light speed by a factor of four (p2 = 1/4), the period doubles—the clock runs precisely twice as slow.
+    Along this biconformal branch, the 1PN effects controlled by β = γ = 1 identically recover the
+classical predictions of General Relativity: the gravitational deflection of light, Shapiro time delay,
+gravitational redshift, and planetary perihelion precession [Bertotti et al., 2003, Will, 2014]. In particular,
+the Cassini radio-link experiment measured γ − 1 = (2.1 ± 2.3) × 10−5 .
+    Historically, the additional factor of two arising from the spatial metric component gij was the
+decisive contribution that elevated Einstein’s 1911 half-deflection (derived solely from temporal dilation)
+to the full geometric result of 1915–1916 [Einstein, 1916, Shapiro, 1964]. In RefG, this factor of
+two emerges naturally from the differing ontological scaling of nodal volumetric density (p) and link
+transmission delay (p2 ).
+
+2.3    Refractive Attraction, Inertia, and the Absence of Friction
+An oscillon, as an extended wave configuration, exists within the inhomogeneous gradient of substrate
+pressure and coordinate light speed. On the side where the medium is denser, wave phase propagates
+rapidly; on the rarefied (deficit) side, propagation is comparatively retarded. By virtue of the Huygens–
+Fresnel principle and the eikonal equation, the wavefront bends toward the region of lower pressure
+and reduced coordinate velocity—undergoing refraction. In the static weak-field limit, the pressure
+deficit generated by a massive body constructs an effective optical-geometric medium, and the refractive
+trajectory of a matter wavepacket within this medium is perceived macroscopically as gravitational
+attraction.
+    In RefG, the classic phenomenon of Newton’s falling apple is understood as follows: the oscillon
+wavepackets of the atoms comprising the apple bend refractively toward the region of lower pressure
+and slower coordinate propagation established by the Earth’s mass. Familiar gravitational attraction is
+not an occult action-at-a-distance force—it is the direct, local refractive response of matter waves to an
+inhomogeneous medium.
+    Formally, the gravitational source consists of the projected pressure deficit and non-integrable strain
+in the foundation-medium. Oscillons, acting as topological defects of the substrate, introduce residual
+plastic strain into the continuum. In the geometric theory of elasticity, defect density is measured
+by the strain incompatibility tensor, which in four dimensions matches the algebraic structure of the
+Einstein tensor Gµν , while freely propagating transverse shear waves preserve volume and naturally
+manifest as transverse-traceless (TT) polarizations. A gravitational well is a 3D zone of depressed
+
+                                                       16
+substrate pressure and strain, wherein the total mass of a bound gravitational system is strictly less
+than the sum of its isolated constituents by the mass equivalent of the binding energy (∆M = B/c2 ).
+    The gravitational-wave event GW150914 provides a sharp observational benchmark for this energy
+balance: approximately three solar masses (3 M⊙ ) separating the initial binary mass from the final
+remnant were carried away as gravitational-wave energy [Abbott et al., 2016]. In RefG, two oscillatory
+sources merge into a single, deeper deficit profile, while the energy of their nonlinear reconfiguration
+radiates outward as transverse-traceless (TT) tensor waves. The quantitative benchmark of this
+framework is the simultaneous derivation of remnant mass, radiated energy, and complete waveform
+from a single initial state.
+    On the compact branch required for regular interior cores, the projected deficit source is registered
+as an effective violation of the Null Energy Condition (NEC); in RefG, this belongs to the elastic
+confinement channel of the foundation-medium.
+    RefG associates inertia with the dynamic deformation of an oscillon’s deficit profile during accel-
+eration. When an oscillon is accelerated by an external force, its pressure profile develops a fore-aft
+asymmetry along the direction of motion; this gradient asymmetry generates a reactive resistance from
+the medium opposing the acceleration (the inertial force). Under deceleration, the profile reverses
+symmetrically.
+    Along a Lorentz-covariant, localized finite-energy branch satisfying the Laue condition ( T i i d3 x = 0),
+                                                                                             R
+
+the inertial coefficient is determined by the total Noether energy of the system [Noether, 1918, von Laue,
+1911]. Coupling this same energy as the universal source of gravity yields the equivalence mi = mg at
+leading order. The French satellite mission MICROSCOPE confirms the universality of free fall to a
+precision of 10−15 [Touboul et al., 2022].
+    For an oscillon in uniform, rectilinear motion, the wave pattern is transferred symmetrically across
+substrate nodes, leaving no dissipative wake or net energy loss. RefG identifies frictionless inertial
+motion with this coherent phase-relay regime: motion is the wave-like relay of form. Its limiting
+velocity is set by the maximum rate of phase transmission between nodes, from which the fundamental
+speed of light (c) emerges.
+
+2.4    Local Unobservability and the Principle of Relativity
+A local observer residing within a gravitational field reads clock rates and spatial dimensions as standard
+and unperturbed, because the observer’s clocks, measuring rods, and physical body are themselves
+constructed from the same foundation-medium. When substrate pressure shifts, the entire local physical
+system reconfigures synchronously. Relative to internal atomic transitions, slow variations in the
+gravitational field are strictly adiabatic: they preserve the vibrational mode and induce no spurious
+quantum transitions. Under this collective scaling, all dimensionless ratios—including the fine-structure
+constant α—remain absolutely invariant.
+    This ontological picture is constrained by comprehensive experimental bounds:
+
+   • Gravitational Redshift: Confirmed with exceptional precision from the classic Pound–Rebka
+     experiment [Pound and Rebka, 1960] to the hydrogen maser on Gravity Probe A [Vessot et al.,
+     1980] and recent eccentric-orbit tests with Galileo satellites [Delva et al., 2018, Herrmann et al.,
+     2018], verifying the local dependence of clock rates on the gravitational potential.
+
+   • Invariance of Dimensionless Ratios: High-resolution quasar absorption spectra and laboratory
+     optical atomic clocks constrain cosmological drifts in the fine-structure constant to |∆α/α| ≲ 10−6
+     [Kotuš et al., 2017]. RefG interprets this stability as consistent with local population-locked
+     self-calibration.
+
+    The null result of the Michelson–Morley experiment reflects the medium’s common-mode self-
+calibration, whereas gravitational-wave detections by LIGO, Virgo, and KAGRA represent a differ-
+ential tensor response:
+
+
+
+                                                     17
+   • When the foundation-medium shifts uniformly and isotropically across a local domain, measuring
+     rods, clocks, and optical propagation reconfigure synchronously in common mode, producing
+     common-mode self-calibration in local measurements (modern optical cavities rule out spatial
+     anisotropy in the speed of light to ∆c/c ≲ 10−17 ; Herrmann et al. 2009).
+
+   • A gravitational wave, by contrast, is a time-dependent, quadrupolar differential strain (h+ , h× ):
+     it stretches space along one transverse axis while compressing it along the perpendicular axis.
+     This differential deformation breaks common-mode cancellation, imprinting a measurable phase
+     shift in interferometer arms.
+
+    FitzGerald–Lorentz length contraction [FitzGerald, 1889, Lorentz, 1892] is the historical precursor to
+this mechanism. RefG attributes this contraction to the fact that measuring instruments are themselves
+wave configurations of the medium.
+    In the local Minkowski limit, tensor waves propagate at the speed of light (vgw = c). The
+simultaneous detection of gravitational waves and a gamma-ray burst from the binary neutron star
+merger GW170817 tightly constrains the fractional difference between gravitational and electromagnetic
+propagation speeds:
+                                                  vgw − c
+                                 −3 × 10−15 ≤              ≤ +7 × 10−16                               (10)
+                                                     c
+[Abbott et al., 2017]. Concurrently, the orbital decay of relativistic binary pulsars (PSR B1913+16,
+PSR J0737-3039A/B) confirms general-relativistic quadrupole radiation damping to an accuracy of
+10−3 –10−4 [Weisberg and Huang, 2016, Kramer et al., 2021], while bounds on scalar breathing modes
+from the GWTC-3 catalog tightly constrain scalar wave channels [LIGO Scientific Collaboration et al.,
+2022].
+    The most definitive operational invariant of this framework is the proper time difference accumulated
+by two clocks traversing distinct gravitational and kinematic worldlines:
+                                                Z
+                                                                                                      (11)
+                                                   p
+                                         ∆τ =         gµν dxµ dxν .
+
+    The elapsed time displayed on reunited clock faces is an objective, absolute physical record of
+distinct pressure histories, whereas instantaneously measured local rates and sizes remain relational
+readouts within the common substrate.
+
+2.5   Historical Context and the Role of RefG
+The refractive, optical-medium reading of gravity possesses an illustrious heritage. In 1911–1912, prior
+to completing the geometric formulation of General Relativity, Albert Einstein related the coordinate
+speed of light to the gravitational potential via:
+                                                           
+                                                         Φ
+                                          c(Φ) = c0 1 + 2                                           (12)
+                                                         c
+
+[Einstein, 1911, 1912]. Medium optics has even earlier roots: in 1851, Hippolyte Fizeau demonstrated
+that moving water partially drags light (governed by Fresnel’s dragging coefficient; Fizeau 1851), and
+in 1923, Walter Gordon proved that electromagnetic wave propagation in a moving dielectric medium
+obeys the null geodesics of an effective Riemannian metric [Gordon, 1923], establishing the first formal
+bridge between continuum optics and spacetime geometry.
+    In 1957, Robert Dicke formulated gravitation through a variable vacuum refractive index [Dicke,
+1957]. The modern discipline of analogue gravity was inaugurated by William Unruh in 1981,
+demonstrating that sound waves in transsonic fluid flows propagate according to an effective acoustic
+metric exhibiting an event horizon [Unruh, 1981].
+    Grigory Volovik’s condensed-matter program [Volovik, 2003] and the extensive review by Barceló,
+Liberati, and Visser [Barceló et al., 2011] established how local Lorentz invariance and curved effective
+
+                                                   18
+geometries emerge from the microscopic dynamics of quantum condensates (such as superfluid Helium-3
+and Helium-4). A notable milestone was achieved in 2019, when Jeff Steinhauer’s group experimentally
+observed the acoustic analogue of thermal Hawking radiation in a Rubidium Bose–Einstein condensate
+[Muñoz de Nova et al., 2019].
+   Parallel to the medium-optics approach stands the thermodynamic and entropic school of
+gravity:
+
+    • Andrei Sakharov interpreted gravity as an elastic vacuum phenomenon induced by quantum
+      fluctuations [Sakharov, 1967];
+
+    • Ted Jacobson demonstrated that Einstein’s field equations arise directly as an equation of state
+      from the thermodynamic entropy balance (δQ = T dS) across local Rindler horizons [Jacobson,
+      1995];
+
+    • Erik Verlinde formulated gravitational attraction as an entropic force driven by holographic
+      information gradients [Verlinde, 2011].
+
+   These frameworks share with RefG the core conviction that spacetime geometry is emergent; in
+RefG, however, the effective geometry is generated not by abstract holographic screens, but by a
+concrete, pressure-refractive foundation-medium.
+   Refractive Gravity (RefG) introduces four fundamental ontological contributions to this historical
+continuum:
+
+    1. Monistic Ontological Unity: The foundation-medium is not merely a passive background for
+       light; it generates matter itself—topological oscillons, measuring instruments, and observers. This
+       moves beyond a passive-medium analogy and defines an independent, testable research framework.
+
+    2. Local Population-Locked Cadence (Ω(x)): Nonlinear synchronization across the oscillon
+       population renders local relativistic unobservability and the invariance of dimensionless constants
+       an endogenous dynamical consequence of the system.
+
+    3. The Universal Pressure-Deficit Channel: RefG employs the pressure deficit (∆P ∼ −ρdyn ) as
+       a unified language of source and readout, linking gravitational mass, time dilation, the factor-of-two
+       light deflection, and tensor wave responses into a single energy balance.
+
+    4. Topological Defect Strain and EFT Architecture: The non-integrable strain imprinted by
+       oscillon defects (strain incompatibility; Kleinert 2008) organizes at the macroscopic effective field
+       theory (EFT) level into the Einstein–Hilbert action through Lovelock’s uniqueness result and
+       Deser’s self-coupling construction [Lovelock, 1971, Deser, 1970], with the Einstein tensor Gµν
+       reflecting substrate defect density.
+
+   In this historical landscape, RefG unifies optical refraction, topological solitons, and thermodynamic
+equilibrium into an integrated research program, with every link subject to formal mathematical and
+observational verification.
+
+
+3     Three Scales and Cosmological Horizons
+3.1    The Local Scale: Compact Objects, Internal State, and External Readout
+The universal pressure chain constructed throughout the preceding chapters manifests across three
+distinct astrophysical regimes:
+
+    1. On the Local Scale: As the localized pressure-deficit profile surrounding oscillons and compact
+       relativistic bodies;
+
+
+
+                                                     19
+  2. On the Galactic Scale: As the coherent, large-scale vortical flow and polarization of the
+     foundation-medium;
+
+  3. On the Cosmological Scale: As the global expansion–relaxation of the foundation-medium
+     and the coexistence of two descriptions of time.
+    These three phenomena are distinct dynamical regimes of a single foundation. We begin at the local
+scale, where this mechanism reaches its most extreme expression: compact relativistic objects.
+    In extreme gravitational regimes, an object’s internal state (Mproper ) and its externally read
+active gravitational mass (Mexternal ) decouple fundamentally. The RefG compact map strictly
+distinguishes the invariant internal energy reserve of accumulated matter from its externally read
+gravitational charge. An external observer measures the system through its pressure-deficit profile,
+clock dilation, and operational scale contraction, whereas the interior geometry, horizon formation, and
+global causal structure are determined by the complete nonlinear field equations.
+    Two-channel accounting separates an object’s local internal content from its asymptotic gravitational
+readout. The internal channel tracks local matter states, conserved topological charges, and proper
+volume; the external channel registers the deficit profile, clock retardation, operational dimensions, and
+total asymptotic mass. Gravitational compression sharply differentiates these two readouts without
+severing their common physical origin.
+    RefG attributes the mass defect of merging compact binaries to nonlinear reconfigurations in
+binding energy and the deficit profile. The quantitative connection to outgoing gravitational-wave flux
+is governed by the complete dynamical solution, benchmarked observationally by the binary black hole
+merger GW150914 [Abbott et al., 2016].
+    The biconformal metric governs the disparity between internal proper dimensions and external
+coordinate measures. On the compact branch of RefG, this divergence can become extreme: externally,
+such an object may appear ultra-compact, dark, and virtually “frozen,” while its internal proper volume
+remains vast. In both descriptions, the locally measured speed of light is invariant (c); what differs is
+the temporal and spatial readout constructed by a distant observer. The “frozen star” appearance is an
+external observational feature, while the historical intuition of a “dark star” dates back to John Michell
+in 1784 [Michell, 1784].
+    RefG interprets a singularity as a boundary of external readout: under intense deficit conditions,
+the externally read value of the internal scale approaches zero, while the local proper scale halts at a
+finite saturation limit, preventing internal collapse to zero volume. A unified description requires that
+local energy density and spacetime curvature remain strictly finite.
+    Roger Penrose’s singularity theorem [Penrose, 1965] relies on specific energy conditions, notably the
+Null Energy Condition (NEC: Tµν k µ k ν ≥ 0). On the regular-core branch of RefG, the effective pressure
+source violates the classical NEC within the core zone via substrate elastic tension and confinement
+stresses. Because this energy condition is breached, Penrose’s theorem does not enforce a geometric
+singularity on this branch, admitting a regular, non-singular interior core.
+    Regular compact objects represent an active frontier in relativistic astrophysics. A prominent
+example is the Mazur–Mottola “gravastar”—a vacuum condensate object devoid of a singular core
+[Mazur and Mottola, 2004]. Such alternatives can be empirically distinguished from classical Kerr
+black holes via their Event Horizon Telescope (EHT) shadow morphology [Event Horizon Telescope
+Collaboration, 2019], quasinormal mode ringing, and late-time gravitational-wave “echoes” [Cardoso
+and Pani, 2019]. RefG shares structural kinship with this family, anchoring its regular interior in the
+pressure-energy balance of the universal foundation-medium.
+
+3.2   The Galactic Scale: Vortical Flow and MOND
+Observational Reality. In disk galaxies, rotation curves at large radii do not follow the Keplerian
+decline expected from visible baryonic matter alone: they exhibit rich morphological variety, frequently
+flattening or declining far more gently than Newtonian predictions. Concurrently, baryonic mass and
+asymptotic rotation speed obey a strict empirical law—the Baryonic Tully–Fisher Relation (Mb ∝ vf4 ;
+
+                                                   20
+Tully and Fisher 1977, Lelli et al. 2016). This observational program began with Vera Rubin and
+Kent Ford’s measurement of the Andromeda galaxy [Rubin and Ford, 1970]. In the modern Radial
+Acceleration Relation (RAR), 2,693 independent data points from 153 galaxies collapse onto a
+single universal curve [McGaugh et al., 2016].
+    The standard ΛCDM model accommodates these observations by postulating spherical dark matter
+halos. Modified Newtonian Dynamics (MOND), by contrast, introduces a universal acceleration
+threshold:
+                                         a0 ≈ 1.2 × 10−10 m/s2 ,                               (13)
+                                                                                             √
+below which gravitational acceleration transitions from Newtonian aN to the deep-MOND regime aN a0
+[Milgrom, 1983]. Relativistic completions (such as TeVeS and Skordis–Złośnik models) incorporate
+additional dynamical vector and scalar fields [Bekenstein, 2004, Skordis and Złośnik, 2021].
+
+The RefG Vortical Mechanism and Substrate Polarization. At galactic scales, RefG attributes
+the additional deficit to a large-scale vortical flow and polarization of the foundation-medium.
+An ordered rotational regime deepens the central pressure deficit, while baryonic oscillons and the
+background flow form a single, shared refractive profile.
+   At the macroscopic level, this response is described by a Ginzburg–Landau-type local effective
+potential:
+                                               1     1
+                                 W (gv , gN ) = gv3 + gN gv2 − a0 gN gv ,                      (14)
+                                               3     2
+where gv is the foundation-medium response field, gN is the baryonic Newtonian acceleration, and
+a0 ≈ 1.2 × 10−10 m/s2 is the universal transition acceleration scale. The variational equilibrium
+condition, ∂W/∂gv = 0, yields:
+                                                               g2
+                                    g ≡ g N + gv ,    gN =          .                          (15)
+                                                             g + a0
+   In the deep asymptotic regime (g ≪ a0 ), this relation approaches g 2 ≃ a0 gN , yielding for circular
+orbits the Baryonic Tully–Fisher Relation (v 4 = GMb a0 ) without individual galaxy tuning parameters.
+
+Observational Check on SPARC Data. Distinct from the published 153-galaxy, 2,693-point RAR
+sample, the cuts ∆V /V < 10% and Vobs > 20 km/s select 2,788 points from 163 SPARC galaxies.
+With fixed a0 and fixed mass-to-light ratios (Υdisk = 0.5, Υbulge = 0.7), and without galaxy-by-galaxy
+parameter fitting, this comparison gives an RMS scatter of 0.141 dex and a mean residual of −0.012 dex
+(Figure 2).
+
+Disk Geometry and QUMOND Numerical Test. For a finite-thickness Miyamoto–Nagai disk,
+transverse gradients of the algebraic field generate a geometric curl correction. On a 300 × 300 grid
+with a = 3 kpc and b = 300 pc, Biot–Savart reconstruction gives, in this finite-grid configuration, a
+maximum radial-acceleration correction of 9.23% relative to the one-dimensional algebraic mapping
+over a ≤ r ≤ 5a.
+
+Refractive Gravitational Lensing. Along the flat rotation curve branch, Φeff = vf2 ln(r/r0 ) and
+n(r) ≈ 1 − 2Φeff /c2 . Integrating the transverse refractive index gradient yields a deflection angle
+α̂ = 2πvf2 /c2 , matching the prediction of General Relativity for a singular isothermal sphere. Rotation
+and lensing thus emerge as two readouts of a single effective potential.
+    The closest modern analogue to this framework is the Superfluid Dark Matter model of Berezhiani
+and Khoury, where a MOND-like force arises from phonon excitations in a condensate [Berezhiani and
+Khoury, 2015]. However, while superfluid dark matter introduces an additional particle component, in
+RefG the coherent flow is a global regime of the unified foundation-medium itself.
+
+
+
+
+                                                   21
+Figure 2: Radial Acceleration Relation comparison with SPARC data. The observed radial
+                      2 /R versus the baryonic acceleration g
+acceleration gobs = Vobs                                        bar for 2,788 selected points across 163
+disk galaxies. With fixed a0 and mass-to-light ratios, but no galaxy-specific fitting, the algebraic RefG
+curve obtained from W (gv , gN ) gives an RMS scatter of 0.141 dex and a mean residual of −0.012 dex.
+
+
+
+
+                                                   22
+Morphology. In RefG, galactic morphology reflects the flow regime of the foundation: ordered
+laminar rotation is associated with disk and spiral structure, whereas more chaotic or isotropic flow is
+associated with dispersion-supported elliptical galaxies.
+
+Galaxy Clusters. In galaxy clusters, modifying the acceleration law alone does not fully resolve the
+dynamical mass deficit (historically highlighted by Fritz Zwicky in the Coma cluster; Zwicky 1933).
+RefG interprets the cluster mass budget through three distinct channels:
+
+   1. The global nodal deficit of the long-wavelength resonant network;
+
+   2. Individual galaxies and the long-range pressure-deficit fields of their constituent oscillons;
+
+   3. Cluster-scale vortical circulation and the hydrodynamic memory of past mergers.
+
+All three enter a unified pressure-deficit budget, each counted exactly once.
+    Two decisive observational signatures distinguish this framework:
+
+   1. Quantized Circulation: If the substrate flow possesses a single-valued condensate phase,
+      circulation is quantized in units of:
+                                               I
+                                                          h
+                                            Γ = v · dl = n ,                              (16)
+                                                          m
+
+      where m is the effective mass of the flow mode. For ultralight modes (m ∼ 10−22 eV), vortex
+      filaments could be detected via weak lensing or stellar disk kinematics [Hu et al., 2000, Hui et al.,
+      2021].
+
+   2. The Frozen Memory of the Bullet Cluster: In the Bullet Cluster (1E 0657-558), weak
+      lensing centroids are displaced from the X-ray gas at 8σ significance, tracking the collisionless
+      galaxies [Clowe et al., 2006]. RefG interprets this separation as the frozen memory of substrate
+      vortical flow: during collision, the gas was decelerated by hydrodynamic ram pressure, whereas
+      the substrate deficit trace propagated forward with the galaxies. The memory timescale, spatial
+      morphology, and lensing amplitude form a unified dynamical picture.
+
+   Thus, the unified observational program spans SPARC/RAR data [Lelli et al., 2016], cluster mass
+budgets, Bullet Cluster mergers, the CMB, BAO, and large-scale structure statistics.
+
+3.3    The Cosmological Scale: Expansion of the Manifested Domain, Foundation
+       Relaxation, and Two Descriptions of Time
+The candidate beginning of the cosmological history of RefG is the centerless foundation-wide transition
+described in Section 1.2. It is read as the common boundary of the first distinguishable relations.
+Distance and direction acquire physical meaning only after those relations have formed. On the finite
+symmetric network examined in W3-39, where all vertices occupy equivalent states, a birth record
+strictly ordered by distance from one selected site breaks translation symmetry. This conditional
+obstruction does not apply to local waves or oscillon centers that arise later.
+    The candidate sequence is: the first relations; localization of oscillon seeds; overlap of resonant fields;
+formation of resonant coupling when the distinguishability threshold is crossed; network connection;
+formation of stable oscillons; and long-term expansion–relaxation. This ordering is a working hypothesis
+for cosmic genesis. The law that triggers the first transition, the initial partition of energy, the field
+equation for resonant propagation, the physical coupling threshold, and the selection of stable modes
+all remain open.
+    Two distinct pressures must be kept separate in this description. The foundation pressure PF
+controls the cadence factor p and operational scaling. The thermodynamic pressure Pth is related to
+physical temperature through an equation of state, Pth (ρ, T ). A high value of PF by itself determines
+
+                                                      23
+neither a high nor a low temperature. The initial thermal state must follow from the partition of energy
+among sectors, the equation of state for Pth , and energy exchange with radiation. The relation between
+TRefG and the temperature reconstructed in standard cosmology is therefore open.
+    The observable physical content of the thermal state is carried by dimensionless ratios such as
+                                              kB Tγ             Γi
+                                      Θγ =          ,    Ri =      .                                (17)
+                                             Eatom             Hτ
+Here Eatom is an atomic energy standard, Γi is the rate of the relevant microscopic process, and Hτ is
+the expansion rate measured in process time. A common p-rescaling can cancel from these ratios, so a
+fast early cadence alone cannot determine how hot the Universe was. A physical difference requires
+genuine energy transfer, an equation of state, or a measurable residue between the matter and photon
+channels. A joint derivation of the CMB spectrum, recombination, and BBN is a mandatory test of
+this thermodynamic map.
+    The quantity Ract (t) denotes a post-origin local activation or correlation scale: within it, nodal
+relations at a given epoch reach the minimum distinguishability threshold ℓ∗ . It is neither a radius of
+the Universe nor an external edge. On a homogeneous background, the same rule defines this local
+scale around every node comoving with the network. Its evolution law, the distinguishability threshold
+of the resonant field, and its relation to null directions for light in already activated space must be
+determined by the foundation field equation.
+    On the selected cosmological branch, formed matter follows an expanding nodal lattice of the
+foundation. The comoving separation of two galaxies in the mean flow is represented by N12 , the
+number of foundation units and links between them. In the ideal expansion component, N12 remains
+fixed while the foundation length of one link, ℓF (t), grows. Under that condition,
+                                           L12 (t) = N12 ℓF (t).                                      (18)
+The constancy of N12 applies only to the cosmological expansion component. Matter may move locally
+relative to the lattice, rotate, collide, or undergo gravitational displacement; in those processes N12 can
+change. In the mean Hubble flow, increasing separation is produced by the growth of the inter-node
+length scale.
+    The observer, their clock, and their ruler are built from the same foundation. The selected relaxation
+branch allows the material-standard scale p to contract as the mean foundation pressure decreases. Let
+                                                       ℓF (t)
+                                              a(t) =                                                  (19)
+                                                        ℓF,0
+denote the foundation inter-node length scale and let p(t) denote the material-standard scale. Observa-
+tion reads their ratio,
+                                                       a(t)
+                                               A(t) =       .                                        (20)
+                                                       p(t)
+The internal activation scale Ract (t), the foundation length scale a(t), and the material scale p(t) are
+three distinct quantities. The first describes the local extent of stably distinguishable relations; the
+second describes changes in foundation link length; and the third describes the scaling of material size
+and cadence. The selected cosmological hypothesis relates them through common expansion–relaxation
+dynamics, whose quantitative law must follow from the foundation’s energy balance.
+    The common law proposed for local and global relaxation is a central hypothesis of
+RefG. In the candidate description of a strong-field compact object, low foundation pressure reduces the
+externally read size of matter through the p-scaling. For the mass of Earth, the Schwarzschild diameter
+is approximately 1.8 cm, comparable to the size of a hazelnut. The cosmological branch extends the
+same pressure–size–mass law to a homogeneous background: as pressure falls, the operational size
+of matter, its externally read mass, and its process cadence decrease. Here external readout means
+a measurement made from a region outside the object but still inside the Universe. The histories
+PF (t) and a(t) remain to be derived. Our bodies, clocks, and rulers participate in the same change, so
+their contraction is not detected locally. In global observations, growth of the foundation length and
+contraction of material standards combine in the ratio A = a/p.
+
+                                                    24
+The Time Bridge and a Finite Process History. The selected pressure–cadence correspondence
+and common material scaling are defined by
+                                          s
+                                            PF
+                                 p=Ω=            , dτ = p dt,                         (21)
+                                            PF,0
+
+with p0 = 1 fixing the normalization of the present background. Here p is the background process
+cadence of the foundation; in material clocks the same factor is realized as the local cadence Ω. Time t,
+counted by present-day clocks, lies on the finite interval 0 ≤ t ≤ T0 , where the observational benchmark
+is T0 ≈ 13.8 Gyr [Planck Collaboration, 2020]. The postulated boundary of the first distinguishable
+relations is the common origin of both measures, t = 0 and τ = 0. Process time is defined by
+                                                      Z t
+                                         τ (t) = lim      p(t′ ) dt′ .                                (22)
+                                                ϵ→0+       ϵ
+
+On the branch selected in this monograph, finiteness of process history is imposed as an initial condition:
+                                                Z T0
+                                     τ0 = lim        p(t′ ) dt′ < ∞.                                  (23)
+                                           ϵ→0+   ϵ
+
+The early value of p may be extremely large while remaining integrable. If p ≥ 1 almost everywhere on
+(0, T0 ] and p > 1 on a set of nonzero measure, then τ0 > T0 : process history is finite but contains more
+internal cycles than the interval counted by present-day clocks. The exact value of τ0 must be derived
+from the dynamics of PF (t) and is not fixed in advance. The history of each material structure begins
+at its own formation epoch and retains the process cycles accumulated thereafter.
+
+Time Dilation of Supernovae. On the selected branch, the larger early value of p makes material
+processes faster relative to today’s cadence. Recovering the observed supernova time dilation additionally
+requires a complete map of photon propagation and atomic standards. If that map identifies spectroscopic
+redshift with the operational ratio, then
+                                          A0   a0 /p0
+                                             =        = 1 + z.                                        (24)
+                                          Ae   ae /pe
+An event lasting ∆τe in the process time of the source is then conditionally recorded by the present
+observer with duration
+                                             A0
+                                    ∆τobs =     ∆τe = (1 + z) ∆τe .                             (25)
+                                             Ae
+Type Ia supernova light curves and spectral aging exhibit this (1 + z) time dilation [Blondin et al.,
+2008]. Standard cosmology attributes the law to metric expansion. The candidate RefG account relates
+it to expansion of the foundation scale a, the material cadence p, and the p2 propagation channel of
+light; the full photon–atomic derivation remains to be completed.
+
+Early Structural Maturity (JWST). A supernova time profile compares clocks at different epochs
+through photon propagation. The maturity of a galaxy records accumulated process history: mass
+assembly, successive stellar generations, chemical enrichment, and dynamical organization all require
+many internal cycles. A larger early p may provide more accumulated process time. This extra time
+does not by itself prove galaxy growth; an independent model of collapse, cooling, star formation, and
+feedback is required. The early massive galaxies observed by JWST are therefore a stringent test of
+this branch [Labbé et al., 2023].
+
+Two Observational Channels for One Mechanism. Supernova time dilation and the maturity of
+early galaxies constitute two distinct tests. The first probes the photon–clock map; the second probes
+whether accumulated process time produces real structural effects. Passing both tests would support
+the common picture of global foundation relaxation and the historical slowing of time.
+
+                                                      25
+Ontological Consistency and the Arrow of Time. Within a single-medium ontology, the familiar
+vacuum-energy problem—in which the sum of quantum zero-point fluctuations exceeds the observed
+scale associated with Λ by approximately 120 orders of magnitude—takes a different accounting form:
+every channel must enter the common energy balance of one medium. In the candidate reading of RefG,
+the small cosmic acceleration may reflect a residual dynamical departure from that balance. Related
+mechanisms have been developed in the q-theory program of Volovik and Klinkhamer [Volovik, 2003,
+Klinkhamer and Volovik, 2008].
+    A working hypothesis of RefG relates the macroscopic arrow of time to the global direction of
+foundation relaxation. Like a colored crystal dissolving in water, energy dispersed through the medium
+does not spontaneously reconcentrate into a solid localized crystal. Such statistical irreversibility
+[Planck, 1899] may connect the thermodynamic, cosmological, and radiative arrows to one source. A
+complete derivation of entropy production and irreversible dynamics remains open.
+
+3.4    Quantum Randomness and Two-Level Time
+Two-level time provides a clarifying lens for quantum phenomena. The spacetime coordinates of a
+measurement event are recorded in oscillon (clock) time, while the selection of a specific outcome is
+associated with the deeper, pre-clock state of the foundation. This pre-clock level cannot be measured
+directly by clocks, because clocks are themselves emergent oscillon systems.
+    Bell’s theorem and its experimental verifications rule out local hidden-variable theories [Bell, 1964,
+Hensen et al., 2015]. Meanwhile, the no-signaling theorem ensures that entanglement correlations
+cannot transmit superluminal messages.
+    RefG interprets this as atemporal internal coordination: within the internal language of the
+foundation, entanglement is not a physical signal propagating through space; in the metric language of
+clocks, it appears as an instantaneous statistical correlation between separated measurement outcomes.
+    Wheeler’s delayed-choice experiment is understood in the same terms [Wheeler, 1978, Jacques
+et al., 2007]: a delayed measurement choice determines whether wave interference or which-way particle
+information is realized. RefG’s two-level time describes this without retrocausal signaling, as an
+expression of the underlying phase integrity of the state.
+    Related concepts in modern physics include:
+
+    • The atemporal ground level of the Wheeler–DeWitt equation (ĤΨ = 0; DeWitt 1967);
+
+    • The Page–Wootters mechanism, where time emerges from subsystem quantum correlations
+      [Page and Wootters, 1983];
+
+    • de Broglie–Bohm pilot-wave theory, characterized by non-local phase coordination [Bohm,
+      1952].
+
+    This quantum framework is governed by two strict quantitative requirements:
+
+    1. Born’s Probability Rule (P = |ψ|2 ): The model must derive the observed statistical distribution
+       of measurement outcomes [Born, 1926];
+
+    2. The No-Signaling Condition: Internal phase coordination must never generate a transmissible
+       signal that violates relativistic causality.
+
+
+4     Oscillons and the Origin of Matter
+4.1    Many Patterns in One Ocean
+To build physical intuition, imagine a single continuous ocean and the diverse wave motions that arise
+within it. Most waves form, propagate across the surface, and quickly dissipate; under specific nonlinear
+conditions, however, certain configurations self-organize into stable, localized, self-sustaining structures:
+
+
+                                                     26
+   • One may form a toroidal vortex ring, with fluid circulating continuously in a closed loop;
+
+   • Another may manifest as a stable spherical pulsation (soliton);
+
+   • A third may take shape as a helical, twisting wavepacket.
+
+    This hydrodynamic picture illustrates the foundational thesis of this chapter: Electrons, protons,
+photons, and quarks are distinct resonant and topological patterns supported by a single
+universal foundation-medium. The continuous medium itself oscillates: massive particles are locally
+confined modes of this oscillation, whereas photons are freely propagating transverse wave states.
+    A historical precursor is Tony Skyrme’s model, where nucleons (protons and neutrons) are described
+as topological solitons—“skyrmions”—of a nonlinear meson field [Skyrme, 1961]. RefG elevates this
+intuition to the fundamental ontological level: all such soliton-like structures are normal modes of a
+single universal foundation-medium.
+    The classical image of a rigid, pointlike particle gives way to a continuous wave-medium
+ontology: spatial extent is characterized by the vibrational amplitude and phase of the foundation,
+while a localized event registered in a detector represents the resonant coupling between this extended
+vibration and the internal oscillon modes of the detector’s atoms. RefG thus grounds the spatial
+amplitude and phase of the quantum wave function in an explicit ontological substrate.
+    In an atom, the “electron cloud” is an actual vibrational amplitude distribution rather than the rapid
+orbital transit of a point mass. The extended state maintains a coherent phase structure throughout
+space, and the localized point of measurement emerges through local resonant locking with the detector.
+    The single-electron double-slit experiment synthesizes two foundational realities: the wave amplitude
+depends simultaneously on the global geometry of both slits, yet each detection event on the screen
+manifests as a discrete, localized point. Akira Tonomura’s group directly recorded this progressive
+statistical accumulation using electron microscopy [Tonomura et al., 1989]. RefG interprets an atom’s
+stationary electronic state as a standing, confined wave mode of the medium rather than an accelerating
+classical point charge; consequently, electromagnetic radiation occurs only during transitions between
+discrete states.
+    The spatial spread of a wavepacket and the intrinsic structural form factor of a particle are distinct
+physical concepts:
+
+   • Elastic scattering probes charge and energy distribution form factors, while deep inelastic scattering
+     reveals internal parton structure and distribution functions;
+
+   • The spatial extent of a propagating wavepacket does not enter these observables as an intrinsic
+     physical size.
+
+    Empirically, the electron exhibits a pointlike electromagnetic form factor down to scales of order
+10−18 m [Navas et al., 2024]. A direct empirical test of the oscillon framework is whether the form
+factor computed from its internal topological charge profile reproduces this pointlike behavior across
+accessible momentum transfer scales.
+
+4.2   Localized Confinement: Massive and Massless Modes
+In the RefG particle framework, the defining ontological dividing line between massive and massless
+sectors is localized confinement.
+
+Massive Oscillons. The energy of a massive particle is confined within a localized, self-sustaining
+configuration. When a wavepacket is trapped via vortex circulation or stable nonlinear pulsation
+within a finite spatial region, Bernoulli-type dynamics induce a persistent static pressure deficit in the
+surrounding medium.
+    Long-lived localized nonlinear pulsations are well-known in classical field theory as pulsons and
+oscillons [Bogolyubsky and Makhankov, 1976, Gleiser, 1994, Copeland et al., 1995]. RefG proposes
+
+                                                   27
+that their stability arises from population-level resonant locking and conserved topological charges. In
+external readout, this locally confined energy manifests as inertia and effective gravitational mass.
+   While standard field-theoretic oscillons eventually decay through radiation leakage, RefG proposes
+nonlinear phase-locking with the surrounding particle population as the mechanism that suppresses
+radiative loss and selects long-lived particle states.
+
+Massless Carriers (The Photon). A massless mode possesses neither a rest frame nor a localized
+static core—it propagates through the network at the limiting phase transmission velocity (c). RefG
+interprets the photon as a freely propagating transverse phase mode.
+    Helicity and localized rotation are fundamentally distinct phenomena:
+
+   • The ±1 helicity of a photon describes the spatial spirality (handedness) of transverse electric and
+     magnetic phase vectors along the propagation axis, without forming a localized static vortex;
+
+   • A massive mode possesses a localized topological core and a static pressure-deficit well.
+
+    The energy-momentum tensor Tµν of a photon couples fully to the gravitational energy balance:
+while free electromagnetic radiation does not create a static, localized deficit well like a massive oscillon,
+its propagating energy enters the total gravitational source of the system.
+    The same principle applies to composite hadrons: inside protons and neutrons, the confined energy
+of strong quark and gluon interactions does not register as a separate external field, but contributes
+fully to the hadron’s total inertial energy and externally read gravitational mass.
+    Local topological form, spin, electric charge, color, and polarization preserve internal quantum
+distinctions, while gravitational readout unifies them through a single pressure-deficit channel.
+
+4.3    Self-Forming Resonators and the Two-Level Filter
+Nonlinear wave equations admit an infinite diversity of mathematical solutions; nature, however, realizes
+a sparse, strictly defined spectrum of stable elementary particles. Why does nature select this specific
+discrete set?
+    RefG organizes this proposed selection mechanism through a two-level dynamical filter:
+
+1. Level One: Kinematic and Population Filter. An acoustic handpan provides an intuitive
+analogy. While the resonant length of a guitar string is externally fixed by its wooden body, a three-
+dimensional oscillon must sculpt its own resonant cavity within the medium. On a handpan’s surface,
+a stable acoustic note unites the fundamental frequency, its octave, and the compound fifth into a
+harmonic 1 : 2 : 3 triad.
+    This triad is a structural rhythm: a self-forming resonator binds several mutually coherent modes
+into a single physical entity. In RefG, an oscillon’s pressure deficit alters the local geometry, which
+in turn filters viable modes: a stable mode must propagate through the substrate while locking into
+resonant coexistence with the surrounding particle population.
+
+2. Level Two: Energetic Stability Filter. Any mode that passes the kinematic filter but possesses
+an energetically accessible decay channel rapidly disintegrates into lighter, stable ground states.
+    Hadronic resonances (∆, ρ, ω) illustrate this: with typical lifetimes of 10−22 –10−24 s, they appear
+in scattering spectra but cannot endure as asymptotic particles, shedding energy into stable channels
+(pions, protons).
+    Electron decay has never been observed; as the lightest charged lepton, it is protected by electric
+charge conservation. The extraordinary experimental stability of the proton (τp > 1034 years) is linked
+in RefG to corresponding topological protection.
+    The mathematical language governing these filters is that of nonlinear attractors—stable phase-
+space configurations toward which dynamical trajectories asymptotically converge.
+
+
+                                                     28
+    A stable particle represents a self-consistent equilibrium: the wave configuration carves a pressure
+deficit in the medium, and this deficit acts as a potential well that stabilizes and reinforces the
+configuration. In classical field theory, Sidney Coleman’s Q-balls are protected by conserved internal
+Noether charges [Coleman, 1985]. In RefG, stability is reinforced by nonlinear phase-locking across the
+entire population.
+    This collective synchronization requires no external coordinator: Christiaan Huygens’s classic
+observation of pendulum clocks synchronizing through a common wooden beam [Huygens, 1665],
+mode-locking in lasers, and Yoshiki Kuramoto’s nonlinear synchronization model [Kuramoto, 1975]
+demonstrate how collective order emerges endogenously. In particle physics, this vision resonates with
+Geoffrey Chew’s S-matrix “Bootstrap” program, where particle spectra form a self-consistent whole
+[Chew and Frautschi, 1961].
+    Under adiabatic gravitational changes, resonant locks are preserved: the collective cadence Ω(x),
+operational scale, and externally read mass adjust synchronously, while dimensionless ratios and phase
+harmonies remain invariant. Rapid, high-energy shocks can break this locking, redistributing energy
+into other compatible channels.
+
+4.4   The Global Resonator: Unity of Micro- and Macro-Spectra
+The two-level filter specifies the proposed selection mechanism; we now ask where it is realized.
+    Ernst Chladni’s classic acoustic experiment provides the guiding intuition [Chladni, 1787]: sand
+scattered across a vibrating metal plate collects along the nodal lines of standing waves, where the
+oscillation amplitude is minimal. In the RefG map, this image corresponds to global modes and their
+nodes. Every resonator possesses its own spectrum: its geometry and boundary conditions determine
+which modes are amplified and which are suppressed.
+    After the operational network has formed, RefG treats it as a candidate unified global volumetric
+resonator. Only at this stage does the concept of an eigenspectrum acquire a defined meaning: the
+connection operator, network geometry, and boundary conditions select the admissible modes. The
+three-dimensionality of this resonator and the identification of its spectrum with physical particles and
+the cosmic web remain central hypotheses. During subsequent expansion and thermal evolution, its
+modes may lock into stable physical forms:
+
+   • Short-Wavelength Modes at high frequencies correspond to localized elementary particles, or
+     oscillons;
+
+   • Long-Wavelength Modes at low frequencies correspond to the large-scale distribution of matter,
+     the Cosmic Web.
+
+    According to the central hypothesis, the distribution of galaxies and galaxy clusters may resemble
+sand on a Chladni plate: filaments and vast cosmic voids may reflect the nodal pattern of standing
+modes in the global resonator. This identification requires a dedicated spectral test.
+    Standard cosmology describes this large-scale morphology through Yakov Zel’dovich’s anisotropic
+gravitational collapse [Zel’dovich, 1970]. RefG relates the same morphology to the ontological language
+of a single spectral operator.
+    The central hypothesis of this map is that the microscopic elementary particle and the
+macroscopic cosmic web are two different readouts of one universal spectral operator: one
+is a locally confined topological form, and the other is a globally extended cosmic pattern.
+    A joint empirical test of this operator must encompass:
+
+  1. The localized particle mass spectrum;
+
+  2. The cosmological history of structure formation;
+
+  3. The mass budgets of galaxy clusters;
+
+
+
+                                                   29
+  4. The Baryon Acoustic Oscillation standard ruler at approximately 100 h−1 Mpc [Eisenstein et al.,
+     2005].
+    Within the candidate picture of a finite, boundaryless resonator, conceptually related to Christof
+Wetterich’s variable-gravity framework [Wetterich, 2013], cosmological expansion describes the evolving
+relation between the geometry of the foundation and its own internal material standards. No external
+embedding container is required.
+    In current CMB observations, the low-multipole anomalies at l = 2, 3 remain moderate. Searches
+for cosmic topology establish topology-dependent lower bounds and do not select a unique global form
+[Planck Collaboration, 2016].
+
+4.5      Discreteness and the C3 Generation Symmetry
+In the Standard Model, the masses of the charged leptons—electron (e), muon (µ), and tau (τ )—are
+arbitrary Yukawa coupling inputs. RefG treats them as the ninth-order internal three-phase (C3 )
+triad of a single topological defect: three distinct resonant modes of one underlying physical structure.
+                                                                                                    √
+    The charged-lepton mass parametrization utilizes the vibrational scaling m ∝ ν 2 (or ν ∝ m)
+within a cyclic three-phase geometry:
+                                                         
+                                                       2πk
+                           νk = µ 1 + AK cos θ +              ,    k = 0, 1, 2,                     (26)
+                                                        3
+where:
+   • µ is an overall frequency scale;
+
+   • AK is the dimensionless three-phase modulation amplitude;
+
+   • θ is the mass phase angle;
+
+   • k = 0, 1, 2 indexes the three generations (e, µ, τ ).
+                  √
+   When AK = 2, the C3 algebra identically recovers Yoshio Koide’s empirical mass relation [Koide,
+1982, 1983]:
+                                            me + mµ + mτ          2
+                                  K= √          √          √ 2 = 3 .                        (27)
+                                          me + mµ + mτ
+   This three-phase parametrization possesses a rich literature:
+   • Carl Brannen formulated the relation in terms of circulant matrix eigenspaces [Brannen, 2006];
+                                                                                         √
+   • Robert Foot demonstrated that K = 2/3 corresponds to a 45◦ geometric orientation in m-space
+     [Foot, 1994];
+
+   • Brannen’s Pancharatnam–Berry phase construction yielded π/12 while leaving θ = 2/9 as a
+     dynamical parameter [Brannen, 2010];
+
+   • Konstantin Shulga obtained θℓ = −2/9 within a compact family cycle [Shulga, 2026].
+   RefG offers a candidate route connecting this structure to a ninth-order holonomic return
+cycle:
+  1. On the selected h = 2 branch, the first non-trivial topological return gives the candidate mass
+     angle:
+                                                 h    2
+                                             θ = = rad.                                          (28)
+                                                 9    9
+            √
+  2. AK = 2 represents energetic equipartition between internal singlet and doublet vibrational
+     channels.
+
+                                                   30
+    A simple C3 -invariant potential exhibits θ-blindness—an inability to select θ dynamically—showing
+that a simple potential minimum is insufficient and motivating closed topological holonomy as a candidate
+origin of the mass angle. √
+    Evaluating (AK , θ) = ( 2, 2/9) at tree level, anchored to the physical electron pole mass, yields
+deviations of 451.7σ for the muon mass and 0.61σ for the tau mass. Reconciling this tree-level geometry
+with measured pole masses requires an action-derived radiative correction bridge [Sumino, 2009].
+    This structure has a clear acoustic analogue: The C3 /Koide triad of charged leptons is an
+anharmonic, stable chord supported by a 3D volumetric resonator; within the candidate map,
+all three generations are normal modes of a single topological defect.
+
+
+5     Topology and Quantum Numbers
+5.1      Phase, Orientation, and Topological Quantization
+Thus far, the foundation-medium has been described primarily in terms of vibrational amplitude and
+local pressure. However, the complete local state of the medium is characterized by multiple coupled
+field variables: the phase-clock scalar, amplitude profile, and spatial orientation frame each possess
+distinct degrees of freedom. In this monograph, Φ represents the compact designation for the complete
+state of the foundation-medium rather than a simple single-component scalar: its full configuration
+simultaneously carries amplitude, phase, internal geometric form, and spatial orientation.
+    If Φ were merely a single-valued scalar field, its velocity field would be defined strictly by the
+gradient u = ∇Φ, forcing the curl (vorticity) to vanish identically (∇ × u = 0). The emergence of a
+non-trivial topological sector requires:
+    • A multi-valued phase,
+    • A singular defect nodal line, and
+    • A localized internal spatial orientation frame.
+
+                                        H the wave amplitude vanishes (|ψ| = 0), while around it the phase
+     At the central core of a defect line,
+winds by an integer multiple of 2π ( ∇θ · dl = 2πn). A canonical laboratory analogue is a quantized
+vortex filament in superfluid Helium.
+     The cosmological analogue is a cosmic string—a macroscopic topological defect line formed during
+a symmetry-breaking phase transition in the early Universe via the Kibble mechanism [Kibble, 1976].
+In RefG, this represents a “frozen seam” of the foundation: vacuum topology determines whether such
+lines form, while astrophysical observations (CMB lensing and pulsar timing arrays) tightly constrain
+their cosmological tension.
+     Lord Kelvin’s seminal papers on vortex atoms and vortex motion [Thomson, 1867, 1869] inspired
+Peter Guthrie Tait to systematically catalog knots, laying the foundations of modern mathematical
+knot theory [Tait, 1877]. RefG continues this lineage using the modern vocabulary of pressure-energy
+balance and population-locked resonance.
+     History provides a crucial lesson: 19th-century vortex atoms in ideal inviscid fluids failed to yield
+a stable discrete spectrum or reproduce atomic spectra. In RefG, the topological knot provides
+the kinematic scaffolding of form, while physical viability and dynamical stability are secured by
+pressure-energy feedback and nonlinear phase-locking across the oscillon population.
+     Phase quantization occurs when the field is single-valued and continuous along a closed loop,
+returning to its initial state modulo 2π, with the loop belonging to a non-trivial first homotopy group
+(π1 ̸= 0).
+     For a closed, orientable, framed ribbon, the Călugăreanu–White–Fuller (CWF) theorem
+applies [Călugăreanu, 1961, White, 1969, Fuller, 1971, Ricca and Nipoti, 2011]:
+                                            Lk = W r + T w,                                          (29)
+where:
+
+                                                   31
+   • Lk (Linking Number) is the topological integer invariant measuring total linking;
+
+   • W r (Writhe) measures the 3D spatial coiling of the ribbon’s central axis;
+
+   • T w (Twist) measures the internal phase winding of the ribbon frame around its axis.
+
+    Under continuous deformation, W r and T w can vary continuously (e.g., spatial coiling converting
+                                               R remains strictly
+into internal twist), yet their algebraic sum Lk                  invariant.
+    In fluid dynamics, kinetic helicity (H = u · (∇ × u) d x) is an invariant of ideal barotropic flow,
+                                                            3
+
+which Keith Moffatt connected to the topological linking number Lk [Moffatt, 1969]. In superfluid
+Helium, circulation quantization was predicted by Lars Onsager and Richard Feynman [Onsager, 1949,
+Feynman, 1955] and experimentally verified by Joe Vinen [Vinen, 1961]. Integer phase winding is thus
+an established laboratory reality.
+    The core principle “Topological Confinement = Conserved Charge” implies in RefG that
+electric charge is the external readout of a closed phase-orientation winding: topological invariants
+define the discrete charge class, while field dynamics govern its electromagnetic coupling.
+    In the RefG synthesis, spin-1/2 and elementary electric charge are read as two candidate
+geometric traces of a common double-covered topological source: the half-twist determines spinorial
+transformation under rotation, while chiral orientation and integer winding label the charge class and
+sign. Their quantitative completion requires separate derivations of the spin transformation law and
+electric-flux normalization.
+    Direct experimental analogues exist: Kelvin waves on quantized vortices in superfluid Helium have
+been directly excited and their dispersion measured [Minowa et al., 2025]; in classical water vortices,
+helical axial modes and their dispersion relations have been mapped experimentally [Barckicke et al.,
+2026]. In RefG, an oscillon’s radial breathing mode corresponds to its Compton mass pulsation, while
+its helicoidal mode governs charge and radiative channels.
+
+5.2    Spin and Fermionic Statistics
+A phase field twisted by a half-turn (π) along an oscillon’s internal axis generates a Möbius-strip-type
+double-covered Z2 topology:
+
+   • A single spatial rotation of 2π reverses frame orientation, flipping the sign of the wave amplitude
+     (ψ → −ψ);
+
+   • A double rotation of 4π fully restores the initial quantum state (ψ → +ψ).
+
+    This Z2 geometry embodies the fundamental transformation property of the spinor representation
+(SU (2)). RefG associates electron spin-1/2 with this internal double-covering. Changing this topological
+class requires tearing the configuration: vanishing amplitude at the core, defect reconnection, or altering
+boundary conditions.
+    Completing the connection to Fermi–Dirac statistics requires that exchanging two identical oscillons
+produces a phase shift of π, yielding an antisymmetric multi-particle state in Fock space:
+
+                                         Ψ(r1 , r2 ) = −Ψ(r2 , r1 ).                                   (30)
+
+   Under the required exchange antisymmetry, the amplitude for two identical fermions occupying
+the same state vanishes identically (Ψ = −Ψ =⇒ Ψ = 0). Deriving this exchange phase from the
+Möbius topology is the remaining step needed to recover the Pauli Exclusion Principle. For bosonic
+modes, the Möbius half-twist is absent, the state remains symmetric under exchange (Ψ → +Ψ), and
+macroscopic Bose condensation is permitted.
+   In relativistic quantum field theory, the Spin-Statistics Theorem unites Lorentz invariance, positive
+energy, and microcausality [Pauli, 1940]. RefG’s topological framework offers a candidate geometric
+mechanism for this connection.
+
+
+                                                     32
+5.3   Charge, the Photon, and the Electromagnetic Channel
+RefG defines electric charge as the external spatial trace of an oscillon’s internal chiral phase twist:
+   • Right-handed chiral twist corresponds to positive charge (+e);
+
+   • Left-handed chiral twist corresponds to negative charge (−e).
+    Externally, this trace extends radially in all directions. In quantitative electrodynamics, its surface
+integral must satisfy Gauss’s Law:            I
+                                                           Q
+                                                 E · dS = .                                            (31)
+                                                           ϵ0
+    A positron is the exact topological mirror image of an electron (possessing opposite chiral twist).
+In electron-positron annihilation (e+ + e− → 2γ), opposite topological windings untwist and cancel,
+releasing locally confined energy into freely propagating transverse radiation (photons). In a neutral
+oscillon, opposing chiral twists cancel internally, yielding zero net flux (characterizing the neutrino
+sector).
+    A uniform rotation of the internal phase angle corresponds to global U (1) gauge symmetry. Describing
+spacetime-dependent rotations necessitates a local frame connection and covariant derivative. RefG
+identifies the photon as a transverse, helicoidal wave of this connection: it propagates phase-twist
+disturbances across space, acting as the massless gauge boson of electromagnetism.
+    The topological nature of electromagnetism is manifest in classical electrodynamics: Antonio
+Rañada’s vacuum solutions exhibit linked, knotted electric and magnetic field lines classified by the
+Hopf invariant [Rañada, 1989].
+    The sign of physical forces (attraction vs. repulsion) is governed by gauge boson spin, source type,
+and coupling structure:
+   • Vector Gauge Channel (Spin-1): Like charges repel, opposite charges attract;
+
+   • Tensor Gravitational Channel (Spin-2): All positive energy densities attract universally.
+    In three spatial dimensions, a conserved massless flux dilutes as 1/r2 , yielding a 1/r potential.
+    Hydrodynamic Bjerknes forces [Bjerknes, 1906] illustrate the limits of simple fluid analogies: in an
+acoustic medium, bodies pulsating in-phase attract, while out-of-phase bodies repel—the exact opposite
+of electrostatics. This demonstrates that force signs are not reducible to crude mechanical collisions;
+they are governed by the rigorous mathematics of vector gauge fields, source currents, and topological
+linking.
+    The fine-structure constant α ≈ 1/137 sets the dimensionless coupling strength of this elec-
+tromagnetic channel and is interpreted as the impedance ratio of the substrate’s electric-flux and
+transverse-photon response channels.
+
+5.4   Color Confinement and Three Generations
+The three-dimensionality of space (D = 3) plays a crucial structural role in the RefG particle map:
+The three-axis spatial orientation frame of an oscillon provides the geometric substrate
+for the color charge triad (red, green, blue: r, g, b). Color represents the internal spatial degree
+of freedom of this frame:
+   • Quark: An oscillon mode vibrating along a single internal axis is topologically open, possessing
+     unconfined endpoints (an open topological segment);
+
+   • Baryon (Proton, Neutron): The symmetric combination of all three axes (r + g + b) forms a
+     fully closed, stable 3D topological knot (a color-singlet white state);
+
+   • Meson: Pairing an axis with its opposite anti-axis (color + anticolor) likewise forms a closed,
+     color-neutral loop.
+
+                                                    33
+    RefG identifies the candidate mechanism for color confinement in Quantum Chromodynamics
+(QCD) with the geometric incompleteness of an isolated quark: a closed, gauge-invariant state cannot
+be formed from a single open axis.
+    The mode count of an unconstrained three-axis deformable oscillon matches the 8 generators of
+SU (3), establishing the structural map of the color sector. Formal identity requires verifying the SU (3)
+structure constants, local gauge invariance, and interaction vertices.
+    The Three-Generation Puzzle is a proposed extension of the C3 structure explored in Chapter
+IV:
+
+   • Charged leptons (e, µ, τ ) represent the ninth-order three-phase vibrational modes of a single
+     topological defect;
+
+   • Quark generations (u/d, c/s, t/b) replicate this generational architecture across the three-axis
+     colored sector.
+
+    In this candidate map, the three generations are read as successive holonomic return modes of a
+single 3D volumetric resonator.
+    The universal foundation of holonomy is Berry’s geometric phase [Berry, 1984]: under adiabatic
+cyclic transport across parameter space, a quantum state acquires an invariant geometric holonomy
+phase alongside its dynamical phase. RefG links this to the ninth-order return cycle of a framed defect,
+yielding θ = 2/9 rad on the h = 2 branch.
+
+Why is Space Three-Dimensional? In RefG, D = 3 is intimately tied to the stability of
+topological knots:
+
+   • Closed one-dimensional loops form stable, non-trivial knots and links exclusively in D = 3 spatial
+     dimensions;
+
+   • In higher dimensions (D ≥ 4), any knotted loop can be untied and unlinked smoothly along extra
+     spatial dimensions without self-intersection.
+
+    This topological argument builds upon the insights of Paul Ehrenfest, Gerald Whitrow, and modern
+investigators [Ehrenfest, 1918, Whitrow, 1955, Berera et al., 2017]. RefG formulates the co-emergence
+of material discreteness and 3D space from a single topological locking mechanism as a central working
+hypothesis.
+
+5.5    Geometric Map of the Standard Model
+RefG organizes the particle spectrum of the Standard Model into the following geometric architecture:
+
+1. The Electron and Charged Leptons. The electron is a complete toroidal, framed Möbius Z2
+topological defect with all three spatial axes locally closed. RefG connects this double-covered geometry
+to the Dirac factor g = 2.
+     The electron’s measured magnetic moment slightly exceeds 2. Julian Schwinger calculated the
+leading quantum electrodynamic correction (α/2π), while modern Penning trap experiments measure
+|ge |/2 = 1.00115965218059(13) [Schwinger, 1948, Fan et al., 2023]. This precision measurement provides
+a benchmark for testing the quantum completion of the topological map.
+
+2. Quarks and Color Charge. Quarks are open axial topological segments. Their fractional electric
+charges (+2/3, −1/3) are associated with one-third subdivisions of the 3D closed loop; their exact
+values remain to be fixed by canonical charge normalization. Color confinement dictates that only
+closed, color-singlet configurations (baryons and mesons) exist as asymptotic states.
+
+
+
+
+                                                   34
+3. Gauge Bosons.
+   • Photon: Massless propagating transverse helicoidal wave (U (1) gauge symmetry, 2 helicities);
+   • Gluons: 8 massless transverse modes mediating color transitions between internal axes (SU (3)
+     octet);
+   • W ± and Z 0 Bosons: Locally confined, massive carrier oscillons mediating electroweak transitions
+     (SU (2)L × U (1)Y ).
+    RefG interprets beta decay (n → p + e− + ν̄e ) as a topological reconnection: altering the internal
+axis orientation (d → u) produces a transient charged weak carrier (W − ) that decays into leptonic
+channels, bringing chirality, energy–momentum balance, and the decay spectrum into a single geometric
+transition.
+
+4. Neutrinos and the Higgs Boson.
+   • Neutrinos: Electrically neutral, incompletely confined chiral phase modes. Their incomplete
+     topological confinement is associated with their ultra-small masses (mν < 0.1 eV) and weak
+     coupling, while Pontecorvo flavor oscillations represent phase interference among mass eigenspaces;
+   • Higgs Boson: A purely spherical, radial breathing pulsation of the foundation-medium devoid
+     of angular momentum, naturally corresponding to a spin-0 scalar state (mH ≈ 125.25 GeV).
+
+5. The Graviton and the Weinberg–Witten Theorem. The tensor wave sector contains two
+transverse-traceless polarizations (h+ , h× ). The Weinberg–Witten theorem [Weinberg and Witten,
+1980] forbids massless spin-2 particles with a Lorentz-covariant, gauge-invariant energy-momentum
+tensor in flat spacetime. At the low-energy effective level, RefG can meet this constraint only if the
+same branch simultaneously carries a massless tensor mode, universal coupling, and effective Lorentz
+symmetry. The graviton is then read not as an isolated fundamental particle on a fixed background,
+but as a collective tensor-shear excitation of the foundation-medium.
+
+6. Nonlinear Soliton Lagrangian. The formal mathematical foundation of this topological map
+relies on nonlinear field Lagrangians admitting stable knotted soliton solutions (in the spirit of the
+Faddeev–Niemi model; Faddeev and Niemi 1997).
+
+5.6   Fundamental Constants: α and the Gravitational Hierarchy
+The fine-structure constant:
+                                             e2            1
+                                      α=           ≈                                            (32)
+                                          4πϵ0 ℏc     137.035999
+remains one of the deepest mysteries in physics, described by Richard Feynman as one of the greatest
+unexplained numbers in science [Feynman, 1985].
+   In RefG, α is interpreted as the dimensionless impedance ratio of the substrate’s electric-flux
+and transverse-photon response channels.
+   This definition is governed by three precise distinctions:
+  1. Simple ratios of Planck and electron masses or frequencies do not yield 137;
+  2. The identity re /λ̄c = α is an algebraic consequence of dimensional definitions;
+  3. Integer phase-locking steps represent physical realities (as demonstrated by the Josephson effect
+     and Shapiro steps; Josephson 1962, Shapiro 1963), though seconds are themselves calibrated by
+     atomic oscillons.
+   Thus, α is not an absolute frequency or energy; it is the dimensionless impedance ratio of the
+substrate’s electric-flux and transverse-photon response channels. Under local pressure shifts,
+both responses scale synchronously, leaving α invariant.
+
+                                                  35
+The Hierarchy Problem: Why is Gravity So Weak? The electrostatic repulsion between two
+protons exceeds their gravitational attraction by a factor of 1036 , while for electrons this ratio reaches
+1042 :
+                                        e2           MPl 2
+                                                         
+                            Fem
+                                 =             = α           ∼ 4.17 × 1042 .                           (33)
+                             Fg     4πϵ0 Gm2e         me
+    This immense disparity motivated Paul Dirac’s Large Numbers Hypothesis [Dirac, 1937].
+    RefG interprets this hierarchy through the differing ontological character of the two interactions:
+    1. Electromagnetism is a primary, direct transverse-phase gauge coupling between topological
+       charges;
+    2. Gravity: An oscillon’s internal oscillatory energy induces a secondary, Bernoulli-type static
+       pressure deficit in the surrounding foundation. Its long-range refractive trace is read as the
+       gravitational field (−∆P ∝ ρdyn ).
+
+     • The Planck mass (MPl = ℏc/G ≈ 2.18 × 10−8 kg ≈ 1.22 × 1019 GeV) is the limiting calibration
+                                  p
+
+       scale for the elastic response of the foundation-medium;
+    • Electrons and protons are localized oscillon modes whose energies lie many orders of magnitude
+      below that scale (me /MPl ∼ 10−22 ).
+
+    Because the gravitational pressure deficit is proportional to oscillon energy (me ), and gravitational
+attraction couples two such deficits (Gm2e ), gravitational interaction between elementary particles is
+quadratically suppressed relative to the Planck scale (m2e /MPl 2 ∼ 10−44 ).
+
+    In RefG, the extreme weakness of gravity is read as a difference between these two channels: gravity
+is a pressure-mediated refractive effect generated by microscopic oscillons. The ratio α(MPl /m)2
+reproduces the correct scale; its full origin requires a common dynamics for G, MPl , and the microscopic
+energy of an oscillon.
+
+
+6     Epilogue: Boundaries of Knowledge
+6.1    Why One Foundation and One Manifested Medium?
+At the conclusion of this work, we return to the central physical and philosophical question: Why a
+single foundation-medium?
+    One primary motivation is ontological parsimony (Occam’s razor): a single substrate radically
+minimizes the number of independent, disconnected axiomatic inputs. However, mathematical simplicity
+alone is insufficient to establish physical truth.
+    A far deeper and more decisive argument is the common origin of physical law. When electrons,
+quarks, and photons are understood as distinct resonant and topological modes of a single universal
+foundation-medium, RefG seeks to derive the conservation of energy, momentum, angular momentum,
+and electric charge from the dynamic equilibrium of this common substrate rather than postulating
+them as external, unconnected axioms. Physical interactions represent couplings between differing
+modes of the same medium, while conservation laws express the geometric continuity of its total energy
+balance.
+    This perspective addresses Eugene Wigner’s famous reflection on the “unreasonable effectiveness of
+mathematics” in the natural sciences [Wigner, 1960]. The postulate of a single ontological substrate
+provides this profound harmony with a physical explanation: The universal mathematical order of
+physical law reflects the internal dynamical coherence of a single primary substance.
+    Postulating multiple mutually independent fundamental fields (as in the Standard Model) merely
+defers the question: What overarching symmetry principle constrains these disparate fields to obey the
+same universal conservation laws and relativistic spacetime symmetries? Within the RefG ontology,
+this universality is not an external decree—it is the intrinsic dynamics of the shared substrate.
+    This argument gives the Standard Model’s fine-tuning problem a common structural target:
+
+                                                    36
+   • The stringent observational bound on the electrical neutrality of bulk matter (|qp + qe |/e < 10−21 );
+
+   • The observational compatibility of the photon rest mass with zero (mγ < 10−18 eV);
+
+   • The precise quantization of fractional quark charges [Navas et al., 2024].
+    These interrelated constraints call for a common structural explanation, which RefG associates with
+the topological geometry of the foundation-medium.
+    A single universal foundation gives rise to immense phenomenological richness: it concurrently
+supports volumetric pressure, shear stress, phase, topology, vortical circulation, memory, and resonance.
+This reflects Philip Anderson’s celebrated insight—“More is Different”: every emergent level of
+structural complexity exhibits its own autonomous physical laws [Anderson, 1972]. RefG understands
+transitions across scales as the self-organization of a multi-channel medium.
+    RefG reads the measurable cosmological Universe as a self-measuring global resonant network.
+The foundation itself is pre-spatial and is not assigned a spatial size. A mathematical witness exists
+in the form of a finite, connected periodic network with no unique center, but this witness does not
+determine the actual dimension or topology of the Universe. A finite, boundaryless global resonator
+remains a physical candidate. The Universe measures itself through its own resonant modes.
+
+6.2   Three Operational Boundaries
+Measurement of the Universe is always performed by components of the Universe itself: our clocks,
+measuring rods, detectors, and bodies are oscillon structures of the universal foundation-medium. This
+concept of a self-measuring Universe resonates with John Wheeler’s It from Bit program [Wheeler,
+1990]. In Wheeler’s formulation, information is primary; in RefG, the physical foundation-medium is
+primary, while the informational trace is a result of its self-distinction.
+    Here, boundary denotes the domain within which a measuring procedure is physically defined. An
+observer internal to the Universe can measure only those relations that are defined within the active
+nodal network itself.
+    Kurt Gödel’s incompleteness theorems [Gödel, 1931] provide a fundamental epistemological analogy:
+just as a consistent formal system contains true propositions that cannot be proved from within that
+system, a self-measuring Universe raises the question: How completely can an internal component of the
+system measure the global boundaries of the entire system?
+    This self-measuring picture gives rise to three operational boundaries:
+  1. The Operational Origin of Time: In the working scenario, time begins with the first foundation-
+     wide self-distinction, and this boundary is assigned t = 0 and τ = 0. No physical past exists before
+     the birth of the Universe, because change and the ordering of events are not yet defined. The
+     history measured by present-day clocks spans approximately 13.8 Gyr. On the selected branch,
+     the process age is also finite, while its exact value remains to be derived.
+
+  2. The Operational Boundary of Space: We measure the connections among distinguishable
+     oscillon nodes. An exterior of the Universe is not a possible location of observation. The
+     cosmological horizon is a measurement boundary defined from within the network. The quantity
+     Ract is a local activation or correlation scale and does not denote an external radius of the
+     Universe.
+
+  3. The Operational Boundary of Scale: In RefG, the Planck length, ℓPl ∼ 10−35 m, is the
+     natural transition scale constructed from c, ℏ, and G, at which quantum and gravitational
+     effects become simultaneously important. The exact relation between the minimum operational
+     distinguishability threshold ℓ∗ and the Planck length must be determined by the microdynamics
+     of the foundation.
+    In all three cases, the boundary arises from the conditions of measurement internal to the Universe.
+A finite object may extend to infinity in a chosen coordinate representation, as in the stereographic
+
+                                                   37
+projection of a sphere onto an infinite plane or in Benoit Mandelbrot’s coastline paradox [Mandelbrot,
+1982].
+
+6.3   Methodological Principles
+The methodological foundation of this research program is absolute: An intuitive physical picture
+must be translated into a rigorous, computable, mathematically self-consistent, and
+falsifiable formalism.
+    The theoretical analysis of a particle oscillon follows a rigorous 9-step verification chain:
+  1. Empirical Grounding: Precise determination of mass, charge, spin, lifetime, and scattering
+     form factors;
+  2. Mode Identification: Selecting the appropriate resonant and topological class within the
+     foundation-medium;
+  3. Geometric Ansatz: Formulating the spatial geometry, topological invariants (Lk, W r, T w), and
+     boundary conditions;
+  4. Dynamical Law: Deriving the nonlinear field action, Lagrangian density, and equations of
+     motion;
+  5. Symmetries and Conservation Laws: Identifying Noether currents, charge, spin, color, and
+     zero modes;
+  6. Existence and Stability: Proving the existence of localized finite-energy soliton solutions and
+     analyzing their perturbation spectrum;
+  7. Parameter Closure: Fixing all free coefficients independently of the data to be predicted;
+  8. Novel Predictions: Computing independent, measurable physical observables and their uncer-
+     tainties;
+  9. Empirical Confrontation: Testing predictions against observational data under pre-defined
+     falsification criteria.
+     A working hypothesis and a verified computational result are strictly distinguished. Every calculation
+is tied to reproducible code, explicit datasets, and executable verification gates.
+
+6.4   Where This Program Could Die (The Falsification Map)
+The hallmark of a legitimate scientific theory is its vulnerability to empirical refutation (Popper’s
+criterion). RefG establishes a transparent, three-tiered falsification map:
+
+1. The Entire Framework is Falsified if:
+  1. The oscillon sector fails to recover effective Lorentz invariance and spatial isotropy of light speed
+     (|∆c/c| > 10−17 ; Herrmann et al. 2009), or gravitational-wave propagation speed deviates from c
+     (|vgw − c|/c > 10−15 ; Abbott et al. 2017).
+  2. The universality of free fall between inertial and gravitational mass exhibits a composition-
+     dependent violation exceeding observational bounds (η > 10−15 ; MICROSCOPE: Touboul et al.
+     2022).
+  3. The global pressure evolution of the foundation-medium fails to yield a unique relation between
+     process and metric time, or the cosmology built from that relation fails to recover the observed
+     CMB, BBN, photon redshift, and Type Ia supernova (1 + z) time-dilation relations [Blondin et al.,
+     2008].
+
+                                                    38
+  4. Dimensionless coupling constants vary under local gravitational potential shifts (|∆α/α| > 10−6 ;
+     Kotuš et al. 2017).
+
+  5. Self-distinction of the foundation fails to establish a unified bridge to mutually distinguishable
+     modes, local causality, and additive accounting of energy, momentum, and charge.
+
+2. An Individual Sector is Falsified if:
+
+  1. Gravitational-wave energy flux fails to reproduce binary pulsar orbital decay to a precision of
+     10−3 –10−4 [Kramer et al., 2021], or scalar breathing modes exceed LIGO-Virgo-KAGRA bounds.
+
+  2. The galactic vortex framework fails to reproduce SPARC/RAR data [McGaugh et al., 2016] or the
+     8σ separation between lensing centroids and X-ray gas in the Bullet Cluster [Clowe et al., 2006].
+
+  3. Combined vortical-nodal sources fail to recover primary CMB anisotropies, the BAO 100 h−1 Mpc
+     ruler, and large-scale structure statistics [Eisenstein et al., 2005].
+
+  4. The compact regular-core model fails to match Event Horizon Telescope shadow diameters, the
+     compact-branch oscillation spectrum, or gravitational-wave echo limits [Cardoso and Pani, 2019].
+
+3. A Specific Geometric Reading is Falsified if:
+
+  1. The electron oscillon profile fails to maintain a pointlike electromagnetic form factor down to
+     10−18 m [Navas et al., 2024].
+
+  2. The Koide/C3 branch fails to construct an action-derived radiative bridge to pole masses, or a
+     fourth sequential charged lepton is discovered.
+
+  3. Galactic-flow circulation is not quantized in units of h/m within an independently fixed effective-
+     mass and coherence window.
+
+  4. The Möbius double-cover fails to yield the Dirac value g = 2, Fock-space antisymmetry, or QED
+     radiative corrections.
+
+    Each falsification criterion is tied to specific experimental measurements: an adverse result eliminates
+the corresponding hypothesis from the research program rather than prompting ad-hoc verbal revisions.
+
+
+Conclusion
+This monograph has established the unified conceptual architecture of Refractive Gravity (RefG):
+
+  1. Ontological Starting Point: In the working scenario, one universal pre-spatial foundation
+     undergoes a centerless initial transition that produces the first distinguishable relations. Resonant
+     fields of oscillon seeds localized within this initial relational layer overlap; the resulting coupling
+     increases network connectivity, while stable matter forms through later locking. The physical
+     action governing the transition, the coupling threshold, and the law selecting stable modes remain
+     open.
+
+  2. Matter as Oscillons: Locally confined, topologically stable nonlinear wave configurations of
+     the foundation—oscillons—induce a static pressure deficit in the surrounding substrate via
+     Bernoulli-type dynamics (−∆P ∝ ρdyn ), registered by external observers as gravitational mass.
+
+  3. Gravity as Refraction: The propagation of matter and light wavepackets through an in-
+     homogeneous pressure landscape constitutes universal optical-geometric refraction; along the
+     static weak-field 1PN branch, this mechanism recovers the predictions of General Relativity
+     (PPN β = γ = 1).
+
+                                                    39
+   This unified pressure chain unfolds across three primary astrophysical scales:
+
+   • Locally: In compact relativistic objects, where internal topological content and externally read
+     mass decouple via two-channel accounting;
+
+   • Galactically: In the coherent vortical circulation and polarization of the foundation, which RefG
+     connects to MOND and Tully–Fisher (RAR/BTFR) regularities without dark matter particles;
+
+   • Cosmologically: The framework combines a candidate Genesis scenario beginning at a global,
+     centerless boundary with a selected expansion–relaxation branch. Conditional on this branch,
+     decreasing background pressure reduces operational material size and externally read mass, while
+     growth of the foundation scale a and contraction of the material standard p combine in the
+     observable scale A = a/p. The histories a(t), PF (t), and p(t) remain to be derived. Type Ia
+     supernova time dilation, the process maturity of early galaxies, and the pressure-based reading of
+     the cosmological constant are separate tests of this cosmological program.
+
+   Concurrently, the framework connects material discreteness to the candidate eigenspectrum of
+a three-dimensional volumetric resonator and to population-locked
+                                                     √                synchronization; C3 generation
+symmetry and the ninth-order cycle (θ = 2/9, AK = 2) provide a geometric map of Koide’s lepton
+mass formula; and the topological invariants Lk = W r + T w organize spin, charge, and color quantum
+numbers within one geometric language.
+   Refractive Gravity constructs a comprehensive research program aimed at deriving a unified,
+computable, and empirically testable account of gravitation, matter, and measurability from a single
+ontological foundation. This monograph establishes a firm foundation for that physical paradigm and
+opens a broad path for further theoretical and experimental research.
+
+
+Current Status of the Research Program
+The current status of each theoretical component is cataloged here to maintain clarity and transparency
+across the research program:
+
+  1. Ontological Foundation, Cosmic Genesis, and the Origin of Measurability—The
+     selected working scenario combines a centerless initial boundary common to the entire foundation,
+     the first minimally distinguishable relations, localization of oscillon seeds, overlap of resonant
+     fields, coupling-mediated network connection, and subsequent stabilization. W3-37 separates the
+     stipulated parameter domains and verifies that the selected event ordering contains no closed
+     causal cycle; W3-38 gives a finite periodic-graph witness that connectivity and the absence of a
+     unique center are compatible; and W3-39 verifies a conditional post-origin ledger of energy-transfer
+     signs in predeclared sectors. In a finite symmetric-network example from the same W3-39 report,
+     where all vertices are equivalent, a record strictly ordered by distance from one selected center
+     violates the stipulated centerlessness. These reports do not derive a physical Genesis mechanism.
+     The transition trigger and action, actual dimension and topology, an oscillon-seed solution, the
+     resonant-field equation, the physical coupling threshold, the initial energy distribution, the thermal
+     history, and observational consequences remain open.
+
+  2. Inter-Node Separation and Minimum Distinguishability—The operational concept of
+     distinguishability has been established; a Planck-order threshold is a physical candidate, but it
+     has not been derived from the underlying action.
+
+  3. Local Collective Cadence—Common-rescaling invariance and trial models of mutual synchro-
+     nization have been obtained; calculating the complete spectrum of stable oscillons remains an
+     active task.
+
+
+
+                                                   40
+ 4. Oscillon Deficit, Scale, Time, and Mass—Metric filters and the first-order biconformal
+    branch have been derived symbolically; a finite-energy nonlinear oscillon profile and the full
+    mass-readout map remain open.
+ 5. Weak-Field Gravity and EFT Architecture—On the pressure-deficit channel, H = 0, γ = 1,
+    and β = 1 are obtained. From conservation of oscillon topological-defect density, macroscopic
+    four-dimensional covariance, and the effective postulates of Fierz–Pauli dynamics, Lovelock’s and
+    Deser’s theorems yield a conditional low-energy General-Relativistic architecture within effective
+    field theory. A direct nonlinear derivation from the microdynamics remains open.
+ 6. Inertia and Gravitational Mass—The Noether identity is conditionally established for finite-
+    energy, Lorentz-covariant localized solutions satisfying the Laue boundary condition; an exact
+    derivation of the zero mode remains open.
+ 7. Gravitational Waves and Local Unobservability—In the local Minkowski limit, tensor
+    propagation speed, two transverse-traceless (TT) polarizations arising from shear modes, and
+    detector response are established; cosmological propagation, source-flux normalization, the full
+    waveform, and scalar suppression bounds remain open.
+ 8. Compact Objects—A static, conditional map and finite-core matching of the C 2 ansatz have
+    been obtained; within one specific exterior-layer and pressure-reversal criterion, admissible domains
+    do not overlap. The physical equation of state, gravitational collapse, rotation, and global stability
+    remain open.
+ 9. Galaxy Rotation—An empirical test using B − V colors did not detect the anticipated age
+    correlation. This result is compatible with common rescaling, but it does not establish either the
+    Doppler-cancellation mechanism or a complete physical explanation of the MOND correlations;
+    both remain open (W3-18). The symbolic algebraic cancellation ccoord /c0 = p2 has been obtained,
+    but direct physical confirmation from PHANGS/SPARC data and an exact process-level derivation
+    of vortex rotation are still lacking.
+10. Cosmological Relaxation and the Time Bridge—A = a/p is the exact definition of the
+    operational scale. The selected cosmological branch permits both expansion of the foundation
+    scale a and contraction of the material standard p, but neither history has yet been derived. The
+    approximately 13.8 Gyr age calibrated by present-day clocks is an observational cosmological
+    quantity; finiteness of process history is an initial condition of this branch, and its exact duration
+    requires dynamics for PF (t). A full derivation of Type Ia supernova (1 + z) time dilation requires
+    a map of photon propagation and atomic standards, while interpreting early galaxies requires an
+    independent model of structural growth. Both channels are ongoing tests of the program.
+11. Two-Level Time and Quantum Randomness—The interpretive framework is compatible
+    with Bell tests and delayed-choice experiments; formal derivations of Born’s rule, the no-signaling
+    condition, and measurement dynamics remain open.
+12. Particles as Oscillon Modes—The geometric placement map and initial spectral classification
+    have been formulated as candidates; finite-energy oscillons, form factors, masses, couplings, and
+    decay channels remain open.
+
+     √ Koide/C3 /2/9 Structure—The C3 algebra yields K = 2/3 exactly; with (AK , θ) =
+13. The
+    ( 2, 2/9) anchored to the electron pole mass, tree-level predictions deviate by 451.7σ for the
+    muon and 0.61σ for the tau. The choice h = 2, m ∝ ν 2 , action-level derivation, and radiative
+    corrections remain open.
+14. Spin, Pauli Exclusion, and Fermionic Statistics—The Möbius double-covered geometry
+    provides a candidate mechanism; a complete derivation of Fock space and the Spin-Statistics
+    Theorem from first principles remains open.
+
+                                                  41
+ 15. Charge, the Photon, and the Electromagnetic Channel—The following conditional
+     structural results have been obtained: local-frame U (1), two helicities, screening of the hedgehog’s
+     otherwise unscreened asymptotic sigma-field component, whose energy grows linearly with radius,
+     together with the surviving 1/r2 far field and flux accounting after screening, and subtheorems
+     for a conserved phase current. Canonical charge normalization, Maxwell’s equations, Gauss’s
+     law, Ward identities, quantum electrodynamics, the Dirac sector, and the exact pressure-deficit
+     gravitational source channel of freely propagating radiation remain open.
+
+ 16. Color, Quarks, and Gluons—The three-color, eight-mode construction provides only a partially
+     compatible structural map; SU (3) structure constants, interaction vertices, scale evolution, the
+     confinement potential, and fractional charge normalization remain open.
+
+ 17. Electroweak Map and the Higgs—This constitutes a geometric placement map; SU (2)L
+     chirality, a W/Z mass matrix preserving a massless photon, CKM/PMNS mixing, neutrino mass
+     hierarchy, Yukawa couplings, and the vacuum expectation value remain open.
+
+ 18. The Fine-Structure Constant α—A nodal interpretation and target-independent spectral
+     measure have been obtained: α is read from the relative strengths of the electric-flux and
+     transverse-photon response channels, with the overall scale canceling. A microscopic action for
+     physical charge Q, a unique numerical value, the complete charged spectrum, and RG flow to the
+     Thomson limit remain open. The earlier boundary formula remains a target-dependent conditional
+     result.
+
+ 19. The Gravitational Hierarchy—The force ratio is expressed algebraically as Fem /Fg =
+     α(MPl /m)2 ; the fundamental origins of G, MPl , the oscillon energy scale, and the mass hi-
+     erarchy remain open.
+
+ 20. A Self-Measuring Manifested Universe—The global-resonator picture is a cosmological-level
+     hypothesis. The finite periodic graph of W3-38 shows only that connectivity and the absence
+     of a unique graph-theoretic center can coexist in one mathematical construction; it does not
+     derive cosmic finiteness, boundarylessness, physical dimension, or topology. Low-multipole and
+     topological signatures remain candidate observables.
+
+
+
+References
+B. P. Abbott et al. Observation of gravitational waves from a binary black hole merger. Physical Review
+  Letters, 116:061102, 2016. LIGO Scientific Collaboration and Virgo Collaboration.
+
+B. P. Abbott et al. Gravitational waves and gamma-rays from a binary neutron star merger: GW170817
+  and GRB 170817A. The Astrophysical Journal Letters, 848:L13, 2017. LIGO Scientific Collaboration,
+  Virgo Collaboration, Fermi-GBM, and INTEGRAL.
+
+P. W. Anderson. More is different. Science, 177(4047):393–396, 1972.
+
+R. Arnowitt, S. Deser, and C. W. Misner. The dynamics of general relativity. In L. Witten, editor,
+ Gravitation: An Introduction to Current Research, pages 227–265. Wiley, New York, 1962.
+
+C. Barceló, S. Liberati, and M. Visser. Analogue gravity. Living Reviews in Relativity, 14:3, 2011. First
+  version: Living Reviews in Relativity 8, 12 (2005).
+
+J. Barckicke, E. Falcon, and C. Gissinger. Kelvin wave propagation along vortex cores. Nature Physics,
+   22:409–414, 2026.
+
+J. D. Bekenstein. Relativistic gravitation theory for the modified newtonian dynamics paradigm.
+  Physical Review D, 70:083509, 2004.
+
+                                                   42
+J. S. Bell. On the Einstein–Podolsky–Rosen paradox. Physics Physique Fizika, 1:195–200, 1964.
+
+A. Berera, R. V. Buniy, T. W. Kephart, H. Päs, and J. G. Rosa. Knotty inflation and the dimensionality
+  of spacetime. European Physical Journal C, 77:611, 2017.
+
+L. Berezhiani and J. Khoury. Theory of dark matter superfluidity. Physical Review D, 92:103510, 2015.
+
+D. Bernoulli. Hydrodynamica, sive de viribus et motibus fluidorum commentarii. Johann Reinhold
+  Dulsecker, Strasbourg, 1738.
+
+M. V. Berry. Quantal phase factors accompanying adiabatic changes. Proceedings of the Royal Society
+ of London A, 392:45–57, 1984.
+
+B. Bertotti, L. Iess, and P. Tortora. A test of general relativity using radio links with the Cassini
+  spacecraft. Nature, 425:374–376, 2003.
+
+V. Bjerknes. Fields of Force. Columbia University Press, New York, 1906.
+
+S. Blondin, T. M. Davis, K. Krisciunas, B. P. Schmidt, J. Sollerman, W. M. Wood-Vasey, et al. Time
+   dilation in Type Ia supernova spectra at high redshift. Astrophysical Journal, 682:724–736, 2008.
+
+I. L. Bogolyubsky and V. G. Makhankov. On the pulsed soliton lifetime in two classical relativistic
+   theory models. JETP Letters, 24:12–14, 1976.
+
+D. Bohm. A suggested interpretation of the quantum theory in terms of “hidden” variables. I & II.
+  Physical Review, 85:166–179, 180–193, 1952.
+
+M. Born. Zur quantenmechanik der stoßvorgänge. Zeitschrift für Physik, 37:863–867, 1926.
+
+C. A. Brannen. The lepton masses. Unpublished preprint, 2006.
+
+C. A. Brannen. Spin path integrals and generations. Foundations of Physics, 40:1681–1699, 2010.
+
+P. W. Bridgman. The Logic of Modern Physics. Macmillan, New York, 1927.
+
+G. Călugăreanu. Sur les classes d’isotopie des nœuds tridimensionnels et leurs invariants. Czechoslovak
+  Mathematical Journal, 11(4):588–625, 1961.
+
+V. Cardoso and P. Pani. Testing the nature of dark compact objects: A status report. Living Reviews
+  in Relativity, 22:4, 2019.
+
+G. F. Chew and S. C. Frautschi. Principle of equivalence for all strongly interacting particles within
+  the S-matrix framework. Physical Review Letters, 7:394–397, 1961.
+
+E. F. F. Chladni. Entdeckungen über die Theorie des Klanges. Weidmanns Erben und Reich, Leipzig,
+  1787.
+
+W. K. Clifford. On the space-theory of matter. Proceedings of the Cambridge Philosophical Society, 2:
+ 157–158, 1876. Read 21 February 1870; printed in 1876.
+
+D. Clowe, M. Bradač, A. H. Gonzalez, M. Markevitch, S. W. Randall, C. Jones, and D. Zaritsky. A
+  direct empirical proof of the existence of dark matter. Astrophysical Journal Letters, 648:L109–L113,
+  2006.
+
+S. Coleman. Q-balls. Nuclear Physics B, 262(2):263–283, 1985. Addendum: Nuclear Physics B 269, 744
+  (1986).
+
+E. J. Copeland, M. Gleiser, and H.-R. Müller. Oscillons: Resonant configurations during bubble collapse.
+  Physical Review D, 52:1920–1933, 1995.
+
+                                                  43
+P. Delva, N. Puchades, E. Schönemann, et al. Gravitational redshift test using eccentric Galileo satellites.
+  Physical Review Letters, 121:231101, 2018.
+
+S. Deser. Self-interaction and gauge invariance. General Relativity and Gravitation, 1:9–18, 1970.
+
+B. S. DeWitt. Quantum theory of gravity. I. the canonical theory. Physical Review, 160:1113–1148,
+  1967.
+
+R. H. Dicke. Gravitation without a principle of equivalence. Reviews of Modern Physics, 29:363–376,
+  1957.
+
+P. A. M. Dirac. The cosmological constants. Nature, 139:323, 1937.
+
+P. Ehrenfest. In what way does it become manifest in the fundamental laws of physics that space has
+  three dimensions? Proceedings of the Koninklijke Akademie van Wetenschappen te Amsterdam, 20:
+  200–209, 1918.
+
+A. Einstein. Zur elektrodynamik bewegter körper. Annalen der Physik, 17:891–921, 1905. English title:
+  On the Electrodynamics of Moving Bodies.
+
+A. Einstein. Über den einfluß der schwerkraft auf die ausbreitung des lichtes. Annalen der Physik, 35:
+  898–908, 1911. Band 340.
+
+A. Einstein. Lichtgeschwindigkeit und statik des gravitationsfeldes. Annalen der Physik, 38:355–369,
+  1912. Band 343.
+
+A. Einstein. Die grundlage der allgemeinen relativitätstheorie. Annalen der Physik, 354(7):769–822,
+  1916.
+
+D. J. Eisenstein et al. Detection of the baryon acoustic peak in the large-scale correlation function of
+  SDSS luminous red galaxies. The Astrophysical Journal, 633:560–574, 2005.
+
+Event Horizon Telescope Collaboration. First M87 event horizon telescope results. I. the shadow of the
+  supermassive black hole. The Astrophysical Journal Letters, 875:L1, 2019.
+
+L. Faddeev and A. J. Niemi. Stable knot-like structures in classical field theory. Nature, 387:58–61,
+  1997.
+
+X. Fan, T. G. Myers, B. A. D. Sukra, and G. Gabrielse. Measurement of the electron magnetic moment.
+  Physical Review Letters, 130:071801, 2023.
+
+R. P. Feynman. Application of quantum mechanics to liquid helium. In C. J. Gorter, editor, Progress
+  in Low Temperature Physics, volume 1, pages 17–53. North-Holland, Amsterdam, 1955.
+
+R. P. Feynman. QED: The Strange Theory of Light and Matter. Princeton University Press, Princeton,
+  1985.
+
+G. F. FitzGerald. The ether and the earth’s atmosphere. Science, 13(328):390, 1889.
+
+H. Fizeau. Sur les hypothèses relatives à l’éther lumineux, et sur une expérience qui paraît démontrer
+  que le mouvement des corps change la vitesse avec laquelle la lumière se propage dans leur intérieur.
+ Comptes Rendus de l’Académie des Sciences, 33:349–355, 1851.
+
+R. Foot. A note on Koide’s lepton mass relation. Unpublished preprint, 1994.
+
+F. B. Fuller. The writhing number of a space curve. Proceedings of the National Academy of Sciences
+  USA, 68(4):815–819, 1971.
+
+M. Gleiser. Pseudostable bubbles. Physical Review D, 49:2978–2981, 1994.
+
+                                                    44
+K. Gödel. Über formal unentscheidbare sätze der Principia Mathematica und verwandter systeme I.
+  Monatshefte für Mathematik und Physik, 38:173–198, 1931.
+
+W. Gordon. Zur lichtfortpflanzung nach der relativitätstheorie. Annalen der Physik, 72:421–456, 1923.
+ Band 377.
+
+B. Hensen, H. Bernien, A. E. Dréau, et al. Loophole-free Bell inequality violation using electron spins
+  separated by 1.3 kilometres. Nature, 526:682–686, 2015.
+
+S. Herrmann, A. Senger, K. Möhle, M. Nagel, E. V. Kovalchuk, and A. Peters. Rotating optical cavity
+   experiment testing lorentz invariance at the 10−17 level. Physical Review D, 80:105011, 2009.
+
+S. Herrmann, F. Finke, M. Lülf, et al. Test of the gravitational redshift with Galileo satellites in an
+  eccentric orbit. Physical Review Letters, 121:231102, 2018.
+
+W. Hu, R. Barkana, and A. Gruzinov. Fuzzy cold dark matter: The wave properties of ultralight
+ particles. Physical Review Letters, 85:1158–1161, 2000.
+
+L. Hui, A. Joyce, M. J. Landry, and X. Li. Vortices and waves in light dark matter. Journal of
+  Cosmology and Astroparticle Physics, 2021(01):011, 2021.
+
+C. Huygens. Letters of february 1665 on the “sympathy” of two pendulum clocks. In Oeuvres complètes
+  de Christiaan Huygens, volume 5. Société Hollandaise des Sciences / Martinus Nijhoff, The Hague,
+  1665. In Correspondance 1664–1665; published in 1893.
+
+T. Jacobson. Thermodynamics of spacetime: The Einstein equation of state. Physical Review Letters,
+  75:1260–1263, 1995.
+
+V. Jacques, E. Wu, F. Grosshans, F. Treussart, P. Grangier, A. Aspect, and J.-F. Roch. Experimental
+  realization of Wheeler’s delayed-choice gedanken experiment. Science, 315:966–968, 2007.
+
+B. D. Josephson. Possible new effects in superconductive tunnelling. Physics Letters, 1:251–253, 1962.
+
+T. W. B. Kibble. Topology of cosmic domains and strings. Journal of Physics A: Mathematical and
+  General, 9:1387–1398, 1976.
+
+H. Kleinert. Multivalued Fields in Condensed Matter, Electromagnetism, and Gravitation. World
+  Scientific, Singapore, 2008.
+
+F. R. Klinkhamer and G. E. Volovik. Dynamic vacuum variable and equilibrium approach in cosmology.
+  Physical Review D, 78:063528, 2008.
+
+Y. Koide. Fermion-boson two-body model of quarks and leptons and Cabibbo mixing. Lettere al Nuovo
+  Cimento, 34:201–205, 1982.
+
+Y. Koide. New view of quark and lepton mass hierarchy. Physical Review D, 28:252–254, 1983. Erratum:
+  Physical Review D 29, 1544 (1984).
+
+A. Komar. Covariant conservation laws in general relativity. Physical Review, 113:934–936, 1959.
+
+S. M. Kotuš, M. T. Murphy, and R. F. Carswell. High-precision limit on variation in the fine-structure
+   constant from a single quasar absorption system. Monthly Notices of the Royal Astronomical Society,
+  464:3679–3703, 2017.
+
+M. Kramer, I. H. Stairs, R. N. Manchester, et al. Strong-field gravity tests with the double pulsar.
+ Physical Review X, 11:041050, 2021.
+
+
+
+
+                                                  45
+Y. Kuramoto. Self-entrainment of a population of coupled non-linear oscillators. In H. Araki, editor,
+  International Symposium on Mathematical Problems in Theoretical Physics, volume 39 of Lecture
+  Notes in Physics, pages 420–422. Springer, Berlin, 1975.
+
+I. Labbé, P. van Dokkum, E. Nelson, R. Bezanson, K. A. Suess, J. Leja, et al. A population of red
+   candidate massive galaxies ∼ 600 Myr after the Big Bang. Nature, 616:266–269, 2023.
+
+F. Lelli, S. S. McGaugh, and J. M. Schombert. SPARC: Mass models for 175 disk galaxies with Spitzer
+  photometry and accurate rotation curves. The Astronomical Journal, 152:157, 2016.
+
+M. A. Levin and X.-G. Wen. String-net condensation: A physical mechanism for topological phases.
+ Physical Review B, 71:045110, 2005.
+
+LIGO Scientific Collaboration, Virgo Collaboration, and KAGRA Collaboration. Tests of general
+  relativity with GWTC-3. Physical Review D, 105:082002, 2022.
+
+H. A. Lorentz. De relatieve beweging van de aarde en den aether. Verslagen der Zittingen van de Wis-
+  en Natuurkundige Afdeeling, Koninklijke Akademie van Wetenschappen te Amsterdam, 1:74–79, 1892.
+
+G. Lotishvili. RefG: Refractive gravity verification gates (SymPy). Zenodo, 2026a.
+
+G. Lotishvili. Quantum extensions of bi-conformal scalar-tensor gravity: Particles as spacetime
+  resonances, the Bernoulli mechanism for gravity, and falsifiable predictions. Zenodo, 2026b.
+
+D. Lovelock. The einstein tensor and its generalizations. Journal of Mathematical Physics, 12:498–501,
+  1971.
+
+E. Mach. Die Mechanik in ihrer Entwickelung, historisch-kritisch dargestellt. F. A. Brockhaus, Leipzig,
+  1883. English translation: The Science of Mechanics, Open Court, Chicago (1893).
+
+B. B. Mandelbrot. The Fractal Geometry of Nature. W. H. Freeman and Company, San Francisco,
+  1982.
+
+P. O. Mazur and E. Mottola. Gravitational vacuum condensate stars. Proceedings of the National
+  Academy of Sciences USA, 101:9545–9550, 2004. First circulated as “Gravitational Condensate Stars:
+  An Alternative to Black Holes,” arXiv:gr-qc/0109035 (2001).
+
+S. S. McGaugh, F. Lelli, and J. M. Schombert. Radial acceleration relation in rotationally supported
+  galaxies. Physical Review Letters, 117:201101, 2016.
+
+J. Michell. On the means of discovering the distance, magnitude, &c. of the fixed stars, in consequence
+   of the diminution of the velocity of their light... Philosophical Transactions of the Royal Society of
+   London, 74:35–57, 1784.
+
+A. A. Michelson and E. W. Morley. On the relative motion of the earth and the luminiferous ether.
+  American Journal of Science, 34(203):333–345, 1887. Series 3.
+
+M. Milgrom. A modification of the newtonian dynamics as a possible alternative to the hidden mass
+ hypothesis. Astrophysical Journal, 270:365–370, 1983.
+
+Y. Minowa, Y. Yasui, T. Nakagawa, S. Inui, M. Tsubota, and M. Ashida. Direct excitation of Kelvin
+  waves on quantized vortices. Nature Physics, 21:233–238, 2025.
+
+H. K. Moffatt. The degree of knottedness of tangled vortex lines. Journal of Fluid Mechanics, 35:
+  117–129, 1969.
+
+J. R. Muñoz de Nova, K. Golubkov, V. I. Kolobov, and J. Steinhauer. Observation of thermal Hawking
+   radiation and its temperature in an analogue black hole. Nature, 569:688–691, 2019.
+
+                                                   46
+S. Navas et al. Review of particle physics. Physical Review D, 110:030001, 2024. Particle Data Group.
+
+E. Noether. Invariante variationsprobleme. Nachrichten von der Gesellschaft der Wissenschaften zu
+  Göttingen, Mathematisch-Physikalische Klasse, 1918:235–257, 1918.
+
+L. Onsager. Statistical hydrodynamics. Il Nuovo Cimento (Supplemento), 6:279–287, 1949.
+
+D. N. Page and W. K. Wootters. Evolution without evolution: Dynamics described by stationary
+  observables. Physical Review D, 27:2885, 1983.
+
+W. Pauli. The connection between spin and statistics. Physical Review, 58:716–722, 1940.
+
+R. Penrose. Gravitational collapse and space-time singularities. Physical Review Letters, 14:57–59,
+  1965.
+
+M. Planck. Über irreversible strahlungsvorgänge. Sitzungsberichte der Königlich Preußischen Akademie
+ der Wissenschaften zu Berlin, 5:440–480, 1899.
+
+Planck Collaboration. Planck 2015 results. XVIII. background geometry and topology of the universe.
+  Astronomy & Astrophysics, 594:A18, 2016. arXiv:1502.01593.
+
+Planck Collaboration. Planck 2018 results. VI. cosmological parameters. Astronomy & Astrophysics,
+  641:A6, 2020.
+
+R. V. Pound and G. A. Rebka, Jr. Apparent weight of photons. Physical Review Letters, 4:337–341,
+  1960.
+
+H. E. Puthoff. Polarizable-vacuum (PV) approach to general relativity. Foundations of Physics, 32:
+  927–943, 2002.
+
+A. F. Rañada. A topological theory of the electromagnetic field. Letters in Mathematical Physics, 18:
+  97–106, 1989.
+
+R. L. Ricca and B. Nipoti. Gauss’ linking number revisited. Journal of Knot Theory and Its Ramifications,
+  20(10):1325–1343, 2011.
+
+V. C. Rubin and W. K. Ford, Jr. Rotation of the Andromeda nebula from a spectroscopic survey of
+  emission regions. Astrophysical Journal, 159:379–403, 1970.
+
+A. D. Sakharov. Vacuum quantum fluctuations in curved space and the theory of gravitation. Doklady
+  Akademii Nauk SSSR, 177:70–71, 1967. English translation: Soviet Physics Doklady 12, 1040–1041
+  (1968); reprinted in General Relativity and Gravitation 32, 365–367 (2000).
+
+J. Schwinger. On quantum-electrodynamics and the magnetic moment of the electron. Physical Review,
+   73:416–417, 1948.
+
+I. I. Shapiro. Fourth test of general relativity. Physical Review Letters, 13:789–791, 1964.
+
+S. Shapiro. Josephson currents in superconducting tunneling: The effect of microwaves and other
+  observations. Physical Review Letters, 11:80–82, 1963.
+
+K. Shulga. Charged-lepton koide geometry from a green-dressed compact family cycle, 2026.
+
+C. Skordis and T. Złośnik. New relativistic theory for modified newtonian dynamics. Physical Review
+  Letters, 127:161302, 2021.
+
+T. H. R. Skyrme. A non-linear field theory. Proceedings of the Royal Society of London A, 260:127–138,
+  1961.
+
+
+                                                   47
+Y. Sumino. Family gauge symmetry and Koide’s mass formula. Physics Letters B, 671(4–5):477–480,
+  2009.
+
+P. G. Tait. On knots. Transactions of the Royal Society of Edinburgh, 28(1):145–190, 1877.
+
+W. Thomson. On vortex atoms. Proceedings of the Royal Society of Edinburgh, 6:94–105, 1867. Lord
+ Kelvin; reprinted in Philosophical Magazine 34, 15–24 (1867).
+
+W. Thomson. On vortex motion. Transactions of the Royal Society of Edinburgh, 25:217–260, 1869.
+ Lord Kelvin.
+
+A. Tonomura, J. Endo, T. Matsuda, T. Kawasaki, and H. Ezawa. Demonstration of single-electron
+  buildup of an interference pattern. American Journal of Physics, 57(2):117–120, 1989.
+
+P. Touboul, G. Métris, M. Rodrigues, et al. MICROSCOPE mission: Final results of the test of the
+  equivalence principle. Physical Review Letters, 129:121102, 2022.
+
+R. B. Tully and J. R. Fisher. A new method of determining distances to galaxies. Astronomy and
+  Astrophysics, 54:661, 1977.
+
+W. G. Unruh. Experimental black-hole evaporation? Physical Review Letters, 46:1351–1353, 1981.
+
+E. Verlinde. On the origin of gravity and the laws of newton. Journal of High Energy Physics, 2011:29,
+  2011.
+
+R. F. C. Vessot, M. W. Levine, E. M. Mattison, et al. Test of relativistic gravitation with a space-borne
+  hydrogen maser. Physical Review Letters, 45:2081–2084, 1980.
+
+W. F. Vinen. The detection of single quanta of circulation in liquid helium II. Proceedings of the Royal
+ Society of London A, 260:218–236, 1961.
+
+G. E. Volovik. The Universe in a Helium Droplet, volume 117 of International Series of Monographs on
+  Physics. Clarendon Press / Oxford University Press, Oxford, 2003.
+
+M. von Laue. Zur dynamik der relativitätstheorie. Annalen der Physik, 340:524–542, 1911.
+
+S. Weinberg and E. Witten. Limits on massless particles. Physics Letters B, 96(1–2):59–62, 1980.
+
+J. M. Weisberg and Y. Huang. Relativistic measurements from timing the binary pulsar PSR B1913+16.
+  The Astrophysical Journal, 829:55, 2016.
+
+C. Wetterich. A universe without expansion. Physics of the Dark Universe, 2:184–187, 2013.
+
+J. A. Wheeler. Geons. Physical Review, 97(2):511–536, 1955.
+
+J. A. Wheeler. The ‘past’ and the ‘delayed-choice’ double-slit experiment. In A. R. Marlow, editor,
+  Mathematical Foundations of Quantum Theory, pages 9–48. Academic Press, 1978.
+
+J. A. Wheeler. Information, physics, quantum: The search for links. In W. H. Zurek, editor, Complexity,
+   Entropy, and the Physics of Information, pages 3–28. Addison-Wesley, Redwood City, 1990.
+
+J. H. White. Self-linking and the Gauss integral in higher dimensions. American Journal of Mathematics,
+   91(3):693–728, 1969.
+
+G. J. Whitrow. Why physical space has three dimensions. British Journal for the Philosophy of Science,
+  6:13–31, 1955.
+
+E. P. Wigner. The unreasonable effectiveness of mathematics in the natural sciences. Communications
+  on Pure and Applied Mathematics, 13(1):1–14, 1960.
+
+                                                   48
+C. M. Will. The confrontation between general relativity and experiment. Living Reviews in Relativity,
+  17:4, 2014.
+
+F. Winterberg. The Planck Aether Hypothesis: An Attempt for a Finitistic Non-Archimedean Theory
+  of Elementary Particles. Gauss Scientific Press, Reno, 2002.
+
+Ya. B. Zel’dovich. Gravitational instability: An approximate theory for large density perturbations.
+ Astronomy & Astrophysics, 5:84–89, 1970.
+
+F. Zwicky. Die rotverschiebung von extragalaktischen nebeln. Helvetica Physica Acta, 6:110–127, 1933.
+
+
+
+
+                                                 49
+

@@ -1,0 +1,71 @@
+\contentsline {section}{Preface}{4}{section*.2}%
+\contentsline {section}{Introduction}{4}{section*.3}%
+\contentsline {subsection}{Operational Foundations and Three Fundamental Principles}{5}{section*.4}%
+\contentsline {subsection}{Lorentz Invariance and Historical Precedents}{5}{section*.5}%
+\contentsline {subsection}{Seven Core Theoretical Contributions}{5}{section*.6}%
+\contentsline {subsection}{Historical Lineage and Priority Boundaries}{7}{section*.7}%
+\contentsline {section}{\numberline {1}The Ontological Foundation}{7}{section.1}%
+\contentsline {subsection}{\numberline {1.1}A Single Foundation and Its Manifested Medium: Substance, Void, and the Dynamics of Existence}{7}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}From Single Existence to Multiplicity: The Emergence of Measurability and Operational Space}{8}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Nodal Transmission: Waves, Time, and Self-Calibration}{10}{subsection.1.3}%
+\contentsline {subsection}{\numberline {1.4}Local Collective Cadence and Resonant Locking}{11}{subsection.1.4}%
+\contentsline {subsection}{\numberline {1.5}Oscillons, Pressure Deficits, and the Origin of Mass}{12}{subsection.1.5}%
+\contentsline {section}{\numberline {2}Gravity as Refraction}{13}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Three Simultaneous Operational Shifts}{13}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Quadratic Coupling and the Factor of Two}{15}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Refractive Attraction, Inertia, and the Absence of Friction}{16}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Local Unobservability and the Principle of Relativity}{17}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}Historical Context and the Role of RefG}{18}{subsection.2.5}%
+\contentsline {section}{\numberline {3}Three Scales and Cosmological Horizons}{19}{section.3}%
+\contentsline {subsection}{\numberline {3.1}The Local Scale: Compact Objects, Internal State, and External Readout}{19}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}The Galactic Scale: Vortical Flow and MOND}{20}{subsection.3.2}%
+\contentsline {paragraph}{Observational Reality.}{20}{section*.8}%
+\contentsline {paragraph}{The RefG Vortical Mechanism and Substrate Polarization.}{21}{section*.9}%
+\contentsline {paragraph}{Observational Check on SPARC Data.}{21}{section*.10}%
+\contentsline {paragraph}{Disk Geometry and QUMOND Numerical Test.}{21}{section*.11}%
+\contentsline {paragraph}{Refractive Gravitational Lensing.}{21}{section*.12}%
+\contentsline {paragraph}{Morphology.}{23}{section*.13}%
+\contentsline {paragraph}{Galaxy Clusters.}{23}{section*.14}%
+\contentsline {subsection}{\numberline {3.3}The Cosmological Scale: Expansion of the Manifested Domain, Foundation Relaxation, and Two Descriptions of Time}{23}{subsection.3.3}%
+\contentsline {paragraph}{The Time Bridge and a Finite Process History.}{25}{section*.15}%
+\contentsline {paragraph}{Time Dilation of Supernovae.}{25}{section*.16}%
+\contentsline {paragraph}{Early Structural Maturity (JWST).}{25}{section*.17}%
+\contentsline {paragraph}{Two Observational Channels for One Mechanism.}{25}{section*.18}%
+\contentsline {paragraph}{Ontological Consistency and the Arrow of Time.}{26}{section*.19}%
+\contentsline {subsection}{\numberline {3.4}Quantum Randomness and Two-Level Time}{26}{subsection.3.4}%
+\contentsline {section}{\numberline {4}Oscillons and the Origin of Matter}{26}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Many Patterns in One Ocean}{26}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Localized Confinement: Massive and Massless Modes}{27}{subsection.4.2}%
+\contentsline {paragraph}{Massive Oscillons.}{27}{section*.20}%
+\contentsline {paragraph}{Massless Carriers (The Photon).}{28}{section*.21}%
+\contentsline {subsection}{\numberline {4.3}Self-Forming Resonators and the Two-Level Filter}{28}{subsection.4.3}%
+\contentsline {paragraph}{1. Level One: Kinematic and Population Filter.}{28}{section*.22}%
+\contentsline {paragraph}{2. Level Two: Energetic Stability Filter.}{28}{section*.23}%
+\contentsline {subsection}{\numberline {4.4}The Global Resonator: Unity of Micro- and Macro-Spectra}{29}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Discreteness and the $C_3$ Generation Symmetry}{30}{subsection.4.5}%
+\contentsline {section}{\numberline {5}Topology and Quantum Numbers}{31}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Phase, Orientation, and Topological Quantization}{31}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Spin and Fermionic Statistics}{32}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Charge, the Photon, and the Electromagnetic Channel}{33}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Color Confinement and Three Generations}{33}{subsection.5.4}%
+\contentsline {paragraph}{Why is Space Three-Dimensional?}{34}{section*.24}%
+\contentsline {subsection}{\numberline {5.5}Geometric Map of the Standard Model}{34}{subsection.5.5}%
+\contentsline {paragraph}{1. The Electron and Charged Leptons.}{34}{section*.25}%
+\contentsline {paragraph}{2. Quarks and Color Charge.}{34}{section*.26}%
+\contentsline {paragraph}{3. Gauge Bosons.}{35}{section*.27}%
+\contentsline {paragraph}{4. Neutrinos and the Higgs Boson.}{35}{section*.28}%
+\contentsline {paragraph}{5. The Graviton and the Weinberg--Witten Theorem.}{35}{section*.29}%
+\contentsline {paragraph}{6. Nonlinear Soliton Lagrangian.}{35}{section*.30}%
+\contentsline {subsection}{\numberline {5.6}Fundamental Constants: $\alpha $ and the Gravitational Hierarchy}{35}{subsection.5.6}%
+\contentsline {paragraph}{The Hierarchy Problem: Why is Gravity So Weak?}{36}{section*.31}%
+\contentsline {section}{\numberline {6}Epilogue: Boundaries of Knowledge}{36}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Why One Foundation and One Manifested Medium?}{36}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Three Operational Boundaries}{37}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Methodological Principles}{38}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Where This Program Could Die (The Falsification Map)}{38}{subsection.6.4}%
+\contentsline {paragraph}{1. The Entire Framework is Falsified if:}{38}{section*.32}%
+\contentsline {paragraph}{2. An Individual Sector is Falsified if:}{39}{section*.33}%
+\contentsline {paragraph}{3. A Specific Geometric Reading is Falsified if:}{39}{section*.34}%
+\contentsline {section}{Conclusion}{39}{section*.35}%
+\contentsline {section}{Current Status of the Research Program}{40}{section*.36}%
+\contentsline {section}{References}{42}{section*.37}%
