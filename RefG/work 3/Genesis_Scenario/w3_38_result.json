@@ -1,0 +1,234 @@
+{
+  "artifact_valid": true,
+  "blocking_reasons": [
+    "Graph, dimension, and topology are supplied rather than derived.",
+    "Tail profile, bridge dynamics, and occupation law are open.",
+    "Energy entries are accounting labels, not derived physical sectors.",
+    "No infinite-volume or observational result is produced."
+  ],
+  "claim": "Given a finite periodic relational graph, a translation-covariant finite-range tail bridge, and a normalized accounting budget, at least one connected, fully wrapping, non-uniquely-centered, nonnegative-ledger configuration exists.",
+  "claim_id": "W3_38_CONDITIONAL_GENESIS_EXISTENCE",
+  "closure_flags": {
+    "aggregate_identity_pass": true,
+    "all_periodic_directions_wrap_exact": true,
+    "cycle_bond_enumeration_exact": true,
+    "energy_feasibility_inequality_exact": true,
+    "energy_ledger_balance_exact": true,
+    "energy_ledger_nonnegative_exact": true,
+    "finite_graph_counts_exact": true,
+    "finite_wrapping_event_exact": true,
+    "full_fixture_connected_exact": true,
+    "graph_center_equals_vertex_set_exact": true,
+    "mutation_controls_pass": true,
+    "positive_probability_lower_bound_exact": true,
+    "schema_keysets_exact": true,
+    "tail_bridge_condition_exact": true,
+    "tail_rule_translation_covariant_exact": true,
+    "translation_action_free_transitive_exact": true
+  },
+  "contract": {
+    "ASSUMPTIONS": "Given 5x5 periodic graph, rho=3/5 support rule, q=1/2 auxiliary calibration, normalized accounting budget.",
+    "BENCHMARK": "N=25, M=50, 2rho=6/5, P>=2^-50, ring 3/16 and 1/32, ledger 1/4+1/4+1/2.",
+    "BRANCHES": [
+      "FULL_PERIODIC_WITNESS",
+      "LOW_RANGE_MUTATION",
+      "SEAM_REMOVAL_MUTATION",
+      "OPEN_GRID_MUTATION",
+      "ORIGIN_SELECTED_RULE_MUTATION",
+      "ENERGY_OVERRUN_MUTATION",
+      "DOUBLE_COUNTED_TAIL_MUTATION",
+      "ZERO_PROBABILITY_MUTATION"
+    ],
+    "CLAIM": "Given a finite periodic relational graph, a translation-covariant finite-range tail bridge, and a normalized accounting budget, at least one connected, fully wrapping, non-uniquely-centered, nonnegative-ledger configuration exists.",
+    "CLAIM_ID": "W3_38_CONDITIONAL_GENESIS_EXISTENCE",
+    "CLOSURE_FLAGS": {
+      "exact": [
+        "aggregate_identity_pass",
+        "all_periodic_directions_wrap_exact",
+        "cycle_bond_enumeration_exact",
+        "energy_feasibility_inequality_exact",
+        "energy_ledger_balance_exact",
+        "energy_ledger_nonnegative_exact",
+        "finite_graph_counts_exact",
+        "finite_wrapping_event_exact",
+        "full_fixture_connected_exact",
+        "graph_center_equals_vertex_set_exact",
+        "mutation_controls_pass",
+        "positive_probability_lower_bound_exact",
+        "schema_keysets_exact",
+        "tail_bridge_condition_exact",
+        "tail_rule_translation_covariant_exact",
+        "translation_action_free_transitive_exact"
+      ],
+      "physical_required_false": [
+        "bridge_formation_dynamics_derived",
+        "cosmic_dimension_and_period_derived",
+        "cosmological_centerlessness_established",
+        "data_validated",
+        "energy_conservation_dynamics_derived",
+        "energy_partition_fractions_derived",
+        "genesis_trigger_derived",
+        "graph_to_foundation_mapping_derived",
+        "infinite_volume_threshold_derived",
+        "matter_radiation_assignment_derived",
+        "observable_forward_model_derived",
+        "occupation_probability_derived",
+        "periodic_cosmic_topology_derived",
+        "physical_universe_percolation_established",
+        "structure_formation_derived",
+        "tail_field_equation_derived",
+        "tail_range_or_speed_derived",
+        "total_genesis_energy_derived",
+        "vertex_or_edge_energy_derived"
+      ]
+    },
+    "CONVENTIONS": {
+      "center": "graph center set",
+      "energy": "accounting labels",
+      "percolation": "finite connectivity plus winding"
+    },
+    "CROSSCHECK": "Independent BFS, all translations, all-pairs eccentricity, exhaustive 32-state ring.",
+    "DATA_ROLE": "No data read.",
+    "DEPENDENCIES": "None; self-contained.",
+    "DOMAIN": "Finite combinatorial witness only; no continuum, physical topology, dynamics, or data.",
+    "ERROR_BOUND": "Zero arithmetic error; observational error N/A.",
+    "FAIL_CONDITION": "Any witness/schema failure or promotion to physical derivation.",
+    "FALSIFIER": "Counterexample falsifies only this frozen conditional witness.",
+    "FILES": [
+      "w3_38_conditional_existence_preregistration.md",
+      "w3_38_conditional_existence.py",
+      "w3_38_result.json",
+      "w3_38_result.sha256"
+    ],
+    "FORWARD_MODEL": "N/A.",
+    "FREEDOM_LEDGER": {
+      "current_fitted_effective_dimension": 0,
+      "dimension_period_topology": "universal discrete open choices",
+      "foundation_relational_support": "universal functional/infinite-dimensional",
+      "future_connectivity_inference": "data nuisance count zero here",
+      "local_seed_configuration": "object profile open choice",
+      "tail_profile_and_bridge_law": "group functional open choice"
+    },
+    "IDENTIFIABILITY": "Finite existence and accounting feasibility only; physical realization remains open.",
+    "METHOD": "Exact integer graph/BFS/winding/enumeration and Fraction arithmetic with mutations.",
+    "MODEL_VERSION": {
+      "change_boundary": "fixture, tail rule, event, calibration, ledger, flags, or scope",
+      "id": "W3-38-v1.0-CONDITIONAL-EXISTENCE"
+    },
+    "OBSERVABLE_MAP": "N/A.",
+    "PASS_CONDITION": "All exact flags true, all mutations detected, all physical flags false.",
+    "PROVENANCE": "Pinned prereg, source/runtime hashes, UTC, LF, external checksum.",
+    "RESIDUAL": "Exact Boolean and rational residuals.",
+    "TYPE": "EXACT_CONDITIONAL_EXISTENCE_AND_ACCOUNTING_WITNESS",
+    "VALIDITY_HEALTH": "Finite mathematical nonemptiness only."
+  },
+  "energy_partition_ledger": {
+    "E_star": "1/1",
+    "balance_residual": "0/1",
+    "locked_total": "1/4",
+    "per_edge_tail": "1/200",
+    "per_vertex_locked": "1/100",
+    "status": "ACCOUNTING_ONLY_NOT_PHYSICAL_ENERGY",
+    "tail_total": "1/4",
+    "unresolved_total": "1/2"
+  },
+  "evidence_type": "EXACT_FINITE_CONDITIONAL_EXISTENCE",
+  "falsifier_triggered_for_refg": false,
+  "files": {
+    "checksum": "w3_38_result.sha256",
+    "preregistration": "w3_38_conditional_existence_preregistration.md",
+    "result": "w3_38_result.json",
+    "source": "w3_38_conditional_existence.py"
+  },
+  "finite_percolation_witness": {
+    "definition": "connected_and_wraps_each_periodic_direction",
+    "event": true,
+    "infinite_volume_claim": false,
+    "wrap_x": true,
+    "wrap_y": true
+  },
+  "genesis_scenario_status": "CANDIDATE_ONLY",
+  "graph_witness": {
+    "center_cardinality": 25,
+    "common_eccentricity": 4,
+    "connected": true,
+    "degree_values": [
+      4
+    ],
+    "edges": 50,
+    "translation_automorphisms": true,
+    "vertices": 25
+  },
+  "inputs": {
+    "L": 5,
+    "dimension": 2,
+    "q_bond": "1/2",
+    "rho": "3/5"
+  },
+  "model_version": "W3-38-v1.0-CONDITIONAL-EXISTENCE",
+  "negative_controls": {
+    "double_counted_tail_energy_detected": true,
+    "energy_overrun_detected": true,
+    "low_tail_range_bridge_fails": true,
+    "open_grid_breaks_transitivity_and_full_center": true,
+    "origin_selected_rule_breaks_covariance": true,
+    "physical_flag_flip_invalidates": true,
+    "x_seam_removal_loses_x_wrap": true,
+    "zero_probability_not_positive": true
+  },
+  "physical_closure_flags": {
+    "bridge_formation_dynamics_derived": false,
+    "cosmic_dimension_and_period_derived": false,
+    "cosmological_centerlessness_established": false,
+    "data_validated": false,
+    "energy_conservation_dynamics_derived": false,
+    "energy_partition_fractions_derived": false,
+    "genesis_trigger_derived": false,
+    "graph_to_foundation_mapping_derived": false,
+    "infinite_volume_threshold_derived": false,
+    "matter_radiation_assignment_derived": false,
+    "observable_forward_model_derived": false,
+    "occupation_probability_derived": false,
+    "periodic_cosmic_topology_derived": false,
+    "physical_universe_percolation_established": false,
+    "structure_formation_derived": false,
+    "tail_field_equation_derived": false,
+    "tail_range_or_speed_derived": false,
+    "total_genesis_energy_derived": false,
+    "vertex_or_edge_energy_derived": false
+  },
+  "physical_realization_status": "OPEN_NOT_DERIVED",
+  "probability_calibration": {
+    "full_occupation_lower_bound": "1/1125899906842624",
+    "ring_connected_probability": "3/16",
+    "ring_wrap_probability": "1/32",
+    "status": "AUXILIARY_ASSUMED_IID_CALIBRATION_ONLY"
+  },
+  "provenance": {
+    "generated_utc": "2026-08-17T13:22:51.603406+00:00",
+    "line_endings": "LF",
+    "platform": "Windows-10-10.0.22000-SP0",
+    "preregistration": {
+      "expected_sha256": "442d04ca95470507e500634f8048d7234cdcc3b1f5dcc58c585c78d7d7d484af",
+      "path": "w3_38_conditional_existence_preregistration.md",
+      "sha256": "442d04ca95470507e500634f8048d7234cdcc3b1f5dcc58c585c78d7d7d484af",
+      "valid": true
+    },
+    "python": "3.10.6",
+    "source": {
+      "path": "w3_38_conditional_existence.py",
+      "sha256": "bd6d8f9adf7d324a9d3a71cea7b125971c6ac03c49aec84f54eeac4e8770d44f"
+    }
+  },
+  "refg_status": "OPEN",
+  "schema_version": "1.0",
+  "scope_status": "PASS_CONDITIONAL_EXISTENCE_WITNESS__PHYSICAL_GENESIS_OPEN",
+  "status": "PASS",
+  "tail_bridge_witness": {
+    "all_nearest_neighbor_edges_bridged": true,
+    "condition": "2*rho>=1",
+    "translation_covariant": true,
+    "two_rho": "6/5"
+  },
+  "type": "EXACT_CONDITIONAL_EXISTENCE_AND_ACCOUNTING_WITNESS"
+}

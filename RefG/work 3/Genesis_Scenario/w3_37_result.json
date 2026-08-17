@@ -1,0 +1,254 @@
+{
+  "artifact_valid": true,
+  "blocking_reasons": [
+    "Genesis action and global trigger are not derived.",
+    "Branch domains and candidate DAG are supplied, not derived.",
+    "Background functions, tail PDE, topology, and energy are open.",
+    "No thermal or observational forward model exists."
+  ],
+  "branch_classification": {
+    "ADDED_TAIL_TO_RELATION_EDGE_MUTATION": "retain base and add G->N",
+    "DECLARED_ALREADY_ACTIVATED_SET": "D_+=(0,infinity)",
+    "DECLARED_BIRTH_PARAMETER_SET": "D_B={0}",
+    "LOCAL_THRESHOLD_CHAIN_RULE": "Rdot=-Phi_t/Phi_R for Phi_R!=0",
+    "RETAINED_CANDIDATE_DAG": "B->N->O->G->P__POSTULATED",
+    "SUPPLIED_ACTIVATED_NULL": "dchi/dt=+/-c0*p^2/a"
+  },
+  "claim": "Under the frozen branch definitions and retained candidate DAG, the birth parameter set is disjoint from the already-activated parameter set, the local threshold is not identically forced to follow either activated null characteristic, and adding G -> N while retaining the base edges makes the declared graph cyclic. These are conditional assumption-consequences only.",
+  "claim_id": "W3_37_GENESIS_DOMAIN_SEPARATION",
+  "closure_flags": {
+    "activated_null_branches_exact": true,
+    "added_tail_to_relation_edge_creates_cycle_exact": true,
+    "aggregate_identity_pass": true,
+    "birth_activated_parameter_sets_disjoint_exact": true,
+    "bookkeeping_field_has_no_spatial_argument_exact": true,
+    "candidate_DAG_acyclic_exact": true,
+    "elapsed_process_time_FTC_exact": true,
+    "finite_process_time_origin_encoded_exact": true,
+    "local_threshold_chain_rule_exact": true,
+    "mutation_controls_pass": true,
+    "registered_top_level_keysets_exact": true,
+    "threshold_null_identity_not_forced_exact": true
+  },
+  "contract": {
+    "ASSUMPTIONS": "Declared origin and post-origin sets; positive continuous cadence; B(t) bookkeeping representation; differentiable threshold with Phi_R!=0; supplied activated metric; retained candidate DAG.",
+    "BENCHMARK": "N/A as a competing-model benchmark.",
+    "BRANCHES": [
+      "ADDED_TAIL_TO_RELATION_EDGE_MUTATION",
+      "DECLARED_ALREADY_ACTIVATED_SET",
+      "DECLARED_BIRTH_PARAMETER_SET",
+      "LOCAL_THRESHOLD_CHAIN_RULE",
+      "RETAINED_CANDIDATE_DAG",
+      "SUPPLIED_ACTIVATED_NULL"
+    ],
+    "CLAIM": "Under the frozen branch definitions and retained candidate DAG, the birth parameter set is disjoint from the already-activated parameter set, the local threshold is not identically forced to follow either activated null characteristic, and adding G -> N while retaining the base edges makes the declared graph cyclic. These are conditional assumption-consequences only.",
+    "CLAIM_ID": "W3_37_GENESIS_DOMAIN_SEPARATION",
+    "CLOSURE_FLAGS": {
+      "exact": [
+        "activated_null_branches_exact",
+        "added_tail_to_relation_edge_creates_cycle_exact",
+        "aggregate_identity_pass",
+        "birth_activated_parameter_sets_disjoint_exact",
+        "bookkeeping_field_has_no_spatial_argument_exact",
+        "candidate_DAG_acyclic_exact",
+        "elapsed_process_time_FTC_exact",
+        "finite_process_time_origin_encoded_exact",
+        "local_threshold_chain_rule_exact",
+        "mutation_controls_pass",
+        "registered_top_level_keysets_exact",
+        "threshold_null_identity_not_forced_exact"
+      ],
+      "physical_required_false": [
+        "CMB_BBN_structure_validated",
+        "activation_front_eom_derived",
+        "activation_threshold_derived",
+        "candidate_DAG_edges_derived",
+        "energy_partition_transfer_derived",
+        "foundation_energy_balance_derived",
+        "genesis_action_derived",
+        "global_centerlessness_derived",
+        "global_trigger_instability_derived",
+        "initial_spectrum_topology_derived",
+        "initial_state_derived",
+        "mode_selection_operator_derived",
+        "order_parameter_defined",
+        "phase_transition_potential_derived",
+        "spectroscopic_forward_model_derived",
+        "stable_oscillon_spectrum_derived",
+        "tail_propagation_law_derived",
+        "thermal_history_derived"
+      ]
+    },
+    "CONVENTIONS": {
+      "birth": "declared parameter origin",
+      "global_centerless": "scenario postulate, not output",
+      "metric_signature": "+---",
+      "not_identically_forced": "special solutions or a future PDE may coincide"
+    },
+    "CROSSCHECK": "FTC, both null signs, set intersection, DAG traversal, factor-two speed, spatial and physical-flag mutations.",
+    "DATA_ROLE": "No data read.",
+    "DEPENDENCIES": "None; self-contained; no upstream result imported.",
+    "DOMAIN": "D_B={0}; D_+=(0,infinity); local post-origin threshold; supplied metric and finite DAG; no spatial-size or physical-tail result.",
+    "ERROR_BOUND": "Zero algebraic error; physical/numerical/data error N/A.",
+    "FAIL_CONDITION": "Any identity, set, DAG, mutation, or registered keyset fails, or a physical result is reported as derived.",
+    "FALSIFIER": "Failure invalidates this definitional gate only; no RefG or observational falsifier is supplied.",
+    "FILES": [
+      "w3_37_genesis_domain_preregistration.md",
+      "w3_37_genesis_domain_gate.py",
+      "w3_37_result.json",
+      "w3_37_result.sha256"
+    ],
+    "FORWARD_MODEL": "N/A: no physical simulation or likelihood.",
+    "FREEDOM_LEDGER": {
+      "activated_metric_form": {
+        "admissible_class": "Lorentzian post-origin metric forms",
+        "effective_complexity_measure": "one structural form",
+        "scale": "universal",
+        "source": "structural gate choice",
+        "status": "FROZEN_FOR_GATE__NOT_DERIVED"
+      },
+      "activation_tail_field_law": {
+        "admissible_class": "universal differentiable field equations and characteristics",
+        "effective_complexity_measure": "functional/infinite-dimensional",
+        "scale": "universal",
+        "source": "activation/tail action",
+        "status": "OPEN_UNINSTANTIATED"
+      },
+      "background_functions": {
+        "admissible_class": "positive continuous p(t), positive differentiable a(t)",
+        "effective_complexity_measure": "functional/infinite-dimensional",
+        "scale": "universal",
+        "source": "foundation action",
+        "status": "OPEN_UNINSTANTIATED"
+      },
+      "branch_domain_choice": {
+        "admissible_class": "ordered measurable parameter sets",
+        "effective_complexity_measure": "set/function choice",
+        "scale": "universal",
+        "source": "Genesis ontology",
+        "status": "FROZEN_FOR_GATE__NOT_DERIVED"
+      },
+      "candidate_dependency_graph": {
+        "admissible_class": "directed graphs on declared event classes",
+        "effective_complexity_measure": "discrete edge set",
+        "scale": "universal",
+        "source": "Genesis causal hypothesis",
+        "status": "FROZEN_FOR_GATE__NOT_DERIVED"
+      },
+      "current_data_fitted_effective_dimension": 0,
+      "future_observable_nuisance": {
+        "admissible_class": "declared finite calibration parameters",
+        "effective_complexity_measure": "N_nuisance=0 in W3-37",
+        "scale": "data",
+        "source": "future likelihood",
+        "status": "OPEN_UNINSTANTIATED"
+      },
+      "local_seed_profiles": {
+        "admissible_class": "finite-energy profile and state",
+        "effective_complexity_measure": "functional state per object",
+        "scale": "object",
+        "source": "local solutions",
+        "status": "OPEN_UNINSTANTIATED"
+      },
+      "mode_family_response": {
+        "admissible_class": "response/profile per mode family",
+        "effective_complexity_measure": "functional per family",
+        "scale": "group",
+        "source": "nonlinear field solutions",
+        "status": "OPEN_UNINSTANTIATED"
+      }
+    },
+    "IDENTIFIABILITY": "Only consequences of supplied sets, metric, level set, and DAG; trigger, globality, causal edges, fields, energy, topology open.",
+    "METHOD": "Exact FTC, chain rule, set/metric substitutions, both null signs, pure-Python DAG checks, mutations, top-level keysets, strict JSON.",
+    "MODEL_VERSION": {
+      "change_boundary": "Branch definitions, candidate DAG, activated metric, claim, semantic constraints, or flag sets.",
+      "id": "W3-37-v1.1-GENESIS-DOMAINS"
+    },
+    "OBSERVABLE_MAP": "N/A: no observable map.",
+    "PASS_CONDITION": "Every registered assumption-consequence and mutation passes; all physical flags remain false; aggregate AND is true.",
+    "PROVENANCE": "Pinned LF prereg, LF source, runtime hashes, UTC, checksum.",
+    "RESIDUAL": "Exact zero/nonidentity residuals, set equality, DAG and keyset predicates.",
+    "TYPE": "EXACT_CONDITIONAL_DEFINITION_AND_GRAPH_CONSISTENCY_GATE",
+    "VALIDITY_HEALTH": "Exact algebraic health with large disclosed structural freedom; conservation, stability, thermodynamics, causality, and data N/A."
+  },
+  "evidence_type": "EXACT_ASSUMPTION_CONSEQUENCE",
+  "falsifier_triggered_for_refg": false,
+  "files": {
+    "checksum": "w3_37_result.sha256",
+    "preregistration": "w3_37_genesis_domain_preregistration.md",
+    "result": "w3_37_result.json",
+    "source": "w3_37_genesis_domain_gate.py"
+  },
+  "genesis_mechanism_status": "OPEN_NOT_DERIVED",
+  "identities": {
+    "activated_metric_null_minus": "0",
+    "activated_metric_null_plus": "0",
+    "bookkeeping_spatial_gradient": "0",
+    "elapsed_process_time_derivative": "0",
+    "elapsed_process_time_origin": "0",
+    "local_threshold_chain_rule": "0",
+    "threshold_null_nonidentity_expression_minus": "Subs(Derivative(Phi(R(t), _xi_2), _xi_2), _xi_2, t) - c_0*p**2*Derivative(Phi(R(t), t), R(t))/a",
+    "threshold_null_nonidentity_expression_plus": "Subs(Derivative(Phi(R(t), _xi_2), _xi_2), _xi_2, t) + c_0*p**2*Derivative(Phi(R(t), t), R(t))/a"
+  },
+  "model_version": "W3-37-v1.1-GENESIS-DOMAINS",
+  "negative_controls": {
+    "added_edge_cycle_detected": true,
+    "factor_two_null_speed": true,
+    "merged_parameter_sets_detected": true,
+    "physical_flag_flip_invalidates": true,
+    "spatialized_bookkeeping_field": true,
+    "threshold_null_expressions_not_identities": true,
+    "threshold_wrong_sign_not_identity": true
+  },
+  "physical_closure_flags": {
+    "CMB_BBN_structure_validated": false,
+    "activation_front_eom_derived": false,
+    "activation_threshold_derived": false,
+    "candidate_DAG_edges_derived": false,
+    "energy_partition_transfer_derived": false,
+    "foundation_energy_balance_derived": false,
+    "genesis_action_derived": false,
+    "global_centerlessness_derived": false,
+    "global_trigger_instability_derived": false,
+    "initial_spectrum_topology_derived": false,
+    "initial_state_derived": false,
+    "mode_selection_operator_derived": false,
+    "order_parameter_defined": false,
+    "phase_transition_potential_derived": false,
+    "spectroscopic_forward_model_derived": false,
+    "stable_oscillon_spectrum_derived": false,
+    "tail_propagation_law_derived": false,
+    "thermal_history_derived": false
+  },
+  "provenance": {
+    "generated_utc": "2026-08-17T13:31:04.868666+00:00",
+    "line_endings": "LF",
+    "platform": "Windows-10-10.0.22000-SP0",
+    "preregistration": {
+      "expected_sha256": "0e8f8673094e21a48e243a53a108491957e341ec91e3e19c9167163b33eab490",
+      "path": "w3_37_genesis_domain_preregistration.md",
+      "registered_claim": "Under the frozen branch definitions and retained candidate DAG, the birth parameter set is disjoint from the already-activated parameter set, the local threshold is not identically forced to follow either activated null characteristic, and adding G -> N while retaining the base edges makes the declared graph cyclic. These are conditional assumption-consequences only.",
+      "sha256": "0e8f8673094e21a48e243a53a108491957e341ec91e3e19c9167163b33eab490",
+      "valid": true
+    },
+    "python": "3.10.6",
+    "source": {
+      "path": "w3_37_genesis_domain_gate.py",
+      "sha256": "ddce7391aab523b1520c78febeb94faed5ac038a66799a17ebb094295db6bb5e"
+    },
+    "sympy": "1.13.3"
+  },
+  "refg_status": "OPEN",
+  "schema_version": "1.0",
+  "scope_status": "PASS_CONDITIONAL_DEFINITION_AND_DAG_CONSISTENCY__PHYSICAL_GENESIS_OPEN",
+  "semantic_constraints": {
+    "added_edge_result": "CYCLIC_ONLY_WHILE_BASE_EDGES_ARE_RETAINED",
+    "base_DAG": "POSTULATED_NOT_DERIVED",
+    "centerlessness": "FROZEN_POSTULATE_NOT_DERIVED",
+    "finite_meaning": "FINITE_PARAMETER_ORIGIN_NOT_SPATIAL_SIZE",
+    "result_class": "ASSUMPTION_CONSISTENCY_ONLY",
+    "threshold_null_relation": "NOT_AN_IDENTITY__FUTURE_PDE_MAY_IMPOSE"
+  },
+  "status": "PASS",
+  "type": "EXACT_CONDITIONAL_DEFINITION_AND_GRAPH_CONSISTENCY_GATE"
+}

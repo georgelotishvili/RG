@@ -1,0 +1,261 @@
+{
+  "artifact_valid": true,
+  "blocking_reasons": [
+    "Genesis action, initial charge, and sector stress tensors are not derived.",
+    "Phase free energy, latent sign, transfers, and surface terms are open.",
+    "The centered-explosion result is a conditional symmetry witness only.",
+    "No thermal, cosmological, or observational forward model exists."
+  ],
+  "branch_classification": {
+    "ANTISYMMETRIC_SECTOR_LEDGER": "EXACT_ASSUMPTION_CONSEQUENCE",
+    "CENTERED_RADIAL_FRONT_MUTATION": "INCOMPATIBLE_WITH_TRANSITIVE_INVARIANCE",
+    "ENDOTHERMIC_CONVERSION": "L<0_FOR_XDOT>0__SIGN_ONLY",
+    "EXOTHERMIC_CONVERSION": "L>0_FOR_XDOT>0__SIGN_ONLY",
+    "GLOBAL_CENTERLESS_POSTULATE": "FROZEN_NOT_DERIVED",
+    "LOCAL_MOVING_BOUNDARY": "EXACT_LOCAL_LEDGER",
+    "NEUTRAL_CONVERSION": "L=0_FOR_XDOT>0__SIGN_ONLY",
+    "REGULAR_CENTER": "CONDITIONAL_F0_EQUALS_ZERO",
+    "SHARP_INTERFACE_NO_SURFACE_SOURCE": "CONDITIONAL_BALANCE"
+  },
+  "centered_explosion_witness": {
+    "activation_record_is_invariant": false,
+    "activation_times": [
+      0,
+      1,
+      2,
+      2,
+      1
+    ],
+    "graph": "vertex_transitive_cycle_C5",
+    "one_step_translated_times": [
+      1,
+      0,
+      1,
+      2,
+      2
+    ],
+    "scope": "CONDITIONAL_FINITE_SYMMETRY_WITNESS_NOT_COSMIC_TOPOLOGY",
+    "selected_center": 0,
+    "translation_is_automorphism": true
+  },
+  "claim": "Post-origin antisymmetric transfers, local continuity, and regular moving boundaries obey exact energy and phase-sign ledgers; a single distance-graded centered explosion conflicts with the frozen global-centerless birth postulate on a transitive witness.",
+  "claim_id": "W3_39_GENESIS_ENERGY_PHASE_CAUSALITY",
+  "closure_flags": {
+    "aggregate_identity_pass": true,
+    "antisymmetric_transfer_sum_exact": true,
+    "boundary_sweep_and_center_terms_required_exact": true,
+    "branch_keysets_exact": true,
+    "centered_explosion_breaks_transitive_invariance_exact": true,
+    "latent_sign_classifier_exact": true,
+    "latent_transfer_cancellation_exact": true,
+    "moving_boundary_leibniz_FTC_exact": true,
+    "mutation_controls_pass": true,
+    "rankine_hugoniot_balance_exact": true,
+    "regular_center_spherical_ledger_exact": true,
+    "schema_keysets_exact": true,
+    "total_sector_continuity_exact": true
+  },
+  "contract": {
+    "ASSUMPTIONS": "Post-origin sectors, local continuity, regular-center branch, no-surface-source interface, supplied global-centerless postulate.",
+    "BENCHMARK": "Source sum 0; Reynolds residual 0; v[rho]=[J]; phase residual 0; C5 radial record noninvariant.",
+    "BRANCHES": [
+      "ANTISYMMETRIC_SECTOR_LEDGER",
+      "CENTERED_RADIAL_FRONT_MUTATION",
+      "ENDOTHERMIC_CONVERSION",
+      "EXOTHERMIC_CONVERSION",
+      "GLOBAL_CENTERLESS_POSTULATE",
+      "LOCAL_MOVING_BOUNDARY",
+      "NEUTRAL_CONVERSION",
+      "REGULAR_CENTER",
+      "SHARP_INTERFACE_NO_SURFACE_SOURCE"
+    ],
+    "CLAIM": "Post-origin antisymmetric transfers, local continuity, and regular moving boundaries obey exact energy and phase-sign ledgers; a single distance-graded centered explosion conflicts with the frozen global-centerless birth postulate on a transitive witness.",
+    "CLAIM_ID": "W3_39_GENESIS_ENERGY_PHASE_CAUSALITY",
+    "CLOSURE_FLAGS": {
+      "exact": [
+        "aggregate_identity_pass",
+        "antisymmetric_transfer_sum_exact",
+        "boundary_sweep_and_center_terms_required_exact",
+        "branch_keysets_exact",
+        "centered_explosion_breaks_transitive_invariance_exact",
+        "latent_sign_classifier_exact",
+        "latent_transfer_cancellation_exact",
+        "moving_boundary_leibniz_FTC_exact",
+        "mutation_controls_pass",
+        "rankine_hugoniot_balance_exact",
+        "regular_center_spherical_ledger_exact",
+        "schema_keysets_exact",
+        "total_sector_continuity_exact"
+      ],
+      "physical_required_false": [
+        "CMB_BBN_structure_validated",
+        "activation_field_and_front_eom_derived",
+        "background_expansion_derived",
+        "cadence_history_derived",
+        "data_validated",
+        "entropy_current_time_arrow_derived",
+        "foundation_energy_balance_derived",
+        "foundation_volume_measure_derived",
+        "genesis_action_or_Hamiltonian_derived",
+        "global_centerlessness_derived",
+        "initial_energy_charge_derived",
+        "latent_heat_sign_derived",
+        "observable_forward_model_derived",
+        "origin_trigger_or_boundary_condition_derived",
+        "percolation_dynamics_derived",
+        "phase_free_energy_EOS_derived",
+        "physical_cosmic_topology_derived",
+        "pregeometric_state_space_derived",
+        "proto_oscillon_solution_derived",
+        "sector_stress_tensors_derived",
+        "sector_transfer_matrix_derived",
+        "stable_oscillon_spectrum_derived",
+        "surface_tension_interface_terms_derived",
+        "tail_energy_flux_derived",
+        "thermal_history_derived"
+      ]
+    },
+    "CONVENTIONS": {
+      "J_outward_positive": "leaves domain",
+      "Rdot_positive": "boundary expansion",
+      "latent_positive": "release for Xdot>0",
+      "q_positive": "sector injection"
+    },
+    "CROSSCHECK": "Independent sector sum, general/regular boundary routes, sign branches, explicit translation.",
+    "DATA_ROLE": "No data read.",
+    "DEPENDENCIES": "None; self-contained.",
+    "DOMAIN": "Exact post-origin algebra, local spherical patch, phase sign, finite transitive witness; no pre-birth or observational domain.",
+    "ERROR_BOUND": "Zero algebraic error; data error N/A.",
+    "FAIL_CONDITION": "Ledger/sign/symmetry/schema failure or physical promotion.",
+    "FALSIFIER": "Counterexample falsifies this frozen exact gate only.",
+    "FILES": [
+      "w3_39_energy_phase_causality_preregistration.md",
+      "w3_39_energy_phase_causality.py",
+      "w3_39_result.json",
+      "w3_39_result.sha256"
+    ],
+    "FORWARD_MODEL": "N/A.",
+    "FREEDOM_LEDGER": {
+      "current_fitted_effective_dimension": 0,
+      "future_thermal_observable_calibration": "data nuisance count zero here",
+      "genesis_action_initial_charge": "universal functional/infinite-dimensional",
+      "local_seed_boundary_history": "object boundary/flux history",
+      "phase_free_energy_interface": "group EOS/free-energy/interface functional",
+      "sector_stress_transfer_matrix": "group functional per sector pair"
+    },
+    "IDENTIFIABILITY": "Transfer/boundary/sign identities and one symmetry conflict only.",
+    "METHOD": "Exact SymPy transfer, Leibniz/FTC, interface, phase, graph-invariance checks and mutations.",
+    "MODEL_VERSION": {
+      "change_boundary": "transfer, boundary, phase, centered-front witness, flags, or scope",
+      "id": "W3-39-v1.0-ENERGY-PHASE-CAUSALITY"
+    },
+    "OBSERVABLE_MAP": "N/A.",
+    "PASS_CONDITION": "All exact flags true, mutations detected, physical flags false.",
+    "PROVENANCE": "Pinned prereg, source/runtime hashes, UTC, LF, checksum.",
+    "RESIDUAL": "Exact symbolic zero and invariance predicates.",
+    "TYPE": "EXACT_CONSERVATION_SIGN_LEDGER_AND_CENTERED_BIRTH_SYMMETRY_NO_GO",
+    "VALIDITY_HEALTH": "Bookkeeping and one centered-birth symmetry incompatibility only; later local centered fronts remain allowed."
+  },
+  "evidence_type": "EXACT_CONSERVATION_SIGN_AND_CENTERED_BIRTH_SYMMETRY_NO_GO",
+  "falsifier_triggered_for_refg": false,
+  "files": {
+    "checksum": "w3_39_result.sha256",
+    "preregistration": "w3_39_energy_phase_causality_preregistration.md",
+    "result": "w3_39_result.json",
+    "source": "w3_39_energy_phase_causality.py"
+  },
+  "genesis_mechanism_status": "OPEN_NOT_DERIVED",
+  "identities": {
+    "antisymmetric_transfer_sum": "0",
+    "latent_transfer": "0",
+    "moving_boundary_leibniz_FTC": "0",
+    "rankine_hugoniot": "0",
+    "regular_center_ledger": "0",
+    "total_sector_continuity": "0"
+  },
+  "model_version": "W3-39-v1.0-ENERGY-PHASE-CAUSALITY",
+  "moving_boundary_ledger": {
+    "constant_energy_condition": "Q_V=R^2*(J_b-rho_b*Rdot) when F_0=0",
+    "general": "dE/dtau=4*pi*(Q_V-F_b+F_0+R^2*rho_b*Rdot)",
+    "normalization": "F=r^2*J_r and Q_V=int_0^R r^2*S dr are per unit solid angle",
+    "regular_center": "dE/dtau=4*pi*(Q_V-R^2*J_b+R^2*rho_b*Rdot)",
+    "scope": "LOCAL_FLAT_SPHERICAL_PATCH_ONLY"
+  },
+  "negative_controls": {
+    "center_selected_by_radial_profile_detected": true,
+    "double_counted_latent_transfer_detected": true,
+    "flipped_interface_jump_sign_detected": true,
+    "flipped_outward_flux_sign_detected": true,
+    "net_sector_source_detected": true,
+    "omitted_boundary_flux_detected": true,
+    "omitted_boundary_sweep_detected": true,
+    "omitted_nonregular_center_flux_detected": true,
+    "physical_flag_flip_invalidates": true
+  },
+  "phase_conversion_ledger": {
+    "L_negative": "input_required__melting_like",
+    "L_positive": "release_to_recipient__condensation_like",
+    "L_zero": "no_latent_transfer",
+    "background_terms": "(1-X)*rho_U_prime + X*rho_A_prime retained separately",
+    "identity": "conversion_only_rate + (rho_U-rho_A)*X_prime = 0",
+    "physical_sign": "OPEN_NOT_DERIVED"
+  },
+  "phase_mechanism_status": "OPEN_SIGN_NOT_SELECTED",
+  "physical_closure_flags": {
+    "CMB_BBN_structure_validated": false,
+    "activation_field_and_front_eom_derived": false,
+    "background_expansion_derived": false,
+    "cadence_history_derived": false,
+    "data_validated": false,
+    "entropy_current_time_arrow_derived": false,
+    "foundation_energy_balance_derived": false,
+    "foundation_volume_measure_derived": false,
+    "genesis_action_or_Hamiltonian_derived": false,
+    "global_centerlessness_derived": false,
+    "initial_energy_charge_derived": false,
+    "latent_heat_sign_derived": false,
+    "observable_forward_model_derived": false,
+    "origin_trigger_or_boundary_condition_derived": false,
+    "percolation_dynamics_derived": false,
+    "phase_free_energy_EOS_derived": false,
+    "physical_cosmic_topology_derived": false,
+    "pregeometric_state_space_derived": false,
+    "proto_oscillon_solution_derived": false,
+    "sector_stress_tensors_derived": false,
+    "sector_transfer_matrix_derived": false,
+    "stable_oscillon_spectrum_derived": false,
+    "surface_tension_interface_terms_derived": false,
+    "tail_energy_flux_derived": false,
+    "thermal_history_derived": false
+  },
+  "provenance": {
+    "generated_utc": "2026-08-17T13:31:43.847802+00:00",
+    "line_endings": "LF",
+    "platform": "Windows-10-10.0.22000-SP0",
+    "preregistration": {
+      "expected_sha256": "3e73c6d8b09f20d0eda02001cdddcbb03ec08788c4239a9e69436f114be6b45f",
+      "path": "w3_39_energy_phase_causality_preregistration.md",
+      "sha256": "3e73c6d8b09f20d0eda02001cdddcbb03ec08788c4239a9e69436f114be6b45f",
+      "valid": true
+    },
+    "python": "3.10.6",
+    "source": {
+      "path": "w3_39_energy_phase_causality.py",
+      "sha256": "50af1d2f3a814a8807d8cc4224bd6c0256cfcf026dee56decf7aa07257331190"
+    },
+    "sympy": "1.13.3"
+  },
+  "refg_status": "OPEN",
+  "schema_version": "1.0",
+  "scope_status": "PASS_EXACT_CONSERVATION_SIGN_AND_CENTERED_BIRTH_SYMMETRY_NO_GO__GENESIS_MECHANISM_OPEN",
+  "sector_transfer_ledger": {
+    "pair_signs": "q_FC>0:F_to_C; q_FR>0:F_to_R; q_CR>0:C_to_R",
+    "q_C": "-q_CR + q_FC",
+    "q_F": "-q_FC - q_FR",
+    "q_R": "q_CR + q_FR",
+    "status": "POST_ORIGIN_CONDITIONAL_LEDGER_NOT_DERIVED_SECTORS",
+    "sum": "0"
+  },
+  "status": "PASS",
+  "type": "EXACT_CONSERVATION_SIGN_LEDGER_AND_CENTERED_BIRTH_SYMMETRY_NO_GO"
+}
