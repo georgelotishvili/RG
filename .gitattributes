@@ -8,5 +8,6 @@
 "RefG/work 3/Cosmology_and_LSS/w3_35*" text eol=lf
 
 # Keep the publication source byte-stable for archival builds.
+intuitive/RefG_GE.md text eol=lf
 "intuitive/RefG_EN.tex" text eol=lf
 "intuitive/RefG_EN.bib" text eol=lf

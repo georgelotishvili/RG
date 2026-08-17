@@ -2,22 +2,30 @@
 
 ## Current account
 
-W3-36 is the current bookkeeping root for the cosmology branch:
+W3-40 is the current causal-lock root for the cosmology branch. On the
+selected mean Hubble-flow branch, a fixed comoving link count and a growing
+foundation link length define the primary expansion. That expansion relaxes
+the mean foundation pressure, while
 
-- cosmic history has a finite origin;
-- process time is elapsed time, tau(t)=int_0^t p(s) ds;
-- foundation expansion and material-ruler evolution remain distinct;
-- the operational scale is A=a/p, so a may increase while p decreases;
-- neither a(t) nor p(t) is fitted or postulated by W3-36;
-- foundation pressure P_F and thermodynamic pressure P_th are independent
-  until an equation of state or transfer law is derived;
-- global birth is a homogeneous temporal event; a local activation threshold
-  is not the universe's outer edge.
+```text
+p^2 = P_F/P_F0
+```
 
-w3_36_result.json passes only the exact dictionary, integrability,
-threshold, conservation, and thermal-identifiability checks. The physical
-dynamics, numerical process age, temperature history, redshift map,
-H_CC(z), D_L(z), CMB/BBN calculation, and JWST growth model remain open.
+translates the pressure fall into contraction of the material scale-and-
+cadence factor. An internal observer reads this one trajectory through
+`A=a/p`. The observable ratio does not identify `a` and `p` separately.
+
+W3-40 passes the exact causal dictionary, linked sign/rate identities, and
+the `A`-only non-identifiability check. It freezes `dP_F/da<0` as the selected
+constitutive sign; it does not derive the law `P_F(a)`. The foundation energy
+balance, complete histories `a(t)`, `P_F(t)`, and `p(t)`, photon--atomic map,
+`H_CC(z)`, `D_L(z)`, CMB/BBN calculation, and JWST growth model remain open.
+
+W3-36 remains the historical bookkeeping root for the finite-origin,
+process-time, metric, thermal, and local-threshold identities. Its older
+wording treated `a` growth and `p` contraction as a simultaneous scale split;
+W3-40 supersedes that causal interpretation while preserving every valid
+dictionary identity.
 
 One exact thermal result is already decisive for future work. On the
 adiabatic radiation branch, Q_gamma=0 gives T A=constant; with the

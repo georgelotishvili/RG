@@ -1,0 +1,5 @@
+__pycache__/
+*.py[cod]
+*.tmp
+!w3_40_result.json
+
