@@ -39,7 +39,6 @@ intuitive/figures/*
 !intuitive/figures/logo.pdf
 !intuitive/figures/figure_3_v2.png
 !intuitive/figures/sparc_rar_real_validation.png
-!intuitive/figures/nonlinear_joint_fit.png
 # Legacy computational workspace: excluded in full
 /RefG/work/
 
@@ -51,6 +50,7 @@ artikle/GERG/*
 !artikle/GERG/RefG_EN.tex
 
 # Python caches and test/build artifacts
+/tmp/
 __pycache__/
 *.py[cod]
 *$py.class
