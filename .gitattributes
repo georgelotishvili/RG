@@ -1,13 +1,18 @@
-# Keep SHA-256-pinned Work 2 research artifacts byte-stable on every platform.
-"RefG/work 2/**" text eol=lf
+# Keep all detected text byte-stable across platforms. Binary files remain binary.
+* text=auto eol=lf
 
-# Keep SHA-256-pinned Work 3 cosmology gates byte-stable on every platform.
-"RefG/work 3/Cosmology_and_LSS/w3_32*" text eol=lf
-"RefG/work 3/Cosmology_and_LSS/w3_33*" text eol=lf
-"RefG/work 3/Cosmology_and_LSS/w3_34*" text eol=lf
-"RefG/work 3/Cosmology_and_LSS/w3_35*" text eol=lf
+# Exact research and publication formats must always use LF.
+*.bib text eol=lf
+*.dat text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.py text eol=lf
+*.sha256 text eol=lf
+*.tex text eol=lf
+*.txt text eol=lf
 
-# Keep the publication source byte-stable for archival builds.
-intuitive/RefG_GE.md text eol=lf
-"intuitive/RefG_EN.tex" text eol=lf
-"intuitive/RefG_EN.bib" text eol=lf
+# Never subject binary publication assets to text normalization.
+*.jpeg binary
+*.jpg binary
+*.pdf binary
+*.png binary

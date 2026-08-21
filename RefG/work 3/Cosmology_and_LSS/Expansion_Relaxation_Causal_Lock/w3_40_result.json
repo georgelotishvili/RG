@@ -8,13 +8,13 @@
     "No observational likelihood or discriminator is evaluated."
   ],
   "causal_chain": {
-    "FOUNDATION_PRESSURE_RELAXATION": "dP_F/da<0__SELECTED_CONSTITUTIVE_SIGN__LAW_OPEN",
-    "INTERNAL_OPERATIONAL_READOUT": "A=a/p__ONLY_RATIO_IDENTIFIED_BY_THIS_DICTIONARY",
-    "MATERIAL_STANDARD_RESPONSE": "p^2=P_F/P_F0__PRESSURE_FALL_GIVES_p_FALL",
-    "PRIMARY_FOUNDATION_EXPANSION": "a_dot>0__SELECTED_PHYSICAL_HYPOTHESIS"
+    "FOUNDATION_PRESSURE_RELAXATION": "DEPENDENT_ON_a__dP_F/da<0__SELECTED_CONSTITUTIVE_SIGN__LAW_OPEN",
+    "INTERNAL_OPERATIONAL_READOUT": "A=a/p__RELATIONAL_READOUT_OF_ONE_TRAJECTORY__NOT_ADDITIVE",
+    "MATERIAL_STANDARD_RESPONSE": "DEPENDENT_ON_P_F__p^2=P_F/P_F0__NOT_SECOND_DRIVER",
+    "PRIMARY_FOUNDATION_EXPANSION": "a_dot>0__SOLE_PRIMARY_CAUSAL_ROOT__SELECTED_PHYSICAL_HYPOTHESIS"
   },
   "causal_lock_status": "CONDITIONALLY_CONSISTENT__NOT_DERIVED",
-  "claim": "Under the frozen selected branch with fixed comoving link count, increasing foundation link scale, decreasing foundation pressure, the positive bridge p^2=P_F/P_F0, and operational scale A=a/p, foundation expansion, pressure relaxation, and material-standard contraction form one causal trajectory; the linked scale and rate identities are exact, while A alone does not identify a and p. The gate does not derive P_F(a) or an observational cosmology.",
+  "claim": "On the frozen selected branch, foundation expansion is the sole primary cosmological driver. With fixed comoving link count, its increase of the foundation link scale lowers foundation pressure; through the positive bridge p^2=P_F/P_F0, that pressure relaxation contracts the material standard. These are causally ordered stages of one trajectory, not independent or additive effects. An internal observer reads the trajectory only through the relational scale A=a/p; A alone does not identify a and p. The gate proves the linked scale and rate identities but does not derive P_F(a) or an observational cosmology.",
   "claim_id": "W3_40_EXPANSION_RELAXATION_CAUSAL_LOCK",
   "closure_flags": {
     "A_common_rescaling_invariance_exact": true,
@@ -30,17 +30,18 @@
     "operational_scale_identity_exact": true,
     "pressure_relaxation_implies_material_contraction_exact": true,
     "registered_top_level_keysets_exact": true,
+    "single_primary_foundation_expansion_root_exact": true,
     "single_trajectory_operational_growth_positive_exact": true
   },
   "contract": {
-    "ASSUMPTIONS": "Positive regular homogeneous scales; fixed ideal-comoving N_12; a_dot>0; dP_F/da<0; kappa=-dln(P_F)/dln(a)>0; p^2=P_F/P_F0; ell_mat=ell_mat0*p; A=a/p.",
-    "BENCHMARK": "Recover distance, bridge, log-rate, process-rate, and rescaling identities and detect all declared mutations.",
+    "ASSUMPTIONS": "Positive regular homogeneous scales; fixed ideal-comoving N_12; unique causal root=a; a_dot>0; dP_F/da<0; kappa=-dln(P_F)/dln(a)>0; p^2=P_F/P_F0; ell_mat=ell_mat0*p; A=a/p.",
+    "BENCHMARK": "Recover distance, bridge, log-rate, process-rate, unique-primary-root, and rescaling identities and detect all declared mutations.",
     "BRANCHES": [
       "IDEAL_COMOVING_CAUSAL_TRAJECTORY",
       "A_ONLY_EQUIVALENCE_CLASS",
       "LOCAL_PECULIAR_MOTION_OUTSIDE_GATE"
     ],
-    "CLAIM": "Under the frozen selected branch with fixed comoving link count, increasing foundation link scale, decreasing foundation pressure, the positive bridge p^2=P_F/P_F0, and operational scale A=a/p, foundation expansion, pressure relaxation, and material-standard contraction form one causal trajectory; the linked scale and rate identities are exact, while A alone does not identify a and p. The gate does not derive P_F(a) or an observational cosmology.",
+    "CLAIM": "On the frozen selected branch, foundation expansion is the sole primary cosmological driver. With fixed comoving link count, its increase of the foundation link scale lowers foundation pressure; through the positive bridge p^2=P_F/P_F0, that pressure relaxation contracts the material standard. These are causally ordered stages of one trajectory, not independent or additive effects. An internal observer reads the trajectory only through the relational scale A=a/p; A alone does not identify a and p. The gate proves the linked scale and rate identities but does not derive P_F(a) or an observational cosmology.",
     "CLAIM_ID": "W3_40_EXPANSION_RELAXATION_CAUSAL_LOCK",
     "CLOSURE_FLAGS": {
       "exact": [
@@ -57,6 +58,7 @@
         "operational_scale_identity_exact",
         "pressure_relaxation_implies_material_contraction_exact",
         "registered_top_level_keysets_exact",
+        "single_primary_foundation_expansion_root_exact",
         "single_trajectory_operational_growth_positive_exact"
       ],
       "physical_required_false": [
@@ -85,16 +87,14 @@
       "operational_scale": "A=a/p",
       "process_time": "d_tau=p*dt"
     },
-    "CROSSCHECK": "Ordinary/log derivatives, coordinate/process rates, ruler readout, DAG, equivalence class, and sign/bridge/scale/rate/flag mutations.",
+    "CROSSCHECK": "Ordinary/log derivatives, coordinate/process rates, ruler readout, DAG with unique primary root a, normalized functional equivalence class, and declared sign/bridge/scale/rate/root/keyset/flag mutations.",
     "DATA_ROLE": "No data or upstream result artifacts are read.",
     "DEPENDENCIES": "None; self-contained; W3-36 is unchanged and supplies no causal closure to W3-40.",
     "DOMAIN": "Positive finite regular post-origin variables and differentiable homogeneous histories on the selected expansion branch.",
     "ERROR_BOUND": "Zero algebraic error; numerical, continuum, and observational error N/A.",
-    "FAIL_CONDITION": "Any registered check fails, any physical flag is true, p is treated as an independent driver, or an unclosed physical/observable result is reported.",
+    "FAIL_CONDITION": "Any registered check fails, any physical flag is true, the graph has a primary root other than a, p is treated as an independent or additive driver, or an unclosed physical/observable result is reported.",
     "FALSIFIER": "A symbolic counterexample under the frozen assumptions falsifies this dictionary gate; no RefG-wide observational falsifier is supplied.",
     "FILES": [
-      ".gitattributes",
-      ".gitignore",
       "README.md",
       "w3_40_expansion_relaxation_causal_lock_preregistration.md",
       "w3_40_expansion_relaxation_causal_lock.py",
@@ -147,14 +147,14 @@
         "status": "OPEN_UNINSTANTIATED"
       }
     },
-    "IDENTIFIABILITY": "A alone preserves the positive equivalence class (a,p,P_F)->(lambda*a,lambda*p,lambda^2*P_F); a, p, and P_F require a derived closure or independent dimensionless channel.",
-    "METHOD": "Exact substitution, ordinary/logarithmic chain rules, positive-sign classification, ruler normalization, rescaling invariance, explicit non-identifiability, DAG and mutation checks, strict LF/JSON/hash.",
+    "IDENTIFIABILITY": "A alone preserves normalized positive functional histories under (a,p,P_F)->(lambda(t)*a,lambda(t)*p,lambda(t)^2*P_F), with lambda(t0)=1; a, p, and P_F require a derived closure or independent dimensionless channel.",
+    "METHOD": "Exact substitution, ordinary/logarithmic chain rules, positive-sign classification, ruler normalization, rescaling invariance, an exact normalized functional-history non-identifiability witness, DAG and unique-primary-root checks, mutation checks, strict LF/JSON/hash.",
     "MODEL_VERSION": {
-      "change_boundary": "Causal ordering, sign assumptions, cadence-pressure bridge, operational scale, comoving convention, identifiability class, semantic constraints, or closure keys.",
-      "id": "W3-40-v1.0-EXPANSION-RELAXATION-CAUSAL-LOCK"
+      "change_boundary": "Causal ordering, unique-primary-root condition, sign assumptions, cadence-pressure bridge, operational scale, comoving convention, identifiability class, semantic constraints, or closure keys.",
+      "id": "W3-40-v1.2-SINGLE-DRIVER-EXPANSION-RELAXATION-CAUSAL-LOCK"
     },
     "OBSERVABLE_MAP": "L_12/ell_mat=(N_12*ell_F0/ell_mat0)*A only; spectroscopic redshift and distance maps are open.",
-    "PASS_CONDITION": "Every identity, causal-order check, identifiability construction, keyset, and mutation passes; every physical flag remains false.",
+    "PASS_CONDITION": "Every identity, causal-order and unique-primary-root check, identifiability construction, keyset, and mutation passes; every physical flag remains false.",
     "PROVENANCE": "Pinned UTF-8 LF preregistration, LF source, runtime hashes and versions, UTC, strict JSON, atomic result and checksum.",
     "RESIDUAL": "Exact zero identities, strict sign consequences, graph/keyset predicates, and common-rescaling equality.",
     "TYPE": "EXACT_CONDITIONAL_CAUSAL_DICTIONARY_AND_IDENTIFIABILITY_GATE",
@@ -170,7 +170,7 @@
   },
   "identifiability": {
     "closure_needed": "derived P_F(a), normalization history, or an independent dimensionless response channel",
-    "equivalence_class": "(a,p,P_F)->(lambda*a,lambda*p,lambda^2*P_F), lambda>0",
+    "equivalence_class": "(a,p,P_F)->(lambda(t)*a,lambda(t)*p,lambda(t)^2*P_F), lambda(t)>0, lambda(t0)=1",
     "identified_from_A_alone": [
       "A"
     ],
@@ -189,20 +189,26 @@
     "material_coordinate_rate": "0",
     "material_log_slope": "0",
     "material_slope": "0",
+    "normalized_functional_bridge_history_1": "0",
+    "normalized_functional_bridge_history_2": "0",
+    "normalized_functional_present_values": "0",
+    "normalized_functional_rescaling_A": "0",
     "operational_log_slope": "0",
     "operational_process_rate": "0",
     "pressure_coordinate_rate": "0",
     "ruler_normalized_readout": "0"
   },
-  "model_version": "W3-40-v1.0-EXPANSION-RELAXATION-CAUSAL-LOCK",
+  "model_version": "W3-40-v1.2-SINGLE-DRIVER-EXPANSION-RELAXATION-CAUSAL-LOCK",
   "negative_controls": {
     "causal_cycle_mutation_detected": true,
     "denominator_only_rescaling_detected": true,
     "independent_material_rate_detected": true,
+    "independent_material_root_mutation_detected": true,
     "linear_bridge_mutation_detected": true,
     "numerator_only_rescaling_detected": true,
     "physical_flag_flip_invalidates": true,
     "product_scale_mutation_detected": true,
+    "registered_keyset_mutation_detected": true,
     "reversed_pressure_response_detected": true
   },
   "physical_closure_flags": {
@@ -224,20 +230,20 @@
     "supernova_time_dilation_derived": false
   },
   "provenance": {
-    "generated_utc": "2026-08-17T21:56:37.069512+00:00",
+    "generated_utc": "2026-08-21T18:13:17.523660+00:00",
     "line_endings": "LF",
     "platform": "Windows-10-10.0.22000-SP0",
     "preregistration": {
-      "expected_sha256": "237045f21c086caa9e62c1dca62bed418fb0ecc8b3ff01d5047cfd0cdedb9986",
+      "expected_sha256": "101f1ae30430d519307e390536c0e7c0d6ea740eaeeaaf7458b5bcd8eef2b8d6",
       "path": "w3_40_expansion_relaxation_causal_lock_preregistration.md",
-      "registered_claim": "Under the frozen selected branch with fixed comoving link count, increasing foundation link scale, decreasing foundation pressure, the positive bridge p^2=P_F/P_F0, and operational scale A=a/p, foundation expansion, pressure relaxation, and material-standard contraction form one causal trajectory; the linked scale and rate identities are exact, while A alone does not identify a and p. The gate does not derive P_F(a) or an observational cosmology.",
-      "sha256": "237045f21c086caa9e62c1dca62bed418fb0ecc8b3ff01d5047cfd0cdedb9986",
+      "registered_claim": "On the frozen selected branch, foundation expansion is the sole primary cosmological driver. With fixed comoving link count, its increase of the foundation link scale lowers foundation pressure; through the positive bridge p^2=P_F/P_F0, that pressure relaxation contracts the material standard. These are causally ordered stages of one trajectory, not independent or additive effects. An internal observer reads the trajectory only through the relational scale A=a/p; A alone does not identify a and p. The gate proves the linked scale and rate identities but does not derive P_F(a) or an observational cosmology.",
+      "sha256": "101f1ae30430d519307e390536c0e7c0d6ea740eaeeaaf7458b5bcd8eef2b8d6",
       "valid": true
     },
     "python": "3.10.6",
     "source": {
       "path": "w3_40_expansion_relaxation_causal_lock.py",
-      "sha256": "47435b39be6ac27b60df9f92babb9b97ceb6beee1cfe062e45fcea373a89734c"
+      "sha256": "fda6c5617d4703e2707fe3fb8698c85c9a1a808de2e778106d156b2077127655"
     },
     "sympy": "1.13.3"
   },
@@ -247,10 +253,14 @@
   "semantic_constraints": {
     "P_F_of_a_status": "OPEN_NOT_DERIVED",
     "absolute_a_or_p_from_A": "NOT_IDENTIFIABLE",
+    "effect_counting": "ONE_PRIMARY_DRIVER_WITH_DEPENDENT_RESPONSE__NO_DOUBLE_COUNTING",
     "independent_second_driver": "EXCLUDED_FROM_SELECTED_BRANCH",
     "material_contraction_role": "CAUSALLY_DEPENDENT_RESPONSE",
     "operational_measurement": "A_EQUALS_a_OVER_p",
-    "primary_process": "FOUNDATION_EXPANSION_RELAXATION",
+    "primary_causal_roots": [
+      "a"
+    ],
+    "primary_process": "FOUNDATION_EXPANSION",
     "redshift_forward_map_status": "OPEN_NOT_DERIVED"
   },
   "status": "PASS",

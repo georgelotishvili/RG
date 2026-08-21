@@ -14,12 +14,12 @@ import sympy as sp
 
 
 CLAIM_ID = "W3_40_EXPANSION_RELAXATION_CAUSAL_LOCK"
-MODEL_VERSION = "W3-40-v1.0-EXPANSION-RELAXATION-CAUSAL-LOCK"
+MODEL_VERSION = "W3-40-v1.2-SINGLE-DRIVER-EXPANSION-RELAXATION-CAUSAL-LOCK"
 HERE = Path(__file__).resolve().parent
 PREREG = HERE / "w3_40_expansion_relaxation_causal_lock_preregistration.md"
 OUTPUT = HERE / "w3_40_result.json"
 HASH_OUTPUT = HERE / "w3_40_result.sha256"
-PINNED_PREREG_SHA256 = "237045f21c086caa9e62c1dca62bed418fb0ecc8b3ff01d5047cfd0cdedb9986"
+PINNED_PREREG_SHA256 = "101f1ae30430d519307e390536c0e7c0d6ea740eaeeaaf7458b5bcd8eef2b8d6"
 
 REQUIRED_CONTRACT_FIELDS = {
     "CLAIM_ID",
@@ -57,6 +57,7 @@ EXPECTED_CLOSURE_KEYS = {
     "pressure_relaxation_implies_material_contraction_exact",
     "operational_scale_identity_exact",
     "causal_DAG_acyclic_exact",
+    "single_primary_foundation_expansion_root_exact",
     "causal_locked_log_rate_identity_exact",
     "causal_locked_process_rate_identity_exact",
     "single_trajectory_operational_growth_positive_exact",
@@ -98,9 +99,11 @@ EXPECTED_NEGATIVE_CONTROL_KEYS = {
     "linear_bridge_mutation_detected",
     "product_scale_mutation_detected",
     "independent_material_rate_detected",
+    "independent_material_root_mutation_detected",
     "numerator_only_rescaling_detected",
     "denominator_only_rescaling_detected",
     "causal_cycle_mutation_detected",
+    "registered_keyset_mutation_detected",
     "physical_flag_flip_invalidates",
 }
 
@@ -161,6 +164,13 @@ def graph_is_acyclic(
             if incoming[neighbor] == 0:
                 queue.append(neighbor)
     return visited == len(nodes)
+
+
+def graph_roots(
+    nodes: tuple[str, ...], edges: tuple[tuple[str, str], ...]
+) -> tuple[str, ...]:
+    children = {right for _, right in edges}
+    return tuple(node for node in nodes if node not in children)
 
 
 def verify_preregistration() -> dict[str, object]:
@@ -272,10 +282,18 @@ def derive_gate() -> tuple[
         ("p", "A"),
     )
     causal_acyclic = graph_is_acyclic(causal_nodes, causal_edges)
+    causal_roots = graph_roots(causal_nodes, causal_edges)
+    single_primary_foundation_expansion_root = causal_roots == ("a",)
     causal_cycle_mutation = causal_edges + (("p", "P_F"),)
     causal_cycle_detected = not graph_is_acyclic(
         causal_nodes, causal_cycle_mutation
     )
+    independent_material_root_mutation = tuple(
+        edge for edge in causal_edges if edge != ("P_F", "p")
+    )
+    independent_material_root_mutation_detected = graph_roots(
+        causal_nodes, independent_material_root_mutation
+    ) == ("a", "p")
 
     scaled_a = common_scale * a
     scaled_p = common_scale * p
@@ -286,8 +304,67 @@ def derive_gate() -> tuple[
             pressure_f, pressure_f0 * p**2
         )
     )
-    free_scaled_a = sp.diff(scaled_a, common_scale)
-    free_scaled_p = sp.diff(scaled_p, common_scale)
+
+    t0, h_history, eps_history, delta_history = sp.symbols(
+        "t_0 h_history eps_history delta_history", positive=True
+    )
+    x_history = (t - t0) / t0
+    a_history_1 = sp.exp(h_history * x_history)
+    p_history_1 = sp.exp(-(eps_history + delta_history) * x_history)
+    pressure_history_1 = pressure_f0 * p_history_1**2
+    lambda_history = sp.exp(eps_history * x_history)
+    a_history_2 = sp.simplify(lambda_history * a_history_1)
+    p_history_2 = sp.simplify(lambda_history * p_history_1)
+    pressure_history_2 = sp.simplify(lambda_history**2 * pressure_history_1)
+    A_history_1 = sp.simplify(a_history_1 / p_history_1)
+    A_history_2 = sp.simplify(a_history_2 / p_history_2)
+    functional_A_residual = sp.simplify(A_history_2 - A_history_1)
+    functional_bridge_1_residual = sp.simplify(
+        p_history_1**2 - pressure_history_1 / pressure_f0
+    )
+    functional_bridge_2_residual = sp.simplify(
+        p_history_2**2 - pressure_history_2 / pressure_f0
+    )
+    normalized_history_residuals = (
+        sp.simplify(lambda_history.subs(t, t0) - 1),
+        sp.simplify(a_history_1.subs(t, t0) - 1),
+        sp.simplify(a_history_2.subs(t, t0) - 1),
+        sp.simplify(p_history_1.subs(t, t0) - 1),
+        sp.simplify(p_history_2.subs(t, t0) - 1),
+        sp.simplify(pressure_history_1.subs(t, t0) / pressure_f0 - 1),
+        sp.simplify(pressure_history_2.subs(t, t0) / pressure_f0 - 1),
+    )
+    a_history_1_dot = sp.simplify(sp.diff(a_history_1, t))
+    a_history_2_dot = sp.simplify(sp.diff(a_history_2, t))
+    p_history_1_dot = sp.simplify(sp.diff(p_history_1, t))
+    p_history_2_dot = sp.simplify(sp.diff(p_history_2, t))
+    pressure_history_1_dot = sp.simplify(sp.diff(pressure_history_1, t))
+    pressure_history_2_dot = sp.simplify(sp.diff(pressure_history_2, t))
+    pressure_a_slope_1 = sp.simplify(
+        pressure_history_1_dot / a_history_1_dot
+    )
+    pressure_a_slope_2 = sp.simplify(
+        pressure_history_2_dot / a_history_2_dot
+    )
+    lambda_history_dot = sp.simplify(sp.diff(lambda_history, t))
+    functional_history_signs_preserved = all(
+        (
+            lambda_history.is_positive,
+            a_history_1_dot.is_positive,
+            a_history_2_dot.is_positive,
+            p_history_1_dot.is_negative,
+            p_history_2_dot.is_negative,
+            pressure_history_1_dot.is_negative,
+            pressure_history_2_dot.is_negative,
+            pressure_a_slope_1.is_negative,
+            pressure_a_slope_2.is_negative,
+        )
+    )
+    functional_histories_distinct = bool(
+        exact_nonzero(lambda_history_dot)
+        and exact_nonzero(a_history_2 - a_history_1)
+        and exact_nonzero(p_history_2 - p_history_1)
+    )
 
     reversed_pressure_slope = kappa * pressure_f / a
     reversed_p_slope = sp.simplify(
@@ -319,6 +396,11 @@ def derive_gate() -> tuple[
         )
         for key in EXPECTED_PHYSICAL_KEYS
     )
+    registered_keyset_mutation_detected = bool(
+        (EXPECTED_RESULT_KEYS - {"status"}) != EXPECTED_RESULT_KEYS
+        and (EXPECTED_CLOSURE_KEYS | {"unregistered_mutation"})
+        != EXPECTED_CLOSURE_KEYS
+    )
     negative_controls = {
         "reversed_pressure_response_detected": bool(
             reversed_p_slope.is_positive
@@ -332,6 +414,9 @@ def derive_gate() -> tuple[
         "independent_material_rate_detected": exact_nonzero(
             independent_rate_residual
         ),
+        "independent_material_root_mutation_detected": (
+            independent_material_root_mutation_detected
+        ),
         "numerator_only_rescaling_detected": exact_nonzero(
             numerator_only_residual
         ),
@@ -339,6 +424,9 @@ def derive_gate() -> tuple[
             denominator_only_residual
         ),
         "causal_cycle_mutation_detected": causal_cycle_detected,
+        "registered_keyset_mutation_detected": (
+            registered_keyset_mutation_detected
+        ),
         "physical_flag_flip_invalidates": physical_flip_invalidates,
     }
 
@@ -355,6 +443,16 @@ def derive_gate() -> tuple[
         "operational_process_rate": process_rate_residual,
         "common_rescaling_A": scaled_A_residual,
         "common_rescaling_bridge": scaled_bridge_residual,
+        "normalized_functional_rescaling_A": functional_A_residual,
+        "normalized_functional_bridge_history_1": (
+            functional_bridge_1_residual
+        ),
+        "normalized_functional_bridge_history_2": (
+            functional_bridge_2_residual
+        ),
+        "normalized_functional_present_values": sp.Add(
+            *normalized_history_residuals
+        ),
     }
     closure_flags = {
         "fixed_comoving_link_count_encoded_exact": exact_zero(
@@ -374,6 +472,9 @@ def derive_gate() -> tuple[
             ruler_readout_residual
         ),
         "causal_DAG_acyclic_exact": causal_acyclic,
+        "single_primary_foundation_expansion_root_exact": (
+            single_primary_foundation_expansion_root
+        ),
         "causal_locked_log_rate_identity_exact": (
             exact_zero(log_A_slope_residual)
             and exact_zero(pressure_rate_residual)
@@ -390,10 +491,12 @@ def derive_gate() -> tuple[
             and exact_zero(scaled_bridge_residual)
         ),
         "A_only_nonidentifiability_exact": (
-            exact_zero(scaled_A_residual)
-            and exact_zero(scaled_bridge_residual)
-            and exact_nonzero(free_scaled_a)
-            and exact_nonzero(free_scaled_p)
+            exact_zero(functional_A_residual)
+            and exact_zero(functional_bridge_1_residual)
+            and exact_zero(functional_bridge_2_residual)
+            and all(exact_zero(value) for value in normalized_history_residuals)
+            and functional_history_signs_preserved
+            and functional_histories_distinct
         ),
         "registered_top_level_keysets_exact": False,
         "mutation_controls_pass": all(negative_controls.values()),
@@ -402,16 +505,16 @@ def derive_gate() -> tuple[
 
     causal_chain = {
         "PRIMARY_FOUNDATION_EXPANSION": (
-            "a_dot>0__SELECTED_PHYSICAL_HYPOTHESIS"
+            "a_dot>0__SOLE_PRIMARY_CAUSAL_ROOT__SELECTED_PHYSICAL_HYPOTHESIS"
         ),
         "FOUNDATION_PRESSURE_RELAXATION": (
-            "dP_F/da<0__SELECTED_CONSTITUTIVE_SIGN__LAW_OPEN"
+            "DEPENDENT_ON_a__dP_F/da<0__SELECTED_CONSTITUTIVE_SIGN__LAW_OPEN"
         ),
         "MATERIAL_STANDARD_RESPONSE": (
-            "p^2=P_F/P_F0__PRESSURE_FALL_GIVES_p_FALL"
+            "DEPENDENT_ON_P_F__p^2=P_F/P_F0__NOT_SECOND_DRIVER"
         ),
         "INTERNAL_OPERATIONAL_READOUT": (
-            "A=a/p__ONLY_RATIO_IDENTIFIED_BY_THIS_DICTIONARY"
+            "A=a/p__RELATIONAL_READOUT_OF_ONE_TRAJECTORY__NOT_ADDITIVE"
         ),
     }
     diagnostics = {
@@ -421,7 +524,8 @@ def derive_gate() -> tuple[
             "identified_from_A_alone": ["A"],
             "not_identified_from_A_alone": ["a", "p", "P_F"],
             "equivalence_class": (
-                "(a,p,P_F)->(lambda*a,lambda*p,lambda^2*P_F), lambda>0"
+                "(a,p,P_F)->(lambda(t)*a,lambda(t)*p,"
+                "lambda(t)^2*P_F), lambda(t)>0, lambda(t0)=1"
             ),
             "closure_needed": (
                 "derived P_F(a), normalization history, or an independent "
@@ -429,10 +533,14 @@ def derive_gate() -> tuple[
             ),
         },
         "semantic_constraints": {
-            "primary_process": "FOUNDATION_EXPANSION_RELAXATION",
+            "primary_process": "FOUNDATION_EXPANSION",
+            "primary_causal_roots": ["a"],
             "material_contraction_role": "CAUSALLY_DEPENDENT_RESPONSE",
             "operational_measurement": "A_EQUALS_a_OVER_p",
             "independent_second_driver": "EXCLUDED_FROM_SELECTED_BRANCH",
+            "effect_counting": (
+                "ONE_PRIMARY_DRIVER_WITH_DEPENDENT_RESPONSE__NO_DOUBLE_COUNTING"
+            ),
             "absolute_a_or_p_from_A": "NOT_IDENTIFIABLE",
             "P_F_of_a_status": "OPEN_NOT_DERIVED",
             "redshift_forward_map_status": "OPEN_NOT_DERIVED",
@@ -446,25 +554,30 @@ def build_contract() -> dict[str, object]:
     return {
         "CLAIM_ID": CLAIM_ID,
         "CLAIM": (
-            "Under the frozen selected branch with fixed comoving link count, "
-            "increasing foundation link scale, decreasing foundation pressure, "
-            "the positive bridge p^2=P_F/P_F0, and operational scale A=a/p, "
-            "foundation expansion, pressure relaxation, and material-standard "
-            "contraction form one causal trajectory; the linked scale and rate "
-            "identities are exact, while A alone does not identify a and p. The "
-            "gate does not derive P_F(a) or an observational cosmology."
+            "On the frozen selected branch, foundation expansion is the sole "
+            "primary cosmological driver. With fixed comoving link count, its "
+            "increase of the foundation link scale lowers foundation pressure; "
+            "through the positive bridge p^2=P_F/P_F0, that pressure relaxation "
+            "contracts the material standard. These are causally ordered stages "
+            "of one trajectory, not independent or additive effects. An internal "
+            "observer reads the trajectory only through the relational scale "
+            "A=a/p; A alone does not identify a and p. The gate proves the linked "
+            "scale and rate identities but does not derive P_F(a) or an "
+            "observational cosmology."
         ),
         "TYPE": "EXACT_CONDITIONAL_CAUSAL_DICTIONARY_AND_IDENTIFIABILITY_GATE",
         "MODEL_VERSION": {
             "id": MODEL_VERSION,
             "change_boundary": (
-                "Causal ordering, sign assumptions, cadence-pressure bridge, "
+                "Causal ordering, unique-primary-root condition, sign assumptions, "
+                "cadence-pressure bridge, "
                 "operational scale, comoving convention, identifiability class, "
                 "semantic constraints, or closure keys."
             ),
         },
         "ASSUMPTIONS": (
             "Positive regular homogeneous scales; fixed ideal-comoving N_12; "
+            "unique causal root=a; "
             "a_dot>0; dP_F/da<0; kappa=-dln(P_F)/dln(a)>0; "
             "p^2=P_F/P_F0; ell_mat=ell_mat0*p; A=a/p."
         ),
@@ -530,17 +643,19 @@ def build_contract() -> dict[str, object]:
         ),
         "METHOD": (
             "Exact substitution, ordinary/logarithmic chain rules, positive-sign "
-            "classification, ruler normalization, rescaling invariance, explicit "
-            "non-identifiability, DAG and mutation checks, strict LF/JSON/hash."
+            "classification, ruler normalization, rescaling invariance, an exact "
+            "normalized functional-history non-identifiability witness, DAG and "
+            "unique-primary-root checks, mutation checks, strict LF/JSON/hash."
         ),
         "PASS_CONDITION": (
-            "Every identity, causal-order check, identifiability construction, "
-            "keyset, and mutation passes; every physical flag remains false."
+            "Every identity, causal-order and unique-primary-root check, "
+            "identifiability construction, keyset, and mutation passes; every "
+            "physical flag remains false."
         ),
         "FAIL_CONDITION": (
-            "Any registered check fails, any physical flag is true, p is treated "
-            "as an independent driver, or an unclosed physical/observable result "
-            "is reported."
+            "Any registered check fails, any physical flag is true, the graph has "
+            "a primary root other than a, p is treated as an independent or "
+            "additive driver, or an unclosed physical/observable result is reported."
         ),
         "FALSIFIER": (
             "A symbolic counterexample under the frozen assumptions falsifies "
@@ -569,13 +684,14 @@ def build_contract() -> dict[str, object]:
         "FORWARD_MODEL": "N/A: no synthetic cosmological observable or likelihood.",
         "DATA_ROLE": "No data or upstream result artifacts are read.",
         "IDENTIFIABILITY": (
-            "A alone preserves the positive equivalence class "
-            "(a,p,P_F)->(lambda*a,lambda*p,lambda^2*P_F); a, p, and P_F "
-            "require a derived closure or independent dimensionless channel."
+            "A alone preserves normalized positive functional histories under "
+            "(a,p,P_F)->(lambda(t)*a,lambda(t)*p,lambda(t)^2*P_F), with "
+            "lambda(t0)=1; a, p, and P_F require a derived closure or "
+            "independent dimensionless channel."
         ),
         "BENCHMARK": (
-            "Recover distance, bridge, log-rate, process-rate, and rescaling "
-            "identities and detect all declared mutations."
+            "Recover distance, bridge, log-rate, process-rate, unique-primary-root, "
+            "and rescaling identities and detect all declared mutations."
         ),
         "CLOSURE_FLAGS": {
             "exact": sorted(EXPECTED_CLOSURE_KEYS),
@@ -583,15 +699,14 @@ def build_contract() -> dict[str, object]:
         },
         "CROSSCHECK": (
             "Ordinary/log derivatives, coordinate/process rates, ruler readout, "
-            "DAG, equivalence class, and sign/bridge/scale/rate/flag mutations."
+            "DAG with unique primary root a, normalized functional equivalence "
+            "class, and declared sign/bridge/scale/rate/root/keyset/flag mutations."
         ),
         "PROVENANCE": (
             "Pinned UTF-8 LF preregistration, LF source, runtime hashes and "
             "versions, UTC, strict JSON, atomic result and checksum."
         ),
         "FILES": [
-            ".gitattributes",
-            ".gitignore",
             "README.md",
             PREREG.name,
             Path(__file__).name,
