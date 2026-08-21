@@ -6,7 +6,7 @@
 
 **TYPE:** `EXACT_IDENTITY_CONDITIONAL_NO_GO_AND_CLOSURE_LEDGER`. This is a symbolic closure gate, not an observational fit and not a physical cosmology PASS.
 
-**MODEL_VERSION:** `W3-36-v1.2-FINITE-BIRTH`. This version adds an explicit local-continuity/Leibniz moving-boundary derivation, exact boundary/equality/thermal-sign proofs, and a single-scale-per-entry CODES freedom ledger. Any later change to the finite-origin convention, cadence-pressure bridge, scale split, threshold or moving-boundary domain, thermal source ledger, observable definitions, claim scope, or closure keys creates a new model version.
+**MODEL_VERSION:** `W3-36-v1.3-FINITE-BIRTH`. This version preserves the finite-birth, moving-boundary, threshold, and thermal identities while removing the obsolete diagnostic that represented foundation expansion and material contraction as two independently supplied positive effects. The exact operational identity `A=a/p` remains unchanged, and W3-40 supplies its current single-driver causal interpretation. Any later change to the finite-origin convention, cadence-pressure bridge, operational-scale dictionary or causal-role semantics, threshold or moving-boundary domain, thermal source ledger, observable definitions, claim scope, or closure keys creates a new model version.
 
 **ASSUMPTIONS:**
 
@@ -97,7 +97,6 @@ Exact/computational flags:
 
 - `cadence_pressure_identity_exact`
 - `metric_process_dictionary_exact`
-- `simultaneous_expansion_and_ruler_shrinkage_consistent`
 - `operational_scale_rate_identity_exact`
 - `already_activated_null_identity_exact`
 - `threshold_level_set_speed_exact`
@@ -141,7 +140,7 @@ Physical/observational closure flags, all required to remain false:
 - `CMB_recombination_BBN_validated`
 - `JWST_structural_growth_validated`
 
-**CROSSCHECK:** Use two independent process-time derivations; differentiate the threshold constraint directly; verify the moving-boundary ledger with and without flux/source/sweep terms; derive the general beta-not-equal-to-one antiderivative and classify `beta={1/2,1,3/2}`; recover `8/5` at `beta=3/8` only on the constant-`D` sub-branch; prove `tau_0>=T_0` for early `p>=1`; distinguish `a^3` and `A^3` volume ledgers; cancel a common cadence in `Gamma/H`; recover adiabatic `T(z)`; and demonstrate two different positive thermodynamic pressures at fixed `P_F` and `p`.
+**CROSSCHECK:** Use two independent process-time derivations; retain only the exact `A=a/p` scale-rate chain rule and reject any independently inserted additive material driver; differentiate the threshold constraint directly; verify the moving-boundary ledger with and without flux/source/sweep terms; derive the general beta-not-equal-to-one antiderivative and classify `beta={1/2,1,3/2}`; recover `8/5` at `beta=3/8` only on the constant-`D` sub-branch; prove `tau_0>=T_0` for early `p>=1`; distinguish `a^3` and `A^3` volume ledgers; cancel a common cadence in `Gamma/H`; recover adiabatic `T(z)`; and demonstrate two different positive thermodynamic pressures at fixed `P_F` and `p`.
 
 **PROVENANCE:** Freeze the preregistration SHA-256 in the source. Record source hash, Python/SymPy versions, UTC time, and all closure flags in strict JSON. Write the generated result SHA-256 to a separate LF-stable checksum file. Write both outputs atomically with `allow_nan=False`.
 

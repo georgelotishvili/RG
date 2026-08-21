@@ -21,11 +21,23 @@ constitutive sign; it does not derive the law `P_F(a)`. The foundation energy
 balance, complete histories `a(t)`, `P_F(t)`, and `p(t)`, photon--atomic map,
 `H_CC(z)`, `D_L(z)`, CMB/BBN calculation, and JWST growth model remain open.
 
-W3-36 remains the historical bookkeeping root for the finite-origin,
-process-time, metric, thermal, and local-threshold identities. Its older
-wording treated `a` growth and `p` contraction as a simultaneous scale split;
-W3-40 supersedes that causal interpretation while preserving every valid
-dictionary identity.
+W3-41 is the constitutive-interface child of W3-40. It derives the exact
+`E_F`--`Pi_F` mechanical-stress dictionary and proves a reconstruction
+nonselection theorem: the interface admits an entire functional family and
+therefore selects no physical `P_F(a)`, `kappa(a)`, or exponent. The identity
+`P_F=Pi_F` remains a candidate bridge, not a derived fact. The cell-volume law
+and one-coordinate state reduction are also assumptions at this gate.
+The immediate next blocker is derivation of the homogeneous state space and
+its invariant volume measure. Only after that may microscopic foundation
+dynamics, bridge microphysics, and a background kinetic equation be derived
+before any `a(t)` or observable model.
+
+W3-36 remains the bookkeeping root for the finite-origin, process-time,
+metric, thermal, and local-threshold identities. Version 1.3 removes its old
+independent scale-split diagnostic and preserves the exact `A=a/p` dictionary.
+W3-40 supplies the active single-driver interpretation: foundation expansion
+is primary, while pressure relaxation and material contraction are dependent
+stages of that one trajectory.
 
 One exact thermal result is already decisive for future work. On the
 adiabatic radiation branch, Q_gamma=0 gives T A=constant; with the

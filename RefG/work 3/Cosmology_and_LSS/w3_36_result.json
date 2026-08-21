@@ -36,11 +36,6 @@
       "log_divergent": "beta=1",
       "power_divergent": "beta>1"
     },
-    "scale_split": {
-      "allowed_branch": "a_dot>0 and p_dot<0",
-      "dynamics_status": "ALLOWED_BY_IDENTITY__NOT_DERIVED",
-      "observable_effect": "both increase A=a/p"
-    },
     "thermal_source_history": {
       "J_e_negative": "HIGHER_THAN_ADIABATIC_REFERENCE",
       "J_e_positive": "LOWER_THAN_ADIABATIC_REFERENCE",
@@ -73,7 +68,6 @@
     "radiation_temperature_source_identity_exact": true,
     "same_null_residual_exposed": true,
     "schema_keysets_exact": true,
-    "simultaneous_expansion_and_ruler_shrinkage_consistent": true,
     "threshold_level_set_speed_exact": true,
     "two_sector_conservation_sum_exact": true,
     "volume_measure_jacobian_exact": true
@@ -85,7 +79,6 @@
       "process_time_origin",
       "conditional_front_crosscheck",
       "activation_scope",
-      "scale_split",
       "thermal_source_history"
     ],
     "CLAIM": "The finite-birth RefG dictionary is internally consistent and exactly identifies its physical, thermal, and observational closure boundary.",
@@ -113,7 +106,6 @@
       "radiation_temperature_source_identity_exact": true,
       "same_null_residual_exposed": true,
       "schema_keysets_exact": true,
-      "simultaneous_expansion_and_ruler_shrinkage_consistent": true,
       "threshold_level_set_speed_exact": true,
       "two_sector_conservation_sum_exact": true,
       "volume_measure_jacobian_exact": true
@@ -213,8 +205,8 @@
       "selection_rationale": "The claim concerns exact identities and identifiability, so symbolic rather than statistical methods are required."
     },
     "MODEL_VERSION": {
-      "change_boundary": "Any change to the finite origin, cadence-pressure bridge, scale split, threshold/moving-boundary/thermal domain, observable definitions, claim scope, or closure keys.",
-      "id": "W3-36-v1.2-FINITE-BIRTH"
+      "change_boundary": "Any change to the finite origin, cadence-pressure bridge, operational-scale dictionary, causal-role semantics, threshold/moving-boundary/thermal domain, observable definitions, claim scope, or closure keys.",
+      "id": "W3-36-v1.3-FINITE-BIRTH"
     },
     "OBSERVABLE_MAP": {
       "cosmic_chronometer": "H_CC=-(1+z_spec)^-1 dz_spec/dtau_SPS",
@@ -284,20 +276,20 @@
     "operational_scale_rate": "H_A^(tau)=p^-1[a_dot/a-P_F_dot/(2P_F)]",
     "radiation_temperature": "T=(3P_gamma/a_R)^(1/4)",
     "radiation_temperature_source": "d ln(TA)/d_tau=Q_gamma/(4rho_gamma)",
-    "simultaneous_scale_evolution": "a_dot>0 and p_dot<0 both contribute positively to H_A^(tau)=p^-1(a_dot/a-p_dot/p)",
     "threshold_coordinate_speed": "dchi_act/dt=-Phi_t/Phi_chi",
     "threshold_foundation_radius_speed": "dR_act/dt=H_a R_act-a Phi_t/Phi_chi",
     "two_sector_conservation": "rho_th'+rho_F'+3H_tau(rho_th+rho_F+P_th+Pi_F)=0",
     "volume_measure": "V_F/V_op=p^3 for the same active cells"
   },
   "mechanism_status": "OPEN",
-  "model_version": "W3-36-v1.2-FINITE-BIRTH",
+  "model_version": "W3-36-v1.3-FINITE-BIRTH",
   "negative_controls": {
     "energy_missing_boundary_sweep": "4*pi*R**2*R_dot*rho_b",
     "energy_nonregular_center_omitted": "4*pi*F_0",
     "lower_temperature_assumed_from_cadence": "P_gamma_RefG**(1/4)/P_gamma_standard**(1/4) - 1/p",
     "metric_time_missing_cadence": "p**2 - 1",
     "null_front_wrong_power": "c_0*p*(1 - p)/a",
+    "operational_scale_additive_material_driver": "Delta_H_material_independent",
     "spectroscopic_factorization_assumed": "nu_observed - A_e*nu_Ae/A_0",
     "thermal_pressure_conflation": "P_probe",
     "threshold_forced_to_null_without_PDE": "Phi_chi*c_0*p**2/a + Phi_t",
@@ -330,19 +322,19 @@
     "threshold_value_derived": false
   },
   "provenance": {
-    "generated_utc": "2026-08-16T13:58:59.416150+00:00",
+    "generated_utc": "2026-08-21T19:22:18.118512+00:00",
     "line_endings": "LF",
     "platform": "Windows-10-10.0.22000-SP0",
     "preregistration": {
-      "expected_sha256": "ada6b4790a5072d1f9b019b14e52b79157e2fbfd5672a839026c9786783afb47",
+      "expected_sha256": "71580ea4f37c567190ad3f7d826d5b46582b5aab49e36e21cbf59f4eac482b88",
       "path": "RefG/work 3/Cosmology_and_LSS/w3_36_birth_threshold_thermal_preregistration.md",
-      "sha256": "ada6b4790a5072d1f9b019b14e52b79157e2fbfd5672a839026c9786783afb47",
+      "sha256": "71580ea4f37c567190ad3f7d826d5b46582b5aab49e36e21cbf59f4eac482b88",
       "valid": true
     },
     "python": "3.10.6",
     "source": {
       "path": "RefG/work 3/Cosmology_and_LSS/w3_36_birth_threshold_thermal.py",
-      "sha256": "dc3f8a14e459f30d65ed47065b5d8dad80f3b79bfec78e3208eb61932b34b440"
+      "sha256": "8b5fa7592f5c02f5ab9d07ece1e4671f0206d96517e599c56cfbd5cfe1fcab05"
     },
     "sympy": "1.13.3"
   },

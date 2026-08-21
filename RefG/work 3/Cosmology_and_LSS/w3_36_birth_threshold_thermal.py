@@ -14,13 +14,13 @@ import sympy as sp
 
 
 CLAIM_ID = "W3_36_BIRTH_THRESHOLD_THERMAL_CLOSURE"
-MODEL_VERSION = "W3-36-v1.2-FINITE-BIRTH"
+MODEL_VERSION = "W3-36-v1.3-FINITE-BIRTH"
 HERE = Path(__file__).resolve().parent
 PREREG = HERE / "w3_36_birth_threshold_thermal_preregistration.md"
 OUTPUT = HERE / "w3_36_result.json"
 HASH_OUTPUT = HERE / "w3_36_result.sha256"
 PINNED_PREREG_SHA256 = (
-    "ada6b4790a5072d1f9b019b14e52b79157e2fbfd5672a839026c9786783afb47"
+    "71580ea4f37c567190ad3f7d826d5b46582b5aab49e36e21cbf59f4eac482b88"
 )
 
 REQUIRED_CONTRACT_FIELDS = {
@@ -55,7 +55,6 @@ REQUIRED_CONTRACT_FIELDS = {
 EXPECTED_CLOSURE_KEYS = {
     "cadence_pressure_identity_exact",
     "metric_process_dictionary_exact",
-    "simultaneous_expansion_and_ruler_shrinkage_consistent",
     "operational_scale_rate_identity_exact",
     "already_activated_null_identity_exact",
     "threshold_level_set_speed_exact",
@@ -191,13 +190,12 @@ def derive_exact_gate() -> tuple[
         - sp.diff(pressure_function, t) / (2 * pressure_function)
     ) / p_from_pressure
     hubble_residual = sp.simplify(hubble_direct - hubble_expected)
-    foundation_expansion_rate, ruler_shrinkage_rate = sp.symbols(
-        "H_a_positive S_p_positive", positive=True
+    additive_material_driver = sp.symbols(
+        "Delta_H_material_independent", nonzero=True
     )
-    simultaneous_operational_rate = (
-        foundation_expansion_rate + ruler_shrinkage_rate
+    additive_material_driver_mutation = sp.simplify(
+        hubble_expected + additive_material_driver - hubble_direct
     )
-
     null_process_speed = c0 / (a_symbol / p_symbol)
     null_metric_speed = p_symbol * null_process_speed
     null_expected_metric_speed = c0 * p_symbol**2 / a_symbol
@@ -572,6 +570,9 @@ def derive_exact_gate() -> tuple[
 
     mutation_residuals = {
         "metric_time_missing_cadence": sp.simplify(p_symbol**2 - 1),
+        "operational_scale_additive_material_driver": (
+            additive_material_driver_mutation
+        ),
         "null_front_wrong_power": sp.simplify(
             c0 * p_symbol / a_symbol
             - c0 * p_symbol**2 / a_symbol
@@ -600,9 +601,6 @@ def derive_exact_gate() -> tuple[
         "cadence_pressure_identity_exact": exact_zero(cadence_residual),
         "metric_process_dictionary_exact": all(
             (exact_zero(metric_time_residual), exact_zero(metric_space_residual))
-        ),
-        "simultaneous_expansion_and_ruler_shrinkage_consistent": bool(
-            simultaneous_operational_rate.is_positive
         ),
         "operational_scale_rate_identity_exact": exact_zero(hubble_residual),
         "already_activated_null_identity_exact": exact_zero(null_residual),
@@ -696,10 +694,6 @@ def derive_exact_gate() -> tuple[
         "operational_scale_rate": (
             "H_A^(tau)=p^-1[a_dot/a-P_F_dot/(2P_F)]"
         ),
-        "simultaneous_scale_evolution": (
-            "a_dot>0 and p_dot<0 both contribute positively to "
-            "H_A^(tau)=p^-1(a_dot/a-p_dot/p)"
-        ),
         "already_activated_null": (
             "dchi/dt=+/-c0 p^2/a; dchi/dtau=+/-c0/A"
         ),
@@ -787,11 +781,6 @@ def derive_exact_gate() -> tuple[
             "same_null_condition": (
                 "Phi_t+(c0 p^2/a)Phi_chi=0 must follow from a PDE"
             ),
-        },
-        "scale_split": {
-            "allowed_branch": "a_dot>0 and p_dot<0",
-            "observable_effect": "both increase A=a/p",
-            "dynamics_status": "ALLOWED_BY_IDENTITY__NOT_DERIVED",
         },
         "thermal_source_history": {
             "identity": (
@@ -891,8 +880,9 @@ def build_report() -> dict[str, object]:
             "id": MODEL_VERSION,
             "change_boundary": (
                 "Any change to the finite origin, cadence-pressure bridge, "
-                "scale split, threshold/moving-boundary/thermal domain, observable "
-                "definitions, claim scope, or closure keys."
+                "operational-scale dictionary, causal-role semantics, threshold/"
+                "moving-boundary/thermal domain, observable definitions, claim "
+                "scope, or closure keys."
             ),
         },
         "ASSUMPTIONS": (
