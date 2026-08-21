@@ -46,8 +46,10 @@ P_F/P_F0 = A^(-6/5)
 ```
 
 Its canonical statement, domain, and falsifier are recorded in the parent
-`Cosmology_and_LSS/README.md`. The time history `a(t)` and observable
-forward maps remain open.
+`Cosmology_and_LSS/README.md`. This density closure alone leaves `a(t)` open;
+the parent README now records a separate conditional operational-EFT
+background equation. Numerical calibration and observable forward maps remain
+open.
 
 W3-36 is unchanged. It remains a historical finite-birth and thermal
 dictionary gate and is not the active source for the causal interpretation of

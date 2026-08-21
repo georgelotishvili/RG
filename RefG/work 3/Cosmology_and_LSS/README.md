@@ -77,11 +77,10 @@ not an automatic next stage.
   physical foundation volume of the fixed comoving domain; `P_F` is a
   density-like cadence state and is not silently identified with `Pi_F`.
 - `FREEDOM_LEDGER`: the density law has no fitted exponent or free function.
-  The complete homogeneous constraint remains open and must finitely register
-  its operational source sectors, curvature branch `k`, cosmological term
-  `Lambda`, expanding/contracting branch, and one normalization or initial
-  datum. The universal history `a(t)` and all photon--atomic and
-  source-response maps remain open.
+  The conditional operational background completion below adds no exponent or
+  free function and registers all of its finite inputs. Numerical background
+  parameters, Genesis matching, and all photon--atomic and source-response maps
+  remain open.
 - `DEPENDENCIES`: the frozen W3-40 causal dictionary, W3-41 mechanical
   nonselection result, and W3-42 effective `d=3` volume branch.
 - `METHOD`: exact substitution, logarithmic differentiation, inverse
@@ -102,14 +101,15 @@ not an automatic next stage.
   N/A because no numerical approximation or data are used.
 - `VALIDITY_HEALTH`: the consequences are exact under the selected postulate;
   conservation of `Q_rel` is selected rather than derived from a foundation
-  action, and time evolution and observables remain open.
+  action. The density closure alone supplies no time evolution; the separate
+  conditional operational completion below supplies its leading-EFT equation.
 - `BRANCHES`: conserved-density branch selected; W3-41's mechanical
   `P_F=Pi_F` bridge unused; W3-36's regular same-null-front `D>0` branch
   excluded because this closure gives `D=0`.
 - `OBSERVABLE_MAP`: `A=a/p` is the current ideal relational readout; no
   identification with spectroscopic redshift is made here.
-- `FORWARD_MODEL`: N/A until `a(t)`, photon propagation, atomic response,
-  source evolution, and measurement likelihood are supplied.
+- `FORWARD_MODEL`: N/A until the finite background inputs, photon propagation,
+  atomic response, source evolution, and measurement likelihood are supplied.
 - `DATA_ROLE`: no data are read or fitted.
 - `IDENTIFIABILITY`: the closure removes the W3-40 `A`-only degeneracy via
   `a=A^(2/5)`, `p=A^(-3/5)`, and `P_F/P_F0=A^(-6/5)`.
@@ -117,7 +117,8 @@ not an automatic next stage.
   independent W3-36 consequence `q=-1/3`, `D=0`.
 - `CLOSURE_FLAGS`: `density_closure_selected=true`,
   `P_F_of_a_fixed=true`, `A_inversion_exact=true`,
-  `Q_rel_microdynamics_derived=false`, `a_of_t_derived=false`, and
+  `Q_rel_microdynamics_derived=false`,
+  `a_of_t_from_density_closure_alone=false`, and
   `observable_forward_model_derived=false`.
 - `CROSSCHECK`: direct exponent algebra and inverse substitution agree; the
   W3-36 incompatibility is obtained independently from `D=1+3q`.
@@ -168,11 +169,126 @@ flux, and changing active-cell terms remain necessary. Within its stated
 domain, a nonzero source for `Q_rel`, failure of `P_F mathcal_V=constant`, or
 failure of the selected cubic effective-volume law falsifies this closure.
 
-The closure fixes `P_F(a)`, `p(a)`, and `A(a)`. It does not yet determine
-the time history `a(t)`; that requires one expansion equation. It also does
-not by itself supply the photon--atomic observable map.
+The closure fixes `P_F(a)`, `p(a)`, and `A(a)`. By itself it supplies no time
+history; the conditional operational completion below provides the expansion
+equation. The photon--atomic observable map remains a separate closure.
 
-### Bounded expansion-dynamics audit
+### Conditional operational geometric completion
+
+#### Dynamics contract
+
+- `CLAIM_ID`: `W3_COSMOLOGY_OPERATIONAL_GEOMETRIC_FLRW_COMPLETION`.
+- `CLAIM`: on the leading two-derivative operational EFT branch, one conserved
+  nonrelativistic defect sector, one adiabatic radiation sector, the selected
+  spatially flat branch, the Einstein--Hilbert `Lambda` term, and the expanding
+  sign give a closed first-order background equation for `A`, whose exact
+  pullback determines `a`, `p`, and `P_F` histories for finite supplied inputs.
+- `TYPE`: `CONDITIONAL_EFFECTIVE_EFT_COMPLETION_WITH_EXACT_PULLBACK`.
+- `MODEL_VERSION`: `W3-COSMOLOGY-v1.0-OPERATIONAL-GEOMETRIC-FLRW`; changing the
+  effective action, source list, material energy channel, transfer law,
+  curvature branch, `Lambda` branch, or scale/time dictionary creates a new
+  version.
+- `ASSUMPTIONS`: the conditional low-energy Einstein--Hilbert/EFE shell; the
+  W3-36 operational metric; the selected `A=a^(5/2)`, `p=a^(-3/2)` closure;
+  minimally coupled conserved Noether/proper energy for nonrelativistic
+  localized defects; the W3-36 `Q_gamma=0` radiation specialization selected
+  here; `k=0`; constant `Lambda`; and the W3-40 expanding branch.
+- `DOMAIN`: a connected interval containing `A=1` on the already-connected
+  homogeneous-isotropic post-Genesis branch, with `A>0`, `H_A0>0`,
+  `Omega_m0>=0`, `Omega_r0>=0`, and `E(A)^2>0` throughout; below the cutoff
+  where omitted higher-derivative EFT terms matter; and with no net energy
+  transfer between the registered source sectors and the foundation.
+- `CONVENTIONS`: `A_0=a_0=p_0=1`; prime is `d/dtau`, dot is `d/dt`;
+  `d tau=p dt`; `H_A=(1/A)dA/dtau`; energy density has units of energy per
+  operational volume; `[Lambda]=L^(-2)`; and the positive square root is the
+  expanding branch.
+- `FREEDOM_LEDGER`: there is no fitted function or exponent. The finite
+  universal background inputs are `H_A0`, `Omega_m0`, and `Omega_r0`, with
+  `Omega_Lambda0=1-Omega_m0-Omega_r0` on `k=0`; an additive time origin is a
+  coordinate choice. The numerical inputs, the physical post-Genesis endpoint
+  of the EFT interval, and the photon--atomic forward map remain open.
+- `DEPENDENCIES`: the selected density closure above, W3-36's metric and
+  `Q_gamma=0` identities, W3-40's expanding causal branch, and RefG's
+  conditional low-energy Einstein--Hilbert/EFE architecture.
+- `METHOD`: the `00` Einstein equation and an independent lapse variation of
+  the same registered effective action, covariant source conservation, exact
+  normalization, and substitution of `A=a^(5/2)` and
+  `d tau=a^(-3/2)dt`. Both dynamical routes share the declared effective action
+  and source map.
+- `PASS_CONDITION`: the Hamiltonian constraint, both continuity laws, normalized
+  sum rule, scale pullback, and time-coordinate pullback have zero algebraic
+  residual; the lapse and `00` routes agree; differentiating the constraint
+  with both continuity laws recovers the spatial Einstein equation; both
+  implicit solutions differentiate back to their ODEs; and every source and
+  freedom is registered.
+- `FAIL_CONDITION`: nonconservation on the declared no-transfer branch,
+  counting the cadence readout again as a source, using the refractive
+  `m_eff` factor as a second energy scaling, a nonzero curvature term, an
+  unregistered source, or a nonzero exact residual.
+- `FALSIFIER`: a derived RefG source map in which the conserved operational
+  gravitational energy is not the Noether/proper channel, a required nonzero
+  transfer law, or unsuppressed higher-derivative terms in the stated domain
+  falsifies this branch.
+- `RESIDUAL`: exact symbolic zero for the lapse/`00` constraint agreement,
+  both continuity laws, Hamiltonian normalization, `Omega` sum rule, spatial
+  Einstein consistency equation, `A`-to-`a` pullback, `tau`-to-`t` pullback,
+  and both implicit-history derivatives; exact key-set equality for the finite
+  source registry and freedom ledger.
+- `ERROR_BOUND`: zero algebraic error inside the displayed truncated model;
+  the EFT truncation error is `OPEN` until a microscopic cutoff and
+  higher-order coefficients are supplied.
+- `VALIDITY_HEALTH`: the registered Einstein--Hilbert dust--radiation system
+  is covariantly conserved and uses one geometric readout of foundation
+  relaxation. The foundation action and the microscopic value of `Lambda`
+  remain underived.
+- `BRANCHES`: flat, expanding, leading-EH, no-transfer branch selected;
+  `Q_rel` and `P_F` occupy the cadence/geometry dictionary, while localized
+  Noether/proper energy and radiation occupy the operational source tensor.
+- `OBSERVABLE_MAP`: `A` is the ideal operational scale. Its identification
+  with spectroscopic redshift or a measured Hubble history remains open.
+- `FORWARD_MODEL`: N/A until the photon, atomic, source, selection, and
+  likelihood maps are supplied.
+- `DATA_ROLE`: no data are read or fitted; the finite inputs are uncalibrated.
+- `IDENTIFIABILITY`: supplied finite inputs fix the background ODE on each
+  connected interval with `E(A)^2>0`; an additive time origin fixes its
+  coordinate placement. This stage does not infer the inputs from observations.
+- `BENCHMARK`: standard flat dust--radiation--`Lambda` FLRW evolution in `A`,
+  followed by the exact RefG scale and time pullbacks.
+- `CLOSURE_FLAGS`: required `true` are
+  `operational_constraint_selected`, `operational_source_map_selected`,
+  `finite_source_registry_complete`, `finite_freedom_ledger_complete`,
+  `lapse_00_constraint_agreement_exact`, `matter_continuity_exact`,
+  `radiation_continuity_exact`, `Hamiltonian_constraint_normalization_exact`,
+  `Omega_sum_rule_exact`, `spatial_Einstein_consistency_exact`,
+  `scale_pullback_exact`, `time_coordinate_pullback_exact`,
+  `implicit_history_derivatives_exact`,
+  `a_of_tau_equation_derived_within_conditional_EFT`, and
+  `a_of_t_equation_derived_within_conditional_EFT`; required `false` are
+  `operational_source_map_microphysically_derived`,
+  `foundation_hamiltonian_derived`, `EFT_truncation_controlled`,
+  `Lambda_value_derived`, `Genesis_matching_derived`,
+  `numerical_history_fixed`, and `observable_forward_model_derived`.
+  `conditional_background_pass` is the logical `AND` of every required-true
+  flag and the negation of every required-false flag.
+- `CROSSCHECK`: derive the Hamiltonian constraint from the `00` EFE and from
+  lapse variation of the reduced action; recover both source powers from their
+  continuity laws; compare the direct spatial EFE with the result of
+  differentiating the constraint; verify both RefG pullbacks and both implicit
+  histories by direct differentiation.
+- `DECISION_STATUS`: `PASS_CONDITIONAL_BACKGROUND_EQUATION__MICROPHYSICS_PARAMETERS_AND_OBSERVABLES_OPEN`.
+- `PROVENANCE`: registered on 2026-08-22 following the author's geometric RefG
+  clarification and the retained conditional EFT architecture; the versioned
+  exact verifier `w3_cosmology_operational_geometric_flrw.py` passes with
+  Python 3.10.6 and SymPy 1.13.3; its source SHA-256 is
+  `57c5542b0959734e820fd911dfe463504432d1aa568467deb719b786ae87b055`.
+  It reads no external data, fits nothing, writes no files, and emits its
+  deterministic JSON report to standard output; frozen W3-36/40/41/42
+  artifacts remain unchanged.
+- `FILES`: this README records the completion; the
+  [exact symbolic verifier](w3_cosmology_operational_geometric_flrw.py)
+  reproduces its registered residuals and closure flags; `RefG_Formal_Proof.md`
+  and the W3-36 preregistration provide its unchanged upstream EFT and metric
+  inputs.
 
 Let a prime denote `d/dtau` and define
 `H_a^(tau)=a'/a`. The selected density closure gives
@@ -201,8 +317,9 @@ For a homogeneous isotropic operational FLRW completion it gives
 Here `epsilon_eff` is operational effective energy density. Because `A` is
 dimensionless, `[k]=L^(-2)`; `k>0` denotes positive operational spatial
 curvature and contributes with the displayed minus sign. Likewise,
-`[Lambda]=L^(-2)`, and `Lambda>0` raises `[H_A^(tau)]^2`. The spatially flat
-W3-36 specialization has `k=0`.
+`[Lambda]=L^(-2)`, and `Lambda>0` raises `[H_A^(tau)]^2`. W3-36 supplies the
+metric/time dictionary but does not select global spatial curvature; `k=0` is
+the separate effective branch selected in the completion below.
 Substituting `A=a^(5/2)` gives the exact foundation-scale interface
 
 ```text
@@ -221,25 +338,120 @@ Since `d tau=p dt=a^(-3/2)dt`, the same constraint in coordinate time is
     - k c0^2/a^5
 ```
 
-This interface is not yet a closed prediction for `a(t)`. Exactly one complete
-dynamical object is missing: a homogeneous source-coupled Hamiltonian
-constraint (or equivalent minisuperspace action), schematically
+RefG's refractive field is the operational geometry. The minimum completion
+uses one metric action, with foundation relaxation appearing once through the
+metric dictionary:
 
 ```text
-C_hom[a, a'; Q_rel, T_matter, T_radiation; k, Lambda] = 0
+S_op = [c0^3/(16 pi G)] int d^4x sqrt(-g) (R-2 Lambda)
+       + S_m[g,psi_m] + S_r[g,psi_r] + S_boundary
+
+G_mn + Lambda g_mn = (8 pi G/c0^4) (T_mn^m + T_mn^r)
 ```
 
-This one object must define how `Q_rel` and each finitely registered material
-or radiative sector supply `epsilon_eff` and isotropic stress; select `k` and
-`Lambda`; select the expanding or contracting sign; and state one
-normalization or initial datum. No unnamed `...` source sector is permitted:
-adding a further sector creates a new registered version. `P_F` cannot be
-inserted as effective energy density merely because it has energy-density
-units, and `Q_rel` cannot be inserted as mechanical energy after it has been
-separated from `E_F` and `Pi_F`. Until this complete constraint is physically
-supplied, no particular `a(t)`, Friedmann component history, or acceleration
-claim is selected. The expansion-dynamics status is therefore `OPEN` at this
-exact premise, and no additional calculation stage is opened.
+Here `x^0=c0 tau`, and `S_boundary` is the standard Gibbons--Hawking--York
+fixed-boundary term. The material tensor uses the conserved Noether/proper
+energy of localized nonrelativistic defects, the same invariant energy channel
+that supplies inertial and gravitational charge. The factor `m_eff/m_0=p` is
+its external refractive readout and is already represented by the metric
+dictionary. `Q_rel` and `P_F` complete their role through `p(a)` and `A(a)`.
+The operational source tensor in this model version consists exactly of the
+registered localized-defect and radiation sectors.
+
+The independent homogeneous variation keeps the lapse until after variation:
+
+```text
+ds_op^2 = N(lambda)^2 c0^2 d lambda^2 - A(lambda)^2 d chi^2
+
+S_red/V_c = int d lambda {
+    - [3 c0^2/(8 pi G)] [A/N] (dA/dlambda)^2
+    - N A^3 [epsilon_m + epsilon_r + Lambda c0^4/(8 pi G)]
+}
+```
+
+The source term is the reduced matter Hamiltonian form. Varying `N`, then
+setting `N=1` and `lambda=tau`, gives exactly the displayed flat `00`
+Hamiltonian constraint.
+
+On the registered no-transfer branch,
+
+```text
+P_m = 0
+P_r = epsilon_r/3
+epsilon_m' + 3 H_A^(tau) epsilon_m = 0
+epsilon_r' + 4 H_A^(tau) epsilon_r = 0
+
+epsilon_m = epsilon_m0 A^(-3)
+epsilon_r = epsilon_r0 A^(-4)
+```
+
+The completion selects the spatially flat branch `k=0`. Define
+
+```text
+Omega_m0      = 8 pi G epsilon_m0/(3 c0^2 H_A0^2)
+Omega_r0      = 8 pi G epsilon_r0/(3 c0^2 H_A0^2)
+Omega_Lambda0 = Lambda c0^2/(3 H_A0^2)
+
+E(A)^2 = Omega_r0 A^(-4) + Omega_m0 A^(-3) + Omega_Lambda0
+Omega_r0 + Omega_m0 + Omega_Lambda0 = 1
+H_A^(tau) = +H_A0 E(A)
+```
+
+The corresponding spatial Einstein equation is
+
+```text
+A''/A = -(H_A0^2/2) [
+    Omega_m0 A^(-3)
+    + 2 Omega_r0 A^(-4)
+    - 2 Omega_Lambda0
+]
+```
+
+Direct evaluation of the spatial EFE gives this equation; differentiating the
+Hamiltonian constraint and using both continuity laws reproduces it. The source
+sectors determine the rate of the single operational geometric scale `A`,
+hence the rate of `a`; W3-40's causal chain `a -> P_F -> p` retains one
+material response and one operational readout. Pulling the constraint back
+through `A=a^(5/2)` gives
+
+```text
+(25/4) (a'/a)^2 = H_A0^2 [
+    Omega_r0 a^(-10)
+    + Omega_m0 a^(-15/2)
+    + Omega_Lambda0
+]
+
+(25/4) a (da/dt)^2 = H_A0^2 [
+    Omega_r0 a^(-10)
+    + Omega_m0 a^(-15/2)
+    + Omega_Lambda0
+]
+```
+
+Equivalently, the two first-order histories are
+
+```text
+da/dtau = (2/5) H_A0 a E(a^(5/2))
+da/dt   = (2/5) H_A0 a^(-1/2) E(a^(5/2))
+```
+
+Anchoring the integration at the normalized present point `A_0=1`, the unique
+implicit expanding solutions on each connected interval with `E(A)^2>0` are
+
+```text
+tau-tau_0 = H_A0^(-1) int_[1]^A du/[u E(u)]
+t-t_0     = H_A0^(-1) int_[1]^A u^(-2/5) du/E(u)
+```
+
+Thus the functional freedom in `a(t)` is closed on this conditional EFT
+branch. A numerical history requires only the registered finite inputs and the
+choice of time origin. The physical endpoint at which this post-Genesis EFT
+attaches to the Genesis transition remains a separate open interface. `H_A0`
+is the process-time expansion rate at `A=1`; its identification with a measured
+Hubble constant belongs to the still-open photon--atomic and clock forward
+map. On the present leading-EH branch, positive `Lambda` carries late-time
+operational acceleration. A future `Lambda`-free RefG acceleration law would
+be a different geometric action and therefore a new model version.
 
 W3-36 remains the bookkeeping root for the finite-origin, process-time,
 metric, thermal, and local-threshold identities. Version 1.3 removes its old
