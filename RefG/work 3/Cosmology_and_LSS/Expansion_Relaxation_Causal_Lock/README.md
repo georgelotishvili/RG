@@ -20,6 +20,35 @@ the non-identifiability of `a` and `p` from `A` alone. It does not derive the
 constitutive law `P_F(a)`, the expansion dynamics, or any redshift, distance,
 thermal, structure-growth, or likelihood forward model.
 
+## Subsequent selected closure
+
+W3-40's historical result and hashed artifacts remain unchanged. Downstream
+of that gate, the current cosmology branch now selects `P_F` as the density
+of a conserved relaxation/coherence content `Q_rel` within a fixed, already-
+connected ideal-comoving domain whose physical volume grows with `a`:
+
+```text
+Q_rel := P_F mathcal_V
+dQ_rel/dtau = 0
+mathcal_V = mathcal_V_0 a^3
+P_F/P_F0 = a^(-3)
+p = a^(-3/2)
+A = a^(5/2)
+```
+
+This density closure does not use the candidate mechanical identification
+`P_F=Pi_F`. Once it is imposed, the W3-40 equivalence class collapses to
+
+```text
+a = A^(2/5)
+p = A^(-3/5)
+P_F/P_F0 = A^(-6/5)
+```
+
+Its canonical statement, domain, and falsifier are recorded in the parent
+`Cosmology_and_LSS/README.md`. The time history `a(t)` and observable
+forward maps remain open.
+
 W3-36 is unchanged. It remains a historical finite-birth and thermal
 dictionary gate and is not the active source for the causal interpretation of
 the scale split.
@@ -31,7 +60,7 @@ the scale split.
 - `w3_40_result.json`
 - `w3_40_result.sha256`
 
-## Current result
+## Frozen W3-40 gate result
 
 - model version: `W3-40-v1.2-SINGLE-DRIVER-EXPANSION-RELAXATION-CAUSAL-LOCK`
 - status: `PASS_EXACT_CAUSAL_LOCK_DICTIONARY__DYNAMICS_AND_OBSERVABLES_OPEN`

@@ -25,9 +25,10 @@ mathcal_V_d = mathcal_V_d0 a^d
 ```
 
 Therefore `d=3` returns the cubic map used in W3-41 exactly. This is a
-conditional theorem: the current theory has not yet selected `d=3`, a
-physical cell complex, an invariant geometric measure, or the
-uniform-isotropic orbit.
+conditional theorem: W3-42 did not microscopically derive `d=3`, a physical
+cell complex, an invariant geometric measure, or the uniform-isotropic orbit.
+The current cosmology branch later retains the observed homogeneous-isotropic
+`d=3` geometry as an explicit effective input.
 
 For any supplied positive geometric measure,
 
@@ -164,16 +165,25 @@ carried forward as an explicit effective input supported by observed spatial
 geometry. Its microscopic origin is a separate research problem and does not
 automatically open another gate.
 
-The next bounded decision is whether the existing RefG energy-and-activation
-mechanism supplies a non-arbitrary balance law that fixes `P_F(a)`:
+## Downstream density selection
 
-- target: one physical energy/work statement for foundation relaxation;
-- minimum result: one derived relation for `P_F(a)`, with no fitted exponent;
-- stop condition: either that relation follows, or one missing physical
-  premise is named and the task closes `OPEN`.
+W3-42's result and hashed artifacts remain unchanged. For the current
+cosmology objective, its effective homogeneous-isotropic `d=3` branch is
+now combined with a selected density closure for a conserved
+relaxation/coherence content `Q_rel` on a fixed, already-connected
+ideal-comoving domain:
 
-No new stage package or calculation is opened before that physical statement
-is explicit.
+```text
+Q_rel := P_F mathcal_V
+dQ_rel/dtau = 0
+mathcal_V = mathcal_V_0 a^3
+```
+
+Therefore `P_F/P_F0=a^(-3)`, `p=a^(-3/2)`, and `A=a^(5/2)`. This does
+not retroactively derive the three-dimensional volume law from foundation
+microstates, and it does not apply across a moving Genesis activation
+boundary. The canonical statement and falsifier are recorded in the parent
+`Cosmology_and_LSS/README.md`.
 
 ## Files
 
@@ -182,7 +192,7 @@ is explicit.
 - `w3_42_result.json`
 - `w3_42_result.sha256`
 
-## Current result
+## Frozen W3-42 gate result
 
 - model version: `W3-42-v1.0-FOUNDATION-STATE-SPACE-VOLUME-MAP`
 - upstream W3-41 result SHA-256: `f692c38c6deca0f20bc94cb048c4407ca3ed8520a566fa7d73b79d1fe8778ab9`

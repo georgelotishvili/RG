@@ -13,20 +13,23 @@ p^2 = P_F/P_F0
 
 translates the pressure fall into contraction of the material scale-and-
 cadence factor. An internal observer reads this one trajectory through
-`A=a/p`. The observable ratio does not identify `a` and `p` separately.
+`A=a/p`. Before a constitutive closure is supplied, that observable ratio
+does not identify `a` and `p` separately.
 
 W3-40 passes the exact causal dictionary, linked sign/rate identities, and
 the `A`-only non-identifiability check. It freezes `dP_F/da<0` as the selected
-constitutive sign; it does not derive the law `P_F(a)`. The foundation energy
-balance, complete histories `a(t)`, `P_F(t)`, and `p(t)`, photon--atomic map,
-`H_CC(z)`, `D_L(z)`, CMB/BBN calculation, and JWST growth model remain open.
+constitutive sign; it does not derive the law `P_F(a)`. At the W3-40 gate,
+the foundation energy balance, complete histories `a(t)`, `P_F(t)`, and
+`p(t)`, photon--atomic map, `H_CC(z)`, `D_L(z)`, CMB/BBN calculation,
+and JWST growth model therefore remain open.
 
 W3-41 is the constitutive-interface child of W3-40. It derives the exact
 `E_F`--`Pi_F` mechanical-stress dictionary and proves a reconstruction
 nonselection theorem: the interface admits an entire functional family and
 therefore selects no physical `P_F(a)`, `kappa(a)`, or exponent. The identity
-`P_F=Pi_F` remains a candidate bridge, not a derived fact. The cell-volume law
-and one-coordinate state reduction are assumptions at that gate.
+`P_F=Pi_F` is only a candidate mechanical bridge in that gate and is not
+used by the selected density closure below. The cell-volume law and
+one-coordinate state reduction are assumptions at W3-41.
 
 W3-42 is the state-space and volume-map child. It derives the exact
 conditional theorem
@@ -51,13 +54,120 @@ For the present cosmology objective, the observed homogeneous-isotropic
 derivation of dimension and topology is a separate research program and is
 not an automatic next stage.
 
-The next bounded task has one target: determine whether RefG's existing
-energy-and-activation mechanism yields a non-arbitrary foundation
-conservation/work law and therefore fixes `P_F(a)`. The minimum acceptable
-output is one derived relation with no fitted exponent. If the existing
-ontology lacks one necessary energy-transfer premise, that premise is
-recorded once and the task closes `OPEN`. Only after a physical `P_F(a)` law
-exists may `p(a)`, `A(a)`, and a background time evolution be calculated.
+## Selected post-W3-42 density closure
+
+### Closure contract
+
+- `CLAIM_ID`: `W3_COSMOLOGY_CONSERVED_RELAXATION_DENSITY_CLOSURE`.
+- `CLAIM`: on the selected branch, conservation of `Q_rel=P_F mathcal_V`
+  and `mathcal_V/mathcal_V_0=a^3` fixes `P_F/P_F0=a^(-3)` and all exact
+  relational consequences below.
+- `TYPE`: `AUTHOR_SELECTED_CONSTITUTIVE_POSTULATE_WITH_EXACT_CONSEQUENCES`.
+- `MODEL_VERSION`: `W3-COSMOLOGY-v1.0-CONSERVED-RELAXATION-DENSITY`;
+  changing the conserved content, density readout, cubic effective-volume
+  input, cadence bridge, or branch domain creates a new version.
+- `ASSUMPTIONS`: positive normalized scales; an already-connected
+  homogeneous-isotropic effective `d=3` branch; one fixed ideal-comoving
+  domain; conserved positive `Q_rel`; `P_F=Q_rel/mathcal_V`; and the frozen
+  cadence bridge `p^2=P_F/P_F0`.
+- `DOMAIN`: regular post-origin intervals after network connection; not the
+  Genesis transition, a moving activation boundary, or a local compact-object
+  deficit.
+- `CONVENTIONS`: `a_0=p_0=A_0=1`; `tau` is process time; `mathcal_V` is
+  physical foundation volume of the fixed comoving domain; `P_F` is a
+  density-like cadence state and is not silently identified with `Pi_F`.
+- `FREEDOM_LEDGER`: the density law has no fitted exponent or free function;
+  the universal history `a(t)` and all photon--atomic and source-response
+  maps remain open.
+- `DEPENDENCIES`: the frozen W3-40 causal dictionary, W3-41 mechanical
+  nonselection result, and W3-42 effective `d=3` volume branch.
+- `METHOD`: exact substitution, logarithmic differentiation, inverse
+  substitution, and a direct audit against the retained W3-36 benchmark; no
+  data and no likelihood.
+- `PASS_CONDITION`: every displayed relational identity and inverse has zero
+  symbolic residual, the branch preserves the single-driver causal order,
+  and no frozen gate is retroactively changed.
+- `FAIL_CONDITION`: a nonzero algebraic residual, silent use of
+  `P_F=Pi_F`, application across changing activation content, or promotion
+  of an uncomputed `a(t)` or observable map.
+- `FALSIFIER`: within the declared domain, a derived nonzero source for
+  `Q_rel`, failure of `P_F mathcal_V=constant`, or failure of the adopted
+  cubic effective-volume law.
+- `RESIDUAL`: exact symbolic zero for the density, cadence, operational-scale,
+  inversion, `kappa=3`, and `q=-1/3` identities.
+- `ERROR_BOUND`: zero algebraic error; numerical and observational error are
+  N/A because no numerical approximation or data are used.
+- `VALIDITY_HEALTH`: the consequences are exact under the selected postulate;
+  conservation of `Q_rel` is selected rather than derived from a foundation
+  action, and time evolution and observables remain open.
+- `BRANCHES`: conserved-density branch selected; W3-41's mechanical
+  `P_F=Pi_F` bridge unused; W3-36's regular same-null-front `D>0` branch
+  excluded because this closure gives `D=0`.
+- `OBSERVABLE_MAP`: `A=a/p` is the current ideal relational readout; no
+  identification with spectroscopic redshift is made here.
+- `FORWARD_MODEL`: N/A until `a(t)`, photon propagation, atomic response,
+  source evolution, and measurement likelihood are supplied.
+- `DATA_ROLE`: no data are read or fitted.
+- `IDENTIFIABILITY`: the closure removes the W3-40 `A`-only degeneracy via
+  `a=A^(2/5)`, `p=A^(-3/5)`, and `P_F/P_F0=A^(-6/5)`.
+- `BENCHMARK`: exact recovery of the W3-40 scale identities and the
+  independent W3-36 consequence `q=-1/3`, `D=0`.
+- `CLOSURE_FLAGS`: `density_closure_selected=true`,
+  `P_F_of_a_fixed=true`, `A_inversion_exact=true`,
+  `Q_rel_microdynamics_derived=false`, `a_of_t_derived=false`, and
+  `observable_forward_model_derived=false`.
+- `CROSSCHECK`: direct exponent algebra and inverse substitution agree; the
+  W3-36 incompatibility is obtained independently from `D=1+3q`.
+- `PROVENANCE`: author-selected on 2026-08-22; no external data; frozen
+  W3-40/41/42 preregistrations, scripts, results, and checksums unchanged.
+- `FILES`: this README is canonical; the W3-40, W3-41, and W3-42 READMEs
+  carry synchronized downstream-status notes.
+
+For the already-connected, homogeneous-isotropic post-origin branch, RefG now
+adopts one physical closure. A fixed ideal-comoving foundation domain carries
+an extensive conserved relaxation/coherence content `Q_rel`; the cadence-
+controlling scalar `P_F` is its density in the domain's physical foundation
+volume:
+
+```text
+Q_rel := P_F mathcal_V
+dQ_rel/dtau = 0
+mathcal_V = mathcal_V_0 a^3
+```
+
+With `a_0=1`, this gives the exact, parameter-free relations
+
+```text
+P_F/P_F0 = a^(-3)
+kappa = -d ln(P_F)/d ln(a) = 3
+p = sqrt(P_F/P_F0) = a^(-3/2)
+A = a/p = a^(5/2)
+```
+
+The exponent `3` is not fitted: it is the volume exponent of the explicitly
+selected effective three-dimensional homogeneous-isotropic branch. `Q_rel`
+is the conserved content whose density is read as `P_F`; it is not W3-41's
+mechanical potential `E_F`. Consequently this closure neither assumes nor
+needs `P_F=Pi_F`, where `Pi_F=-dE_F/dV_F`.
+
+This also collapses W3-40's downstream `A`-only equivalence class:
+
+```text
+a = A^(2/5)
+p = A^(-3/5)
+P_F/P_F0 = A^(-6/5)
+```
+
+The law applies only after the network is already connected and to a fixed
+ideal-comoving content. It does not assert conserved active-domain energy at
+the Genesis transition or across a moving activation boundary, where source,
+flux, and changing active-cell terms remain necessary. Within its stated
+domain, a nonzero source for `Q_rel`, failure of `P_F mathcal_V=constant`, or
+failure of the selected cubic effective-volume law falsifies this closure.
+
+The closure fixes `P_F(a)`, `p(a)`, and `A(a)`. It does not yet determine
+the time history `a(t)`; that requires one expansion equation. It also does
+not by itself supply the photon--atomic observable map.
 
 W3-36 remains the bookkeeping root for the finite-origin, process-time,
 metric, thermal, and local-threshold identities. Version 1.3 removes its old
@@ -90,6 +200,11 @@ define q=d ln a/d ln P_F and D=1+3q:
 
 This calculation is a conditional consistency benchmark. Its closure has not
 been derived, and its local radial front is not the global birth geometry.
+The selected density closure gives `q=-1/3` and therefore `D=0`; it is
+incompatible with the benchmark's regular `D>0` same-null-front branch and
+with `D dR/dt=c0 p^2` for positive `p`. That branch is consequently
+excluded from the current cosmology and retained only as a historical
+assumption--consequence check.
 The source snapshots were removed after these valid results were made
 self-contained in W3-36.
 
