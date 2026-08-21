@@ -40,13 +40,21 @@ particular, `P_F=P_F0 a^(-n)` is exactly the additional constitutive choice
 `kappa=n`; neither the interface nor the positive-bulk-modulus condition
 determines `n`.
 
-The next gate must first derive the homogeneous state space and its invariant
-volume measure from the microscopic foundation degrees of freedom. It must
-determine, rather than assume, whether the reduction is one-dimensional and
-whether `V_F=V_0 a^3`. If additional homogeneous coordinates survive, W3-41
-must be reopened on the enlarged state space. Only after that closure may
-target-independent foundation dynamics be used to derive `E_F`, the pressure
-bridge, and the kinetic equation in their dependent mechanism gates.
+W3-42 now supplies the exact conditional volume dictionary and proves why
+the missing physical premises cannot be skipped. A supplied
+uniform-isotropic `d`-cell gives `mathcal V=mathcal V_0 a^d` and `d=3`
+recovers every corresponding W3-41 formula. But the link scale alone does not
+fix cell angles; one fixed graph admits inequivalent measures; and a cubic
+volume can hide an additional homogeneous shape coordinate. W3-42 therefore
+does not close the assumptions used here.
+
+For the current cosmology target, the homogeneous-isotropic `d=3` branch is
+used as an explicit effective input. The next bounded task asks one physical
+question: does the existing RefG energy-and-activation account supply a
+conservation/work statement that fixes `P_F(a)` without a fitted exponent?
+No new calculation package is opened until that statement is explicit. If it
+does not follow from the present ontology, the task closes `OPEN` with the
+single missing premise recorded.
 
 ## Files
 
@@ -63,3 +71,4 @@ bridge, and the kinetic equation in their dependent mechanism gates.
 - preregistration SHA-256: `ab852e070871c707ed46e1ac2edde995931c12bd3a0d117e784c258e9f7ba99b`
 - source SHA-256: `849fb7a649af526ebcdf00e114bc4cd93e6cdd81b2a1cbd246dfa4c77db18f05`
 - result SHA-256: `f692c38c6deca0f20bc94cb048c4407ca3ed8520a566fa7d73b79d1fe8778ab9`
+- W3-42 child result SHA-256: `5de8e1b5026f6fd7fac89699e6d09066ec309dd85ff679d69f5ad05df6eec329`

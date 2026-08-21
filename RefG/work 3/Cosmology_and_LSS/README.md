@@ -26,11 +26,38 @@ W3-41 is the constitutive-interface child of W3-40. It derives the exact
 nonselection theorem: the interface admits an entire functional family and
 therefore selects no physical `P_F(a)`, `kappa(a)`, or exponent. The identity
 `P_F=Pi_F` remains a candidate bridge, not a derived fact. The cell-volume law
-and one-coordinate state reduction are also assumptions at this gate.
-The immediate next blocker is derivation of the homogeneous state space and
-its invariant volume measure. Only after that may microscopic foundation
-dynamics, bridge microphysics, and a background kinetic equation be derived
-before any `a(t)` or observable model.
+and one-coordinate state reduction are assumptions at that gate.
+
+W3-42 is the state-space and volume-map child. It derives the exact
+conditional theorem
+
+```text
+mathcal_V/mathcal_V_0 = det(F)
+F=a I_d  =>  mathcal_V=mathcal_V_0 a^d
+```
+
+and recovers the W3-41 cubic dictionary at `d=3`. Its constructive witnesses
+prove that the existing foundation account selects neither physical
+dimension, measure, isotropy, nor a one-coordinate homogeneous state:
+
+- three equal link lengths can have a changing angle and a noncubic volume;
+- one fixed graph supports measures scaling as `a^0`, `a^1`, and `a^3`;
+- a trace-free shape coordinate can survive behind the same cubic volume;
+- activated volume also depends on the independently open active-cell
+  measure.
+
+For the present cosmology objective, the observed homogeneous-isotropic
+`d=3` geometry is retained as an explicit effective input. A microscopic
+derivation of dimension and topology is a separate research program and is
+not an automatic next stage.
+
+The next bounded task has one target: determine whether RefG's existing
+energy-and-activation mechanism yields a non-arbitrary foundation
+conservation/work law and therefore fixes `P_F(a)`. The minimum acceptable
+output is one derived relation with no fitted exponent. If the existing
+ontology lacks one necessary energy-transfer premise, that premise is
+recorded once and the task closes `OPEN`. Only after a physical `P_F(a)` law
+exists may `p(a)`, `A(a)`, and a background time evolution be calculated.
 
 W3-36 remains the bookkeeping root for the finite-origin, process-time,
 metric, thermal, and local-threshold identities. Version 1.3 removes its old
