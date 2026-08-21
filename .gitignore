@@ -53,7 +53,10 @@ artikle/GERG/*
 /tmp/
 __pycache__/
 *.py[cod]
+*.tmp
 *$py.class
+*.so
+.Python
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
@@ -70,6 +73,11 @@ env/
 
 # OS/editor noise
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 .idea/
 .vscode/
@@ -77,13 +85,20 @@ Thumbs.db
 # RefG work 3 generated outputs
 /RefG/work 3/**/*.json
 /RefG/work 3/**/*.png
-!/RefG/work 3/Cosmology_and_LSS/w3_34_result.json
-!/RefG/work 3/Cosmology_and_LSS/w3_35_result.json
+!/RefG/work 3/Cosmology_and_LSS/w3_36_result.json
+!/RefG/work 3/Cosmology_and_LSS/Expansion_Relaxation_Causal_Lock/w3_40_result.json
+!/RefG/work 3/Genesis_Scenario/w3_37_result.json
+!/RefG/work 3/Genesis_Scenario/w3_38_result.json
+!/RefG/work 3/Genesis_Scenario/w3_39_result.json
 /RefG/work 3/w3_00_strategic_plan.md
 
 # PHANGS observational products and generated analysis tables.
 # Source code and the frozen preregistration remain version-controlled.
-/RefG/work 3/Galactic_Dynamics/PHANGS_data/raw/
-/RefG/work 3/Galactic_Dynamics/PHANGS_data/derived/
-/RefG/work 3/Galactic_Dynamics/PHANGS_data/manifests/
+/RefG/work 3/Galactic_Dynamics/Past_Time_Research/PHANGS_data/raw/
+/RefG/work 3/Galactic_Dynamics/Past_Time_Research/PHANGS_data/derived/
+/RefG/work 3/Galactic_Dynamics/Past_Time_Research/PHANGS_data/manifests/
 W3_19_CODEX_COMMUNICATION.md
+
+# Runtime-downloaded supernova tables
+lcparam_DS17f.txt
+sys_DS17f.txt
