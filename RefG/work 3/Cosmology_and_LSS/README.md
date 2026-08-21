@@ -76,9 +76,12 @@ not an automatic next stage.
 - `CONVENTIONS`: `a_0=p_0=A_0=1`; `tau` is process time; `mathcal_V` is
   physical foundation volume of the fixed comoving domain; `P_F` is a
   density-like cadence state and is not silently identified with `Pi_F`.
-- `FREEDOM_LEDGER`: the density law has no fitted exponent or free function;
-  the universal history `a(t)` and all photon--atomic and source-response
-  maps remain open.
+- `FREEDOM_LEDGER`: the density law has no fitted exponent or free function.
+  The complete homogeneous constraint remains open and must finitely register
+  its operational source sectors, curvature branch `k`, cosmological term
+  `Lambda`, expanding/contracting branch, and one normalization or initial
+  datum. The universal history `a(t)` and all photon--atomic and
+  source-response maps remain open.
 - `DEPENDENCIES`: the frozen W3-40 causal dictionary, W3-41 mechanical
   nonselection result, and W3-42 effective `d=3` volume branch.
 - `METHOD`: exact substitution, logarithmic differentiation, inverse
@@ -168,6 +171,75 @@ failure of the selected cubic effective-volume law falsifies this closure.
 The closure fixes `P_F(a)`, `p(a)`, and `A(a)`. It does not yet determine
 the time history `a(t)`; that requires one expansion equation. It also does
 not by itself supply the photon--atomic observable map.
+
+### Bounded expansion-dynamics audit
+
+Let a prime denote `d/dtau` and define
+`H_a^(tau)=a'/a`. The selected density closure gives
+
+```text
+P_F' + 3 H_a^(tau) P_F = 0
+H_A^(tau) = (1/A) dA/dtau = (5/2) H_a^(tau)
+```
+
+These are conservation and scale identities. They hold for every positive
+differentiable history `a(tau)` and therefore do not determine expansion.
+
+The strongest existing dynamical shell is RefG's
+[conditional low-energy Einstein--Hilbert/EFE architecture](../Lagrangian_Formulation/RefG_Formal_Proof.md),
+combined with the
+[W3-36 metric dictionary](w3_36_birth_threshold_thermal_preregistration.md).
+For a homogeneous isotropic operational FLRW completion it gives
+
+```text
+[H_A^(tau)]^2 =
+    (8 pi G/(3 c0^2)) epsilon_eff(A)
+    + Lambda c0^2/3
+    - k c0^2/A^2
+```
+
+Here `epsilon_eff` is operational effective energy density. Because `A` is
+dimensionless, `[k]=L^(-2)`; `k>0` denotes positive operational spatial
+curvature and contributes with the displayed minus sign. Likewise,
+`[Lambda]=L^(-2)`, and `Lambda>0` raises `[H_A^(tau)]^2`. The spatially flat
+W3-36 specialization has `k=0`.
+Substituting `A=a^(5/2)` gives the exact foundation-scale interface
+
+```text
+(25/4) (a'/a)^2 =
+    (8 pi G/(3 c0^2)) epsilon_eff(a^(5/2))
+    + Lambda c0^2/3
+    - k c0^2/a^5
+```
+
+Since `d tau=p dt=a^(-3/2)dt`, the same constraint in coordinate time is
+
+```text
+(25/4) a (da/dt)^2 =
+    (8 pi G/(3 c0^2)) epsilon_eff(a^(5/2))
+    + Lambda c0^2/3
+    - k c0^2/a^5
+```
+
+This interface is not yet a closed prediction for `a(t)`. Exactly one complete
+dynamical object is missing: a homogeneous source-coupled Hamiltonian
+constraint (or equivalent minisuperspace action), schematically
+
+```text
+C_hom[a, a'; Q_rel, T_matter, T_radiation; k, Lambda] = 0
+```
+
+This one object must define how `Q_rel` and each finitely registered material
+or radiative sector supply `epsilon_eff` and isotropic stress; select `k` and
+`Lambda`; select the expanding or contracting sign; and state one
+normalization or initial datum. No unnamed `...` source sector is permitted:
+adding a further sector creates a new registered version. `P_F` cannot be
+inserted as effective energy density merely because it has energy-density
+units, and `Q_rel` cannot be inserted as mechanical energy after it has been
+separated from `E_F` and `Pi_F`. Until this complete constraint is physically
+supplied, no particular `a(t)`, Friedmann component history, or acceleration
+claim is selected. The expansion-dynamics status is therefore `OPEN` at this
+exact premise, and no additional calculation stage is opened.
 
 W3-36 remains the bookkeeping root for the finite-origin, process-time,
 metric, thermal, and local-threshold identities. Version 1.3 removes its old
