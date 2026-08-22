@@ -959,6 +959,30 @@ The full decision is the
 The existing W3-48 verifier supplies the required rate-algebra regression;
 no additional script is needed for this variational construction.
 
+### Deferred particle-sector handoff
+
+The next registered direction, when particle work resumes, is a bounded
+one-oscillon bridge rather than a particle catalogue. The W3-50 canonical
+action also gives
+
+    D_tau theta_C=partial H_C/partial n_C,
+
+but the uninstantiated `H_C` does not identify this internal phase rate with
+the ordinary oscillon cycle or with the common local cadence. A future
+localized model must first keep those roles distinct, construct one
+finite-energy oscillon branch and its fluctuation operator, and derive rather
+than assume whether its frequencies have the common-mode form
+`nu_i^(t)=s_i Omega_t` with invariant dimensionless `s_i`.
+
+The same gate must audit the two time readings through `d tau=p dt`, with
+`nu_i^(tau)=nu_i^(t)/p`. W3-46's `Omega_t/Omega_t0=p` cadence scaling must
+therefore recover W3-43's constant operational proper-frequency standard
+without an additional `p` factor. Only then may a separate energy/mass
+observable bridge open. Old frequency-to-mass powers and C3/Koide numbers are
+not inputs to this derivation. The full gate and its falsifiers are recorded
+in the W3-50 contract. This handoff opens no calculation now and changes no
+current W3-46--W3-50 status.
+
 ## Salvaged exact results
 
 W3-36 checks the useful metric, process-time, null-ray, radius, and volume

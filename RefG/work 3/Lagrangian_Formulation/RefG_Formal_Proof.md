@@ -217,6 +217,56 @@ the enlarged measure. The physical origin of the internal phase, the cubic
 measure, the Hamiltonian and its stress response, and its relation to `J_R`
 remain outside this conditional current closure.
 
+## 7. Deferred particle-sector bridge
+
+When microscopic particle work resumes, the first registered target is one
+localized oscillon family, not a simultaneous explanation of all particles.
+The current action implies the conjugate equation
+
+```text
+D_tau theta_C = partial H_C/partial n_C,
+```
+
+but an uninstantiated `H_C` does not turn `theta_C` into the ordinary oscillon
+cycle phase and does not derive a particle frequency. The first microdynamic
+gate must decide whether the realized internal neutral phase remains distinct
+from process-time translation and whether a localized cycle can couple to it
+consistently. If no independent neutral cyclic coordinate survives, the
+W3-50 candidate fails its own falsifier.
+
+Only after that distinction is secured may one construct a localized
+finite-energy solution and linearize its dynamics. The resulting fluctuation
+operator must determine, rather than receive as an ansatz, whether the mode
+frequencies share one factor,
+
+```text
+nu_i^(t)(x) = s_i Omega_t(x),
+```
+
+with dimensionless structural labels `s_i`. This is the particle-side
+common-mode covariance test. It must be checked in both time descriptions
+using
+
+```text
+d tau = p dt,
+nu_i^(tau) = nu_i^(t)/p.
+```
+
+W3-46's `Omega_t/Omega_t0=p` coordinate-cadence scaling must thereby recover
+W3-43's constant operational proper-frequency standard for fixed `s_i`.
+They are the same response counted once. A failure of factorization leaves
+environment-dependent dimensionless mode ratios and must be reported rather
+than removed by fitting.
+
+Mass enters only after this spectral gate. An independent energy map, with
+its relevant Noether generator if one exists, and a separate pole/rest-mass
+observable map must then recover, or falsify, the registered `m_eff/m_0=p`
+response. No linear or quadratic frequency-to-mass rule, C3/Koide value,
+particle identity, stability spectrum, or mass ratio is inherited as a
+result. The first particle stage ends when this single localized family
+closes the cadence--spectrum interface or identifies one exact missing
+physical premise.
+
 ## Conclusion
 
 The Einstein--Hilbert system is the selected conditional low-energy
@@ -232,8 +282,10 @@ candidate internal-phase action, and the W3-42 cubic measure branch. Sector
 definitions and normalizations, transfer rates, resonance transport, the
 complete Hamiltonian and stress map, pregeometric master action, and the
 value of `Lambda_eff` remain open. No automatic next algebraic stage is
-opened; a pregeometric master action follows only after the full relational
-state space and symmetry are specified.
+opened by the present closure. When work resumes, the first registered
+particle target is the bounded one-oscillon bridge of Section 7; it does not
+replace the separate requirement that a pregeometric master action follow
+only after the full relational state space and symmetry are specified.
 
 Primary theorem references:
 

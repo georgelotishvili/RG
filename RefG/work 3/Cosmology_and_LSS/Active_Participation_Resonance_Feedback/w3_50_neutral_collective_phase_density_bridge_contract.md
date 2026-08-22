@@ -382,6 +382,63 @@ pressure stress response, and the `J_R` transport law remain separate
 construction problems. They do not alter this stage's current-conservation
 decision. Work stops here.
 
+## Deferred particle-sector handoff
+
+This is the registered direction for the next work session, not an opened
+W3-51 stage. It changes no W3-50 claim, residual, closure flag, or status.
+
+The existing particle-side candidate uses a common local cadence and
+dimensionless localized-mode labels. For the required two-time audit, write
+its coordinate-`t` frequency statement without ambiguity as
+
+    nu_i^(t)(x) = s_i Omega_t(x),
+
+where `s_i` denotes the structural factor called `n_i` in the intuitive
+paper; it is renamed here to prevent confusion with the phase-action density
+`n_C`. W3-50 does not derive this spectral factorization and does not identify
+`Omega_t`, `nu_i^(t)`, or an ordinary oscillon cycle phase with `n_C` or
+`theta_C`.
+The present action supplies only the conjugate equation
+
+    D_tau theta_C = partial H_C/partial n_C,
+
+obtained by variation with respect to `n_C`. Because `H_C` is uninstantiated,
+this equation does not yet determine a common cadence or a particle spectrum.
+
+When particle work resumes, the first admissible target is one localized
+oscillon family rather than a catalogue of particle species. Its bounded gate
+is:
+
+1. Realize only enough of `H_C` and the localized foundation dynamics to
+   determine the physical role of `D_tau theta_C` and whether a distinct
+   ordinary oscillon phase can lock to the collective sector without
+   collapsing `theta_C` into process-time translation.
+2. Construct one localized finite-energy branch and its linearized
+   fluctuation operator.
+3. Determine, rather than assume, whether its coordinate-`t` mode
+   frequencies factor through one common cadence and whether their
+   dimensionless ratios survive homogeneous relaxation.
+4. Audit both time readings with `d tau=p dt`,
+
+       nu_i^(tau) = nu_i^(t)/p.
+
+   W3-46's `Omega_t/Omega_t0=p` cadence scaling must then reproduce W3-43's
+   constant operational proper-frequency standard for fixed `s_i`. This is
+   one common response, with no extra `p` factor and no second expansion
+   effect.
+5. Only after the spectral gate passes, derive an independent energy and mass
+   observable map and test W3-46's `m_eff/m_0=p`. No `m proportional to nu`,
+   `m proportional to nu^2`, C3/Koide numbers, particle identities, or
+   stability claims are imported from an assumed spectrum.
+
+If the realized system has only the ordinary time-translation cycle phase and
+no independent neutral cyclic coordinate, the W3-50 candidate fails its
+declared falsifier rather than merging the two phases. If the common-mode
+factorization fails, the particle construction must retain the resulting
+environment-dependent dimensionless spectrum rather than assert universal
+ratios. The next stage stops after the first oscillon family either passes
+these tests or names one exact missing physical premise.
+
 ## Status
 
 PASS_EXACT_CONDITIONAL_NEUTRAL_PHASE_DENSITY_CANDIDATE_CURRENT__W3_48_BRIDGE_CLOSED_GIVEN_SELECTED_ETA_AND_CUBIC_MEASURE__MASTER_FOUNDATION_ORIGIN_OPEN
