@@ -21,9 +21,10 @@ units. The metric is dimensionless,
 `[R]=[Lambda_eff]=L^(-2)`, and `T_mn` has energy-density units.
 
 W3-46 assigns the volumetric/compressional sector a selected post-Genesis
-meaning: `eta_F` measures coherent participation, while `J_R` labels the
-resonant phase/current sector that separates stationary support from radiative
-flux. `P_F` and `varphi` are macroscopic readings of this state. The wider
+coherent-participation role. W3-50 refines `eta_F` to the normalized density
+of organized neutral collective phase action, while its integral is the
+extensive quantity. `J_R`, `I_R`, and locking quality remain separate
+readouts. `P_F` and `varphi` are macroscopic readings of this state. The wider
 ontology permits candidate shear, orientation, and topological channels for
 tensor and particle descriptions; their microscopic variables and couplings
 remain unselected.
@@ -33,6 +34,29 @@ Under the selected maps `P_F/P_F0=eta_F` and
 `c_lock=p=sqrt(eta_F)`, it gives `A=eta_F^(-5/6)` and
 `eta_F'=-(6/5)H_A eta_F` on the flat expanding operational branch. This is a
 conditional effective-state law, not a microscopic continuity/current law.
+
+W3-48 isolates the exact missing bridge. Under the diagnostic identification
+Q_C/Q_C0=eta_F a^3, a candidate local coherent-participation charge with
+normalized net rate Gamma_C and the frozen dictionary give
+eta_F'/eta_F=-(6/5)H_A+(2/5)Gamma_C. The W3-47 law is therefore equivalent
+to Gamma_C=0 within this conditional identification. The current dependency
+graph contains no foundation rule that constructs this charge and its
+coarse-graining map from Phi_F.
+
+W3-49 selects a neutral collective resonant phase-action current as the live
+candidate for that construction. The selection is architectural rather than
+derived: theta_C, its phase-shift symmetry, its foundation action, its
+positive current density, and its eta_F coarse-graining remain uninstantiated.
+Electromagnetic U(1) charge and localized particle-topology charges retain
+their separate roles.
+
+W3-50 supplies one exact candidate realization. It selects the internal
+neutral pair `Psi_C=sqrt(n_C)exp(i theta_C)` and a first-order phase-density
+action invariant under a common internal phase shift. The author-selected map
+`eta_F=mean(n_C)/mean(n_C)_0`, the conditionally selected W3-42 cubic measure,
+and the homogeneous isotropic comoving branch then give
+`Q_C/Q_C0=eta_F a^3=1` and `Gamma_C=0`. This closes the W3-48 current gate
+conditional on those new premises; their pregeometric origin is not derived.
 
 ## 2. Effective postulates
 
@@ -94,8 +118,9 @@ value of `Lambda_eff`.
 The intended ontology permits one foundation configuration to contain linked
 state aspects and several nonoverlapping effective readouts:
 
-- `eta_F` is its post-Genesis compressional participation coordinate;
-- `J_R` is its coherent resonant phase/current;
+- `eta_F` is the normalized post-Genesis density of organized neutral
+  collective phase action;
+- `J_R` is the separate coherent resonant trace/current channel;
 - `P_F` is the cadence-controlling pressure readout;
 - `g_mn` is its operational refractive geometry;
 - `epsilon_star` is a possible homogeneous stationary energy offset;
@@ -141,15 +166,56 @@ currents, normalizations, transfer rates, or the completeness of that
 partition. The bins are not added to the inherited operational stress tensor,
 and no foundation-to-operational source map is supplied.
 
-The remaining bounded physical input is a local continuity/current law that
-defines those sector functionals and transfers, together with resonance
-transport. A pregeometric master action additionally requires the complete
-state space and symmetry above. A generic placeholder
-`Gamma[foundation state]` would encode no prediction and is not introduced.
+W3-50 now supplies the bounded participation-current law on its selected
+candidate branch. The sector energy functionals and transfers, resonance
+transport, and the pressure stress response remain to be constructed. A
+pregeometric master action additionally requires the complete state space and
+symmetry above. A generic placeholder `Gamma[foundation state]` would encode
+no prediction and is not introduced.
 
 The neighboring scalar, displacement-vector, and independent-tensor scripts
 are exploratory ansatz checks. They are not dependencies of the current
 conditional EFT and do not supply the missing foundation action.
+
+W3-48 fixes the bounded post-Genesis stopping condition more sharply. A
+future foundation rule must produce the local density n_C[Phi_F], the flux
+j_C[Phi_F], and their coarse-graining map to eta_F. Its dynamics and boundary
+conditions then determine Gamma_C. The resulting micro-to-W3-47 bridge
+closes precisely when they yield Gamma_C=0.
+
+W3-49 narrows this construction to one candidate class. A local
+cycle-averaged foundation action with a cyclic collective resonance phase
+would generate a phase-action current. Its time component must independently
+coarse-grain to eta_F, while its bulk source and relative boundary flux remain
+separate checks. An adiabatic current supports only an approximation-order
+bridge; exact W3-47 closure requires an exact current or a rigorously zero
+remainder.
+
+W3-50 replaces W3-49's open eta-current map with an explicit author-selected
+state meaning and instantiates one exact candidate dynamics. In the selected
+comoving chart,
+
+```text
+S_C = integral d tau d mu_a
+      [n_C partial_tau theta_C-H_C(n_C,D_i theta_C,X_slow)].
+```
+
+Phase-difference-only interactions preserve the common internal shift.
+Variation gives the exact local phase-action current. A differentiable
+isotropic `H_C`, zero homogeneous phase gradient, and a comoving boundary
+give zero relative flux. On the conditionally selected three-dimensional
+uniform-dilation measure,
+
+```text
+Q_C/Q_C0 = eta_F a^3 = 1,
+Gamma_C = 0,
+R_eta = (2/5) Gamma_C = 0.
+```
+
+The decrease of `eta_F` is dilution of conserved organized phase action over
+the enlarged measure. The physical origin of the internal phase, the cubic
+measure, the Hamiltonian and its stress response, and its relation to `J_R`
+remain outside this conditional current closure.
 
 ## Conclusion
 
@@ -157,9 +223,15 @@ The Einstein--Hilbert system is the selected conditional low-energy
 architecture of RefG. W3-46 supplies its minimum post-Genesis participation
 and resonance skeleton, and W3-47 supplies its exact conditional homogeneous
 evolution/pressure/coupling pullback without an added source or fitted rate.
-The microscopic continuity/current law, sector definitions and
-normalizations, transfer rates, resonance transport, foundation action, and
-the value of `Lambda_eff` remain open. No automatic next algebraic stage is
+W3-48 proves the exact conditional balance identity behind that pullback and
+locates the missing foundation current construction.
+W3-49 selects the collective resonant phase-action current as the candidate
+for that construction. W3-50 realizes an exact positive current and closes
+the W3-48 gate conditional on the author-selected `eta_F` meaning, the
+candidate internal-phase action, and the W3-42 cubic measure branch. Sector
+definitions and normalizations, transfer rates, resonance transport, the
+complete Hamiltonian and stress map, pregeometric master action, and the
+value of `Lambda_eff` remain open. No automatic next algebraic stage is
 opened; a pregeometric master action follows only after the full relational
 state space and symmetry are specified.
 

@@ -117,6 +117,24 @@ is a declared conditional bookkeeping partition: antisymmetric internal
 transfers cancel exactly, but microscopic densities, currents,
 normalizations, transfer laws, and completeness remain underived.
 
+W3-48 isolates the exact bridge required to connect one-oscillon
+microdynamics to this homogeneous kernel. Under the diagnostic candidate
+identification Q_C/Q_C0=eta_F a^3, a coherent-participation charge with
+normalized net rate Gamma_C gives
+eta_F'/eta_F=-(6/5)H_A+(2/5)Gamma_C. Thus the W3-47 law is exactly equivalent
+to a vanishing net balance of coherent-charge production minus outward
+relative boundary flux within the frozen scale dictionary. The current
+Work-3 foundation does not yet construct that charge or its current from
+Phi_F.
+
+W3-49 selects one concrete research candidate for that construction: a
+neutral collective resonant phase-action current. Electromagnetic charge and
+localized particle topology are excluded from the eta_F-current role because
+they carry signed or discrete particle information rather than a positive
+continuous homogeneous participation state. The candidate adds no
+foundation action or derived conservation law; it fixes the physical object
+that a future action must produce.
+
 ## Selected post-W3-42 density closure
 
 ### Closure contract
@@ -811,7 +829,135 @@ conditional registry, schemas, and same-validator mutations.
 The exact stopping boundary is now local and physical: the microscopic
 continuity/current law, sector definitions and normalizations, transfer
 rates, resonance transport, foundation action, and numerical `Lambda` remain
-open. No automatic W3-48 follows from this gate.
+open.
+
+## W3-48 local coherence-current bridge
+
+W3-48 has main status
+OPEN_MICRO_TO_W3_47_BRIDGE__LOCAL_COHERENT_PARTICIPATION_CURRENT_UNDERIVED
+and subsidiary status
+PASS_EXACT_CONDITIONAL_COHERENCE_BALANCE_TO_W3_47_EQUIVALENCE.
+
+The conditional local L/N/R energy balances cancel all antisymmetric
+internal transfers. The diagnostic identification Q_C/Q_C0=eta_F a^3 and
+the assumed integrated moving-cell balance give
+
+    eta_F'/eta_F = -3 H_a + Gamma_C.
+
+Combining this balance with the frozen maps p^2=eta_F and A=a/p gives
+
+    eta_F'/eta_F = -(6/5) H_A + (2/5) Gamma_C,
+    R_eta = (2/5) Gamma_C.
+
+The target W3-47 law is therefore exactly equivalent to Gamma_C=0. Nonzero
+production and outward-leakage controls both produce the registered nonzero
+residual with the correct sign. The selected L/N/R internal-transfer symbols
+do not enter this candidate balance, so that ledger supplies no equation for
+Gamma_C.
+
+The dependency audit finds one immediate missing physical input: a foundation
+rule must construct the local density n_C[Phi_F], the flux j_C[Phi_F], and
+their coarse-graining map to eta_F. The resulting dynamics and boundary
+conditions must then determine Gamma_C. They derive W3-47 precisely when
+that result is Gamma_C=0.
+
+The full record is the
+[W3-48 preregistration](Active_Participation_Resonance_Feedback/w3_48_local_coherence_current_bridge_preregistration.md);
+the
+[W3-48 no-write symbolic verifier](Active_Participation_Resonance_Feedback/w3_48_local_coherence_current_bridge.py)
+checks the exact rate bridge, dependency hashes, source and leakage controls,
+and the absence of the selected energy-transfer symbols from the candidate
+rate equation.
+
+This is the physical stopping boundary. No oscillon profile family, particle
+mass, size, stability, spectrum, full PDE, or automatic W3-49 stage is
+opened.
+
+## W3-49 resonant phase-action current candidate
+
+W3-49 has status
+CANDIDATE_COLLECTIVE_RESONANT_PHASE_ACTION_CURRENT__FOUNDATION_ACTION_AND_ETA_MAP_OPEN.
+
+The candidate introduces one neutral collective phase theta_C for the
+source-locked resonant family and one abstract local cycle-averaged action
+class with constant-phase-shift invariance. Its formal phase-action current
+is obtained by differentiating that action with respect to the local phase
+gradient.
+
+This mechanism class fits eta_F's continuous coherent-participation role
+without identifying eta_F with energy, particle count, electric charge, or a
+localized topological number. The electromagnetic U(1) channel and the
+winding, linking, and Z2 particle invariants remain in their existing roles.
+A real-oscillon adiabatic I-charge is retained only as a crosscheck because
+it is generally approximate or potential-dependent.
+
+The candidate becomes a RefG mechanism only when a foundation realization
+independently supplies:
+
+1. theta_C and its transformation law;
+2. the local phase action and current;
+3. a positive locked-branch current density;
+4. the coarse-graining map from that density to eta_F;
+5. zero bulk breaking and zero relative boundary flux on the target branch.
+
+Phase averaging by itself gives an adiabatic approximation. The exact W3-47
+law requires an exact current or a rigorously zero controlled remainder.
+
+The full decision is the
+[W3-49 phase-action candidate contract](Active_Participation_Resonance_Feedback/w3_49_resonant_phase_action_current_candidate_contract.md).
+No verifier is created because no foundation action has yet been
+instantiated.
+
+This stage stops at the selected candidate and its acceptance gate. It does
+not open a potential family, oscillon profile, full PDE, particle spectrum,
+numerical evolution, or observational test.
+
+## W3-50 neutral collective phase-density bridge
+
+W3-50 has status
+PASS_EXACT_CONDITIONAL_NEUTRAL_PHASE_DENSITY_CANDIDATE_CURRENT__W3_48_BRIDGE_CLOSED_GIVEN_SELECTED_ETA_AND_CUBIC_MEASURE__MASTER_FOUNDATION_ORIGIN_OPEN.
+
+The author-selected state meaning now identifies `eta_F` with the normalized
+density of organized neutral collective phase action. Its integral `Q_C` is
+the extensive quantity. Phase-locking quality, `c_lock`, `I_R`, and `J_R`
+remain distinct state readouts.
+
+W3-50 selects the minimum candidate dynamics
+
+    Psi_C=sqrt(n_C) exp(i theta_C),
+    S_C=integral d tau d mu_a
+        [n_C partial_tau theta_C-H_C(n_C,D_i theta_C,X_slow)].
+
+The internal phase is distinct from process time and electromagnetic phase.
+Phase-difference-only interactions preserve one exact common shift. Variation
+of that phase gives an exact positive phase-action current. In the selected
+comoving chart, a differentiable isotropic Hamiltonian and
+`D_i theta_C=0` give zero relative current on the homogeneous branch.
+
+The conditionally selected W3-42 three-dimensional uniform-dilation measure
+then gives
+
+    Q_C/Q_C0=eta_F a^3=1,
+    Gamma_C=0,
+    R_eta=(2/5)Gamma_C=0.
+
+With the W3-47 pressure and operational maps, the same result yields
+`eta_F'/eta_F=-(6/5)H_A`. Along W3-46's feedback direction, increasing
+`I_R` moves the state toward larger `a` and lower `eta_F`: the total
+organized phase action is conserved while its density is diluted over the
+enlarged measure. Pressure relaxation and material rescaling are internal
+readings of this single redistribution.
+
+This model version replaces W3-49's open eta-current identification with an
+explicit author-selected constitutive meaning. The internal phase, exact
+symmetry, and canonical action are W3-50 candidate dynamics. Their
+pregeometric origin, the physical selection of the cubic measure, the full
+Hamiltonian and its stress response, and `J_R` transport remain open.
+
+The full decision is the
+[W3-50 neutral collective phase-density bridge contract](Active_Participation_Resonance_Feedback/w3_50_neutral_collective_phase_density_bridge_contract.md).
+The existing W3-48 verifier supplies the required rate-algebra regression;
+no additional script is needed for this variational construction.
 
 ## Salvaged exact results
 
