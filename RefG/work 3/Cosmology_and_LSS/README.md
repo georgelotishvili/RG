@@ -54,6 +54,13 @@ For the present cosmology objective, the observed homogeneous-isotropic
 derivation of dimension and topology is a separate research program and is
 not an automatic next stage.
 
+W3-43 is the current ideal-observable child. On the explicitly selected
+minimally coupled Maxwell, universal local atomic-frequency, transparent,
+photon-number-conserving branch, it closes the photon--atomic redshift,
+arrival-time, and geometric-distance map. It does not close the microscopic
+photon or atomic sectors, a stellar-population clock, a supernova source
+model, numerical calibration, or any observational test.
+
 ## Selected post-W3-42 density closure
 
 ### Closure contract
@@ -171,7 +178,8 @@ failure of the selected cubic effective-volume law falsifies this closure.
 
 The closure fixes `P_F(a)`, `p(a)`, and `A(a)`. By itself it supplies no time
 history; the conditional operational completion below provides the expansion
-equation. The photon--atomic observable map remains a separate closure.
+equation. W3-43 below supplies the separate conditional ideal
+photon--atomic observable closure.
 
 ### Conditional operational geometric completion
 
@@ -447,11 +455,13 @@ Thus the functional freedom in `a(t)` is closed on this conditional EFT
 branch. A numerical history requires only the registered finite inputs and the
 choice of time origin. The physical endpoint at which this post-Genesis EFT
 attaches to the Genesis transition remains a separate open interface. `H_A0`
-is the process-time expansion rate at `A=1`; its identification with a measured
-Hubble constant belongs to the still-open photon--atomic and clock forward
-map. On the present leading-EH branch, positive `Lambda` carries late-time
-operational acceleration. A future `Lambda`-free RefG acceleration law would
-be a different geometric action and therefore a new model version.
+is the process-time expansion rate at `A=1`. W3-43 proves
+`H_kin,0=H_A0` on its selected ideal atomic branch, but identification with a
+specific measured Hubble estimator still belongs to the open astrophysical
+clock, calibration, and data forward model. On the present leading-EH branch,
+positive `Lambda` carries late-time operational acceleration. A future
+`Lambda`-free RefG acceleration law would be a different geometric action and
+therefore a new model version.
 
 W3-36 remains the bookkeeping root for the finite-origin, process-time,
 metric, thermal, and local-threshold identities. Version 1.3 removes its old
@@ -459,6 +469,76 @@ independent scale-split diagnostic and preserves the exact `A=a/p` dictionary.
 W3-40 supplies the active single-driver interpretation: foundation expansion
 is primary, while pressure relaxation and material contraction are dependent
 stages of that one trajectory.
+
+## W3-43 conditional ideal photon--atomic bridge
+
+W3-43 starts from the already-selected operational metric and background; it
+does not add a second expansion or a second material-scale effect. The common
+foundation cadence `p` cancels from the dimensionless photon/atom endpoint
+ratio. The eikonal and affine-geodesic routes independently give
+
+```text
+omega_o/omega_e = A_e/A_o
+```
+
+and neighboring null fronts give
+
+```text
+Delta tau_o/Delta tau_e = A_o/A_e.
+```
+
+For the selected universal local atomic standard this closes
+
+```text
+1+z = A_o/A_e
+H_kin = H_A.
+```
+
+With `A_o=1` and the conditional flat dust--radiation--`Lambda` background,
+
+```text
+E_z(z)^2 = Omega_r0 (1+z)^4 + Omega_m0 (1+z)^3
+           + 1-Omega_m0-Omega_r0
+chi(z) = (c0/H_A0) integral_0^z du/E_z(u)
+D_A(z) = chi(z)/(1+z)
+D_L(z) = (1+z) chi(z) = (1+z)^2 D_A(z).
+```
+
+`D_A` follows from the emission-end transverse metric. The observer-sphere
+area, photon-energy loss, and arrival-rate loss determine the bolometric flux;
+solving the positive luminosity-distance definition then reproduces the same
+`D_L` as Etherington reciprocity. Thus the distance law is derived from
+independent endpoint geometry and flux bookkeeping, not inserted as a target.
+
+The wider atomic and chronometer boundary remains explicit:
+
+```text
+nu_A(A) = nu_A0/g(A),  g(1)=1
+1+z_spec = (A_o/A_e) g(A_e)/g(A_o)
+H_CC = H_A [1-d ln g/d ln A]/C(A)
+C(A) = d tau_SPS/d tau > 0.
+```
+
+The selected ideal branch is `g=1`. Neither `g(A)` nor the
+stellar-population clock response `C(A)` has been derived or calibrated, so
+`H_A0` is not identified here with any specific measured `H_0` estimator.
+Likewise, intrinsic supernova luminosity, light-curve and population
+evolution, dust and hosts, K-corrections, selection, calibration, covariance,
+likelihood, and numerical parameter inference remain open.
+
+The exact verifier reads no observational data, writes no files, inherits
+only `H_A0`, `Omega_m0`, and `Omega_r0`, detects all seven registered negative
+mutations, and returns
+`PASS_CONDITIONAL_IDEAL_OBSERVABLE_MAP__ASTROPHYSICAL_FORWARD_MODEL_AND_DATA_TEST_OPEN`.
+This is exact conditional equivalence to the corresponding flat
+dust--radiation--`Lambda` FLRW ideal observables for the same inputs; it is
+neither an observational pass nor evidence of empirical preference.
+
+The frozen contract is
+[W3-43 preregistration](Photon_Atomic_Observable_Bridge/w3_43_photon_atomic_observable_bridge_preregistration.md);
+the
+[exact verifier](Photon_Atomic_Observable_Bridge/w3_43_photon_atomic_observable_bridge.py)
+reproduces the residual, registry, dependency, schema, and mutation checks.
 
 One exact thermal result is already decisive for future work. On the
 adiabatic radiation branch, Q_gamma=0 gives T A=constant; with the
