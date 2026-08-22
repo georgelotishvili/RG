@@ -2,23 +2,35 @@
 
 ## Current account
 
-W3-40 is the current causal-lock root for the cosmology branch. On the
-selected mean Hubble-flow branch, a fixed comoving link count and a growing
-foundation link length define the primary expansion. That expansion relaxes
-the mean foundation pressure, while
+W3-40 supplies the reduced scale dictionary for the cosmology branch. Its
+fixed comoving link count and growing foundation link length define a selected
+latent representation of relaxation. W3-46 supplies an upstream post-Genesis
+constitutive picture: overlapping phase-locked oscillon traces are accompanied
+by lower background tension/pressure and lower coherent participation.
+Whether this operational drawdown is a literal microscopic energy transfer
+remains open. Foundation-node geometry, separation, and count have no
+foundation-independent measurement standard; `a` remains the hidden
+geometric coordinate of the selected branch.
+The directly accessible material response is
 
 ```text
 p^2 = P_F/P_F0
 ```
 
-translates the pressure fall into contraction of the material scale-and-
-cadence factor. An internal observer reads this one trajectory through
-`A=a/p`. Before a constitutive closure is supplied, that observable ratio
-does not identify `a` and `p` separately.
+and translates the pressure fall into contraction of the material scale-and-
+cadence factor. The selected foundation branch has a real latent increase of
+`a`, while internal observations access the history only through `A=a/p`.
+The pressure-controlled material response is the internal reading of the same
+relaxation, not a second effect added to foundation expansion. The observable
+ratio does not separately identify `a` and `p`.
 
-W3-40 passes the exact causal dictionary, linked sign/rate identities, and
-the `A`-only non-identifiability check. It freezes `dP_F/da<0` as the selected
-constitutive sign; it does not derive the law `P_F(a)`. At the W3-40 gate,
+W3-40 passes the exact scale dictionary, linked sign/rate identities, and the
+`A`-only non-identifiability check. It freezes `dP_F/da<0` as the selected
+constitutive sign. W3-46 re-scopes the older primary-driver wording: `a` is
+the root only inside the reduced `(a,P_F,p,A)` parametrization. The latent
+`a` coordinate and the pressure readout encode one resonance-driven
+foundation reconfiguration; internal observations determine neither one
+separately. W3-40 does not derive the law `P_F(a)`. At that gate,
 the foundation energy balance, complete histories `a(t)`, `P_F(t)`, and
 `p(t)`, photon--atomic map, `H_CC(z)`, `D_L(z)`, CMB/BBN calculation,
 and JWST growth model therefore remain open.
@@ -65,6 +77,45 @@ W3-44 is its bounded numerical and identifiability regression child. It
 checks the RefG `A`-domain and matched flat-LCDM `z`-domain implementations
 against each other without reading a catalogue or fitting a parameter. It
 closes an implementation-equivalence gate, not an observational one.
+
+W3-45 is the current conditional interface from an active-phase energy
+offset to the single `Lambda` already present in the Einstein--Hilbert
+action. It shows exactly when such an offset has vacuum stress and how it
+renames the existing geometric term without adding a second source. It does
+not derive the active-phase potential, the value of the offset, a vanishing
+bare term, Genesis matching, radiative stability, or the numerical value of
+`Lambda`. Its separate energy, pressure, cadence, and geometry symbols mark
+different mathematical readouts; they do not postulate independent physical
+substances.
+
+W3-46 records the author-selected post-Genesis constitutive skeleton. The
+hidden compressional coordinate `eta_F` tracks distinguishable coherent
+participation, while `J_R` labels one selected foundation-wave carrier with
+a stationary source-locked component and a freely propagating radiative
+component. The stationary component has zero net outward radiative energy
+flux; the radiative component has a tensorial operational readout only on the
+conditional low-energy Einstein--Hilbert branch. Oscillon-trace overlap
+accompanies lower mean tension/pressure, while decreasing `p` weakens later
+locked coupling and slows further relaxation. Local gradients and the
+homogeneous mean are two regimes of one foundation state. W3-46 adds no
+observable factor, source term, fitted freedom, or `Lambda`; quantitative
+evolution and microscopic energy transfer remain open.
+
+W3-47 closes the minimum conditional homogeneous kernel selected by that
+skeleton. With `P_F/P_F0=eta_F`, `c_lock=p=sqrt(eta_F)`, the inherited cubic
+closure, and the flat expanding operational branch, it derives
+
+```text
+a=eta_F^(-1/3),  A=eta_F^(-5/6),
+eta_F'=-(6/5) H_A eta_F.
+```
+
+No independent decay scale or fitted function is introduced. On `H_A>0`,
+the physical interior has no positive fixed point; `eta_F=0` is only a
+one-sided asymptotic boundary. The accompanying three-bin foundation ledger
+is a declared conditional bookkeeping partition: antisymmetric internal
+transfers cancel exactly, but microscopic densities, currents,
+normalizations, transfer laws, and completeness remain underived.
 
 ## Selected post-W3-42 density closure
 
@@ -180,6 +231,14 @@ the Genesis transition or across a moving activation boundary, where source,
 flux, and changing active-cell terms remain necessary. Within its stated
 domain, a nonzero source for `Q_rel`, failure of `P_F mathcal_V=constant`, or
 failure of the selected cubic effective-volume law falsifies this closure.
+
+W3-46 retains this relation as the selected ideal dilution closure, while the
+microscopic conservation ledger now has an exact target. Resonant activity,
+localized participation, and the diffuse foundation state must either appear
+as internally exchanging components of one conserved content or be derived as
+the already-implicit components of `Q_rel`. The algebraic closure above stays
+unchanged; its interpretation as the complete microscopic energy-transfer law
+is not selected.
 
 The closure fixes `P_F(a)`, `p(a)`, and `A(a)`. By itself it supplies no time
 history; the conditional operational completion below provides the expansion
@@ -593,6 +652,166 @@ the
 [numerical verifier](RefG_Flat_LCDM_Ideal_Observable_Degeneracy/w3_44_refg_flat_lcdm_ideal_observable_degeneracy.py)
 reproduces the dependency, two-route, convergence, exact-identity, mutation,
 and schema checks.
+
+## W3-45 active-phase interface to the existing Einstein--Hilbert Lambda
+
+Here *active phase* means the homogeneous manifested post-Genesis vacuum in
+an already-connected operational interior. It is not the pre-geometric
+foundation. W3-39's `U` is likewise a post-origin bookkeeping phase. Its
+baseline is absorbed into `Lambda_bare`, and the matched phase offset is
+
+```text
+epsilon_star = epsilon_A - epsilon_U = -L.
+```
+
+Conditional on this offset being stationary and extensive in operational
+volume,
+
+```text
+E_star = epsilon_star V_op
+P_star = -dE_star/dV_op = -epsilon_star
+w_star = -1
+Lambda_phase = 8 pi G epsilon_star/c0^4.
+```
+
+It therefore enters the already-selected action only through
+
+```text
+Lambda_eff = Lambda_bare + Lambda_phase.
+```
+
+This is one representation of one Einstein--Hilbert term. Writing both
+`epsilon_star` as an independent source and `Lambda_phase` again in the
+geometric term would double-count the same contribution. The reduced-action
+identity and the Friedmann-source identity both verify this equivalence
+exactly.
+
+Extensivity is essential. A fixed total energy in an expanding comoving cell
+has `epsilon=C/V_op`, `P=0`, and `w=0`, so it is matter-like and cannot be
+promoted to `Lambda`. More generally, `E proportional to V_op^n` gives
+`w=-n`; a stationary energy density uniquely selects the extensive `n=1`
+branch.
+
+The vacuum pressure `P_star` is distinct from the cadence scalar `P_F`, the
+mechanical generalized pressure `Pi_F`, and the thermal pressure `P_th`.
+Nothing in this gate identifies them. `Q_rel` and `P_F` retain only their
+geometry--cadence roles. With the frozen W3-39 sign convention, a positive
+`Lambda_phase` corresponds to `L<0`, the input-requiring activation branch.
+
+Only `Lambda_eff` is identifiable in the current effective action:
+
+```text
+epsilon_star -> epsilon_star + delta_epsilon
+Lambda_bare -> Lambda_bare - 8 pi G delta_epsilon/c0^4
+```
+
+leaves `Lambda_eff` unchanged. The absolute phase-energy normalization,
+`epsilon_star` itself, `Lambda_bare=0`, the phase potential, the
+foundation-to-operational matching, the Genesis energy source, and radiative
+stability therefore remain open. No data are read or fitted, and no
+observational claim follows from this exact interface.
+
+The verifier returns
+`PASS_EXACT_CONDITIONAL_ACTIVE_PHASE_LAMBDA_INTERFACE__ABSOLUTE_ENERGY_NORMALIZATION_AND_LAMBDA_VALUE_OPEN`
+and detects all eight registered negative mutations. The frozen contract is
+[W3-45 preregistration](Active_Phase_Lambda_Interface/w3_45_active_phase_lambda_interface_preregistration.md);
+the
+[exact symbolic verifier](Active_Phase_Lambda_Interface/w3_45_active_phase_lambda_interface.py)
+reproduces its dependency, residual, registry, schema, and mutation checks
+without writing files.
+
+### Single-foundation-state interpretation and stopping boundary
+
+The intended RefG ontology contains one foundation state. If produced,
+`epsilon_star` is its homogeneous stationary energy readout, `P_star` is
+the volume response of that same energy, and `Lambda_phase` is the geometric
+rewriting of the same coefficient. These are three roles of one contribution,
+not three sources. The action records the contribution once, either as the
+constant state term or inside `Lambda_eff`.
+
+`P_F`, `Pi_F`, and the operational metric likewise have different defined
+roles without becoming independent substances. `P_F` controls the
+scale-and-cadence dictionary, `Pi_F` is the mechanical volume derivative, and
+the metric is the refractive geometric readout. The current files derive
+neither `P_F=Pi_F` nor a map between `P_F` and `epsilon_star`. Distinguishing
+these symbols prevents an unsupported equality; it does not assert multiple
+underlying media or independent physical sources.
+
+Lower foundation pressure corresponds to stronger refractive gravity on the
+selected branch. This stage introduces no strict `1/P_F` law: the exact
+constitutive map has not yet been derived. A stationary homogeneous offset,
+if derived, can be represented once through W3-45's `Lambda_phase`; the
+evolving local/global relaxation state is not itself `Lambda`.
+
+W3-46 now selects the minimum post-Genesis compressional meaning: `eta_F`
+tracks distinguishable coherent participation and `J_R` tracks the resonant
+phase/current needed to distinguish a stationary trace from radiation. This
+selection supplies the physical core of the relaxation feedback. The complete
+pregeometric configuration and symmetry remain the missing input for a master
+action: they must generate the first relations, their transformation law, and
+the later phase, shear, orientation, topology, adjacency, and measure. The
+Einstein--Hilbert action remains the connected post-Genesis low-energy
+endpoint.
+
+W3-47 now supplies the bounded state-evolution, pressure, and locked-coupling
+kernel. It finds no positive homogeneous fixed point: on the expanding branch
+`eta_F` decreases toward the asymptotic boundary `eta_F=0`. Its declared
+foundation bins prove only exact cancellation of antisymmetric internal
+transfers, not a microscopic foundation-energy law or a complete sector
+decomposition. Additional background algebra cannot determine
+`epsilon_star`, `Lambda_bare`, or `Lambda_eff`.
+
+## W3-46 active-participation and resonance-feedback closure
+
+W3-46 has status
+`AUTHOR_SELECTED_PARTICIPATION_RELAXATION_FEEDBACK_CLOSURE__QUANTITATIVE_DYNAMICS_AND_ENERGY_TRANSFER_OPEN`.
+It closes the post-Genesis variable meaning, the one-state local/global
+interpretation, the stationary/radiative distinction, and the negative
+feedback direction. It preserves the W3-40--45 exact identities within their
+registered conditional domains and adds no new observable factor, fit
+parameter, source, or `Lambda` contribution.
+
+The full contract is the
+[W3-46 active-participation and resonance-feedback record](Active_Participation_Resonance_Feedback/w3_46_active_participation_resonance_feedback_contract.md).
+No script or result artifact accompanies this qualitative architecture
+selection.
+
+## W3-47 post-Genesis participation kernel
+
+W3-47 has status
+`PASS_EXACT_CONDITIONAL_PARTICIPATION_BACKGROUND_MATCHING__NO_POSITIVE_FIXED_POINT__MICROSCOPIC_ENERGY_TRANSFER_OPEN`.
+It fixes the conditional homogeneous dictionary and exact pullback
+
+```text
+P_F/P_F0=eta_F,  p=c_lock=eta_F^(1/2),
+a=eta_F^(-1/3),  A=eta_F^(-5/6),
+eta_F'=-(6/5) H_A eta_F.
+```
+
+The flatness slot is enforced as
+`Omega_Lambda0=1-Omega_m0-Omega_r0`; the late boundary powers are derived
+from this production equation. The positive-`Lambda` branch is one-sided
+exponentially attracting, while the pure matter and radiation limits are
+one-sided nonhyperbolic and asymptotic. There is no positive interior fixed
+point.
+
+The foundation-side registry `E_total=E_L+E_N+E_R` is not added to the
+operational stress tensor. Its antisymmetric sources cancel internally, but
+W3-47 derives no maps from these bins to operational matter, radiation, or
+the already-counted `Lambda_eff` slot. The stationary zero-flux rule applies
+only to the cycle-averaged radiative boundary flux.
+
+The full frozen contract is the
+[W3-47 preregistration](Active_Participation_Resonance_Feedback/w3_47_post_genesis_evolution_pressure_coupling_kernel_preregistration.md);
+the
+[W3-47 no-write symbolic verifier](Active_Participation_Resonance_Feedback/w3_47_post_genesis_evolution_pressure_coupling_kernel.py)
+checks its dependencies, flatness, exact identities, fixed-point class,
+conditional registry, schemas, and same-validator mutations.
+
+The exact stopping boundary is now local and physical: the microscopic
+continuity/current law, sector definitions and normalizations, transfer
+rates, resonance transport, foundation action, and numerical `Lambda` remain
+open. No automatic W3-48 follows from this gate.
 
 ## Salvaged exact results
 

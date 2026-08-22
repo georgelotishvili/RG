@@ -87,4 +87,4 @@ are recorded in the parent `Cosmology_and_LSS/README.md`.
 - preregistration SHA-256: `ab852e070871c707ed46e1ac2edde995931c12bd3a0d117e784c258e9f7ba99b`
 - source SHA-256: `849fb7a649af526ebcdf00e114bc4cd93e6cdd81b2a1cbd246dfa4c77db18f05`
 - result SHA-256: `f692c38c6deca0f20bc94cb048c4407ca3ed8520a566fa7d73b79d1fe8778ab9`
-- W3-42 child result SHA-256: `5de8e1b5026f6fd7fac89699e6d09066ec309dd85ff679d69f5ad05df6eec329`
+- W3-42 child result SHA-256: `0b31aef39dd2dec8b1fd7de0bf592d3a7b78cbe3ba54306166167d8150e72cd5`

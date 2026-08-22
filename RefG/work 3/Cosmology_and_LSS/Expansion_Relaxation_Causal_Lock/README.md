@@ -1,19 +1,26 @@
 # Single-Driver Expansion--Relaxation Causal Lock
 
-This isolated Work-3 gate records the selected causal ontology of the current
+This isolated Work-3 gate records the exact reduced scale dictionary of the
 cosmology branch:
 
 `foundation expansion -> foundation-pressure relaxation -> material-standard response`
 
-Foundation expansion is the only primary cosmological driver in this branch.
-Pressure relaxation and material-standard contraction are its causally dependent
-stages, not separate or additive effects. `A=a/p` is the internal relational
-readout of that one trajectory.
+Within the reduced `(a,P_F,p,A)` graph, `a` parametrizes the expanding branch
+and `P_F` decreases monotonically along it. W3-46 supplies the upstream
+post-Genesis interpretation: phase-locked oscillon overlap lowers the
+background tension/pressure of one foundation state. Increasing `a` is the
+selected latent geometric representation of that relaxation, while material
+contraction follows through `p` and `A=a/p` remains the single internal
+geometric readout. Foundation-node separation and count have no
+foundation-independent operational measurement. The original primary-driver
+label is therefore scoped to this reduced parametrization rather than to the
+complete microscopic ontology.
 
-For an ideal comoving pair, the link count `N_12` is fixed, the foundation
-link scale `a` grows, foundation pressure `P_F` falls, and the positive bridge
-`p^2=P_F/P_F0` makes the material standard `p` fall. An internal observer
-reads the single causal history through the operational ratio `A=a/p`.
+For an ideal comoving pair on this latent branch, the link count `N_12` is
+fixed, the coordinate `a` grows, foundation pressure `P_F` falls, and the
+positive bridge `p^2=P_F/P_F0` makes the material standard `p` fall. An
+internal observer reads the single causal history through `A=a/p` rather
+than measuring the foundation link scale directly.
 
 W3-40 proves only the exact consequences of this frozen branch dictionary and
 the non-identifiability of `a` and `p` from `A` alone. It does not derive the
@@ -35,6 +42,11 @@ P_F/P_F0 = a^(-3)
 p = a^(-3/2)
 A = a^(5/2)
 ```
+
+This is the selected ideal dilution closure, not a microscopic energy-transfer
+law. W3-46 leaves open whether resonant, localized-participation, and diffuse
+components are already implicit in `Q_rel` or require an explicit internal
+exchange ledger.
 
 This density closure does not use the candidate mechanical identification
 `P_F=Pi_F`. Once it is imposed, the W3-40 equivalence class collapses to
