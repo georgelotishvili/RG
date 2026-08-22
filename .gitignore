@@ -37,6 +37,7 @@ figures/
 !intuitive/figures/
 intuitive/figures/*
 !intuitive/figures/logo.pdf
+!intuitive/figures/figure_3.pdf
 !intuitive/figures/figure_3_v2.png
 !intuitive/figures/sparc_rar_real_validation.png
 # Legacy computational workspace: excluded in full
