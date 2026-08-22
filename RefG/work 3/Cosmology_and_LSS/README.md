@@ -61,6 +61,11 @@ arrival-time, and geometric-distance map. It does not close the microscopic
 photon or atomic sectors, a stellar-population clock, a supernova source
 model, numerical calibration, or any observational test.
 
+W3-44 is its bounded numerical and identifiability regression child. It
+checks the RefG `A`-domain and matched flat-LCDM `z`-domain implementations
+against each other without reading a catalogue or fitting a parameter. It
+closes an implementation-equivalence gate, not an observational one.
+
 ## Selected post-W3-42 density closure
 
 ### Closure contract
@@ -546,6 +551,48 @@ conditional map 1+z=A0/Ae, this is the standard T_e=T_today(1+z) law.
 Faster cadence alone cannot produce a lower temperature. A different
 temperature requires a derived source history, equation of state, or
 non-universal sector response.
+
+## W3-44 bounded numerical ideal-observable degeneracy
+
+W3-44 independently implements the RefG route in `A` with adaptive
+quadrature and the matched flat dust--radiation--`Lambda` route in `z` with
+composite Simpson integration. The registry freezes two input dictionaries
+and thirteen redshifts from `1e-4` through `3`. Recovered redshift,
+signal-arrival dilation, `H`, `chi`, `D_A`, `D_L`, and `mu` agree at every
+registered point. The largest absolute `D_L` difference is approximately
+`7.1e-11 Mpc`, and the largest error-bound ratio is approximately `1.21e-4`
+against a pass threshold of `1`.
+
+The verifier also passes its half-resolution convergence check, pins every
+upstream dependency, and detects all six frozen negative mutations. Its exact
+supernova check is derived from
+
+```text
+D_L = (c0/H_0) d(z;Omega)
+mu = 5 log10[D_L/Mpc] + 25
+m_B^model = M_B + mu.
+```
+
+Consequently, `H_0 -> lambda H_0` together with
+`M_B -> M_B+5 log10(lambda)` leaves the predicted supernova magnitude
+unchanged. Supernova magnitudes alone therefore cannot identify absolute
+`H_0` without an external absolute calibration. A catalogue fit using the
+same ideal prediction vector, nuisance treatment, and covariance would give
+the same likelihood to both descriptions and could not select between their
+ontologies.
+
+The verifier returns
+`PASS_BOUNDED_NUMERICAL_IDEAL_OBSERVABLE_DEGENERACY__NO_DATA_FIT_OR_EMPIRICAL_PREFERENCE`.
+This closes only the bounded numerical implementation and identifiability
+regression. No observational catalogue is read, no fit is performed, and no
+observational pass or empirical preference is claimed.
+
+The frozen contract is
+[W3-44 preregistration](RefG_Flat_LCDM_Ideal_Observable_Degeneracy/w3_44_refg_flat_lcdm_ideal_observable_degeneracy_preregistration.md);
+the
+[numerical verifier](RefG_Flat_LCDM_Ideal_Observable_Degeneracy/w3_44_refg_flat_lcdm_ideal_observable_degeneracy.py)
+reproduces the dependency, two-route, convergence, exact-identity, mutation,
+and schema checks.
 
 ## Salvaged exact results
 
