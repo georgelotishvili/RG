@@ -1,19 +1,27 @@
-# RefG: Conditional Selected-IR Spin-2 Einstein--Hilbert Architecture
+# RefG: Relational Coframe Foundation Law and Einstein--Hilbert/Source Closure
 
 **Status:**
-`CONDITIONAL_EXACT_SELECTED_IR_SPIN2_TO_EINSTEIN_HILBERT_AND_OPERATIONAL_HILBERT_SOURCE_MAP`.
+`CONDITIONAL_EXACT_SELECTED_RELATIONAL_COFRAME_MASTER_ACTION_TO_TEGR_EQUIVALENT_EH_AND_PHASE_CURRENT_T`.
 
-This document records the bounded macroscopic endpoint of the RefG gravity
-branch. W3-53 derives the Einstein--Hilbert operator and the generic
-operational Hilbert source map from an explicitly selected long-wavelength
-relational tensor branch of the RefG foundation. The coefficient calculation
-is exact within the frozen IR premises; the physical spectrum, universal
-leading soft coupling and nonlinear completion use named published theorems.
+This document records the bounded post-Genesis continuum endpoint of the RefG
+gravity branch. Conditional on a declared relational-coframe continuum phase,
+W3-54 selects one explicit coframe and phase-current master action. Its
+starting operator list contains torsion and the W3-50 phase density, not
+Levi-Civita curvature, Einstein's equation, a PPN target, or observational
+data. Within the frozen constant-coefficient parity-even quadratic-torsion
+class, the no-physical-orientation selector fixes the torsion ratios to TEGR.
+An exact connection identity then converts that action to Einstein--Hilbert
+plus a boundary term, while variation of the selected phase-current sector
+produces one explicit conserved Hilbert source tensor.
 
-W3-53 does **not** claim a node-scale construction of that branch, a derived
-`Phi_F -> h_mn -> g_mn` map, a foundation-ledger-to-`S_loc` coarse-graining,
-an oscillon action, or numerical values of `G` and `Lambda_eff`. Those open
-maps are not hidden inside the status label.
+W3-54 closes the selected continuum action-to-geometry and selected
+phase-action-to-source steps. It does **not** derive the relational graph,
+three dimensions, the coframe/phase split, smooth coframe, Lorentzian time leg,
+flat inertial transport, common cone, microscopic `T_mn`, constitutive
+`rho_C(n_C)`, oscillon spectrum, or numerical values of `G` and `Lambda_F`
+from pregeometric nodes. Those boundaries are not hidden inside the status
+label. W3-53 remains an independent spin-two/bootstrap crosscheck, and
+W3-51/W3-52 remain bounded weak-field regressions.
 
 ## 1. Scope and dependency order
 
@@ -27,15 +35,18 @@ all four `x^mu` have length units. The metric is dimensionless,
 The logical order is
 
 ```text
-W3-42 / W3-46 / W3-50
-             -> W3-53 selected IR spin-2/EH/source-map gate
-             -> W3-51 and W3-52 weak-field downstream regressions.
+W3-42 / W3-46 / W3-50 -> W3-54 relational coframe/phase master action
+                              -> TEGR-equivalent EH + explicit phase T_mn
+                              -> W3-51 and W3-52 weak-field regressions
+
+W3-42 / W3-46 / W3-50 -> W3-53 independent spin-two/bootstrap crosscheck
+                              -> same EH operator and generic Hilbert map.
 ```
 
-W3-52 is not evidence used to derive W3-53. It is a downstream consumer of
-the Einstein--Hilbert branch. This removes the possible circular route in
-which 1PN agreement would be used to select the action that later explains
-that same agreement.
+W3-53, W3-51, and W3-52 are not evidence used to select W3-54. They are
+independent overlap or downstream regressions. This removes the circular route
+in which the desired spin-two, 1PN, or observational answer would be used to
+choose the action that later explains it.
 
 W3-46 assigns the volumetric/compressional sector a selected post-Genesis
 coherent-participation role. W3-50 refines `eta_F` to the normalized density
@@ -89,7 +100,7 @@ This is not a division into several media and does not create several gravity
 sources.
 
 W3-42 proved that its constraints do not uniquely select a physical cell,
-dimension or measure. W3-53 does not reverse that result. It selects one
+dimension or measure. W3-54 does not reverse that result. It selects one
 `d=3` comparison branch compatible with W3-42. In a `G_0`-orthonormal
 reference frame and the principal-axis frame of a symmetric trace-free shape
 matrix `s`, write
@@ -106,13 +117,221 @@ they are not renamed as `a`. The Gram matrix records lengths, angles, shape
 and shear. Orientation requires a separate coframe or relational-frame
 variable.
 
-Neither this spatial Gram witness nor W3-50's `(n_C,theta_C)` pair constructs
-the complete four-dimensional map `h_mn[Phi_F]`. W3-53 explicitly selects the
-IR tensor branch instead of claiming to derive that map.
+W3-54 adds the missing orientation and time information by selecting an
+oriented, nondegenerate coframe `e^A_mu`. In a 3+1 chart,
 
-## 3. Frozen IR premises and evidence boundary
+```text
+e^0=N dx^0,
+e^a=E^a_i(dx^i+N^i dx^0),
+E=a R exp(s),                        R in SO(3),
+s^T=s,                               tr(s)=0,
+g_mu_nu=eta_AB e^A_mu e^B_nu.
+```
 
-The minimum premises are:
+This is a convenient time-gauge representative, not a claim that a general
+coframe has no boost component. Because the rotation cancels from the Gram
+matrix, it follows exactly that `q=E^T E=a^2 exp(2s)`, `sqrt(q)=a^3`, and
+`sqrt(-g)=N a^3`. Once the continuum coframe premise is selected, that coframe
+defines the full operational metric exactly. The deeper map from pregeometric
+nodes to the coframe/phase continuum remains open; the two statements are not
+conflated.
+
+On the static isotropic readout, the intuitive pressure-state variable is
+locally `varphi=2 ln(p)`, so `g_00=+e^varphi` in the intuitive `(+---)`
+convention. W3-54's covariant derivation below instead uses `(-+++)`, changing
+the displayed metric sign but not this readout map. Here `varphi` is the signed
+departure from the quiescent foundation state:
+`varphi<0` is the deficit/rarefaction branch. It is one scalar projection of
+the coframe geometry, not a replacement for its shear, orientation, lapse, or
+shift components.
+
+## 3. W3-54 relational coframe and phase-current master action
+
+W3-54 freezes the smallest continuum foundation law that carries the
+information required by the ontology:
+
+1. a connected, oriented, time-oriented, nondegenerate `3+1` coframe phase;
+2. one Lorentzian internal metric and one operational metric for every
+   retained excitation;
+3. flat, metric-compatible inertial frame transport restricted locally to its
+   pure-gauge orbit, with variations that preserve flatness;
+4. a local, reversible, parity-even leading action quadratic in torsion, with
+   constant coefficients and no retained torsion--current, torsion--density,
+   second-metric, or other mixed nonminimal operator;
+5. no independent physical long-range orientation sector, with the non-TEGR
+   obstruction used only on its registered Minkowski cubic domain;
+6. W3-50's positive shift-symmetric phase density, completed covariantly as a
+   barotropic, isentropic, irrotational one-potential subfamily with one stable
+   causal constitutive energy `rho_C(n_C)`;
+7. one source ledger and one vacuum slot.
+
+These are selected foundation-law premises. They contain no `R`, Einstein
+tensor, target weak-field coefficient, or datum. They are strong enough to
+write a real action and weak enough not to insert its Einstein--Hilbert
+endpoint.
+
+Internal indices `A,B=0,...,3`, spacetime indices `mu,nu=0,...,3`, and spatial
+indices `a,i=1,2,3`. We use `eta_AB=diag(-1,1,1,1)`, `x^0=c0 tau`,
+`e=det(e^A_mu)>0`, and the Riemann convention
+`R^rho_sigma_mu_nu=partial_mu Gamma^rho_nu_sigma-partial_nu
+Gamma^rho_mu_sigma+...`. Spacetime torsion indices are raised with `g_mu_nu`.
+
+Let the flat inertial spin connection be `omega^A_Bmu`. On a regular simply
+connected patch it lies on the inertial orbit `omega=Lambda^(-1)dLambda`, and
+its allowed variations are `delta omega=D lambda`; arbitrary variations that
+leave the flat sector are not admitted. Its torsion is
+
+```text
+T^A_mu_nu=2 partial_[mu e^A_nu]
+          +2 omega^A_B[mu e^B_nu],
+R^A_Bmu_nu(omega)=0.
+```
+
+The linear selector below is evaluated in the regular Weitzenbock gauge
+`omega=0`. In another inertial gauge, its orientation variable denotes the
+gauge-invariant coframe--connection combination, not the antisymmetric tetrad
+perturbation by itself.
+
+At the retained order the three independent parity-even quadratic scalars are
+
+```text
+I1=T^rho_mu_nu T_rho^mu_nu,
+I2=T^rho_mu_nu T^nu_mu_rho,
+I3=T_rho T^rho,                       T_mu=T^nu_nu_mu.
+```
+
+Before coefficient selection, the one master action is
+
+```text
+S_F = -K_F integral d^4x e
+      [c1 I1+c2 I2+c3 I3+2 Lambda_F]
+      + integral d^4x
+      [J^mu partial_mu theta_C-(e/c0)rho_C(n_C)],
+
+n_C=sqrt(-g_mu_nu J^mu J^nu)/e>0,
+u^mu=J^mu/(e n_C),                   u^mu u_mu=-1.
+```
+
+`J^mu` is a vector density. The coframe and phase current are retained state
+components of one foundation action, not two gravitational substances. The
+coefficients `c_i` are constants; no `n_C`-dependent coefficient or retained
+torsion--phase mixed operator is hidden in the displayed action.
+
+Here `rho_C(n_C)` is one universal `C^2` constitutive function on `n_C>0` for
+the selected subfamily, not a finite set of fitted parameters. Its stable
+causal domain is restricted by `rho_C>0`, `rho_C'>0`, and
+`0<=n_C rho_C''/rho_C'<=1`. Its microscopic form is not derived here, and the
+single vacuum offset is kept in `Lambda_F` rather than counted again in
+`rho_C`.
+
+On the regular Minkowski selector patch, the registered NGR quadratic
+decomposition linearizes `e^A_mu=delta^A_mu+A^A_mu` and splits
+`h_mu_nu=2A_(mu_nu)`, `b_mu_nu=2A_[mu_nu]`. Removing both metric--orientation
+mixing and an independent orientation kinetic equation gives
+
+```text
+2c1+c2+c3=0,             2c1-c2=0.
+```
+
+The selector matrix has rank two. Its unique ratio is `(1,2,-4)`, and the
+conventional normalization gives
+
+```text
+(c1,c2,c3)=(1/4,1/2,-1),
+T_TEGR=(1/4)I1+(1/2)I2-I3.
+```
+
+The unused antisymmetric coefficient `2c1-3c2-c3` vanishes automatically.
+Every one-coefficient mutation fails the same selector. Local Lorentz
+covariance alone is not used: generic covariant NGR can also be expressed with
+a transforming flat spin connection. The registered NGR result supplies a
+separate, scoped obstruction: on the calculated Minkowski cubic domain, the
+non-TEGR two-form symmetry of the linear branch does not extend to the cubic
+interactions. It is not claimed as a universal theorem for every background.
+At the TEGR point the physical orientation sector is absent and the retained
+massless tensor sector is the GR one.
+
+The flat coframe connection and the Levi-Civita connection differ by
+contortion. Expanding `R(Gamma)=0` for
+`Gamma=Gamma_LC+K` gives the exact connection identity
+
+```text
+R_LC=-T_TEGR+(2/e)partial_mu(e T^mu).
+```
+
+After `K_F=c0^3/(16 pi G)`, the coframe sector is therefore
+
+```text
+S_g=[c0^3/(16 pi G)] integral d^4x e(R_LC-2 Lambda_F)
+    +S_boundary.
+```
+
+No curvature expression selected the torsion coefficients. The boundary
+identity is used only after the independent orientation-sector gate. The
+equivalence holds for compact-support variations with suitable asymptotic
+falloff, or after retaining the explicitly matched boundary functional; fixed
+coframe data alone is not used as a blanket boundary argument. As a separate
+check, the symmetric quadratic part satisfies
+
+```text
+-2 T_TEGR^(2)
+  =(-1/2)A+B-C+(1/2)D,
+```
+
+exactly the W3-53 Fierz--Pauli registry.
+
+The phase variations are equally explicit:
+
+```text
+partial_mu J^mu=0,
+partial_mu theta_C+[rho_C'(n_C)/c0]u_mu=0,
+p_C=n_C rho_C'(n_C)-rho_C(n_C),
+
+T^C_mu_nu=(rho_C+p_C)u_mu u_nu+p_C g_mu_nu.
+```
+
+With
+`T^C_mu_nu=-(2c0/e)delta S_C/delta g^mu_nu`, variation of the full
+master action gives
+
+```text
+G_mu_nu+Lambda_F g_mu_nu=(8 pi G/c0^4)T^C_mu_nu.
+```
+
+On the homogeneous lapse-one comoving branch, `J^0=e n_C`, `J^i=0`, and
+`sqrt(q)=a^3`. The phase action reduces to W3-50 with the barotropic,
+isentropic, irrotational one-potential instantiation `H_C=rho_C(n_C)`, and its
+current gives exactly
+
+```text
+eta_F a^3=1.
+```
+
+The source is now concrete for this retained phase-current sector. It is not
+yet a particle-specific oscillon source. `p_C` is the thermodynamic pressure
+derived from `rho_C`; it is not silently identified with the separate
+foundation pressure readout `P_F`. Metric self-energy remains on the left;
+`P_F`, `p`, material rescaling, cadence, and a second vacuum offset are not
+added to `T^C_mu_nu`.
+
+Computed exactly in W3-54 are the polar/time-gauge determinant witnesses,
+selector nullspace after the registered NGR decomposition, TEGR coefficients
+and mutations, TEGR-to-Fierz--Pauli combination, FLRW sign witness, phase
+metric variation, phase current, rest-frame stress, Einstein coupling, W3-50
+charge reduction, and dependency/regression records. The three-invariant NGR
+classification, the general TEGR--Einstein--Hilbert connection identity, the
+scoped Minkowski cubic obstruction, TEGR's physical spectrum, and
+Hilbert/Noether conservation are registered analytic/theorem handoffs. Premise
+and source-ledger registries are integrity audits, not additional physical
+derivations.
+
+## 4. W3-53 independent spin-two theorem crosscheck
+
+W3-53 starts from a separately selected long-wavelength spin-two branch and
+reaches the same Einstein--Hilbert operator through Fierz--Pauli, Weinberg,
+Deser, and Lovelock. It is not an input used to select the W3-54 torsion
+coefficients. Agreement of the independently derived quadratic registries is
+an overlap test. The minimum W3-53 premises are:
 
 1. **Closed reversible foundation.** The connected post-Genesis foundation
    admits one time-translation-invariant canonical action with no external
@@ -155,7 +374,7 @@ The evidence roles are deliberately separate:
   cone, retained field content, retained derivative order, retained
   nonminimal-coupling boundary, and one-source ledger.
 
-## 4. Exact quadratic spin-2 gate
+## 5. Exact quadratic spin-2 crosscheck
 
 Use the standard `(-+++)` theorem convention. RefG's operational `(+---)`
 presentation is the overall-sign-reversed metric convention already allowed
@@ -205,7 +424,7 @@ that a pure-gradient displacement
 curvature. A pressure-only scalar and a pure-gradient strain are therefore
 explicit failing controls, not hidden derivations of the tensor mode.
 
-## 5. Coupling and nonlinear theorem handoffs
+## 6. Coupling and nonlinear theorem handoffs
 
 At linear order the source term is proportional to
 `integral h_mn tau^mn`. Its gauge variation is a boundary term exactly when
@@ -239,7 +458,7 @@ be formulated on the corresponding Einstein/(A)dS background, or the flat
 calculation is used only locally at
 `L << |Lambda_eff|^(-1/2)`.
 
-## 6. Einstein--Hilbert endpoint and generic source map
+## 7. Einstein--Hilbert endpoint and source hierarchy
 
 The bounded endpoint is
 
@@ -290,27 +509,32 @@ material scale and cadence are readings of the metric/foundation state, not
 additional matter sources. A stationary homogeneous offset occupies the one
 `Lambda_eff` slot.
 
-What is derived is
+There are now two source levels. W3-53 proves the generic variational map
 
 ```text
 given diffeomorphism-invariant S_loc[g,Y]
   -> one Hilbert T_mn and its conservation law.
 ```
 
-What is not derived is
+W3-54 then instantiates one concrete retained source branch:
 
 ```text
-Phi_F energy bins / W3-50 H_C
-  -> the concrete coarse-grained S_loc[g,Y].
+W3-50 positive phase density
+  -> covariant barotropic/isentropic/irrotational one-potential
+     S_C[g,J,theta_C;rho_C]
+  -> T^C_mn=(rho_C+p_C)u_m u_n+p_C g_mn.
 ```
 
-Thus `GENERIC_SLOC_TO_HILBERT_T_MAP_DERIVED=true`, while
+Thus `GENERIC_SLOC_TO_HILBERT_T_MAP_DERIVED=true` in W3-53 and
+`PHASE_HILBERT_T_DERIVED=true` in W3-54. What remains open is the deeper
+node/oscillon derivation of `rho_C(n_C)`, its relation to `P_F`, and
+particle-specific localized actions. Historical W3-53 flags
 `FOUNDATION_LEDGER_TO_S_LOC_COARSE_GRAINING_DERIVED=false` and
-`MICROSCOPIC_SOURCE_MATCHING=false` remain explicit. W3-53 selects a
-consistent one-source split; it does not manufacture a microscopic localized
-action from the existing scalar bins.
+`MICROSCOPIC_SOURCE_MATCHING=false` remain correct for W3-53's own generic
+scope; W3-54 closes one selected continuum phase-current realization without
+promoting it to a node-derived or particle-specific microscopic source.
 
-## 7. Downstream weak-field status
+## 8. Downstream weak-field status
 
 W3-51 passes a bounded static weak-field compatibility gate with status
 `CONDITIONAL_MATCHED_THROUGH_STATIC_SPHERICAL_PPN_BETA_GAMMA`. On its static,
@@ -339,12 +563,14 @@ through `q`, and includes the standard weak-body EIH 1PN corollary. Its
 rank-ten PPN inversion is a benchmark-transcription and identifiability audit,
 not an independent EH-to-PPN derivation.
 
-W3-53 changes none of those numerical weak-field results. It supplies their
-previously missing conditional selected-IR operator bridge. The node-scale
-full-metric map and microscopic source matching remain false flags in W3-53
-and were never retroactively converted into W3-52 inputs.
+W3-54 changes none of those numerical weak-field results. It supplies their
+previously selected Einstein--Hilbert premise from the explicit relational
+coframe action on the declared post-Genesis continuum branch. W3-53 supplies
+an independent spin-two/bootstrap check. W3-52 remains a conditional
+inheritance theorem in its own file; its historical premise flags are not
+silently rewritten as computations performed by that script.
 
-## 8. Foundation and particle boundary
+## 9. Foundation and particle boundary
 
 The post-Genesis tensor action applies only after the connected low-energy
 phase exists. It cannot be used to presuppose an operational metric, physical
@@ -364,8 +590,11 @@ Variation gives its exact local phase-action current. On the selected
 three-dimensional uniform-dilation measure and homogeneous comoving branch,
 `Q_C/Q_C0=eta_F a^3=1`, `Gamma_C=0`, and `R_eta=0`. The decrease of `eta_F`
 is dilution of conserved organized phase action over the enlarged measure.
-The origin of the internal phase, the cubic measure, the Hamiltonian and its
-stress response remain outside that conditional closure.
+W3-54 supplies the covariant barotropic, isentropic, irrotational one-potential
+subfamily `H_C=rho_C(n_C)` and derives its stress response. The pregeometric
+origin of the coframe/phase split, the physical selection of the cubic
+measure, microscopic `T_mn`, and the microscopic form of `rho_C` remain
+outside the present closure.
 
 When microscopic particle work resumes, the first bounded target is one
 localized oscillon family. The first gate must determine whether a realized
@@ -374,7 +603,7 @@ whether a localized finite-energy cycle can couple to it. Only then may its
 fluctuation operator test common-mode frequency factorization, proper-time
 covariance, and an independent energy/rest-mass map. No particle identity,
 mass ratio, stability spectrum, or frequency-to-mass rule is inherited from
-W3-53.
+W3-54 or W3-53.
 
 The Weinberg--Witten scope is explicit. The pregeometric foundation is not
 assumed to be a Lorentz-covariant QFT on a pre-existing Minkowski background
@@ -385,30 +614,54 @@ composite spin-two branch fails.
 
 ## Conclusion and stopping rule
 
-W3-53 reaches the requested endpoint without an algebraic overrun:
+W3-54 reaches the requested bounded continuum endpoint without an algebraic
+overrun:
 
 ```text
-selected conservative relational Lorentz-invariant IR tensor branch
-  -> exact Fierz--Pauli coefficient ratios
-  -> standard two-helicity and soft-universality theorems
-  -> Deser Einstein--Hilbert completion
-  -> generic S_loc-to-Hilbert-T_mn map
+selected post-Genesis relational coframe and flat inertial transport
+  -> frozen parity-even quadratic torsion basis
+  -> no-physical-orientation selector
+  -> exact TEGR coefficient ratios
+  -> exact TEGR--Einstein--Hilbert boundary identity
+  -> Einstein--Hilbert geometry
+
+selected W3-50 positive phase-current subfamily
+  -> exact current conservation
+  -> explicit Hilbert T^C_mn
+  -> eta_F a^3=1
+
+single master-action variation
+  -> G_mn+Lambda_F g_mn=(8 pi G/c0^4)T^C_mn
+  -> W3-53/W3-51/W3-52 regressions pass
   -> STOP.
 ```
 
-The Einstein--Hilbert operator is therefore not an arbitrary curve-fitting
-choice once the stated IR branch is selected. The generic operational source
-is likewise fixed by variation of one selected diffeomorphism-invariant
-`S_loc`. This is the exact conditional achievement.
+The Einstein--Hilbert operator is therefore not inserted as a curve-fitting
+target once the stated continuum branch is selected. The displayed phase
+source is likewise obtained by varying the retained phase-current action, not
+by naming a stress tensor after the fact. This is an exact result **within the
+declared continuum premises**, which is why the status is `CONDITIONAL_EXACT`
+rather than an unconditional microscopic derivation.
 
 The remaining microscopic problem is narrower and named rather than hidden:
-derive the tensor/common-cone branch and the concrete `S_loc` from a
-node-scale foundation Hamiltonian. W3-53 does not solve that problem. It also
-does not derive `G`, `Lambda_eff`, the cutoff, higher operators, or particle
-properties. No automatic algebraic stage follows from this document.
+derive from a node-scale foundation law the graph/dimension, smooth coframe,
+Lorentzian time leg, flat transport, common cone, absence of an orientation
+mode, coframe/phase split, microscopic `T_mn`, and the constitutive
+`rho_C(n_C)`. W3-54 also does not derive the numerical values of `G` or
+`Lambda_F`, the cutoff, higher operators, or particle properties. W3-53 is an
+independent spin-two/bootstrap crosscheck, not a substitute for that origin
+problem. No automatic algebraic stage follows from this document.
 
 Primary theorem references:
 
+- J. Beltran Jimenez and K. F. Dialektopoulos, [*Non-Linear Obstructions for
+  Consistent New General Relativity*](https://arxiv.org/abs/1907.10038)
+  (2020).
+- J. W. Maluf, [*The Teleparallel Equivalent of General
+  Relativity*](https://arxiv.org/abs/1303.3897) (2013).
+- J. D. Brown, [*Action Functionals for Relativistic Perfect
+  Fluids*](https://arxiv.org/abs/gr-qc/9304026) (1993); W3-54 uses only the
+  barotropic, isentropic, irrotational one-potential subfamily.
 - Steven Weinberg, [*Photons and Gravitons in S-Matrix Theory: Derivation of
   Charge Conservation and Equality of Gravitational and Inertial Mass*](https://doi.org/10.1103/PhysRev.135.B1049)
   (1964).
