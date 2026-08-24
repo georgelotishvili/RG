@@ -58,6 +58,61 @@ and the homogeneous isotropic comoving branch then give
 `Q_C/Q_C0=eta_F a^3=1` and `Gamma_C=0`. This closes the W3-48 current gate
 conditional on those new premises; their pregeometric origin is not derived.
 
+W3-51 passes a separate bounded static weak-field compatibility gate. Its
+status is
+`CONDITIONAL_MATCHED_THROUGH_STATIC_SPHERICAL_PPN_BETA_GAMMA`. On the static,
+asymptotically uniform, nonrotating, spherically symmetric branch, the frozen
+common ruler/clock response fixes the biconformal operational metric
+`ds^2=p^2 c0^2 dt^2-p^(-2) d x^2`. Here the ruler law refers to its footprint
+in the asymptotic coordinate chart, not to a changing locally read proper
+unit. The joint result `beta=gamma=1` holds only under the additional
+canonical source premise: the additive sourced response is `u=-ln(p)`, with
+the canonical local gradient functional and linear effective active-source
+coupling stated in the W3-51 contract. Variation and Gauss normalization then
+give `nabla^2 u=-4 pi G rho/c0^2` and `u=GM/(c0^2 r)` in the spherical
+exterior without inserting the target profile.
+
+The coefficient split is essential. `gamma=1` is kinematic at the tested
+order, fixed by the common clock/ruler dictionary and Newtonian source
+normalization, whereas `beta=1` is constitutive: the mutation
+`ln(p)=-u+a u^2+O(u^3)` gives `beta=1+a`. The gate controls `g00` through
+`O(u^2)` and `gij` through `O(u)` only. `2PN` spatial completion and a
+microscopic derivation of the canonical source functional remain open;
+W3-51 itself does not test the general moving-source PPN sector.
+
+W3-52 closes that downstream gate at the selected effective-action level. Its
+status is `CONDITIONAL_MATCHED_THROUGH_FULL_STANDARD_1PN_PPN`. It does not
+extend W3-51's one-scalar static ansatz to arbitrary moving sources. Instead,
+it uses the already selected general Einstein--Hilbert operational action with
+one universally coupled metric, the same conserved matter/source/boundary
+problem, and no additional unsuppressed field or operator at retained order.
+
+Under those explicitly frozen premises the complete published GR PPN vector
+is inherited exactly:
+
+```text
+gamma=beta=1,
+xi=alpha1=alpha2=alpha3=zeta1=zeta2=zeta3=zeta4=0.
+```
+
+The gate includes `g00` through `q^2`, `g0i` through `q^(3/2)`, and `gij`
+through `q`, plus the standard weak-body EIH 1PN corollary. These follow from
+identity of the complete retained action, source, gauge and boundary problem.
+The rank-ten PPN inversion is registered only as a benchmark-transcription and
+formal-identifiability audit, not as an independent EH-to-PPN derivation.
+
+Ontologically, `p` remains a bounded static readout of the one metric. On the
+isotropic Einstein--Hilbert slice, `p_t=sqrt(g00)` is the exact clock factor,
+while `p_L=(1+u/2)^(-2)` is the coordinate ruler-footprint factor. They share
+the same `1-u` term through the retained spatial order fixing `gamma`; their
+next coefficients differ. Thus W3-52 introduces neither a second cosmological
+effect nor a second gravitational source.
+
+This is an exact conditional inheritance theorem, not a foundation derivation
+of Einstein--Hilbert dynamics. The componentwise suppression boundary,
+foundation-to-full-metric map and microscopic source matching remain explicit
+open flags.
+
 ## 2. Effective postulates
 
 The present branch assumes:
@@ -112,6 +167,12 @@ coefficients are derived. The displayed action is the conditional endpoint
 used by the current Work-3 cosmology. It does not derive the foundation
 degrees of freedom, their equations, the cutoff, the coefficient `G`, or the
 value of `Lambda_eff`.
+
+For the local W3-52 gate, the suppression boundary is frozen componentwise.
+With `q~U/c0^2~v^2/c0^2`, the first omitted corrections are `delta g00=O(q^3)`,
+`delta g0i=O(q^(5/2))`, and `delta gij=O(q^2)`. Local `Lambda_eff` and higher
+operators are assumed to begin no earlier than these orders. This is an
+effective input to the 1PN inheritance theorem, not a microscopic output.
 
 ## 5. One foundation state, one source count
 
@@ -278,11 +339,21 @@ locates the missing foundation current construction.
 W3-49 selects the collective resonant phase-action current as the candidate
 for that construction. W3-50 realizes an exact positive current and closes
 the W3-48 gate conditional on the author-selected `eta_F` meaning, the
-candidate internal-phase action, and the W3-42 cubic measure branch. Sector
-definitions and normalizations, transfer rates, resonance transport, the
-complete Hamiltonian and stress map, pregeometric master action, and the
-value of `Lambda_eff` remain open. No automatic next algebraic stage is
-opened by the present closure. When work resumes, the first registered
+candidate internal-phase action, and the W3-42 cubic measure branch.
+On the weak-field branch, W3-51 passes the conditional static spherical
+`beta=gamma=1` compatibility gate summarized in Section 1. W3-52 then closes
+the complete standard 1PN/PPN sector as an exact conditional inheritance of
+the selected Einstein--Hilbert action, yielding the full GR ten-parameter
+vector, the moving-source `g0i` sector and the weak-body EIH corollary. It does
+not claim that the foundation has derived that action or its microscopic
+source map, and it changes none of the W3-46--W3-50 conclusions or the
+deferred particle-sector status.
+
+Sector definitions and normalizations, transfer rates, resonance transport,
+the complete Hamiltonian and stress map, pregeometric master action, the
+microscopic origin of the operational metric/source map, and the value of
+`Lambda_eff` remain open. No automatic next algebraic stage is opened by the
+present closure. When microscopic particle work resumes, the first registered
 particle target is the bounded one-oscillon bridge of Section 7; it does not
 replace the separate requirement that a pregeometric master action follow
 only after the full relational state space and symmetry are specified.
@@ -293,3 +364,9 @@ Primary theorem references:
   (1971).
 - Stanley Deser, [`Self-Interaction and Gauge Invariance`](https://arxiv.org/abs/gr-qc/0411023)
   (1970; arXiv reprint).
+- C. M. Will and K. Nordtvedt Jr., [`Conservation Laws and Preferred Frames
+  in Relativistic Gravity. I`](https://doi.org/10.1086/151754) (1972).
+- C. M. Will, [`The Confrontation between General Relativity and
+  Experiment`](https://arxiv.org/abs/1403.7377) (2014).
+- A. Einstein, L. Infeld and B. Hoffmann, [`The Gravitational Equations and
+  the Problem of Motion`](https://doi.org/10.2307/1968714) (1938).
