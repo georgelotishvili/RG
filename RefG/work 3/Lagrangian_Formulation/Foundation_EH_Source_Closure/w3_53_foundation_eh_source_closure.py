@@ -46,7 +46,7 @@ DEPENDENCY_HASHES = OrderedDict(
         ),
         (
             "w3_50_neutral_collective_phase_density_bridge_contract.md",
-            "5c5569b3d85ef10e9b77f6d6841b132b6b890c7f76a0554349dfd6b233b6a141",
+            "1cb66438a6bf53f1a661a014328204c05edfe847f81d876defe69eaa400591db",
         ),
     ]
 )

@@ -959,6 +959,38 @@ The full decision is the
 The existing W3-48 verifier supplies the required rate-algebra regression;
 no additional script is needed for this variational construction.
 
+## W3-55 relational invariants and relative-scale reconstruction
+
+W3-55 has status
+`PASS_EXACT_CONDITIONAL_INVARIANT_SEPARATION_AND_RELATIVE_SCALE_RECONSTRUCTION__COUNT_CHARGE_IDENTIFICATION_ABSOLUTE_SCALE_AND_COFRAME_MEASURE_MATCHING_OPEN`.
+
+The audit keeps two exact records physically separate. W3-40's `N_12` is the
+fixed path inventory under its single relational-step/link counting
+convention for a selected ideal-comoving pair; the intuitive
+particles-and-bonds description is not a second count added to it.
+W3-50/W3-54's `Q_C` is the independently conserved neutral Noether phase charge, with
+`Q_C/Q_C0=eta_F a^3=1` on the selected homogeneous branch. No current result
+identifies `N_12` with `Q_C` or with a universal vertex inventory.
+
+Combining the registered density law with `P_F/P_F0=eta_F`, `p^2=eta_F` and
+`A=a/p` gives the exact positive-branch inverse map
+
+    a=A^(2/5),
+    p=A^(-3/5),
+    eta_F=P_F/P_F0=A^(-6/5).
+
+This is a universal normalized relative-scale reconstruction, not an
+absolute dimensional ruler. The reference step length `ell_F0` remains
+unidentified, no second cosmological factor is introduced, and the active
+meanings of `n_C`, `eta_F` and the W3-54 Hilbert source are unchanged.
+
+The fixed path is already post-Genesis and registered relative to the
+existing `R_act` evolution; it is not a Genesis-front or global vertex count.
+The full decision and symbolic/provenance audit are in the
+[W3-55 relational invariant separation contract](../Relational_Invariant_Separation_and_Relative_Scale/w3_55_relational_invariant_separation_relative_scale_contract.md).
+This bounded audit closes here; a microscopic node-to-current or
+node-to-coframe theorem is not assumed.
+
 ### Deferred particle-sector handoff
 
 The next registered direction, when particle work resumes, is a bounded

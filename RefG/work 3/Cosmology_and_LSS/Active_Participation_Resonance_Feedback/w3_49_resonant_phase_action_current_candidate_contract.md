@@ -83,11 +83,11 @@
   - W3-46 state-role contract:
     0109ed3d5e8daec55dbd0f01f8b05932e6f653373438455c32a3d26378e0f3b2;
   - W3-47 preregistration:
-    55aa8d086e886d6e6671339b9547f1521d9f24b2f5aaf1ab503186014d906679;
+    ed1d5b6c2a982cdaafd6739e6a8388219931300b8df92bf015ab2112001049a5;
   - W3-48 conditional bridge contract:
-    8e59504eb6c4ff0d24cd6a6d52996caf9b978f4aaed046b9fa5db07044fe9e81;
+    cd30cdb22d0ad138836afbf1f676b31786c8a9e69cdc42c1baf77603be1fe02b;
   - W3-48 verifier source:
-    c534dadcfd73d3a9fa3dd6cc5762bd18a08cb39dfa60343a6299947e86fc8411.
+    b183a4ae919d0f5d296a414340c34d57a271ed0890bef2c30b84b92ba2e54c7f.
 - METHOD: Compare each candidate against five fixed criteria:
   1. it must describe a positive continuous homogeneous state rather than a
      signed or discrete localized particle label;
@@ -254,4 +254,3 @@ algebra would restate the same missing input. The stage stops here.
 ## Status
 
 CANDIDATE_COLLECTIVE_RESONANT_PHASE_ACTION_CURRENT__FOUNDATION_ACTION_AND_ETA_MAP_OPEN
-

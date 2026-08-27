@@ -198,4 +198,6 @@ boundary. The canonical statement and falsifier are recorded in the parent
 - upstream W3-41 result SHA-256: `f692c38c6deca0f20bc94cb048c4407ca3ed8520a566fa7d73b79d1fe8778ab9`
 - preregistration SHA-256: `4cc4674775525a3c76cd8cb282461e5e83b651aff3554de21983568ee7e1f9f1`
 - source SHA-256: `0593c452dae764c2b0455d31807a6a81d033bd928db40717a0eec6df5fe04188`
-- result SHA-256: `0b31aef39dd2dec8b1fd7de0bf592d3a7b78cbe3ba54306166167d8150e72cd5`
+- generated-result integrity: the runtime SHA-256 must match the adjacent
+  `w3_42_result.sha256`; the result digest is not a logical dependency because
+  `generated_utc` and runtime metadata are intentionally volatile

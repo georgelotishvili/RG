@@ -79,14 +79,19 @@
 - DEPENDENCIES:
   - W3-39 exact moving-boundary energy-ledger result:
     ff2440311e2c4ceb5fe5a2393b6730d2a3c2a2c49dd5b2ceaf7e32f0a0ab1160;
-  - W3-42 conditional cubic measure result:
-    0b31aef39dd2dec8b1fd7de0bf592d3a7b78cbe3ba54306166167d8150e72cd5;
+  - W3-42 conditional cubic measure preregistration:
+    4cc4674775525a3c76cd8cb282461e5e83b651aff3554de21983568ee7e1f9f1;
+  - W3-42 verifier source:
+    0593c452dae764c2b0455d31807a6a81d033bd928db40717a0eec6df5fe04188;
+  - W3-42 generated result is validated at runtime against its adjacent
+    checksum, PASS/closure flags, and embedded preregistration/source
+    provenance; its volatile full-file digest is not frozen;
   - W3-46 state-role contract:
     0109ed3d5e8daec55dbd0f01f8b05932e6f653373438455c32a3d26378e0f3b2;
   - W3-47 preregistration:
-    55aa8d086e886d6e6671339b9547f1521d9f24b2f5aaf1ab503186014d906679;
+    ed1d5b6c2a982cdaafd6739e6a8388219931300b8df92bf015ab2112001049a5;
   - W3-47 no-write verifier source:
-    f57fad21e27728574d3eda77457e9f27e986fd68f81b57944934b03184a40878.
+    d65d8644f443d7991fadbf5f808453b4b227fb87bcef789a8e8c8f89860bfc1f.
 - METHOD:
   1. Sum the conditional L/N/R local balances and check exact cancellation
      of internal transfers.
@@ -143,6 +148,9 @@
 - CLOSURE_FLAGS:
   - required exact checks:
     dependency_hashes_exact,
+    w3_42_runtime_checksum_exact,
+    w3_42_runtime_semantics_exact,
+    w3_42_runtime_provenance_exact,
     sector_transfer_cancellation_exact,
     candidate_charge_identification_declared,
     assumed_integrated_balance_solved_exactly,
@@ -162,9 +170,10 @@
   boundary-flux signs. Confirm only the algebraic fact that the selected
   energy-transfer symbols do not occur in the candidate participation
   residual.
-- PROVENANCE: Author ontology and W3 dependencies frozen on 2026-08-22.
-  SHA-256 values are listed above. The verifier reads only these local
-  dependencies and writes no file.
+- PROVENANCE: Author ontology and immutable W3 dependency artifacts frozen on
+  2026-08-22 with SHA-256 values listed above. The generated W3-42 result is
+  validated at runtime rather than frozen by its volatile byte digest. The
+  verifier reads only these local dependencies and writes no file.
 - FILES: This preregistration,
   w3_48_local_coherence_current_bridge.py, the parent cosmology README, and
   Lagrangian_Formulation/RefG_Formal_Proof.md.

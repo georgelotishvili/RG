@@ -438,9 +438,10 @@ presentation, not the physical content.
 
 Hash-locked logical inputs:
 
-- W3-42 foundation state-space/volume-map preregistration plus its pinned
-  result: `status=PASS`, `aggregate_identity_pass=true`, and
-  `three_spatial_dimensions_derived=false`;
+- W3-42 foundation state-space/volume-map preregistration and verifier source.
+  Its generated result is validated at runtime against the adjacent checksum,
+  `status=PASS`, required closure flags, and embedded preregistration/source
+  provenance; its volatile full-file digest is not a logical pin;
 - W3-46 active-participation/resonance-feedback contract, including
   `participation_meaning_selected=true`,
   `full_state_and_symmetry_derived=false`, and

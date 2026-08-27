@@ -226,13 +226,13 @@ additional conserved density.
   - W3-46 state-role contract:
     `0109ed3d5e8daec55dbd0f01f8b05932e6f653373438455c32a3d26378e0f3b2`;
   - W3-47 participation-kernel contract:
-    `55aa8d086e886d6e6671339b9547f1521d9f24b2f5aaf1ab503186014d906679`;
+    `ed1d5b6c2a982cdaafd6739e6a8388219931300b8df92bf015ab2112001049a5`;
   - W3-48 current-bridge contract:
-    `8e59504eb6c4ff0d24cd6a6d52996caf9b978f4aaed046b9fa5db07044fe9e81`;
+    `cd30cdb22d0ad138836afbf1f676b31786c8a9e69cdc42c1baf77603be1fe02b`;
   - W3-48 no-write verifier:
-    `c534dadcfd73d3a9fa3dd6cc5762bd18a08cb39dfa60343a6299947e86fc8411`;
+    `b183a4ae919d0f5d296a414340c34d57a271ed0890bef2c30b84b92ba2e54c7f`;
   - W3-49 candidate-selection contract:
-    `671b581ee8ccc6d05fa5fee39c5879ba8edac12573534a1db5a55d042485aebf`.
+    `705877bbc7067ca1c95e4507628d69ac7cdbedfb6e0e01e4a97c0fbd1ac04432`.
 - `METHOD`:
   1. Fix the physical meaning of `eta_F` before writing the action.
   2. Represent the positive density and internal phase as one neutral

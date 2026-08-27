@@ -87,8 +87,13 @@
     `ff2440311e2c4ceb5fe5a2393b6730d2a3c2a2c49dd5b2ceaf7e32f0a0ab1160`;
   - W3-40 scale-dictionary result:
     `e8104a664484ea0735387446c94367cca1035877ee6a26413eeddaf158b5be64`;
-  - W3-42 measure result:
-    `0b31aef39dd2dec8b1fd7de0bf592d3a7b78cbe3ba54306166167d8150e72cd5`;
+  - W3-42 measure preregistration:
+    `4cc4674775525a3c76cd8cb282461e5e83b651aff3554de21983568ee7e1f9f1`;
+  - W3-42 verifier source:
+    `0593c452dae764c2b0455d31807a6a81d033bd928db40717a0eec6df5fe04188`;
+  - W3-42 generated result is a runtime artifact: its byte digest is checked
+    against the adjacent checksum, while PASS/closure flags and embedded
+    preregistration/source provenance are checked independently;
   - operational background source:
     `57c5542b0959734e820fd911dfe463504432d1aa568467deb719b786ae87b055`;
   - W3-46 constitutive skeleton:
@@ -185,9 +190,11 @@
   from the production right-hand side; independently sum the three
   antisymmetric sector sources; and route every registered mutation through
   the canonical candidate validator.
-- `PROVENANCE`: Author ontology dated 2026-08-22; W3-39, W3-40,
-  W3-42, W3-45, operational-background, and W3-46 SHA-256 values frozen
-  above; the verifier reads no data and writes no file.
+- `PROVENANCE`: Author ontology dated 2026-08-22; W3-39, W3-40, W3-42
+  preregistration/source, W3-45, operational-background, and W3-46 SHA-256
+  values frozen above. The W3-42 generated result is validated at runtime and
+  is not frozen by its volatile full-file digest; the verifier reads no data
+  and writes no file.
 - `FILES`: This preregistration and
   `w3_47_post_genesis_evolution_pressure_coupling_kernel.py`; the frozen
   downstream-handoff trace in the W3-46 contract; and summary updates in the

@@ -596,6 +596,21 @@ origin of the coframe/phase split, the physical selection of the cubic
 measure, microscopic `T_mn`, and the microscopic form of `rho_C` remain
 outside the present closure.
 
+The downstream W3-55 audit changes none of this action or source ledger. It
+keeps W3-40's single-convention ideal-comoving path inventory `N_12` distinct
+from the phase charge `Q_C` and rejects any unproved identity between them.
+Using the
+already selected homogeneous relations, it derives only the normalized
+inverse map `a=A^(2/5)`, `p=A^(-3/5)` and
+`eta_F=P_F/P_F0=A^(-6/5)`. Its optional identity
+`n_A=p^3 n_F` concerns a generic conserved scalar `Q` under two separately
+chosen spatial measures:
+`n_F=Q/V_F`, `n_A=Q/V_A`, `V_F=a^3V_0` and `V_A=A^3V_0`.
+It neither relabels the active `n_C` nor supplies a second Hilbert source. A
+microscopic match between the coframe `a`-measure and an independently
+postulated operational `A`-measure, and any node-to-current theorem, remain
+outside W3-54 and W3-55.
+
 When microscopic particle work resumes, the first bounded target is one
 localized oscillon family. The first gate must determine whether a realized
 internal neutral phase remains distinct from process-time translation and

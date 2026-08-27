@@ -36,6 +36,12 @@ PATHS = {
     "w3_40_result": COSMOLOGY
     / "Expansion_Relaxation_Causal_Lock"
     / "w3_40_result.json",
+    "w3_42_preregistration": COSMOLOGY
+    / "Foundation_State_Space_and_Volume_Map"
+    / "w3_42_foundation_state_space_volume_map_preregistration.md",
+    "w3_42_source": COSMOLOGY
+    / "Foundation_State_Space_and_Volume_Map"
+    / "w3_42_foundation_state_space_volume_map.py",
     "w3_42_result": COSMOLOGY
     / "Foundation_State_Space_and_Volume_Map"
     / "w3_42_result.json",
@@ -49,15 +55,17 @@ PATHS = {
 
 EXPECTED_HASHES = {
     "w3_47_preregistration":
-        "55aa8d086e886d6e6671339b9547f1521d9f24b2f5aaf1ab503186014d906679",
+        "ed1d5b6c2a982cdaafd6739e6a8388219931300b8df92bf015ab2112001049a5",
     "w3_46_contract":
         "0109ed3d5e8daec55dbd0f01f8b05932e6f653373438455c32a3d26378e0f3b2",
     "w3_39_result":
         "ff2440311e2c4ceb5fe5a2393b6730d2a3c2a2c49dd5b2ceaf7e32f0a0ab1160",
     "w3_40_result":
         "e8104a664484ea0735387446c94367cca1035877ee6a26413eeddaf158b5be64",
-    "w3_42_result":
-        "0b31aef39dd2dec8b1fd7de0bf592d3a7b78cbe3ba54306166167d8150e72cd5",
+    "w3_42_preregistration":
+        "4cc4674775525a3c76cd8cb282461e5e83b651aff3554de21983568ee7e1f9f1",
+    "w3_42_source":
+        "0593c452dae764c2b0455d31807a6a81d033bd928db40717a0eec6df5fe04188",
     "operational_background_source":
         "57c5542b0959734e820fd911dfe463504432d1aa568467deb719b786ae87b055",
     "w3_45_preregistration":
@@ -315,6 +323,11 @@ def verify_dependencies() -> tuple[dict[str, str], dict[str, bool], bool]:
     w3_39 = load_json(PATHS["w3_39_result"])
     w3_40 = load_json(PATHS["w3_40_result"])
     w3_42 = load_json(PATHS["w3_42_result"])
+    w3_42_provenance = w3_42.get("provenance", {})
+    w3_42_prereg_provenance = w3_42_provenance.get(
+        "preregistration", {}
+    )
+    w3_42_source_provenance = w3_42_provenance.get("source", {})
     w3_45_namespace = runpy.run_path(
         str(PATHS["w3_45_source"]),
         run_name="w3_45_dependency",
@@ -340,12 +353,25 @@ def verify_dependencies() -> tuple[dict[str, str], dict[str, bool], bool]:
             ),
             "w3_42_semantics": bool(
                 w3_42.get("status") == "PASS"
+                and w3_42["closure_flags"]["aggregate_identity_pass"]
                 and w3_42["closure_flags"][
                     "d3_geometric_branch_matches_cubic_map_exact"
                 ]
                 and w3_42["closure_flags"][
                     "one_coordinate_completeness_nonselection_exact"
                 ]
+                and not w3_42["physical_closure_flags"][
+                    "three_spatial_dimensions_derived"
+                ]
+            ),
+            "w3_42_provenance": bool(
+                w3_42_prereg_provenance.get("sha256")
+                == actual["w3_42_preregistration"]
+                and w3_42_prereg_provenance.get("expected_sha256")
+                == EXPECTED_HASHES["w3_42_preregistration"]
+                and w3_42_prereg_provenance.get("valid") is True
+                and w3_42_source_provenance.get("sha256")
+                == actual["w3_42_source"]
             ),
             "w3_45_semantics": bool(
                 w3_45.get("decision_status")
@@ -889,8 +915,10 @@ def build_contract() -> dict[str, Any]:
             "production-RHS late-power limits, and one-validator mutations."
         ),
         "PROVENANCE": (
-            "Frozen local W3-39/40/42/45/46 and operational-background "
-            "SHA-256 dependencies."
+            "Frozen local W3-39/40, W3-42 preregistration/source, W3-45/46 "
+            "and operational-background SHA-256 dependencies; the generated "
+            "W3-42 result is validated at runtime by adjacent checksum, "
+            "semantics, and embedded provenance."
         ),
         "FILES": [
             (
@@ -925,6 +953,7 @@ def schema_keysets_exact(report: dict[str, Any]) -> bool:
         "w3_39_semantics",
         "w3_40_semantics",
         "w3_42_semantics",
+        "w3_42_provenance",
         "w3_45_semantics",
     }
     expected_files = {
@@ -962,9 +991,8 @@ def schema_keysets_exact(report: dict[str, Any]) -> bool:
         len(report["required_true_flags"]) == len(REQUIRED_TRUE_FLAGS),
         set(report["required_false_flags"]) == REQUIRED_FALSE_FLAGS,
         len(report["required_false_flags"]) == len(REQUIRED_FALSE_FLAGS),
-        set(report["dependency_hashes"])
-        == set(EXPECTED_HASHES)
-        == set(PATHS),
+        set(report["dependency_hashes"]) == set(PATHS),
+        set(PATHS) == set(EXPECTED_HASHES) | {"w3_42_result"},
         set(report["dependency_checks"]) == expected_dependency_checks,
         set(report["dictionary"]) == EXPECTED_DICTIONARY_KEYS,
         set(report["residuals"]) == EXPECTED_RESIDUAL_KEYS,

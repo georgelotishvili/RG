@@ -22,17 +22,23 @@ OPEN_STATUS = (
 
 HERE = Path(__file__).resolve().parent
 WORK3 = HERE.parents[1]
+W3_42_DIR = HERE.parent / "Foundation_State_Space_and_Volume_Map"
+W3_42_RESULT = W3_42_DIR / "w3_42_result.json"
+W3_42_CHECKSUM = W3_42_DIR / "w3_42_result.sha256"
 
 DEPENDENCIES = {
     "w3_39_result": (
         WORK3 / "Genesis_Scenario" / "w3_39_result.json",
         "ff2440311e2c4ceb5fe5a2393b6730d2a3c2a2c49dd5b2ceaf7e32f0a0ab1160",
     ),
-    "w3_42_result": (
-        HERE.parent
-        / "Foundation_State_Space_and_Volume_Map"
-        / "w3_42_result.json",
-        "0b31aef39dd2dec8b1fd7de0bf592d3a7b78cbe3ba54306166167d8150e72cd5",
+    "w3_42_preregistration": (
+        W3_42_DIR
+        / "w3_42_foundation_state_space_volume_map_preregistration.md",
+        "4cc4674775525a3c76cd8cb282461e5e83b651aff3554de21983568ee7e1f9f1",
+    ),
+    "w3_42_source": (
+        W3_42_DIR / "w3_42_foundation_state_space_volume_map.py",
+        "0593c452dae764c2b0455d31807a6a81d033bd928db40717a0eec6df5fe04188",
     ),
     "w3_46_contract": (
         HERE / "w3_46_active_participation_resonance_feedback_contract.md",
@@ -41,20 +47,23 @@ DEPENDENCIES = {
     "w3_47_preregistration": (
         HERE
         / "w3_47_post_genesis_evolution_pressure_coupling_kernel_preregistration.md",
-        "55aa8d086e886d6e6671339b9547f1521d9f24b2f5aaf1ab503186014d906679",
+        "ed1d5b6c2a982cdaafd6739e6a8388219931300b8df92bf015ab2112001049a5",
     ),
     "w3_47_verifier_source": (
         HERE / "w3_47_post_genesis_evolution_pressure_coupling_kernel.py",
-        "f57fad21e27728574d3eda77457e9f27e986fd68f81b57944934b03184a40878",
+        "d65d8644f443d7991fadbf5f808453b4b227fb87bcef789a8e8c8f89860bfc1f",
     ),
     "w3_48_preregistration": (
         HERE / "w3_48_local_coherence_current_bridge_preregistration.md",
-        "8e59504eb6c4ff0d24cd6a6d52996caf9b978f4aaed046b9fa5db07044fe9e81",
+        "cd30cdb22d0ad138836afbf1f676b31786c8a9e69cdc42c1baf77603be1fe02b",
     ),
 }
 
 REQUIRED_EXACT_FLAGS = (
     "dependency_hashes_exact",
+    "w3_42_runtime_checksum_exact",
+    "w3_42_runtime_semantics_exact",
+    "w3_42_runtime_provenance_exact",
     "sector_transfer_cancellation_exact",
     "candidate_charge_identification_declared",
     "assumed_integrated_balance_solved_exactly",
@@ -78,6 +87,10 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def registered_checksum(path: Path) -> str:
+    return path.read_text(encoding="utf-8").split()[0]
+
+
 def is_zero(expression: sp.Expr) -> bool:
     return sp.simplify(expression) == 0
 
@@ -97,6 +110,26 @@ def main() -> int:
         name: path.is_file() and sha256(path) == expected
         for name, (path, expected) in DEPENDENCIES.items()
     }
+    w3_42_result_exists = W3_42_RESULT.is_file()
+    w3_42_checksum_exists = W3_42_CHECKSUM.is_file()
+    w3_42_actual_sha256 = (
+        sha256(W3_42_RESULT) if w3_42_result_exists else None
+    )
+    w3_42_registered_sha256 = (
+        registered_checksum(W3_42_CHECKSUM)
+        if w3_42_checksum_exists
+        else None
+    )
+    w3_42_result = (
+        json.loads(W3_42_RESULT.read_text(encoding="utf-8"))
+        if w3_42_result_exists
+        else {}
+    )
+    w3_42_provenance = w3_42_result.get("provenance", {})
+    w3_42_prereg_provenance = w3_42_provenance.get(
+        "preregistration", {}
+    )
+    w3_42_source_provenance = w3_42_provenance.get("source", {})
 
     w3_46_text = DEPENDENCIES["w3_46_contract"][0].read_text(encoding="utf-8")
     w3_47_text = DEPENDENCIES["w3_47_preregistration"][0].read_text(
@@ -216,6 +249,39 @@ def main() -> int:
 
     checks = {
         "dependency_hashes_exact": all(dependency_hashes.values()),
+        "w3_42_runtime_checksum_exact": bool(
+            w3_42_result_exists
+            and w3_42_checksum_exists
+            and w3_42_actual_sha256 == w3_42_registered_sha256
+        ),
+        "w3_42_runtime_semantics_exact": bool(
+            w3_42_result.get("status") == "PASS"
+            and w3_42_result.get("closure_flags", {}).get(
+                "aggregate_identity_pass"
+            )
+            is True
+            and w3_42_result.get("closure_flags", {}).get(
+                "d3_geometric_branch_matches_cubic_map_exact"
+            )
+            is True
+            and w3_42_result.get("closure_flags", {}).get(
+                "one_coordinate_completeness_nonselection_exact"
+            )
+            is True
+            and w3_42_result.get("physical_closure_flags", {}).get(
+                "three_spatial_dimensions_derived"
+            )
+            is False
+        ),
+        "w3_42_runtime_provenance_exact": bool(
+            w3_42_prereg_provenance.get("sha256")
+            == DEPENDENCIES["w3_42_preregistration"][1]
+            and w3_42_prereg_provenance.get("expected_sha256")
+            == DEPENDENCIES["w3_42_preregistration"][1]
+            and w3_42_prereg_provenance.get("valid") is True
+            and w3_42_source_provenance.get("sha256")
+            == DEPENDENCIES["w3_42_source"][1]
+        ),
         "sector_transfer_cancellation_exact": is_zero(sector_sum),
         "candidate_charge_identification_declared": (
             "diagnostic candidate identification is Q_C/Q_C0=eta a^3"
@@ -294,6 +360,10 @@ def main() -> int:
         "mechanism_closed": mechanism_closed,
         "checks": checks,
         "dependency_hashes": dependency_hashes,
+        "w3_42_runtime_artifact": {
+            "actual_sha256": w3_42_actual_sha256,
+            "registered_sha256": w3_42_registered_sha256,
+        },
         "declared_open_mechanism_markers": open_markers,
         "closure_flags": mechanism_flags,
         "derived_exactly": {

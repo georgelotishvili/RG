@@ -37,7 +37,7 @@ STATUS_PASS = (
 )
 
 CONTRACT_SHA256 = (
-    "1ded84454b2eee82627e85ca68fa45b139349162e8755338d94fac594163f986"
+    "6cc748eb806d0bccaaf63105567a5d9b1569c56f6b53951c554ec4bad1aa9879"
 )
 
 DEPENDENCY_HASHES = OrderedDict(
@@ -47,18 +47,18 @@ DEPENDENCY_HASHES = OrderedDict(
             "4cc4674775525a3c76cd8cb282461e5e83b651aff3554de21983568ee7e1f9f1",
         ),
         (
+            "w3_42_foundation_state_space_volume_map.py",
+            "0593c452dae764c2b0455d31807a6a81d033bd928db40717a0eec6df5fe04188",
+        ),
+        (
             "w3_46_active_participation_resonance_feedback_contract.md",
             "0109ed3d5e8daec55dbd0f01f8b05932e6f653373438455c32a3d26378e0f3b2",
         ),
         (
             "w3_50_neutral_collective_phase_density_bridge_contract.md",
-            "5c5569b3d85ef10e9b77f6d6841b132b6b890c7f76a0554349dfd6b233b6a141",
+            "1cb66438a6bf53f1a661a014328204c05edfe847f81d876defe69eaa400591db",
         ),
     ]
-)
-
-W3_42_RESULT_SHA256 = (
-    "0b31aef39dd2dec8b1fd7de0bf592d3a7b78cbe3ba54306166167d8150e72cd5"
 )
 
 DEPENDENCY_CONTRACT_MARKERS = OrderedDict(
@@ -133,6 +133,13 @@ def dependency_paths(work3: Path) -> OrderedDict[str, Path]:
                 / "Cosmology_and_LSS"
                 / "Foundation_State_Space_and_Volume_Map"
                 / "w3_42_foundation_state_space_volume_map_preregistration.md",
+            ),
+            (
+                "w3_42_foundation_state_space_volume_map.py",
+                work3
+                / "Cosmology_and_LSS"
+                / "Foundation_State_Space_and_Volume_Map"
+                / "w3_42_foundation_state_space_volume_map.py",
             ),
             (
                 "w3_46_active_participation_resonance_feedback_contract.md",
@@ -765,33 +772,112 @@ def main() -> None:
         / "Foundation_State_Space_and_Volume_Map"
         / "w3_42_result.json"
     )
+    w3_42_checksum_path = w3_42_result_path.with_name(
+        "w3_42_result.sha256"
+    )
     w3_42_result = (
         json.loads(w3_42_result_path.read_text(encoding="utf-8"))
         if w3_42_result_path.exists()
         else {}
     )
+    w3_42_actual_sha256 = (
+        sha256(w3_42_result_path) if w3_42_result_path.exists() else None
+    )
+    w3_42_checksum_parts = (
+        w3_42_checksum_path.read_text(encoding="utf-8").split()
+        if w3_42_checksum_path.exists()
+        else []
+    )
+    w3_42_registered_sha256 = (
+        w3_42_checksum_parts[0] if w3_42_checksum_parts else None
+    )
+    w3_42_provenance = w3_42_result.get("provenance", {})
+    w3_42_prereg_provenance = w3_42_provenance.get(
+        "preregistration", {}
+    )
+    w3_42_source_provenance = w3_42_provenance.get("source", {})
+    w3_42_closure_flags = w3_42_result.get("closure_flags", {})
+    w3_42_physical_flags = w3_42_result.get(
+        "physical_closure_flags", {}
+    )
     w3_42_status_record = OrderedDict(
         [
             ("exists", w3_42_result_path.exists()),
-            ("expected_sha256", W3_42_RESULT_SHA256),
-            ("actual_sha256", sha256(w3_42_result_path) if w3_42_result_path.exists() else None),
+            ("checksum_exists", w3_42_checksum_path.exists()),
+            ("actual_sha256", w3_42_actual_sha256),
+            ("registered_sha256", w3_42_registered_sha256),
+            (
+                "checksum_matches",
+                w3_42_actual_sha256 == w3_42_registered_sha256,
+            ),
             ("status", w3_42_result.get("status")),
             (
                 "aggregate_identity_pass",
-                w3_42_result.get("closure_flags", {}).get("aggregate_identity_pass"),
+                w3_42_closure_flags.get("aggregate_identity_pass"),
+            ),
+            (
+                "d3_geometric_branch_matches_cubic_map_exact",
+                w3_42_closure_flags.get(
+                    "d3_geometric_branch_matches_cubic_map_exact"
+                ),
+            ),
+            (
+                "one_coordinate_completeness_nonselection_exact",
+                w3_42_closure_flags.get(
+                    "one_coordinate_completeness_nonselection_exact"
+                ),
             ),
             (
                 "three_spatial_dimensions_derived",
-                w3_42_result.get("physical_closure_flags", {}).get("three_spatial_dimensions_derived"),
+                w3_42_physical_flags.get(
+                    "three_spatial_dimensions_derived"
+                ),
+            ),
+            (
+                "preregistration_sha256",
+                w3_42_prereg_provenance.get("sha256"),
+            ),
+            (
+                "preregistration_expected_sha256",
+                w3_42_prereg_provenance.get("expected_sha256"),
+            ),
+            (
+                "preregistration_valid",
+                w3_42_prereg_provenance.get("valid"),
+            ),
+            (
+                "source_sha256",
+                w3_42_source_provenance.get("sha256"),
             ),
         ]
     )
     w3_42_status_record["verified"] = all(
         [
-            w3_42_status_record["actual_sha256"] == W3_42_RESULT_SHA256,
+            w3_42_status_record["checksum_matches"] is True,
             w3_42_status_record["status"] == "PASS",
             w3_42_status_record["aggregate_identity_pass"] is True,
+            w3_42_status_record[
+                "d3_geometric_branch_matches_cubic_map_exact"
+            ]
+            is True,
+            w3_42_status_record[
+                "one_coordinate_completeness_nonselection_exact"
+            ]
+            is True,
             w3_42_status_record["three_spatial_dimensions_derived"] is False,
+            w3_42_status_record["preregistration_sha256"]
+            == DEPENDENCY_HASHES[
+                "w3_42_foundation_state_space_volume_map_preregistration.md"
+            ],
+            w3_42_status_record["preregistration_expected_sha256"]
+            == DEPENDENCY_HASHES[
+                "w3_42_foundation_state_space_volume_map_preregistration.md"
+            ],
+            w3_42_status_record["preregistration_valid"] is True,
+            w3_42_status_record["source_sha256"]
+            == DEPENDENCY_HASHES[
+                "w3_42_foundation_state_space_volume_map.py"
+            ],
         ]
     )
     dependency_records["w3_42_result.json"] = w3_42_status_record
