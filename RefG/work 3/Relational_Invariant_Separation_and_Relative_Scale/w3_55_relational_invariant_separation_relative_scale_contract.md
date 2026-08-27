@@ -75,7 +75,7 @@ No upstream artifact is modified by this stage.
 | W3-47 verifier | Exact conditional coupling-kernel algebra and current W3-42 provenance policy | `D65D8644F443D7991FADBF5F808453B4B227FB87BCEF789A8E8C8F89860BFC1F` |
 | W3-50 | `Q_C/Q_C0=eta_F a^3=1` on the selected neutral phase-density branch | `1CB66438A6BF53F1A661A014328204C05EDFE847F81D876DEFE69EAA400591DB` |
 | W3-54 | Covariant phase current, one Hilbert source and the same homogeneous charge reduction | `6CC748EB806D0BCCAAF63105567A5D9B1569C56F6B53951C554EC4BAD1AA9879` |
-| Current Georgian intuitive-manuscript snapshot | Relational measurement, fixed ideal-comoving count and one-event cosmological reading | `93C36634583829D8363FDD2D13B0E384F10517A3757CECE0EBFE651AF14BC43E` |
+| Current Georgian intuitive-manuscript snapshot | Relational measurement, fixed ideal-comoving count, one-event cosmological reading and exact relative-scale reconstruction | `172B8B94798B608A429C1CEFA6FA183578CFB12F080E510DA537F1D40E920C82` |
 
 The hashes pin the exact evidence audited by this stage. A later upstream
 change requires rerunning the verifier and reopening this contract.
