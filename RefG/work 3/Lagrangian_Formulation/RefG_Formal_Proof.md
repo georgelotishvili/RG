@@ -526,8 +526,8 @@ W3-50 positive phase density
 ```
 
 Thus `GENERIC_SLOC_TO_HILBERT_T_MAP_DERIVED=true` in W3-53 and
-`PHASE_HILBERT_T_DERIVED=true` in W3-54. W3-59 adds one explicitly selected
-real scalar-field branch,
+`PHASE_HILBERT_T_DERIVED=true` in W3-54. W3-59 tested one explicitly selected
+real scalar-field projection,
 
 ```text
 S_phi=-(1/c0) integral e [1/2 g^mn d_m phi d_n phi+V(phi)],
@@ -535,27 +535,28 @@ T^phi_mn=d_m phi d_n phi-g_mn[1/2(d phi)^2+V(phi)],
 nabla^m T^phi_mn=(Box_g phi-V'(phi))d_n phi.
 ```
 
-The active W3-59 source ledger is therefore
+As a standalone variational projection its source ledger is
 
 ```text
 S_loc=S_C+S_phi,                 T_total=T_C+T_phi.
 ```
 
 
-`T_phi` replaces the W3-58 complex-field source `T_O`; it is not added to
-`T_O`. This closes the exact selected real-action-to-Hilbert-source map while
-preserving one metric and one count for each retained action. The separate
-open-domain evolution rejects the frozen W3-58-to-real seed as a
-1000-period oscillon, without altering this exact source result.
+`T_phi` would replace the W3-58 complex-field source `T_O`; it is never added
+to `T_O`. The open-domain evolution, however, rejects the frozen
+W3-58-to-real seed as a 1000-period oscillon. W3-59 is therefore retained as
+a completed diagnostic projection, not as the active ordinary-matter branch.
+It neither supersedes nor coexists with the retained W3-58 complex field.
 
 What remains open is the foundation selection of the sextic coefficients
 and benchmark, collective-background lock, dynamical coframe backreaction,
 nonspherical stability and particle identity. Historical W3-53 flags
 `FOUNDATION_LEDGER_TO_S_LOC_COARSE_GRAINING_DERIVED=false` and
 `MICROSCOPIC_SOURCE_MATCHING=false` remain correct for W3-53's own generic
-scope. W3-54 closes one selected continuum phase-current realization, and
-W3-59 closes one selected real scalar-field source realization; neither
-promotes its retained coefficients to node-derived microscopic outputs.
+scope. W3-54 closes one selected continuum phase-current realization. W3-59
+proves the Hilbert-source form of its diagnostic real action but fails the
+registered oscillon bridge; neither result promotes retained coefficients to
+node-derived microscopic outputs.
 
 ## 8. Downstream weak-field status
 
@@ -797,6 +798,89 @@ does not preserve the W3-58 lifetime; this comparison does not establish
 preregistered model version. W3-59 remains a fixed coframe test; dynamical
 coframe backreaction, coefficient selection, nonspherical stability,
 electric neutrality and particle identity remain separate gates.
+W3-61 supplies the shortest exact bridge from the retained RefG matter action
+to established quantum field theory. The complete artifact is the
+[W3-61 coframe scalar quantum-field package](Coframe_Scalar_Quantum_Field_Bridge/README.md).
+Writing the W3-58 field as
+
+```text
+Psi_O=(chi/sqrt(2)) exp(i theta_O),
+X=Psi_O^* Psi_O,
+U(X)=m^2 X-lambda X^2+(4g/3)X^3,
+```
+
+gives the exact complex action
+
+```text
+S_O=-integral d4x e
+    [g^mn d_m Psi_O^* d_n Psi_O+U(X)].
+```
+
+The strict-vacuum Hessian therefore determines the quadratic action
+
+```text
+S_O^(2)=-integral d4x e
+        [g^mn d_m Psi_O^* d_n Psi_O+m^2 Psi_O^* Psi_O],
+(Box_g-m^2)Psi_O=0.
+```
+
+This is the standard minimally coupled free complex Klein--Gordon operator on
+the same W3-54 coframe. On the fixed Minkowski branch, the declared canonical
+commutator and positive-frequency vacuum give the normalized particle and
+antiparticle modes, bosonic Fock space, and normal-ordered generators
+
+```text
+:H:=sum_k E_k(N_a+N_b),
+:P:=sum_k k(N_a+N_b),
+:Q_O:=sum_k(N_b-N_a),
+E_k^2=k^2+m^2.
+```
+
+The charge sign follows the retained W3-58 current
+`j_O^m=i(Psi_O^* d^m Psi_O-Psi_O d^m Psi_O^*)`; it is the global ordinary-phase
+charge. The standard Lorentz-covariant Pauli--Jordan theorem, together with
+the canonical equal-time algebra, makes the commutator vanish at spacelike
+separation. The propagator pole is at `k^2=-m^2` and has unit positive spectral
+weight in the variable `s=-k^2` at `s=m^2`. Because `Psi_O` transforms as a
+Lorentz scalar, the standard Wigner classification gives the one-particle
+Casimirs `P^2=-m^2`, `W^2=0`. The controlled envelope
+`Psi_O=exp(-imt)psi/sqrt(2m)` yields the free Schrödinger equation at leading
+order with its exact second-time-derivative remainder.
+
+Canonical quantization promotes the inherited quadratic Hilbert tensor to an
+operator. Normal ordering with respect to the fixed Minkowski vacuum fixes its
+ordering and vacuum subtraction:
+
+```text
+:T_hat^{O,(2)}_mn:=:[d_m Psi_O^* d_n Psi_O+d_n Psi_O^* d_m Psi_O
+                     -g_mn(d_r Psi_O^* d^r Psi_O+m^2 Psi_O^* Psi_O)]:.
+```
+
+Its `00` component equals the normal-ordered Hamiltonian density on the fixed
+Minkowski branch. The free-vacuum O-sector has the alternative representations
+
+```text
+classical representation: T_O^(2),
+quantum representation:   :T_hat_O^(2):.
+```
+
+They are alternative representations of the same quadratic O-sector, and the
+ledger selects one representation at a time. A classical Einstein source from
+the quantum field requires a specified renormalized state expectation such as
+`<:T_hat_O^(2):>_ren`. The full nonlinear `T_O` of the localized Q-ball branch
+also contains the quartic and sextic interactions; their operator stress,
+renormalization and backreaction are later gates. The global Fock/pole/Poincaré statements belong to the fixed
+Minkowski branch, while the covariant Klein--Gordon operator is defined on
+every regular selected coframe.
+
+Its machine status is
+`PASS_CONDITIONAL_EXACT_STANDARD_FREE_COMPLEX_SCALAR_QFT_LANDING_ON_SELECTED_FIXED_COFRAME__KLEIN_GORDON_CANONICAL_FOCK_MASS_SHELL_U1_CHARGE_SPIN_ZERO_AND_SCHRODINGER_LIMIT_CLOSED__FOUNDATION_ORIGIN_OF_HBAR_CCR_AND_VACUUM_CHOICE_PLUS_INTERACTING_RENORMALIZED_SPINOR_GAUGE_SOLITON_QUANTIZATION_AND_QUANTUM_BACKREACTION_OPEN`.
+The action determines the classical symplectic structure; `hbar`, operator
+promotion, bosonic CCR and the Minkowski vacuum are the explicit standard
+quantization handoff. The W3-58 localized Q-ball remains the interacting
+soliton sector and requires its own collective-coordinate quantization before
+a one-particle or bound-state identity is assigned.
+
 The Weinberg--Witten scope is explicit. The pregeometric foundation is not
 assumed to be a Lorentz-covariant QFT on a pre-existing Minkowski background
 with a gauge-invariant local microscopic stress tensor. Lorentz covariance,
@@ -822,9 +906,20 @@ selected W3-50 positive phase-current subfamily
   -> explicit Hilbert T^C_mn
   -> eta_F a^3=1
 
-single master-action variation
+selected W3-58 complex ordinary-phase field
+  -> exact quadratic vacuum Hessian
+  -> complex Klein--Gordon operator on the W3-54 coframe
+  -> canonical bosonic quantization on the fixed Minkowski branch
+  -> free particle/antiparticle Fock sectors, mass m and spin 0
+  -> one normal-ordered quadratic stress operator :T_hat_O^(2):
+
+W3-54 classical master-action variation
   -> G_mn+Lambda_F g_mn=(8 pi G/c0^4)T^C_mn
   -> W3-53/W3-51/W3-52 regressions pass
+
+W3-61 free quantum ordinary-sector operator
+  -> T_O^(2) and :T_hat_O^(2): are alternative representations of one O^(2) sector
+  -> renormalized state expectation, full nonlinear T_O quantization and backreaction remain separate gates
   -> STOP.
 ```
 
