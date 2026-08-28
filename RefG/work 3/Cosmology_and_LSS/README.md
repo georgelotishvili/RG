@@ -991,29 +991,42 @@ The full decision and symbolic/provenance audit are in the
 This bounded audit closes here; a microscopic node-to-current or
 node-to-coframe theorem is not assumed.
 
-### Deferred particle-sector handoff
+### W3-56 fixed-background coframe-lock consistency witness
 
-The next registered direction, when particle work resumes, is a bounded
-one-oscillon bridge rather than a particle catalogue. The W3-50 canonical
-action also gives
+W3-56 has status
+`PASS_EXACT_INTERNAL_ALGEBRA_OF_SELECTED_FIXED_BACKGROUND_RESPONSE_AND_BICONFORMAL_PULLBACK_WITNESS__W3_50_OSCILLON_CORE_SPECTRAL_GATE_PRESSURE_STRESS_COVARIANT_BACKREACTION_AND_UNIVERSALITY_OPEN`.
 
-    D_tau theta_C=partial H_C/partial n_C,
+It instantiates the bounded response problem without importing the W3-47
+square law. Write the W3-50 carrier amplitude as `B=|Psi_C|`, so that
+`eta_F=(B/B0)^2`, and select the target-free fixed-background response
 
-but the uninstantiated `H_C` does not identify this internal phase rate with
-the ordinary oscillon cycle or with the common local cadence. A future
-localized model must first keep those roles distinct, construct one
-finite-energy oscillon branch and its fluctuation operator, and derive rather
-than assume whether its frequencies have the common-mode form
-`nu_i^(t)=s_i Omega_t` with invariant dimensionless `s_i`.
+    U_R=K(b-lambda B)^2/2,  K>0, lambda>0.
 
-The same gate must audit the two time readings through `d tau=p dt`, with
-`nu_i^(tau)=nu_i^(t)/p`. W3-46's `Omega_t/Omega_t0=p` cadence scaling must
-therefore recover W3-43's constant operational proper-frequency standard
-without an additional `p` factor. Only then may a separate energy/mass
-observable bridge open. Old frequency-to-mass powers and C3/Koide numbers are
-not inputs to this derivation. The full gate and its falsifiers are recorded
-in the W3-50 contract. This handoff opens no calculation now and changes no
-current W3-46--W3-50 status.
+Its unique stable auxiliary branch gives `beta=b/b0=B/B0`. Reading the
+positive quadratic restoring channel as `P_F^(R)=K b^2/2` then yields exactly
+
+    P_F^(R)/P_F0^(R)=eta_F=beta^2.
+
+A selected stable proper probe normal form is coupled to the same biconformal
+coframe, while an independent finite Gaussian profile checks only the
+constant-patch scaling. The action
+`S=integral dt[J_O theta_O_dot+Pi Q_dot-beta H_0]` and the pullback
+`d tau=beta dt`, `d y=d x/beta` give coordinate cadence, coordinate
+radius, and external energy/defined mass proportional to `beta`, coordinate
+signal speed proportional to `beta^2`, and invariant local proper dynamics.
+Thus the reduced candidate realizes `p=beta` for this selected probe
+witness, with no fitted exponent and no old frequency-to-mass or Koide/C3
+input.
+
+The result is deliberately bounded. The quadratic response operator and the
+meaning of its positive restoring channel are selected effective structure.
+`P_F^(R)` is not the on-shell total potential, a Hilbert stress, or W3-54's
+thermodynamic `p_C`; W3-54's free equation-of-state family does not force the
+square law. Environment-independence of `H_0`, a covariant TEGR embedding,
+an explicit foundation-generated core and fluctuation operator, localized
+backreaction, and universality remain separate gates. The full contract,
+verifier, and mutation tests are in the
+[W3-56 one-oscillon coframe-lock package](../Lagrangian_Formulation/One_Oscillon_Coframe_Lock_Bridge/README.md).
 
 ## Salvaged exact results
 

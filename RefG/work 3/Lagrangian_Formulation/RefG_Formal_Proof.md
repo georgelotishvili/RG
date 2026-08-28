@@ -611,14 +611,32 @@ microscopic match between the coframe `a`-measure and an independently
 postulated operational `A`-measure, and any node-to-current theorem, remain
 outside W3-54 and W3-55.
 
-When microscopic particle work resumes, the first bounded target is one
-localized oscillon family. The first gate must determine whether a realized
-internal neutral phase remains distinct from process-time translation and
-whether a localized finite-energy cycle can couple to it. Only then may its
-fluctuation operator test common-mode frequency factorization, proper-time
-covariance, and an independent energy/rest-mass map. No particle identity,
-mass ratio, stability spectrum, or frequency-to-mass rule is inherited from
-W3-54 or W3-53.
+W3-56 now supplies a bounded fixed-background response and biconformal
+pullback consistency witness.
+Its machine status is
+`PASS_EXACT_INTERNAL_ALGEBRA_OF_SELECTED_FIXED_BACKGROUND_RESPONSE_AND_BICONFORMAL_PULLBACK_WITNESS__W3_50_OSCILLON_CORE_SPECTRAL_GATE_PRESSURE_STRESS_COVARIANT_BACKREACTION_AND_UNIVERSALITY_OPEN`;
+the full artifact is the
+[W3-56 one-oscillon coframe-lock package](One_Oscillon_Coframe_Lock_Bridge/README.md).
+It keeps collective phase, ordinary oscillon phase, and process time distinct.
+For the selected fixed-background auxiliary response
+`U_R=K(b-lambda B)^2/2`, with `B=|Psi_C|`, the unique positive branch gives
+`beta=b/b0=B/B0`. Selecting the positive restoring-channel readout
+`P_F^(R)=K b^2/2` then realizes
+`P_F^(R)/P_F0^(R)=eta_F=beta^2`. A selected proper probe normal form
+coupled as `beta H_0` and pulled back through
+`d tau=beta dt`, `d y=d x/beta` has invariant proper dynamics while coordinate
+cadence, radius, and external energy/defined mass share the factor `beta`.
+The finite Gaussian profile is an independent scaling witness, not a solved
+oscillon field configuration.
+
+This is an exact fixed-background reduced realization, not a modification of
+the frozen W3-54 master action. The auxiliary operator and its restoring
+readout are selected: `P_F^(R)` is not a derived Hilbert stress or W3-54
+thermodynamic pressure. The covariant one-coframe embedding, a
+foundation-generated oscillon core and fluctuation operator, localized
+backreaction, and universality remain the next precise particle-sector
+boundary. No particle identity, mass ratio, Koide/C3 input, Planck hierarchy,
+or frequency-to-mass postulate is inherited.
 
 The Weinberg--Witten scope is explicit. The pregeometric foundation is not
 assumed to be a Lorentz-covariant QFT on a pre-existing Minkowski background
