@@ -638,6 +638,85 @@ backreaction, and universality remain the next precise particle-sector
 boundary. No particle identity, mass ratio, Koide/C3 input, Planck hierarchy,
 or frequency-to-mass postulate is inherited.
 
+W3-57 now resolves that boundary for the action actually present in Work 3.
+Its machine status is
+`PASS_EXACT_FIXED_COFRAME_STATIONARY_SPHERICAL_PHASE_LOCKED_ZERO_FLUX_STRICT_CONVEX_INTRINSIC_CORE_NO_GO_AND_EOS_NONIDENTIFIABILITY__TIME_DEPENDENT_CORE_OPERATOR_FLOQUET_SPECTRUM_AND_BACKGROUND_SCALING_OPEN`;
+the full artifact is the
+[W3-57 localized-core identifiability package](One_Oscillon_Localized_Core_Identifiability_Gate/README.md).
+For a fixed non-backreacting Minkowski coframe with an infinite asymptotically
+homogeneous radial domain, the regular stationary spherical globally
+phase-locked branch has `r^2 n_C u^r=constant`; centre regularity and zero
+asymptotic flux set the constant to zero. The W3-54 phase equation then gives
+`rho_C'(n_C(r))=Omega`. On every strict-convex healthy branch this fixes
+`n_C(r)` to the background value. If `rho_C'` is constant throughout a
+nonzero density interval, the absence of an amplitude-gradient/surface
+operator leaves the profile and radius unselected.
+
+On an infinite homogeneous fixed background, the longitudinal phase-current
+plane-wave linearization supplies the gapless acoustic branch
+`omega^2=c0^2 c_s^2 k^2`, with
+`c_s^2=n_C rho_C''/rho_C'`. Two admissible equations of state give different
+sound cones and pressure/cadence powers while sharing the exact W3-50 charge
+law, so neither a localized spectrum nor the W3-56 common factor is selected
+by the current bulk action. A conditional identification of the collective
+phase rate with the desired cadence would instead give
+`p_C proportional to n_C^(3/2)`; imposing
+`p_C proportional to n_C` selects a logarithmic equation of state and is a
+new constitutive choice rather than a result of W3-50/W3-54.
+
+W3-57 also evaluates the full displayed W3-56 auxiliary response potential
+on shell. Its potential, density derivative, and pressure-like Legendre
+combination vanish at `b=lambda B`; the separately selected `K b^2/2` channel
+is therefore not derived or identifiable as a Hilbert stress from the reduced
+model. The result is a restricted theorem about the fixed-coframe stationary
+phase-locked sector, not a theorem against every future time-dependent
+oscillon. The minimum missing class of input is a coframe-coupled
+localized-core constitutive action that generates the core operator,
+nonlinear binding, distinct ordinary oscillon phase, and stress projection in
+one source ledger.
+
+W3-58 supplies that missing operator as a new, explicitly selected model
+version rather than reading it back into W3-54. The complete artifact is the
+[W3-58 phase-supported Q-ball-type candidate-core package](One_Oscillon_Coframe_Localized_Core/README.md).
+A complex ordinary-phase field
+`Psi_O=(chi/sqrt(2)) exp(i theta_O)` is minimally coupled to the same coframe
+metric, with potential
+`V(chi)=m^2 chi^2/2-lambda chi^4/4+g chi^6/6`. The quadratic, attractive
+quartic and positive sextic terms respectively set the vacuum scale, bind the
+core and stabilize the large-amplitude sector. Metric variation produces its
+Hilbert tensor, so the source ledger is extended once and only once as
+`T_total=T_C+T_O`; no second metric, background medium or vacuum source is
+introduced.
+
+For `a=g m^2/lambda^2>3/16`, the action admits the exact harmonic
+finite-energy class
+`1-3/(16a)<Omega^2<1`. At the preregistered point
+`a=1/4`, `Omega=4/5`, adaptive collocation and an independent finite-difference
+solve converge to the same positive, nodeless spherical ground state, with
+central amplitude `1.82021051`, charge-rms radius `2.72894693/m`, and
+`E/(mQ)=0.93102564`. The equation residual, Yukawa tail, Nehari identity,
+virial identity and Hilbert-stress balance all close at the registered
+tolerances. The unconstrained `L_+` amplitude Hessian contains exactly one
+radial negative direction; the phase and translation modes converge to zero,
+and all remaining registered gaps are positive. Positivity at `ell=2` extends
+to every `ell>=2` by centrifugal ordering. The charge constraint and the
+independently evaluated branch slope `dQ/dOmega=-132.36879<0` provide the
+converged numerical orbital-stability diagnostics. Separately,
+`E/(mQ)=0.93102564<1` bounds decay into free quanta. Both statements concern
+the selected fixed-coframe matter ground state, not the coupled
+core--coframe-backreaction problem.
+The sensitivity equation is evaluated with the unreduced radial operator,
+`script_L_+ z=2 Omega f`; in the displayed reduced convention the same identity
+is `L_+(x z)=2 Omega x f`.
+
+Its machine status is
+`PASS_CONDITIONAL_EXACT_MINIMAL_COFRAME_U1_CORE_ACTION_AND_ANALYTIC_EXISTENCE_WINDOW__CONVERGED_NUMERICAL_FINITE_ENERGY_ORBITALLY_STABLE_SPHERICAL_GROUND_STATE_EVIDENCE__FOUNDATION_COEFFICIENT_SELECTION_BACKGROUND_LOCK_BACKREACTION_AND_PARTICLE_IDENTITY_OPEN`.
+The exact symmetry makes this core mathematically a phase-supported Q-ball;
+it is not yet a derived neutral real oscillon. The remaining bridge is now
+specific: foundation dynamics must select the coefficients, lock the proper
+core to the collective background, and include localized backreaction before
+a particle identity or W3-56 environmental scaling can be assigned.
+
 The Weinberg--Witten scope is explicit. The pregeometric foundation is not
 assumed to be a Lorentz-covariant QFT on a pre-existing Minkowski background
 with a gauge-invariant local microscopic stress tensor. Lorentz covariance,

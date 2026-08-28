@@ -1028,6 +1028,42 @@ backreaction, and universality remain separate gates. The full contract,
 verifier, and mutation tests are in the
 [W3-56 one-oscillon coframe-lock package](../Lagrangian_Formulation/One_Oscillon_Coframe_Lock_Bridge/README.md).
 
+### W3-57 localized-core identifiability gate
+
+W3-57 has status
+`PASS_EXACT_FIXED_COFRAME_STATIONARY_SPHERICAL_PHASE_LOCKED_ZERO_FLUX_STRICT_CONVEX_INTRINSIC_CORE_NO_GO_AND_EOS_NONIDENTIFIABILITY__TIME_DEPENDENT_CORE_OPERATOR_FLOQUET_SPECTRUM_AND_BACKGROUND_SCALING_OPEN`.
+
+It tests the actual W3-50/W3-54 one-potential action before any new oscillon
+potential is selected. On a fixed non-backreacting Minkowski coframe with an
+infinite asymptotically homogeneous radial domain, the regular stationary
+spherical globally phase-locked zero-flux branch gives `u^r=0`; the phase
+equation then gives `rho_C'(n_C(r))=Omega`. Every strict-convex healthy branch
+therefore has constant `n_C`, so matching the background leaves no nontrivial
+intrinsic core on this branch. If `rho_C'` is constant throughout a nonzero
+density interval, the profile remains algebraically undetermined: without an
+amplitude gradient or surface term, its radius is dynamically unselected.
+
+On an infinite homogeneous fixed background, the longitudinal phase-current
+plane-wave branch is gapless acoustic, with
+`c_s^2=n_C rho_C''/rho_C'`. The equally healthy countermodels
+`rho_C=kappa n_C^(4/3)` and `rho_C=kappa n_C^2` preserve the same W3-50
+charge law but give different sound cones, phase-rate scalings, and pressure
+powers. The current equation-of-state freedom therefore cannot identify an
+oscillon spectrum or the common environmental factor.
+
+The same audit prevents the W3-56 restoring-channel witness from being
+promoted to physical pressure without a new action. The full displayed
+auxiliary response potential, its density derivative, and its pressure-like
+Legendre combination all vanish on its algebraic equilibrium, while the
+separately selected `K b^2/2` channel does not; that channel is therefore not
+identifiable as a Hilbert stress from the reduced model. The minimum missing
+class of input is consequently a coframe-coupled localized-core constitutive
+action whose variation supplies
+the dispersive core operator, bounded binding nonlinearity, distinct ordinary
+oscillon phase, and Hilbert-stress projection. The exact contract and
+verifier are in the
+[W3-57 localized-core identifiability package](../Lagrangian_Formulation/One_Oscillon_Localized_Core_Identifiability_Gate/README.md).
+
 ## Salvaged exact results
 
 W3-36 checks the useful metric, process-time, null-ray, radius, and volume
