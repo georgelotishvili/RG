@@ -89,7 +89,7 @@
     },
     "CROSSCHECK": "Ordinary/log derivatives, coordinate/process rates, ruler readout, DAG with unique primary root a, normalized functional equivalence class, and declared sign/bridge/scale/rate/root/keyset/flag mutations.",
     "DATA_ROLE": "No data or upstream result artifacts are read.",
-    "DEPENDENCIES": "None; self-contained; W3-36 is unchanged and supplies no causal closure to W3-40.",
+    "DEPENDENCIES": "None; self-contained; no upstream result artifact is imported.",
     "DOMAIN": "Positive finite regular post-origin variables and differentiable homogeneous histories on the selected expansion branch.",
     "ERROR_BOUND": "Zero algebraic error; numerical, continuum, and observational error N/A.",
     "FAIL_CONDITION": "Any registered check fails, any physical flag is true, the graph has a primary root other than a, p is treated as an independent or additive driver, or an unclosed physical/observable result is reported.",
@@ -230,20 +230,20 @@
     "supernova_time_dilation_derived": false
   },
   "provenance": {
-    "generated_utc": "2026-08-21T18:13:17.523660+00:00",
+    "generated_utc": "2026-08-29T08:19:35.487168+00:00",
     "line_endings": "LF",
     "platform": "Windows-10-10.0.22000-SP0",
     "preregistration": {
-      "expected_sha256": "101f1ae30430d519307e390536c0e7c0d6ea740eaeeaaf7458b5bcd8eef2b8d6",
+      "expected_sha256": "6da72a4fea86fe6bd4c29f007593c9c2c176062150d2090ee597845a53c9f5eb",
       "path": "w3_40_expansion_relaxation_causal_lock_preregistration.md",
       "registered_claim": "On the frozen selected branch, foundation expansion is the sole primary cosmological driver. With fixed comoving link count, its increase of the foundation link scale lowers foundation pressure; through the positive bridge p^2=P_F/P_F0, that pressure relaxation contracts the material standard. These are causally ordered stages of one trajectory, not independent or additive effects. An internal observer reads the trajectory only through the relational scale A=a/p; A alone does not identify a and p. The gate proves the linked scale and rate identities but does not derive P_F(a) or an observational cosmology.",
-      "sha256": "101f1ae30430d519307e390536c0e7c0d6ea740eaeeaaf7458b5bcd8eef2b8d6",
+      "sha256": "6da72a4fea86fe6bd4c29f007593c9c2c176062150d2090ee597845a53c9f5eb",
       "valid": true
     },
     "python": "3.10.6",
     "source": {
       "path": "w3_40_expansion_relaxation_causal_lock.py",
-      "sha256": "fda6c5617d4703e2707fe3fb8698c85c9a1a808de2e778106d156b2077127655"
+      "sha256": "1b76f5e847a68deacfb345bcf2e98d46ada4e85591e69b1bbc4cc4651945a585"
     },
     "sympy": "1.13.3"
   },

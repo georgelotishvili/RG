@@ -35,13 +35,13 @@ PREREG = HERE / "w3_42_foundation_state_space_volume_map_preregistration.md"
 OUTPUT = HERE / "w3_42_result.json"
 HASH_OUTPUT = HERE / "w3_42_result.sha256"
 PINNED_PREREG_SHA256 = (
-    "4cc4674775525a3c76cd8cb282461e5e83b651aff3554de21983568ee7e1f9f1"
+    "8ba44af154a3f9a18b207b4f17a3dcecdb27a8a9d59f7f9aa712c0946763ae98"
 )
 UPSTREAM_DIR = HERE.parent / "Foundation_Constitutive_Interface"
 UPSTREAM_RESULT = UPSTREAM_DIR / "w3_41_result.json"
 UPSTREAM_CHECKSUM = UPSTREAM_DIR / "w3_41_result.sha256"
 PINNED_W3_41_RESULT_SHA256 = (
-    "f692c38c6deca0f20bc94cb048c4407ca3ed8520a566fa7d73b79d1fe8778ab9"
+    "48e6a981eaa2d696240323d6ccbbb4f744e67f2c37329ed292a1de11ce10c9fb"
 )
 
 REQUIRED_CONTRACT_FIELDS = {

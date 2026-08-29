@@ -31,13 +31,13 @@ PREREG = HERE / "w3_41_foundation_constitutive_interface_preregistration.md"
 OUTPUT = HERE / "w3_41_result.json"
 HASH_OUTPUT = HERE / "w3_41_result.sha256"
 PINNED_PREREG_SHA256 = (
-    "ab852e070871c707ed46e1ac2edde995931c12bd3a0d117e784c258e9f7ba99b"
+    "4e19d4d0ece49a3f126cf24be3c2275923de5a291db29efad01b68332fdd7658"
 )
 UPSTREAM_DIR = HERE.parent / "Expansion_Relaxation_Causal_Lock"
 UPSTREAM_RESULT = UPSTREAM_DIR / "w3_40_result.json"
 UPSTREAM_CHECKSUM = UPSTREAM_DIR / "w3_40_result.sha256"
 PINNED_W3_40_RESULT_SHA256 = (
-    "e8104a664484ea0735387446c94367cca1035877ee6a26413eeddaf158b5be64"
+    "6d16003df1f2d7a70371ec254f9cfc1692b7eac3df53874616135792eb2d63cf"
 )
 
 REQUIRED_CONTRACT_FIELDS = {
@@ -665,7 +665,7 @@ def build_contract() -> dict[str, object]:
             "future_observables": "zero instantiated here",
         },
         "DEPENDENCIES": (
-            "Pinned W3-40 result/checksum; W3-36 is not an algebraic dependency."
+            "Pinned W3-40 result/checksum."
         ),
         "METHOD": (
             "Exact SymPy derivatives, reconstruction, branch signs, two "

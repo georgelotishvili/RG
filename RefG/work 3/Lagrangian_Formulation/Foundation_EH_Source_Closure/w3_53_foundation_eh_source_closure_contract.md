@@ -298,20 +298,12 @@ Accordingly, `MICROSCOPIC_SOURCE_MATCHING=false` remains explicit.
 ## 7. No-go and dependency boundary
 
 A pressure-only scalar fluid and a pure-gradient displacement strain are
-failing controls. The historical files
-
-```text
-w3_01_emergent_metric_from_pressure.py
-w3_02_emergent_action_from_pressure.py
-w4_02_biconformal_gravity.py
-w4_04_strain_tensor_action.py
-w4_05_defect_tensor_gravity.py
-w4_06_kleinert_equivalence.py
-```
-
-are forbidden logical dependencies. They either insert the desired potential
-or action, use pure gauge, assume TT/massless structure before counting, or
-construct the Einstein tensor before naming it a defect tensor.
+failing controls. Any construction that inserts the desired potential or
+action, uses pure gauge as a physical tensor mode, assumes TT/massless
+structure before counting, or constructs the Einstein tensor before deriving
+its operator is excluded as a logical input. The executable dependency
+registry is closed explicitly and contains only the retained foundation
+contracts listed above.
 
 W3-52 is not a W3-53 dependency. It consumes the Einstein--Hilbert branch
 downstream and is rerun only as a regression:
@@ -486,4 +478,3 @@ its algebra for the present stopping point.
   (1971).
 - Steven Weinberg and Edward Witten, [*Limits on Massless Particles*](https://doi.org/10.1016/0370-2693(80)90212-9)
   (1980).
-

@@ -83,12 +83,12 @@ are recorded in the parent `Cosmology_and_LSS/README.md`.
 
 - model version: `W3-41-v1.2-FOUNDATION-CONSTITUTIVE-INTERFACE`
 - status: `PASS_EXACT_CONSTITUTIVE_INTERFACE__RECONSTRUCTION_DEGENERACY_PROVED__PHYSICAL_BRIDGE_AND_DYNAMICS_OPEN`
-- upstream W3-40 result SHA-256: `e8104a664484ea0735387446c94367cca1035877ee6a26413eeddaf158b5be64`
-- preregistration SHA-256: `ab852e070871c707ed46e1ac2edde995931c12bd3a0d117e784c258e9f7ba99b`
-- source SHA-256: `849fb7a649af526ebcdf00e114bc4cd93e6cdd81b2a1cbd246dfa4c77db18f05`
-- result SHA-256: `f692c38c6deca0f20bc94cb048c4407ca3ed8520a566fa7d73b79d1fe8778ab9`
+- upstream W3-40 result SHA-256: `6d16003df1f2d7a70371ec254f9cfc1692b7eac3df53874616135792eb2d63cf`
+- preregistration SHA-256: `4e19d4d0ece49a3f126cf24be3c2275923de5a291db29efad01b68332fdd7658`
+- source SHA-256: `b22ad1cdff8754f791b8955a6408e11e8324cb4380ed8dab321c2b1f0f76a9f3`
+- result SHA-256: `48e6a981eaa2d696240323d6ccbbb4f744e67f2c37329ed292a1de11ce10c9fb`
 - W3-42 child logical pins: preregistration
-  `4cc4674775525a3c76cd8cb282461e5e83b651aff3554de21983568ee7e1f9f1`
+  `8ba44af154a3f9a18b207b4f17a3dcecdb27a8a9d59f7f9aa712c0946763ae98`
   and verifier source
-  `0593c452dae764c2b0455d31807a6a81d033bd928db40717a0eec6df5fe04188`;
+  `ae30251c3fb5eefae31dd9310de62dda2d3cf700c030bcb8c1e8f08c3e57724f`;
   its generated result is checked at runtime against its adjacent checksum

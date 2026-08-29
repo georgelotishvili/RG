@@ -34,11 +34,11 @@ DEPENDENCIES = {
     "w3_42_preregistration": (
         W3_42_DIR
         / "w3_42_foundation_state_space_volume_map_preregistration.md",
-        "4cc4674775525a3c76cd8cb282461e5e83b651aff3554de21983568ee7e1f9f1",
+        "8ba44af154a3f9a18b207b4f17a3dcecdb27a8a9d59f7f9aa712c0946763ae98",
     ),
     "w3_42_source": (
         W3_42_DIR / "w3_42_foundation_state_space_volume_map.py",
-        "0593c452dae764c2b0455d31807a6a81d033bd928db40717a0eec6df5fe04188",
+        "ae30251c3fb5eefae31dd9310de62dda2d3cf700c030bcb8c1e8f08c3e57724f",
     ),
     "w3_46_contract": (
         HERE / "w3_46_active_participation_resonance_feedback_contract.md",
@@ -47,15 +47,15 @@ DEPENDENCIES = {
     "w3_47_preregistration": (
         HERE
         / "w3_47_post_genesis_evolution_pressure_coupling_kernel_preregistration.md",
-        "ed1d5b6c2a982cdaafd6739e6a8388219931300b8df92bf015ab2112001049a5",
+        "9b603b1df55edf994f1e528a6cc8e16b69c474dd4c1b3df815e2654a6c279d50",
     ),
     "w3_47_verifier_source": (
         HERE / "w3_47_post_genesis_evolution_pressure_coupling_kernel.py",
-        "d65d8644f443d7991fadbf5f808453b4b227fb87bcef789a8e8c8f89860bfc1f",
+        "9d09324d9010447eff29e7aabdcd205609dcb26d6c3ca936b6f236901db92c98",
     ),
     "w3_48_preregistration": (
         HERE / "w3_48_local_coherence_current_bridge_preregistration.md",
-        "cd30cdb22d0ad138836afbf1f676b31786c8a9e69cdc42c1baf77603be1fe02b",
+        "0506ed9c3a690e38a355c9b0db7ce5222cfc013dcd585f26c80b3baa030d4c41",
     ),
 }
 

@@ -142,10 +142,6 @@ from the foundation dynamics; then quantize the W3-58 localized core or build
 the spinor and gauge sectors. W3-61 stops before those tasks and opens no
 automatic calculation chain.
 
-W3-59 had conditionally reserved W3-60 for dynamical coframe backreaction
-after a W3-59 pass. That condition failed, so the unopened number remains
-untouched and this independent user-directed quantum-field branch is W3-61.
-
 ## Reproduction
 
 From the repository root:

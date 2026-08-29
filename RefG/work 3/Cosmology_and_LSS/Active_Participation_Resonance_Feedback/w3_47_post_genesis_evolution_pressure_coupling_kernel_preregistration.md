@@ -86,11 +86,11 @@
   - W3-39 energy-ledger result:
     `ff2440311e2c4ceb5fe5a2393b6730d2a3c2a2c49dd5b2ceaf7e32f0a0ab1160`;
   - W3-40 scale-dictionary result:
-    `e8104a664484ea0735387446c94367cca1035877ee6a26413eeddaf158b5be64`;
+    `6d16003df1f2d7a70371ec254f9cfc1692b7eac3df53874616135792eb2d63cf`;
   - W3-42 measure preregistration:
-    `4cc4674775525a3c76cd8cb282461e5e83b651aff3554de21983568ee7e1f9f1`;
+    `8ba44af154a3f9a18b207b4f17a3dcecdb27a8a9d59f7f9aa712c0946763ae98`;
   - W3-42 verifier source:
-    `0593c452dae764c2b0455d31807a6a81d033bd928db40717a0eec6df5fe04188`;
+    `ae30251c3fb5eefae31dd9310de62dda2d3cf700c030bcb8c1e8f08c3e57724f`;
   - W3-42 generated result is a runtime artifact: its byte digest is checked
     against the adjacent checksum, while PASS/closure flags and embedded
     preregistration/source provenance are checked independently;
@@ -99,9 +99,9 @@
   - W3-46 constitutive skeleton:
     `0109ed3d5e8daec55dbd0f01f8b05932e6f653373438455c32a3d26378e0f3b2`;
   - W3-45 active-phase preregistration:
-    `a312202a239eb25c24e66920ef400241528639345ce26967e64b96dba6757e79`;
+    `1a83a4a4cf9b2fa901cb7ba539d52bac84fd23aab0b79f6d23c2c77861ecd02a`;
   - W3-45 no-write verifier source:
-    `4de9c939e25c5176190493232b50dc313d5cc165ca0e11a5a89019dbe33dd3e3`.
+    `7789b0a7e3d875b00dcfe910d67de0c03ef72fda3e2754adf8533d8a22ab2395`.
 - `METHOD`: Exact substitution and logarithmic differentiation derive the
   homogeneous dictionary and state law. Direct sector summation checks only
   antisymmetric internal-transfer cancellation. Sign analysis classifies

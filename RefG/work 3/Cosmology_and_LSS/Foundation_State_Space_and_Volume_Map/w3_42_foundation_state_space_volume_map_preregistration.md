@@ -10,7 +10,7 @@
 
 **ASSUMPTIONS:**
 
-1. W3-41 v1.2 is the frozen upstream constitutive-interface result. Its result SHA-256 is f692c38c6deca0f20bc94cb048c4407ca3ed8520a566fa7d73b79d1fe8778ab9.
+1. W3-41 v1.2 is the frozen upstream constitutive-interface result. Its result SHA-256 is 48e6a981eaa2d696240323d6ccbbb4f744e67f2c37329ed292a1de11ce10c9fb.
 2. The foundation remains pregeometric. The periodic graphs and cell metrics below are mathematical comparison witnesses after a relational spatial interpretation is supplied; none is declared to be the universe's physical graph or topology.
 3. The scale $a>0$ retains W3-40's independent meaning as normalized foundation link dilation. It is never defined by $a=(V/V_0)^{1/3}$; doing so would make the cubic law tautological and sever the link-scale test.
 4. For the deformation dictionary, a reference nondegenerate $d$-cell has a full-rank basis $B_0$, Gram matrix $G_0=B_0^{T}B_0$, and fixed combinatorics. A supplied regular orientation-preserving homogeneous deformation $B=B_0F$, $F\in GL^+(d)$, gives $\mathcal V/\mathcal V_0=\det F$ and the Jacobi response $d\ln(\mathcal V/\mathcal V_0)/d\ln a=a\,\mathrm{tr}(F^{-1}F')$. Uniform isotropic dilation is the special input $F=aI_d$, equivalently $B(a)=aB_0$, so $G(a)=a^2G_0$.

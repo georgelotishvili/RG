@@ -127,13 +127,11 @@ relative boundary flux within the frozen scale dictionary. The current
 Work-3 foundation does not yet construct that charge or its current from
 Phi_F.
 
-W3-49 selects one concrete research candidate for that construction: a
-neutral collective resonant phase-action current. Electromagnetic charge and
-localized particle topology are excluded from the eta_F-current role because
-they carry signed or discrete particle information rather than a positive
-continuous homogeneous participation state. The candidate adds no
-foundation action or derived conservation law; it fixes the physical object
-that a future action must produce.
+W3-50 selects and realizes a neutral collective phase-action current for that
+construction. Its selection audit excludes signed electromagnetic charge and
+localized discrete topology from the positive continuous homogeneous
+`eta_F` role, while the displayed canonical action supplies the exact current
+and its independent coarse-graining.
 
 ## Selected post-W3-42 density closure
 
@@ -165,8 +163,8 @@ that a future action must produce.
 - `DEPENDENCIES`: the frozen W3-40 causal dictionary, W3-41 mechanical
   nonselection result, and W3-42 effective `d=3` volume branch.
 - `METHOD`: exact substitution, logarithmic differentiation, inverse
-  substitution, and a direct audit against the retained W3-36 benchmark; no
-  data and no likelihood.
+  substitution, and direct symbolic consistency checks; no data and no
+  likelihood.
 - `PASS_CONDITION`: every displayed relational identity and inverse has zero
   symbolic residual, the branch preserves the single-driver causal order,
   and no frozen gate is retroactively changed.
@@ -185,8 +183,7 @@ that a future action must produce.
   action. The density closure alone supplies no time evolution; the separate
   conditional operational completion below supplies its leading-EFT equation.
 - `BRANCHES`: conserved-density branch selected; W3-41's mechanical
-  `P_F=Pi_F` bridge unused; W3-36's regular same-null-front `D>0` branch
-  excluded because this closure gives `D=0`.
+  `P_F=Pi_F` bridge unused; the derived exponent gives `q=-1/3` and `D=0`.
 - `OBSERVABLE_MAP`: `A=a/p` is the current ideal relational readout; no
   identification with spectroscopic redshift is made here.
 - `FORWARD_MODEL`: N/A until the finite background inputs, photon propagation,
@@ -194,17 +191,17 @@ that a future action must produce.
 - `DATA_ROLE`: no data are read or fitted.
 - `IDENTIFIABILITY`: the closure removes the W3-40 `A`-only degeneracy via
   `a=A^(2/5)`, `p=A^(-3/5)`, and `P_F/P_F0=A^(-6/5)`.
-- `BENCHMARK`: exact recovery of the W3-40 scale identities and the
-  independent W3-36 consequence `q=-1/3`, `D=0`.
+- `BENCHMARK`: exact recovery of the W3-40 scale identities and the derived
+  consequence `q=-1/3`, `D=0`.
 - `CLOSURE_FLAGS`: `density_closure_selected=true`,
   `P_F_of_a_fixed=true`, `A_inversion_exact=true`,
   `Q_rel_microdynamics_derived=false`,
   `a_of_t_from_density_closure_alone=false`, and
   `observable_forward_model_derived=false`.
-- `CROSSCHECK`: direct exponent algebra and inverse substitution agree; the
-  W3-36 incompatibility is obtained independently from `D=1+3q`.
+- `CROSSCHECK`: direct exponent algebra and inverse substitution agree;
+  `D=0` follows independently from `D=1+3q`.
 - `PROVENANCE`: author-selected on 2026-08-22; no external data; frozen
-  W3-40/41/42 preregistrations, scripts, results, and checksums unchanged.
+  W3-40/41/42 preregistrations, scripts, results, and checksums.
 - `FILES`: this README is canonical; the W3-40, W3-41, and W3-42 READMEs
   carry synchronized downstream-status notes.
 
@@ -279,10 +276,11 @@ photon--atomic observable closure.
   curvature branch, `Lambda` branch, or scale/time dictionary creates a new
   version.
 - `ASSUMPTIONS`: the conditional low-energy Einstein--Hilbert/EFE shell; the
-  W3-36 operational metric; the selected `A=a^(5/2)`, `p=a^(-3/2)` closure;
+  operational metric with `d tau=p dt` and `A=a/p`; the selected
+  `A=a^(5/2)`, `p=a^(-3/2)` closure;
   minimally coupled conserved Noether/proper energy for nonrelativistic
-  localized defects; the W3-36 `Q_gamma=0` radiation specialization selected
-  here; `k=0`; constant `Lambda`; and the W3-40 expanding branch.
+  localized defects; the adiabatic `Q_gamma=0` radiation specialization
+  selected here; `k=0`; constant `Lambda`; and the W3-40 expanding branch.
 - `DOMAIN`: a connected interval containing `A=1` on the already-connected
   homogeneous-isotropic post-Genesis branch, with `A>0`, `H_A0>0`,
   `Omega_m0>=0`, `Omega_r0>=0`, and `E(A)^2>0` throughout; below the cutoff
@@ -297,9 +295,9 @@ photon--atomic observable closure.
   `Omega_Lambda0=1-Omega_m0-Omega_r0` on `k=0`; an additive time origin is a
   coordinate choice. The numerical inputs, the physical post-Genesis endpoint
   of the EFT interval, and the photon--atomic forward map remain open.
-- `DEPENDENCIES`: the selected density closure above, W3-36's metric and
-  `Q_gamma=0` identities, W3-40's expanding causal branch, and RefG's
-  conditional low-energy Einstein--Hilbert/EFE architecture.
+- `DEPENDENCIES`: the selected density closure above, the displayed
+  metric/time and `Q_gamma=0` identities, W3-40's expanding causal branch,
+  and RefG's conditional low-energy Einstein--Hilbert/EFE architecture.
 - `METHOD`: the `00` Einstein equation and an independent lapse variation of
   the same registered effective action, covariant source conservation, exact
   normalization, and substitution of `A=a^(5/2)` and
@@ -372,13 +370,13 @@ photon--atomic observable closure.
   Python 3.10.6 and SymPy 1.13.3; its source SHA-256 is
   `57c5542b0959734e820fd911dfe463504432d1aa568467deb719b786ae87b055`.
   It reads no external data, fits nothing, writes no files, and emits its
-  deterministic JSON report to standard output; frozen W3-36/40/41/42
-  artifacts remain unchanged.
+  deterministic JSON report to standard output; the W3-40/41/42 inputs are
+  frozen by their own contracts.
 - `FILES`: this README records the completion; the
   [exact symbolic verifier](w3_cosmology_operational_geometric_flrw.py)
   reproduces its registered residuals and closure flags; `RefG_Formal_Proof.md`
-  and the W3-36 preregistration provide its unchanged upstream EFT and metric
-  inputs.
+  and the displayed self-contained dictionary provide its upstream EFT and
+  metric inputs.
 
 Let a prime denote `d/dtau` and define
 `H_a^(tau)=a'/a`. The selected density closure gives
@@ -393,8 +391,8 @@ differentiable history `a(tau)` and therefore do not determine expansion.
 
 The strongest existing dynamical shell is RefG's
 [conditional low-energy Einstein--Hilbert/EFE architecture](../Lagrangian_Formulation/RefG_Formal_Proof.md),
-combined with the
-[W3-36 metric dictionary](w3_36_birth_threshold_thermal_preregistration.md).
+combined with the self-contained operational metric/time dictionary displayed
+above.
 For a homogeneous isotropic operational FLRW completion it gives
 
 ```text
@@ -407,9 +405,9 @@ For a homogeneous isotropic operational FLRW completion it gives
 Here `epsilon_eff` is operational effective energy density. Because `A` is
 dimensionless, `[k]=L^(-2)`; `k>0` denotes positive operational spatial
 curvature and contributes with the displayed minus sign. Likewise,
-`[Lambda]=L^(-2)`, and `Lambda>0` raises `[H_A^(tau)]^2`. W3-36 supplies the
-metric/time dictionary but does not select global spatial curvature; `k=0` is
-the separate effective branch selected in the completion below.
+`[Lambda]=L^(-2)`, and `Lambda>0` raises `[H_A^(tau)]^2`. The metric/time
+dictionary does not select global spatial curvature; `k=0` is the separate
+effective branch selected in the completion below.
 Substituting `A=a^(5/2)` gives the exact foundation-scale interface
 
 ```text
@@ -545,12 +543,10 @@ positive `Lambda` carries late-time operational acceleration. A future
 `Lambda`-free RefG acceleration law would be a different geometric action and
 therefore a new model version.
 
-W3-36 remains the bookkeeping root for the finite-origin, process-time,
-metric, thermal, and local-threshold identities. Version 1.3 removes its old
-independent scale-split diagnostic and preserves the exact `A=a/p` dictionary.
-W3-40 supplies the active single-driver interpretation: foundation expansion
-is primary, while pressure relaxation and material contraction are dependent
-stages of that one trajectory.
+The metric/process dictionary is checked directly in W3-43. W3-40 supplies
+the active single-driver interpretation: foundation expansion is primary,
+while pressure relaxation and material contraction are dependent stages of
+that one trajectory.
 
 ## W3-43 conditional ideal photon--atomic bridge
 
@@ -870,47 +866,8 @@ and the absence of the selected energy-transfer symbols from the candidate
 rate equation.
 
 This is the physical stopping boundary. No oscillon profile family, particle
-mass, size, stability, spectrum, full PDE, or automatic W3-49 stage is
+mass, size, stability, spectrum, full PDE, or automatic successor stage is
 opened.
-
-## W3-49 resonant phase-action current candidate
-
-W3-49 has status
-CANDIDATE_COLLECTIVE_RESONANT_PHASE_ACTION_CURRENT__FOUNDATION_ACTION_AND_ETA_MAP_OPEN.
-
-The candidate introduces one neutral collective phase theta_C for the
-source-locked resonant family and one abstract local cycle-averaged action
-class with constant-phase-shift invariance. Its formal phase-action current
-is obtained by differentiating that action with respect to the local phase
-gradient.
-
-This mechanism class fits eta_F's continuous coherent-participation role
-without identifying eta_F with energy, particle count, electric charge, or a
-localized topological number. The electromagnetic U(1) channel and the
-winding, linking, and Z2 particle invariants remain in their existing roles.
-A real-oscillon adiabatic I-charge is retained only as a crosscheck because
-it is generally approximate or potential-dependent.
-
-The candidate becomes a RefG mechanism only when a foundation realization
-independently supplies:
-
-1. theta_C and its transformation law;
-2. the local phase action and current;
-3. a positive locked-branch current density;
-4. the coarse-graining map from that density to eta_F;
-5. zero bulk breaking and zero relative boundary flux on the target branch.
-
-Phase averaging by itself gives an adiabatic approximation. The exact W3-47
-law requires an exact current or a rigorously zero controlled remainder.
-
-The full decision is the
-[W3-49 phase-action candidate contract](Active_Participation_Resonance_Feedback/w3_49_resonant_phase_action_current_candidate_contract.md).
-No verifier is created because no foundation action has yet been
-instantiated.
-
-This stage stops at the selected candidate and its acceptance gate. It does
-not open a potential family, oscillon profile, full PDE, particle spectrum,
-numerical evolution, or observational test.
 
 ## W3-50 neutral collective phase-density bridge
 
@@ -948,8 +905,8 @@ organized phase action is conserved while its density is diluted over the
 enlarged measure. Pressure relaxation and material rescaling are internal
 readings of this single redistribution.
 
-This model version replaces W3-49's open eta-current identification with an
-explicit author-selected constitutive meaning. The internal phase, exact
+This model version resolves the previously open eta-current identification
+with an explicit author-selected constitutive meaning. The internal phase, exact
 symmetry, and canonical action are W3-50 candidate dynamics. Their
 pregeometric origin, the physical selection of the cubic measure, the full
 Hamiltonian and its stress response, and `J_R` transport remain open.
@@ -990,139 +947,3 @@ The full decision and symbolic/provenance audit are in the
 [W3-55 relational invariant separation contract](../Relational_Invariant_Separation_and_Relative_Scale/w3_55_relational_invariant_separation_relative_scale_contract.md).
 This bounded audit closes here; a microscopic node-to-current or
 node-to-coframe theorem is not assumed.
-
-### W3-56 fixed-background coframe-lock consistency witness
-
-W3-56 has status
-`PASS_EXACT_INTERNAL_ALGEBRA_OF_SELECTED_FIXED_BACKGROUND_RESPONSE_AND_BICONFORMAL_PULLBACK_WITNESS__W3_50_OSCILLON_CORE_SPECTRAL_GATE_PRESSURE_STRESS_COVARIANT_BACKREACTION_AND_UNIVERSALITY_OPEN`.
-
-It instantiates the bounded response problem without importing the W3-47
-square law. Write the W3-50 carrier amplitude as `B=|Psi_C|`, so that
-`eta_F=(B/B0)^2`, and select the target-free fixed-background response
-
-    U_R=K(b-lambda B)^2/2,  K>0, lambda>0.
-
-Its unique stable auxiliary branch gives `beta=b/b0=B/B0`. Reading the
-positive quadratic restoring channel as `P_F^(R)=K b^2/2` then yields exactly
-
-    P_F^(R)/P_F0^(R)=eta_F=beta^2.
-
-A selected stable proper probe normal form is coupled to the same biconformal
-coframe, while an independent finite Gaussian profile checks only the
-constant-patch scaling. The action
-`S=integral dt[J_O theta_O_dot+Pi Q_dot-beta H_0]` and the pullback
-`d tau=beta dt`, `d y=d x/beta` give coordinate cadence, coordinate
-radius, and external energy/defined mass proportional to `beta`, coordinate
-signal speed proportional to `beta^2`, and invariant local proper dynamics.
-Thus the reduced candidate realizes `p=beta` for this selected probe
-witness, with no fitted exponent and no old frequency-to-mass or Koide/C3
-input.
-
-The result is deliberately bounded. The quadratic response operator and the
-meaning of its positive restoring channel are selected effective structure.
-`P_F^(R)` is not the on-shell total potential, a Hilbert stress, or W3-54's
-thermodynamic `p_C`; W3-54's free equation-of-state family does not force the
-square law. Environment-independence of `H_0`, a covariant TEGR embedding,
-an explicit foundation-generated core and fluctuation operator, localized
-backreaction, and universality remain separate gates. The full contract,
-verifier, and mutation tests are in the
-[W3-56 one-oscillon coframe-lock package](../Lagrangian_Formulation/One_Oscillon_Coframe_Lock_Bridge/README.md).
-
-### W3-57 localized-core identifiability gate
-
-W3-57 has status
-`PASS_EXACT_FIXED_COFRAME_STATIONARY_SPHERICAL_PHASE_LOCKED_ZERO_FLUX_STRICT_CONVEX_INTRINSIC_CORE_NO_GO_AND_EOS_NONIDENTIFIABILITY__TIME_DEPENDENT_CORE_OPERATOR_FLOQUET_SPECTRUM_AND_BACKGROUND_SCALING_OPEN`.
-
-It tests the actual W3-50/W3-54 one-potential action before any new oscillon
-potential is selected. On a fixed non-backreacting Minkowski coframe with an
-infinite asymptotically homogeneous radial domain, the regular stationary
-spherical globally phase-locked zero-flux branch gives `u^r=0`; the phase
-equation then gives `rho_C'(n_C(r))=Omega`. Every strict-convex healthy branch
-therefore has constant `n_C`, so matching the background leaves no nontrivial
-intrinsic core on this branch. If `rho_C'` is constant throughout a nonzero
-density interval, the profile remains algebraically undetermined: without an
-amplitude gradient or surface term, its radius is dynamically unselected.
-
-On an infinite homogeneous fixed background, the longitudinal phase-current
-plane-wave branch is gapless acoustic, with
-`c_s^2=n_C rho_C''/rho_C'`. The equally healthy countermodels
-`rho_C=kappa n_C^(4/3)` and `rho_C=kappa n_C^2` preserve the same W3-50
-charge law but give different sound cones, phase-rate scalings, and pressure
-powers. The current equation-of-state freedom therefore cannot identify an
-oscillon spectrum or the common environmental factor.
-
-The same audit prevents the W3-56 restoring-channel witness from being
-promoted to physical pressure without a new action. The full displayed
-auxiliary response potential, its density derivative, and its pressure-like
-Legendre combination all vanish on its algebraic equilibrium, while the
-separately selected `K b^2/2` channel does not; that channel is therefore not
-identifiable as a Hilbert stress from the reduced model. The minimum missing
-class of input is consequently a coframe-coupled localized-core constitutive
-action whose variation supplies
-the dispersive core operator, bounded binding nonlinearity, distinct ordinary
-oscillon phase, and Hilbert-stress projection. The exact contract and
-verifier are in the
-[W3-57 localized-core identifiability package](../Lagrangian_Formulation/One_Oscillon_Localized_Core_Identifiability_Gate/README.md).
-
-## Salvaged exact results
-
-W3-36 checks the useful metric, process-time, null-ray, radius, and volume
-identities inside one self-contained symbolic artifact.
-
-It also preserves a conditional-front assumption-consequence check. Under
-the hypothetical constant-energy, spherical-volume, same-null-front closure,
-define q=d ln a/d ln P_F and D=1+3q:
-
-- D dR/dt=c0 p^2;
-- d tau/dR=D/(c0 p);
-- for 0<D<1 and p>=1, 0<Delta tau<R_final/c0;
-- only the constant-D=D0>0, constant-q sub-branch has p proportional to
-  t^(-3/8) and elapsed process time 8 T0/5.
-
-This calculation is a conditional consistency benchmark. Its closure has not
-been derived, and its local radial front is not the global birth geometry.
-The selected density closure gives `q=-1/3` and therefore `D=0`; it is
-incompatible with the benchmark's regular `D>0` same-null-front branch and
-with `D dR/dt=c0 p^2` for positive `p`. That branch is consequently
-excluded from the current cosmology and retained only as a historical
-assumption--consequence check.
-The source snapshots were removed after these valid results were made
-self-contained in W3-36.
-
-## Retired branch evidence
-
-The superseded exploratory branches were removed from the active tree. They
-encoded a superseded total-age postulate, an unresolved ruler note, a
-stationary a=1 branch, an exploratory observational test, a superseded
-requirements draft, and an arbitrary power-law fit. None is an input to
-W3-36.
-
-The strongest negative result from the strict stationary branch is preserved
-here as an archival audit record, not as a reproducible gate. The removed
-exploratory source/result were not provenance-complete, and W3-36 does not
-depend on these numbers. Conditional on that branch's luminosity-distance
-map, the 40-bin Pantheon comparison with the full supplied covariance gave:
-
-- chi2_STB=401.0154718937386;
-- chi2_LCDM=40.021348345228716;
-- Delta_chi2=360.9941235485099;
-- p_STB=1.2851783751590529e-61;
-- 39 degrees of freedom.
-
-For the branch's correctly transformed physical-clock chronometer
-prediction, a fixed constant H_CC=1/T0 gave:
-
-- chi2_STB=182.4119037277066;
-- chi2_LCDM=14.872777476363384;
-- p_STB=9.142349049942303e-24;
-- 30 degrees of freedom.
-
-These numbers reject the strict stationary observable map, not RefG as a
-whole. Future derivations must not silently reduce to a=1, H_CC=constant,
-or D_L proportional to z(1+z).
-
-## Retained data
-
-lcparam_DS17f.txt and sys_DS17f.txt are retained as the canonical local
-Pantheon inputs for a future preregistered observable test. They do not
-constitute a current RefG fit.

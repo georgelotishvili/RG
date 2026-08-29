@@ -27,7 +27,7 @@
 
 **FREEDOM_LEDGER:** No new dynamical coefficient is fitted or selected. The free mass `m>0` is inherited from the W3-58 vacuum Hessian. `lambda` and `g` do not enter the quadratic propagator but remain coefficients of the higher interaction terms. `hbar`, the canonical operator promotion, bosonic commutators, and the positive-frequency Minkowski vacuum are explicit standard quantum inputs. The box size is a removable regulator and creates no physical parameter.
 
-**DEPENDENCIES:** Hash-pinned W3-54 contract and result for the one-coframe/sign/source convention, and hash-pinned W3-58 preregistration, source, and result for the complex field, vacuum Hessian, global current, and Hilbert source. W3-59 is a completed negative test of one real-field open-radiation projection and is not a dependency. Its conditional W3-60 backreaction gate never opened after the W3-59 failure; W3-61 is an independent user-directed quantum-field branch. Archived theories, Work 2, RefG-GR, fitted particle masses, Koide/C3, and observational data are excluded.
+**DEPENDENCIES:** Hash-pinned W3-54 contract and result for the one-coframe/sign/source convention, and hash-pinned W3-58 preregistration, source, and result for the complex field, vacuum Hessian, global current, and Hilbert source. Archived theories, fitted particle masses, Koide/C3 constructions, and observational data are excluded.
 
 **METHOD:**
 

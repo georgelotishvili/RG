@@ -195,9 +195,9 @@ boundary. The canonical statement and falsifier are recorded in the parent
 ## Frozen W3-42 gate result
 
 - model version: `W3-42-v1.0-FOUNDATION-STATE-SPACE-VOLUME-MAP`
-- upstream W3-41 result SHA-256: `f692c38c6deca0f20bc94cb048c4407ca3ed8520a566fa7d73b79d1fe8778ab9`
-- preregistration SHA-256: `4cc4674775525a3c76cd8cb282461e5e83b651aff3554de21983568ee7e1f9f1`
-- source SHA-256: `0593c452dae764c2b0455d31807a6a81d033bd928db40717a0eec6df5fe04188`
+- upstream W3-41 result SHA-256: `48e6a981eaa2d696240323d6ccbbb4f744e67f2c37329ed292a1de11ce10c9fb`
+- preregistration SHA-256: `8ba44af154a3f9a18b207b4f17a3dcecdb27a8a9d59f7f9aa712c0946763ae98`
+- source SHA-256: `ae30251c3fb5eefae31dd9310de62dda2d3cf700c030bcb8c1e8f08c3e57724f`
 - generated-result integrity: the runtime SHA-256 must match the adjacent
   `w3_42_result.sha256`; the result digest is not a logical dependency because
   `generated_utc` and runtime metadata are intentionally volatile

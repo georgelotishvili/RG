@@ -41,7 +41,7 @@ BACKGROUND_PASS_STATUS = (
 
 EXPECTED_HASHES = {
     "preregistration": (
-        "a312202a239eb25c24e66920ef400241528639345ce26967e64b96dba6757e79"
+        "1a83a4a4cf9b2fa901cb7ba539d52bac84fd23aab0b79f6d23c2c77861ecd02a"
     ),
     "w3_39_result": (
         "ff2440311e2c4ceb5fe5a2393b6730d2a3c2a2c49dd5b2ceaf7e32f0a0ab1160"
@@ -50,16 +50,16 @@ EXPECTED_HASHES = {
         "6a15bdd5234330443b27d865d7b9c223b9edb3de621480d954b8df1f55f6e294"
     ),
     "w3_40_result": (
-        "e8104a664484ea0735387446c94367cca1035877ee6a26413eeddaf158b5be64"
+        "6d16003df1f2d7a70371ec254f9cfc1692b7eac3df53874616135792eb2d63cf"
     ),
     "w3_40_checksum": (
-        "f3c2d845d8cba658a527c7501c35bac96ae3e3c607f9375ec514160dc97ccdfa"
+        "6e0449c73d85d331d3dcf664cdabbbc6be0c4cb15fb520617dcd0aaaea749b5f"
     ),
     "w3_41_preregistration": (
-        "ab852e070871c707ed46e1ac2edde995931c12bd3a0d117e784c258e9f7ba99b"
+        "4e19d4d0ece49a3f126cf24be3c2275923de5a291db29efad01b68332fdd7658"
     ),
     "w3_41_source": (
-        "849fb7a649af526ebcdf00e114bc4cd93e6cdd81b2a1cbd246dfa4c77db18f05"
+        "b22ad1cdff8754f791b8955a6408e11e8324cb4380ed8dab321c2b1f0f76a9f3"
     ),
     "operational_background_source": (
         "57c5542b0959734e820fd911dfe463504432d1aa568467deb719b786ae87b055"

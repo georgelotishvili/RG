@@ -31,7 +31,7 @@
 - `source_history`: source = each astrophysical emitter; domain = each source; scale = `object`; effective complexity = one functional source history per object until parameterized; status = open.
 - `likelihood_nuisance`: source = future surveys and likelihoods; domain = each datum or declared group; scale = `data`; effective complexity = zero here and future declared nuisance count; status = open.
 
-**DEPENDENCIES:** None. W3-40 is self-contained and imports no W3-36 result. W3-36 remains unchanged and supplies no causal closure to this gate.
+**DEPENDENCIES:** None. W3-40 is a self-contained causal-dictionary gate and imports no upstream result artifact.
 
 **METHOD:** Exact SymPy substitution, differentiation, logarithmic chain rules, positive-sign classification, comoving distance/ruler normalization, common-rescaling invariance, an explicit normalized functional-history many-to-one construction, acyclic causal-graph and unique-primary-root checking, mutation controls, exact schema-keyset checks, canonical LF validation, pinned preregistration hashing, strict JSON, and atomic result/checksum writes.
 

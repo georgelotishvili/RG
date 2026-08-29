@@ -1,9 +1,0 @@
-{
-  "claim_id": "W3_06_SPIN_AND_CHARGE_TOPOLOGY",
-  "model_version": "W3-06-v1.0-SPIN-QUARKS",
-  "status": "PASS",
-  "R_2pi_is_minus_I": "True",
-  "R_4pi_is_I": "True",
-  "Down_Quark_Charge": "1/3",
-  "Up_Quark_Charge": "2/3"
-}

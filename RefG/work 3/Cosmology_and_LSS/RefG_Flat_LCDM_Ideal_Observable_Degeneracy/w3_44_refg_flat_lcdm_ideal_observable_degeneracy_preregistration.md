@@ -72,9 +72,9 @@ no follow-on fitting stage.
   physical parameter, function, prior, profile, or switch is introduced.
 - `DEPENDENCIES`:
   1. W3-43 preregistration SHA-256:
-     `f5d4b632c32025119029ce988e5b78b38c05e03efbe5ee735835f86ec853ac49`.
+     `20793b696e7fcd64a0a4f9a575b4091eeb2faf651973448b87b2c025b2d258da`.
   2. W3-43 verifier SHA-256:
-     `90682b118f9ef8eaa8d5885bb87ba5e0d3864018401495085c1f1011b6a8df7b`.
+     `b9cf8550edc0b0db83bd2f0278e6e082bb8c18ea09433e20f71ca5f14622cf2e`.
   3. Conditional operational-background source SHA-256:
      `57c5542b0959734e820fd911dfe463504432d1aa568467deb719b786ae87b055`.
 - `METHOD`:

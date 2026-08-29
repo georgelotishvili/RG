@@ -71,9 +71,8 @@ eta_F'/eta_F=-(6/5)H_A+(2/5)Gamma_C.
 ```
 
 The W3-47 law is therefore equivalent to `Gamma_C=0` within that conditional
-identification. W3-49 then selected a neutral collective resonant phase-action
-current as the candidate architecture. W3-50 instantiated one exact
-phase-density candidate and the author-selected coarse-graining
+identification. W3-50 selected and instantiated a neutral collective
+phase-action current together with the author-selected coarse-graining
 `eta_F=mean(n_C)/mean(n_C)_0`; on the selected homogeneous comoving branch it
 gives `Q_C/Q_C0=eta_F a^3=1` and `Gamma_C=0`. This closes that homogeneous
 current gate conditionally. It does not derive the pregeometric origin of
@@ -526,37 +525,14 @@ W3-50 positive phase density
 ```
 
 Thus `GENERIC_SLOC_TO_HILBERT_T_MAP_DERIVED=true` in W3-53 and
-`PHASE_HILBERT_T_DERIVED=true` in W3-54. W3-59 tested one explicitly selected
-real scalar-field projection,
-
-```text
-S_phi=-(1/c0) integral e [1/2 g^mn d_m phi d_n phi+V(phi)],
-T^phi_mn=d_m phi d_n phi-g_mn[1/2(d phi)^2+V(phi)],
-nabla^m T^phi_mn=(Box_g phi-V'(phi))d_n phi.
-```
-
-As a standalone variational projection its source ledger is
-
-```text
-S_loc=S_C+S_phi,                 T_total=T_C+T_phi.
-```
-
-
-`T_phi` would replace the W3-58 complex-field source `T_O`; it is never added
-to `T_O`. The open-domain evolution, however, rejects the frozen
-W3-58-to-real seed as a 1000-period oscillon. W3-59 is therefore retained as
-a completed diagnostic projection, not as the active ordinary-matter branch.
-It neither supersedes nor coexists with the retained W3-58 complex field.
-
-What remains open is the foundation selection of the sextic coefficients
-and benchmark, collective-background lock, dynamical coframe backreaction,
-nonspherical stability and particle identity. Historical W3-53 flags
+`PHASE_HILBERT_T_DERIVED=true` in W3-54. What remains open is the foundation
+selection of the sextic coefficients and benchmark, collective-background
+lock, dynamical coframe backreaction, nonspherical stability and particle
+identity. W3-53 flags
 `FOUNDATION_LEDGER_TO_S_LOC_COARSE_GRAINING_DERIVED=false` and
-`MICROSCOPIC_SOURCE_MATCHING=false` remain correct for W3-53's own generic
-scope. W3-54 closes one selected continuum phase-current realization. W3-59
-proves the Hilbert-source form of its diagnostic real action but fails the
-registered oscillon bridge; neither result promotes retained coefficients to
-node-derived microscopic outputs.
+`MICROSCOPIC_SOURCE_MATCHING=false` remain correct for its generic scope.
+W3-54 closes one selected continuum phase-current realization without
+promoting the retained coefficients to node-derived microscopic outputs.
 
 ## 8. Downstream weak-field status
 
@@ -635,72 +611,13 @@ microscopic match between the coframe `a`-measure and an independently
 postulated operational `A`-measure, and any node-to-current theorem, remain
 outside W3-54 and W3-55.
 
-W3-56 now supplies a bounded fixed-background response and biconformal
-pullback consistency witness.
-Its machine status is
-`PASS_EXACT_INTERNAL_ALGEBRA_OF_SELECTED_FIXED_BACKGROUND_RESPONSE_AND_BICONFORMAL_PULLBACK_WITNESS__W3_50_OSCILLON_CORE_SPECTRAL_GATE_PRESSURE_STRESS_COVARIANT_BACKREACTION_AND_UNIVERSALITY_OPEN`;
-the full artifact is the
-[W3-56 one-oscillon coframe-lock package](One_Oscillon_Coframe_Lock_Bridge/README.md).
-It keeps collective phase, ordinary oscillon phase, and process time distinct.
-For the selected fixed-background auxiliary response
-`U_R=K(b-lambda B)^2/2`, with `B=|Psi_C|`, the unique positive branch gives
-`beta=b/b0=B/B0`. Selecting the positive restoring-channel readout
-`P_F^(R)=K b^2/2` then realizes
-`P_F^(R)/P_F0^(R)=eta_F=beta^2`. A selected proper probe normal form
-coupled as `beta H_0` and pulled back through
-`d tau=beta dt`, `d y=d x/beta` has invariant proper dynamics while coordinate
-cadence, radius, and external energy/defined mass share the factor `beta`.
-The finite Gaussian profile is an independent scaling witness, not a solved
-oscillon field configuration.
-
-This is an exact fixed-background reduced realization, not a modification of
-the frozen W3-54 master action. The auxiliary operator and its restoring
-readout are selected: `P_F^(R)` is not a derived Hilbert stress or W3-54
-thermodynamic pressure. The covariant one-coframe embedding, a
-foundation-generated oscillon core and fluctuation operator, localized
-backreaction, and universality remain the next precise particle-sector
-boundary. No particle identity, mass ratio, Koide/C3 input, Planck hierarchy,
-or frequency-to-mass postulate is inherited.
-
-W3-57 now resolves that boundary for the action actually present in Work 3.
-Its machine status is
-`PASS_EXACT_FIXED_COFRAME_STATIONARY_SPHERICAL_PHASE_LOCKED_ZERO_FLUX_STRICT_CONVEX_INTRINSIC_CORE_NO_GO_AND_EOS_NONIDENTIFIABILITY__TIME_DEPENDENT_CORE_OPERATOR_FLOQUET_SPECTRUM_AND_BACKGROUND_SCALING_OPEN`;
-the full artifact is the
-[W3-57 localized-core identifiability package](One_Oscillon_Localized_Core_Identifiability_Gate/README.md).
-For a fixed non-backreacting Minkowski coframe with an infinite asymptotically
-homogeneous radial domain, the regular stationary spherical globally
-phase-locked branch has `r^2 n_C u^r=constant`; centre regularity and zero
-asymptotic flux set the constant to zero. The W3-54 phase equation then gives
-`rho_C'(n_C(r))=Omega`. On every strict-convex healthy branch this fixes
-`n_C(r)` to the background value. If `rho_C'` is constant throughout a
-nonzero density interval, the absence of an amplitude-gradient/surface
-operator leaves the profile and radius unselected.
-
-On an infinite homogeneous fixed background, the longitudinal phase-current
-plane-wave linearization supplies the gapless acoustic branch
-`omega^2=c0^2 c_s^2 k^2`, with
-`c_s^2=n_C rho_C''/rho_C'`. Two admissible equations of state give different
-sound cones and pressure/cadence powers while sharing the exact W3-50 charge
-law, so neither a localized spectrum nor the W3-56 common factor is selected
-by the current bulk action. A conditional identification of the collective
-phase rate with the desired cadence would instead give
-`p_C proportional to n_C^(3/2)`; imposing
-`p_C proportional to n_C` selects a logarithmic equation of state and is a
-new constitutive choice rather than a result of W3-50/W3-54.
-
-W3-57 also evaluates the full displayed W3-56 auxiliary response potential
-on shell. Its potential, density derivative, and pressure-like Legendre
-combination vanish at `b=lambda B`; the separately selected `K b^2/2` channel
-is therefore not derived or identifiable as a Hilbert stress from the reduced
-model. The result is a restricted theorem about the fixed-coframe stationary
-phase-locked sector, not a theorem against every future time-dependent
-oscillon. The minimum missing class of input is a coframe-coupled
-localized-core constitutive action that generates the core operator,
-nonlinear binding, distinct ordinary oscillon phase, and stress projection in
-one source ledger.
-
-W3-58 supplies that missing operator as a new, explicitly selected model
-version rather than reading it back into W3-54. The complete artifact is the
+The W3-50/W3-54 collective one-potential sector contains no independent
+amplitude-gradient or localization operator, so it cannot select an
+intrinsic finite-radius core. A pressure-like auxiliary readout likewise
+cannot be identified as Hilbert stress unless it follows from metric
+variation of the same covariant matter action. W3-58 therefore supplies the
+minimum missing operator as a new, explicitly selected model version rather
+than reading it back into W3-54. The complete artifact is the
 [W3-58 phase-supported Q-ball-type candidate-core package](One_Oscillon_Coframe_Localized_Core/README.md).
 A complex ordinary-phase field
 `Psi_O=(chi/sqrt(2)) exp(i theta_O)` is minimally coupled to the same coframe
@@ -739,65 +656,9 @@ The exact symmetry makes this core mathematically a phase-supported Q-ball;
 it is not yet a derived neutral real oscillon. The remaining bridge is now
 specific: foundation dynamics must select the coefficients, lock the proper
 core to the collective background, and include localized backreaction before
-a particle identity or W3-56 environmental scaling can be assigned.
+a particle identity or environmental scaling can be assigned.
 
 
-W3-59 real-field open-radiation bridge tests the exact next reduction rather
-than assuming that the W3-58 phase-supported core remains stable after its
-continuous internal phase is removed. The retained field has
-
-```text
-V(phi)=m^2 phi^2/2-lambda phi^4/4+g phi^6/6,
-Box_g phi-V'(phi)=0,
-T^phi_mn=d_m phi d_n phi-g_mn[1/2(d phi)^2+V(phi)].
-```
-
-Its exact internal symmetry is `Z2`; no continuous `U(1)` charge, VK slope or
-Q-ball charge constraint survives. At the preregistered
-`a=g m^2/lambda^2=1/4`, `Omega_seed=4/5`, the one-harmonic Galerkin problem
-converges to a positive, nodeless and monotone profile with central amplitude
-`2.0131041506`, field-rms radius `2.9818445698/m` and weighted residual
-`1.32438e-8`. The W3-58 profile supplies only the BVP solver's fixed initial
-guess; the converged real profile is evolved without harmonic filtering or
-post-result adjustment.
-
-The exact omitted sources contain third and fifth harmonics. In the vacuum
-tail every odd mode obeys
-
-```text
-F_n''+2F_n'/x+[(n omega)^2-1]F_n=0.
-```
-
-A nonzero mode with `n omega>1` is an open radiation channel; an exact
-finite-energy periodic branch would have to cancel every such amplitude.
-The numerical test therefore uses calibrated absorbing domains and measures
-outward flux rather than granting a reflecting box the status of confinement.
-
-The three registered 1000-period evolutions give the same decision. The
-canonical, fine and enlarged-domain runs cross the frozen `E_ref/e` lifetime
-boundary at `110.931`, `110.982` and `110.931` seed periods. Before decay,
-during periods 80--100, the nonlinear core exceeds the identical free
-massive-field control by factors `3721.6` in core energy and `423.1` in
-central RMS amplitude. It then radiates away. Canonical/fine formation
-energy differs by `0.155%`; the maximum energy-plus-flux residual falls from
-`1.25e-4` to `3.12e-5` under refinement. Independent KDK/RK4 evolution
-agrees to `0.00421` in the final inner profile and `0.000787` in the centre
-signal. Absorber excess reflection remains below `7e-9` at the registered
-open harmonics. The observed outward detector delay, `21.25`, matches the
-massive-wave value `21.205`; the preregistered persistent late-harmonic gate
-is not met at both detector radii.
-
-Its machine status is
-`FAIL_FROZEN_W3_58_TO_W3_59_REAL_OSCILLON_BRIDGE__EXACT_REAL_FIELD_ACTION_RETAINED__ALTERNATIVE_BENCHMARKS_NOT_TESTED`;
-the complete artifact is the
-[W3-59 real-field open-radiation package](One_Oscillon_Real_Field_Open_Radiation_Bridge/README.md).
-The result rejects this frozen projection, not the class of real oscillons.
-Deleting the complex phase and second real component at this frozen benchmark
-does not preserve the W3-58 lifetime; this comparison does not establish
-`U(1)` as a universal requirement for real oscillons. Any alternative foundation-motivated benchmark is a new
-preregistered model version. W3-59 remains a fixed coframe test; dynamical
-coframe backreaction, coefficient selection, nonspherical stability,
-electric neutrality and particle identity remain separate gates.
 W3-61 supplies the shortest exact bridge from the retained RefG matter action
 to established quantum field theory. The complete artifact is the
 [W3-61 coframe scalar quantum-field package](Coframe_Scalar_Quantum_Field_Bridge/README.md).

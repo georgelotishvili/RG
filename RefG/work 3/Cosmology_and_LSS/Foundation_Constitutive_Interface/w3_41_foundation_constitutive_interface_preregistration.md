@@ -10,7 +10,7 @@
 
 **ASSUMPTIONS:**
 
-1. W3-40 v1.2 is the frozen upstream causal dictionary. Its result SHA-256 is e8104a664484ea0735387446c94367cca1035877ee6a26413eeddaf158b5be64.
+1. W3-40 v1.2 is the frozen upstream causal dictionary. Its result SHA-256 is 6d16003df1f2d7a70371ec254f9cfc1692b7eac3df53874616135792eb2d63cf.
 2. The homogeneous post-origin branch has $a>0$, present normalization $a_0=1$, a fixed ideal-comoving cell/link count, and the declared interface ansatz $V_F(a)=V_0a^3$ with $V_0>0$. The microscopic theory has not yet derived this volume law.
 3. $E_F(a)$ is the complete adiabatic energy of that fixed comoving foundation cell at fixed conserved charges and belongs to $C^2$ on the declared interval.
 4. The mechanical generalized foundation pressure is defined by
@@ -41,7 +41,7 @@
 - material_response: source = foundation--oscillon microphysics; domain = material standards; scale = universal; effective complexity = W3-40's frozen bridge with microscopic derivation open.
 - future_observables: source = photon, matter, source, and likelihood models; domain = each declared group or datum; scale = group/data; effective complexity = zero here and fully declared in a future forward model; status = open.
 
-**DEPENDENCIES:** The script reads and verifies the exact W3-40 result and checksum, including the single primary root $a$, the dependent material response, the $A$-only nonidentifiability result, and every still-open physical closure needed here. W3-36 is not an algebraic dependency.
+**DEPENDENCIES:** The script reads and verifies the exact W3-40 result and checksum, including the single primary root $a$, the dependent material response, the $A$-only nonidentifiability result, and every still-open physical closure needed here.
 
 **METHOD:** Exact SymPy differentiation, chain rules, fundamental-theorem reconstruction, branch-sign classification, two distinct power-law witnesses, generic and $n=3$ energy reconstruction, the exact $n\to3$ limit, upstream result/hash verification, semantic role separation, shared-validator negative mutations, strict JSON, and atomic checksum output.
 

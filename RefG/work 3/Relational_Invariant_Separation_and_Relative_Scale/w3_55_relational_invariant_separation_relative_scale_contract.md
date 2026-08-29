@@ -68,14 +68,14 @@ No upstream artifact is modified by this stage.
 
 | Input | Registered result used here | SHA-256 |
 |---|---|---|
-| W3-40 | Ideal-comoving `N_12` is fixed; `L_12=N_12 ell_F0 a`; `A=a/p` | `101F1AE30430D519307E390536C0E7C0D6EA740EAEEAAF7458B5BCD8EEF2B8D6` |
-| W3-42 | Conditional three-dimensional homogeneous measure `V_a=a^3 V_0` | `4CC4674775525A3C76CD8CB282461E5E83B651AFF3554DE21983568EE7E1F9F1` |
+| W3-40 | Ideal-comoving `N_12` is fixed; `L_12=N_12 ell_F0 a`; `A=a/p` | `6DA72A4FEA86FE6BD4C29F007593C9C2C176062150D2090EE597845A53C9F5EB` |
+| W3-42 | Conditional three-dimensional homogeneous measure `V_a=a^3 V_0` | `8BA44AF154A3F9A18B207B4F17A3DCECDB27A8A9D59F7F9AA712C0946763AE98` |
 | W3-46 | Material/reference response and one-effect bookkeeping | `0109ED3D5E8DAEC55DBD0F01F8B05932E6F653373438455C32A3D26378E0F3B2` |
-| W3-47 preregistration | Selected `P_F/P_F0=eta`, `p^2=P_F/P_F0` and `A=a/p` coupling kernel | `ED1D5B6C2A982CDAAFD6739E6A8388219931300B8DF92BF015AB2112001049A5` |
-| W3-47 verifier | Exact conditional coupling-kernel algebra and current W3-42 provenance policy | `D65D8644F443D7991FADBF5F808453B4B227FB87BCEF789A8E8C8F89860BFC1F` |
-| W3-50 | `Q_C/Q_C0=eta_F a^3=1` on the selected neutral phase-density branch | `1CB66438A6BF53F1A661A014328204C05EDFE847F81D876DEFE69EAA400591DB` |
+| W3-47 preregistration | Selected `P_F/P_F0=eta`, `p^2=P_F/P_F0` and `A=a/p` coupling kernel | `9B603B1DF55EDF994F1E528A6CC8E16B69C474DD4C1B3DF815E2654A6C279D50` |
+| W3-47 verifier | Exact conditional coupling-kernel algebra and current W3-42 provenance policy | `9D09324D9010447EFF29E7AABDCD205609DCB26D6C3CA936B6F236901DB92C98` |
+| W3-50 | `Q_C/Q_C0=eta_F a^3=1` on the selected neutral phase-density branch | `C9B8E7DC8BEB44E26838BA65A49400A58431FBB06F72A30BB3A4CC99D46DD635` |
 | W3-54 | Covariant phase current, one Hilbert source and the same homogeneous charge reduction | `6CC748EB806D0BCCAAF63105567A5D9B1569C56F6B53951C554EC4BAD1AA9879` |
-| Current Georgian intuitive-manuscript snapshot | Relational measurement, fixed ideal-comoving count, one-event cosmological reading and exact relative-scale reconstruction | `172B8B94798B608A429C1CEFA6FA183578CFB12F080E510DA537F1D40E920C82` |
+| Current Georgian intuitive-manuscript snapshot | Relational measurement, fixed ideal-comoving count, one-event cosmological reading and exact relative-scale reconstruction | `23EBE28AA32CF342A682208771320B15E896952DFD801A8CCE459369CCFD00E5` |
 
 The hashes pin the exact evidence audited by this stage. A later upstream
 change requires rerunning the verifier and reopening this contract.

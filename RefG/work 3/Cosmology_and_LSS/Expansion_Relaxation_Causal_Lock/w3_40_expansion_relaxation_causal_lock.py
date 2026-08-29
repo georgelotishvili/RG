@@ -19,7 +19,7 @@ HERE = Path(__file__).resolve().parent
 PREREG = HERE / "w3_40_expansion_relaxation_causal_lock_preregistration.md"
 OUTPUT = HERE / "w3_40_result.json"
 HASH_OUTPUT = HERE / "w3_40_result.sha256"
-PINNED_PREREG_SHA256 = "101f1ae30430d519307e390536c0e7c0d6ea740eaeeaaf7458b5bcd8eef2b8d6"
+PINNED_PREREG_SHA256 = "6da72a4fea86fe6bd4c29f007593c9c2c176062150d2090ee597845a53c9f5eb"
 
 REQUIRED_CONTRACT_FIELDS = {
     "CLAIM_ID",
@@ -638,8 +638,7 @@ def build_contract() -> dict[str, object]:
             },
         },
         "DEPENDENCIES": (
-            "None; self-contained; W3-36 is unchanged and supplies no causal "
-            "closure to W3-40."
+            "None; self-contained; no upstream result artifact is imported."
         ),
         "METHOD": (
             "Exact substitution, ordinary/logarithmic chain rules, positive-sign "

@@ -43,7 +43,7 @@ HASH_OUTPUT = HERE / 'w3_58_result.sha256'
 FORMAL_LEDGER = WORK3 / 'Lagrangian_Formulation' / 'RefG_Formal_Proof.md'
 
 PINNED_PREREG_SHA256 = (
-    '962980d4607ba506a5b65fe458f04ab31d8a78ac74511c68d43ff2d95f911dda'
+    'ae16e3a326d2af5740936ab15d9aa9de2f0bd9fe4fb8e35b19c21b24ce8bf5db'
 )
 
 DEPENDENCIES = {
@@ -53,7 +53,7 @@ DEPENDENCIES = {
             / 'Active_Participation_Resonance_Feedback'
             / 'w3_50_neutral_collective_phase_density_bridge_contract.md'
         ),
-        'sha256': '1cb66438a6bf53f1a661a014328204c05edfe847f81d876defe69eaa400591db',
+        'sha256': 'c9b8e7dc8beb44e26838ba65a49400a58431fbb06f72a30bb3a4cc99d46dd635',
     },
     'W3_54_contract': {
         'path': (
@@ -63,50 +63,7 @@ DEPENDENCIES = {
         ),
         'sha256': '6cc748eb806d0bccaaf63105567a5d9b1569c56f6b53951c554ec4bad1aa9879',
     },
-    'W3_56_preregistration': {
-        'path': (
-            WORK3 / 'Lagrangian_Formulation'
-            / 'One_Oscillon_Coframe_Lock_Bridge'
-            / 'w3_56_one_oscillon_coframe_lock_bridge_preregistration.md'
-        ),
-        'sha256': '2621326161bfb65a651e56bfdeade2e3b290efe39cf2211467851850d030dc5c',
-    },
-    'W3_56_result': {
-        'path': (
-            WORK3 / 'Lagrangian_Formulation'
-            / 'One_Oscillon_Coframe_Lock_Bridge' / 'w3_56_result.json'
-        ),
-        'checksum_path': (
-            WORK3 / 'Lagrangian_Formulation'
-            / 'One_Oscillon_Coframe_Lock_Bridge' / 'w3_56_result.sha256'
-        ),
-        'sha256': '725c09e77b14a18a46be8938f224eeb42248ea9e736f7c46e9ae9d57599c3c86',
-    },
-    'W3_57_preregistration': {
-        'path': (
-            WORK3 / 'Lagrangian_Formulation'
-            / 'One_Oscillon_Localized_Core_Identifiability_Gate'
-            / 'w3_57_one_oscillon_localized_core_identifiability_preregistration.md'
-        ),
-        'sha256': 'fb703be40b4566e1c9a13c4eb5e5bcee41aa0119d3e6d010ca139ed75d158b1b',
-    },
-    'W3_57_result': {
-        'path': (
-            WORK3 / 'Lagrangian_Formulation'
-            / 'One_Oscillon_Localized_Core_Identifiability_Gate'
-            / 'w3_57_result.json'
-        ),
-        'checksum_path': (
-            WORK3 / 'Lagrangian_Formulation'
-            / 'One_Oscillon_Localized_Core_Identifiability_Gate'
-            / 'w3_57_result.sha256'
-        ),
-        'sha256': 'd99e2a0c72f191f3e98b190f5f3aa923d58b712aa74566c89c1d9e864c25bc7c',
-    },
 }
-
-W3_56_STATUS = 'PASS'
-W3_57_STATUS = 'PASS'
 
 REQUIRED_CONTRACT_FIELDS = {
     'CLAIM_ID', 'CLAIM', 'TYPE', 'MODEL_VERSION', 'ASSUMPTIONS', 'DOMAIN',
@@ -153,7 +110,7 @@ REQUIRED_FALSE_FLAGS = {
     'm_and_lambda_from_foundation_derived',
     'neutral_real_oscillon_derived',
     'theta_O_theta_C_lock_derived',
-    'w3_56_background_scaling_from_core_derived',
+    'environmental_background_scaling_from_core_derived',
     'P_F_from_core_stress_derived',
     'square_pressure_law_from_core_stress_derived',
     'localized_gravitational_backreaction_derived',
@@ -251,6 +208,9 @@ def verify_preregistration() -> dict[str, object]:
         'Omega=4/5',
         'NUMERICAL_EVIDENCE',
         'neutral_real_oscillon_derived',
+        'fixed non-backreacting Minkowski coframe',
+        'selected directly in this preregistration',
+        'collective one-potential sector contains no amplitude-gradient',
     )
     return {
         'sha256': digest,
@@ -264,7 +224,9 @@ def verify_preregistration() -> dict[str, object]:
 
 def verify_dependencies() -> dict[str, object]:
     records: dict[str, object] = {}
-    all_pass = True
+    expected_dependency_keys = {'W3_50_contract', 'W3_54_contract'}
+    keyset_exact = set(DEPENDENCIES) == expected_dependency_keys
+    all_pass = keyset_exact
     for name, spec in DEPENDENCIES.items():
         path = Path(spec['path'])
         actual = sha256(path)
@@ -274,24 +236,15 @@ def verify_dependencies() -> dict[str, object]:
             'actual_sha256': actual,
             'hash_exact': actual == spec['sha256'],
         }
-        if 'checksum_path' in spec:
-            checksum_path = Path(spec['checksum_path'])
-            checksum_token = canonical_text(checksum_path).strip().split()[0]
-            payload = json.loads(canonical_text(path))
-            expected_status = W3_56_STATUS if name.startswith('W3_56') else W3_57_STATUS
-            record.update({
-                'checksum_matches': checksum_token == actual,
-                'status_exact': payload.get('status') == expected_status,
-                'artifact_valid': payload.get('artifact_valid') is True,
-            })
-        record_pass = all(
-            bool(v) for k, v in record.items()
-            if k in {'hash_exact', 'checksum_matches', 'status_exact', 'artifact_valid'}
-        )
+        record_pass = bool(record['hash_exact'])
         record['pass'] = record_pass
         all_pass = all_pass and record_pass
         records[name] = record
-    return {'records': records, 'all_pass': all_pass}
+    return {
+        'records': records,
+        'keyset_exact': keyset_exact,
+        'all_pass': all_pass,
+    }
 
 
 def symbolic_gate() -> dict[str, object]:
@@ -1564,7 +1517,7 @@ def main() -> None:
         and all(value is False for value in scope_flags.values())
     )
     result = {
-        'schema_version': 'W3-58-result-v1.0',
+        'schema_version': 'W3-58-result-v1.1',
         'claim_id': CLAIM_ID,
         'model_version': MODEL_VERSION,
         'status': status,

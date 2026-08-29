@@ -145,8 +145,8 @@ The result closes one selected, action-generated, phase-supported Q-ball-type
 candidate core. The remaining physical bridge is sharply defined: the
 foundation dynamics must select the core coefficients and connect this proper
 core to the collective background response. That later bridge will decide the
-W3-56 cadence and environmental scaling and the identification of a physical
-particle.
+environmental cadence and core--background scaling and the identification of
+a physical particle.
 
 ## Run
 

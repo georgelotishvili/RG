@@ -38,7 +38,7 @@ DEPENDENCY_HASHES = OrderedDict(
     [
         (
             "w3_42_foundation_state_space_volume_map_preregistration.md",
-            "4cc4674775525a3c76cd8cb282461e5e83b651aff3554de21983568ee7e1f9f1",
+            "8ba44af154a3f9a18b207b4f17a3dcecdb27a8a9d59f7f9aa712c0946763ae98",
         ),
         (
             "w3_46_active_participation_resonance_feedback_contract.md",
@@ -46,7 +46,7 @@ DEPENDENCY_HASHES = OrderedDict(
         ),
         (
             "w3_50_neutral_collective_phase_density_bridge_contract.md",
-            "1cb66438a6bf53f1a661a014328204c05edfe847f81d876defe69eaa400591db",
+            "c9b8e7dc8beb44e26838ba65a49400a58431fbb06f72a30bb3a4cc99d46dd635",
         ),
     ]
 )
@@ -424,17 +424,10 @@ def main() -> None:
         record["verified"] for record in dependency_records.values()
     )
 
-    forbidden_dependencies = [
-        "w3_01_emergent_metric_from_pressure.py",
-        "w3_02_emergent_action_from_pressure.py",
-        "w4_02_biconformal_gravity.py",
-        "w4_04_strain_tensor_action.py",
-        "w4_05_defect_tensor_gravity.py",
-        "w4_06_kleinert_equivalence.py",
-    ]
-    declared_logical_dependencies = list(DEPENDENCY_HASHES)
-    historical_ansatz_not_used = not any(
-        name in declared_logical_dependencies for name in forbidden_dependencies
+    declared_logical_dependencies = set(DEPENDENCY_HASHES)
+    dependency_registry_closed = (
+        declared_logical_dependencies == set(dependency_paths(work3))
+        and declared_logical_dependencies == set(dependency_records)
     )
 
     exact_checks = OrderedDict(
@@ -460,7 +453,7 @@ def main() -> None:
             ("one_source_ledger_selected_consistent", one_source_ledger_selected_consistent),
             ("weinberg_witten_scope_consistent", weinberg_witten_scope_consistent),
             ("dependencies_verified", dependencies_verified),
-            ("declared_historical_dependency_exclusion", historical_ansatz_not_used),
+            ("declared_dependency_registry_closed", dependency_registry_closed),
         ]
     )
     premise_mutation_checks = OrderedDict()

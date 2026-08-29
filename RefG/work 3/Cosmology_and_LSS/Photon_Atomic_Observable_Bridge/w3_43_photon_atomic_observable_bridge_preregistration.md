@@ -43,7 +43,7 @@ The bridge adds no continuous freedom and no second material-scale factor.
 
 **TYPE:** `CONDITIONAL_EXACT_IDEAL_OBSERVABLE_MAP`.
 
-**MODEL_VERSION:** `W3-COSMOLOGY-v1.1-PHOTON-ATOMIC-OBSERVABLE-BRIDGE`.
+**MODEL_VERSION:** `W3-COSMOLOGY-v1.2-PHOTON-ATOMIC-OBSERVABLE-BRIDGE`.
 Changing the operational metric, photon action, dispersion relation, local
 atomic standard, transparency or photon-number law, curvature branch,
 background source registry, or scale/time dictionary creates a new model
@@ -61,6 +61,9 @@ version.
              - A(tau)^2 [d chi^2 + chi^2 d Omega_2^2],
    A>0,  d tau=p dt,  A=a/p.
    ```
+   The coefficient pullback from `(t,a,p)` to `(tau,A)` and the exact rate
+   identity `H_A^(tau)=p^(-1)(dot a/a-dot p/p)` are checked locally in this
+   gate.
 3. The photon sector on this effective branch is the minimally coupled Maxwell
    action with time-independent operational coupling,
    
@@ -132,13 +135,13 @@ them for an observational chronometer model requires a separate contract.
 cancels from the derived `D_L` and is not a fitted supernova luminosity or a
 claim that intrinsic luminosity has been derived.
 
-**DEPENDENCIES:** W3-36 supplies the exact metric/process dictionary. W3-40
-supplies the single-driver semantic context of `A=a/p`; no W3-40 artifact
-enters this gate's pass logic. The selected conserved relaxation-density
-closure supplies `p=A^(-3/5)` and `a=A^(2/5)`. The upstream operational
-geometric FLRW verifier supplies the conditional background equation and its
-finite freedom ledger. The W3-36 source and preregistration are pinned and its
-read-only `build_report()` identity flags are checked directly.
+**DEPENDENCIES:** The metric/process dictionary `d tau=p dt`, `A=a/p`, its
+coefficient pullback, and its rate identity are declared and checked directly
+in this gate. W3-40 supplies the single-driver semantic context of `A=a/p`;
+no W3-40 artifact enters this gate's pass logic. The selected conserved
+relaxation-density closure supplies `p=A^(-3/5)` and `a=A^(2/5)`. The pinned
+upstream operational-geometric FLRW verifier supplies the conditional
+background equation and its finite freedom ledger.
 
 **METHOD:** Two independent photon-frequency derivations are used: the
 homogeneous eikonal with conserved comoving wave number and the radial null
@@ -281,7 +284,7 @@ preference claim is part of this gate.
 **CLOSURE_FLAGS:** Required true flags are:
 
 - `upstream_background_pass_verified`
-- `w3_36_metric_dictionary_pass_verified`
+- `operational_scale_time_dictionary_exact`
 - `pinned_dependency_hashes_exact`
 - `operational_metric_branch_pinned`
 - `minimal_Maxwell_branch_selected`
@@ -335,12 +338,12 @@ an extra `p_o/p_e` endpoint factor, a missing arrival-rate loss, and the retired
 `z(1+z)` distance law. Separate mutations require detection of an omitted
 generic atomic-drift term and an omitted stellar-clock factor.
 
-**PROVENANCE:** The verifier will pin the canonical UTF-8 LF preregistration,
-W3-36 source/preregistration, and upstream operational-background source
-hashes; call both upstream read-only report builders and verify the required
-identity/background flags; record Python/SymPy versions and its own source
-SHA-256; emit strict deterministic JSON to standard output; and write no
-files.
+**PROVENANCE:** The verifier will pin the canonical UTF-8 LF preregistration
+and upstream operational-background source hashes; call the upstream
+read-only background report builder; verify the local metric/time dictionary
+and required background flags; record Python/SymPy versions and its own
+source SHA-256; emit strict deterministic JSON to standard output; and write
+no files.
 
 **FILES:** This preregistration, the exact symbolic verifier
 `w3_43_photon_atomic_observable_bridge.py`, and the parent

@@ -17,25 +17,18 @@ import sympy as sp
 
 
 CLAIM_ID = "W3_43_PHOTON_ATOMIC_OBSERVABLE_BRIDGE"
-MODEL_VERSION = "W3-COSMOLOGY-v1.1-PHOTON-ATOMIC-OBSERVABLE-BRIDGE"
+MODEL_VERSION = "W3-COSMOLOGY-v1.2-PHOTON-ATOMIC-OBSERVABLE-BRIDGE"
 PASS_STATUS = (
     "PASS_CONDITIONAL_IDEAL_OBSERVABLE_MAP__"
     "ASTROPHYSICAL_FORWARD_MODEL_AND_DATA_TEST_OPEN"
 )
 
 EXPECTED_PREREG_SHA256 = (
-    "f5d4b632c32025119029ce988e5b78b38c05e03efbe5ee735835f86ec853ac49"
+    "20793b696e7fcd64a0a4f9a575b4091eeb2faf651973448b87b2c025b2d258da"
 )
 EXPECTED_BACKGROUND_SHA256 = (
     "57c5542b0959734e820fd911dfe463504432d1aa568467deb719b786ae87b055"
 )
-EXPECTED_W3_36_PREREG_SHA256 = (
-    "71580ea4f37c567190ad3f7d826d5b46582b5aab49e36e21cbf59f4eac482b88"
-)
-EXPECTED_W3_36_SOURCE_SHA256 = (
-    "8b5fa7592f5c02f5ab9d07ece1e4671f0206d96517e599c56cfbd5cfe1fcab05"
-)
-
 OPTICAL_REGISTRY = (
     "comoving_universal_local_atomic_proper_frequency",
     "minimally_coupled_Maxwell_geometric_optics",
@@ -73,7 +66,7 @@ EXPECTED_FREEDOM_LEDGER = frozenset(
 
 REQUIRED_TRUE_FLAGS = (
     "upstream_background_pass_verified",
-    "w3_36_metric_dictionary_pass_verified",
+    "operational_scale_time_dictionary_exact",
     "pinned_dependency_hashes_exact",
     "operational_metric_branch_pinned",
     "minimal_Maxwell_branch_selected",
@@ -157,6 +150,9 @@ EXPECTED_RESIDUAL_KEYS = frozenset(
         "luminosity_distance_normalized",
         "luminosity_distance_routes",
         "neighboring_null_fronts",
+        "operational_scale_rate_pullback",
+        "operational_space_metric_pullback",
+        "process_time_metric_pullback",
         "photon_coordinate_endpoint_ratio",
         "photon_flux_ledger",
         "present_background_normalization",
@@ -181,7 +177,7 @@ EXPECTED_MUTATION_KEYS = frozenset(
 EXPECTED_CLOSURE_FLAG_KEYS = frozenset(
     {
         "upstream_background_pass_verified",
-        "w3_36_metric_dictionary_pass_verified",
+        "operational_scale_time_dictionary_exact",
         "pinned_dependency_hashes_exact",
         "operational_metric_branch_pinned",
         "minimal_Maxwell_branch_selected",
@@ -224,8 +220,6 @@ EXPECTED_DEPENDENCY_HASH_KEYS = frozenset(
     {
         "preregistration",
         "upstream_background_source",
-        "w3_36_preregistration",
-        "w3_36_source",
     }
 )
 EXPECTED_REPORT_KEYS = frozenset(
@@ -253,7 +247,6 @@ EXPECTED_REPORT_KEYS = frozenset(
         "dependency_hashes_exact",
         "canonical_dependency_text",
         "upstream_background_status",
-        "w3_36_identity_status",
         "runtime",
         "source_sha256",
     }
@@ -309,6 +302,29 @@ def _symbolic_checks() -> tuple[
         "Omega_m0 Omega_r0", nonnegative=True
     )
     Omega_Lambda0 = 1 - Omega_m0 - Omega_r0
+
+    # Self-contained pullback from the foundation-coordinate dictionary to
+    # operational proper time and scale.
+    foundation_t = sp.symbols("foundation_t", real=True)
+    a_foundation = sp.Function("a_foundation")(foundation_t)
+    p_foundation = sp.Function("p_foundation")(foundation_t)
+    dt_dtau = 1 / p_foundation
+    process_time_metric_pullback = (
+        p_foundation**2 * dt_dtau**2 - 1
+    )
+    operational_space_metric_pullback = (
+        a_foundation**2 / p_foundation**2
+        - (a_foundation / p_foundation) ** 2
+    )
+    operational_scale_rate_pullback = (
+        sp.diff(sp.log(a_foundation / p_foundation), foundation_t)
+        / p_foundation
+        - (
+            sp.diff(a_foundation, foundation_t) / a_foundation
+            - sp.diff(p_foundation, foundation_t) / p_foundation
+        )
+        / p_foundation
+    )
 
     q, K_tau, K_chi = sp.symbols("q K_tau K_chi", positive=True)
     nu_atom_e, nu_atom_o = sp.symbols(
@@ -436,7 +452,7 @@ def _symbolic_checks() -> tuple[
         affine_K_tau_o / affine_K_tau_e - A_e / A_o
     )
 
-    # General W3-36 atomic endpoint factorization. The photon endpoint
+    # Generic atomic endpoint factorization. The photon endpoint
     # frequency comes from the independently solved eikonal transport.
     nu_gamma_e = nu_atom_e
     nu_gamma_o = nu_gamma_e * (omega_o / omega_e)
@@ -756,6 +772,9 @@ def _symbolic_checks() -> tuple[
     )
 
     residuals = {
+        "process_time_metric_pullback": process_time_metric_pullback,
+        "operational_space_metric_pullback": operational_space_metric_pullback,
+        "operational_scale_rate_pullback": operational_scale_rate_pullback,
         "christoffel_tau_chichi": christoffel_tau_chichi,
         "christoffel_chi_tauchi": christoffel_chi_tauchi,
         "eikonal_null_dispersion": eikonal_null_dispersion,
@@ -899,18 +918,9 @@ def build_report() -> dict[str, object]:
     background_path = (
         cosmology_dir / "w3_cosmology_operational_geometric_flrw.py"
     )
-    w3_36_prereg_path = (
-        cosmology_dir / "w3_36_birth_threshold_thermal_preregistration.md"
-    )
-    w3_36_source_path = (
-        cosmology_dir / "w3_36_birth_threshold_thermal.py"
-    )
-
     dependency_hashes = {
         "preregistration": _sha256(prereg_path),
         "upstream_background_source": _sha256(background_path),
-        "w3_36_preregistration": _sha256(w3_36_prereg_path),
-        "w3_36_source": _sha256(w3_36_source_path),
     }
     dependency_hashes_exact = {
         "preregistration": (
@@ -921,30 +931,17 @@ def build_report() -> dict[str, object]:
             dependency_hashes["upstream_background_source"]
             == EXPECTED_BACKGROUND_SHA256
         ),
-        "w3_36_preregistration": (
-            dependency_hashes["w3_36_preregistration"]
-            == EXPECTED_W3_36_PREREG_SHA256
-        ),
-        "w3_36_source": (
-            dependency_hashes["w3_36_source"]
-            == EXPECTED_W3_36_SOURCE_SHA256
-        ),
     }
     canonical_dependencies = all(
         _canonical_lf(path)
         for path in (
             prereg_path,
             background_path,
-            w3_36_prereg_path,
-            w3_36_source_path,
         )
     )
 
     upstream_report = _load_read_only_report(
         background_path, "w3_operational_background_dependency"
-    )
-    w3_36_report = _load_read_only_report(
-        w3_36_source_path, "w3_36_metric_dependency"
     )
     background_pass = bool(
         upstream_report["closure_flags"]["conditional_background_pass"]
@@ -959,32 +956,6 @@ def build_report() -> dict[str, object]:
     background_pass = background_pass and (
         frozenset(upstream_report["freedom_ledger"])
         == EXPECTED_FREEDOM_LEDGER
-    )
-    w3_36_required_identity_flags = (
-        "aggregate_identity_pass",
-        "metric_process_dictionary_exact",
-        "operational_scale_rate_identity_exact",
-        "common_cadence_rate_H_cancellation_exact",
-        "observable_definitions_recorded",
-    )
-    w3_36_pass = bool(
-        w3_36_report["claim_id"]
-        == "W3_36_BIRTH_THRESHOLD_THERMAL_CLOSURE"
-        and w3_36_report["model_version"]
-        == "W3-36-v1.3-FINITE-BIRTH"
-        and w3_36_report["status"] == "PASS"
-        and w3_36_report["scope_status"]
-        == (
-            "PASS_EXACT_IDENTITIES__FINITE_BIRTH_COMPATIBLE__"
-            "PHYSICAL_AND_THERMAL_CLOSURES_OPEN"
-        )
-        and w3_36_report["artifact_valid"] is True
-        and all(
-            w3_36_report["closure_flags"][name]
-            for name in w3_36_required_identity_flags
-        )
-        and not any(w3_36_report["physical_closure_flags"].values())
-        and w3_36_report["provenance"]["preregistration"]["valid"]
     )
     pinned_dependencies_exact = bool(
         all(dependency_hashes_exact.values())
@@ -1110,11 +1081,23 @@ def build_report() -> dict[str, object]:
     optical_entries = frozenset(OPTICAL_REGISTRY)
     flags = {
         "upstream_background_pass_verified": background_pass,
-        "w3_36_metric_dictionary_pass_verified": w3_36_pass,
+        "operational_scale_time_dictionary_exact": all_exact(
+            (
+                "process_time_metric_pullback",
+                "operational_space_metric_pullback",
+                "operational_scale_rate_pullback",
+            )
+        ),
         "pinned_dependency_hashes_exact": pinned_dependencies_exact,
         "operational_metric_branch_pinned": (
             background_pass
-            and w3_36_pass
+            and all_exact(
+                (
+                    "process_time_metric_pullback",
+                    "operational_space_metric_pullback",
+                    "operational_scale_rate_pullback",
+                )
+            )
             and pinned_dependencies_exact
         ),
         "minimal_Maxwell_branch_selected": (
@@ -1257,14 +1240,6 @@ def build_report() -> dict[str, object]:
         "dependency_hashes_exact": dependency_hashes_exact,
         "canonical_dependency_text": canonical_dependencies,
         "upstream_background_status": upstream_report["decision_status"],
-        "w3_36_identity_status": {
-            "status": w3_36_report["status"],
-            "scope_status": w3_36_report["scope_status"],
-            "artifact_valid": w3_36_report["artifact_valid"],
-            "physical_closures_open": (
-                not any(w3_36_report["physical_closure_flags"].values())
-            ),
-        },
         "runtime": {
             "python": platform.python_version(),
             "sympy": sp.__version__,

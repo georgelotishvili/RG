@@ -44,11 +44,11 @@ DEPENDENCY_HASHES = OrderedDict(
     [
         (
             "w3_42_foundation_state_space_volume_map_preregistration.md",
-            "4cc4674775525a3c76cd8cb282461e5e83b651aff3554de21983568ee7e1f9f1",
+            "8ba44af154a3f9a18b207b4f17a3dcecdb27a8a9d59f7f9aa712c0946763ae98",
         ),
         (
             "w3_42_foundation_state_space_volume_map.py",
-            "0593c452dae764c2b0455d31807a6a81d033bd928db40717a0eec6df5fe04188",
+            "ae30251c3fb5eefae31dd9310de62dda2d3cf700c030bcb8c1e8f08c3e57724f",
         ),
         (
             "w3_46_active_participation_resonance_feedback_contract.md",
@@ -56,7 +56,7 @@ DEPENDENCY_HASHES = OrderedDict(
         ),
         (
             "w3_50_neutral_collective_phase_density_bridge_contract.md",
-            "1cb66438a6bf53f1a661a014328204c05edfe847f81d876defe69eaa400591db",
+            "c9b8e7dc8beb44e26838ba65a49400a58431fbb06f72a30bb3a4cc99d46dd635",
         ),
     ]
 )
@@ -885,19 +885,11 @@ def main() -> None:
         record["verified"] for record in dependency_records.values()
     )
 
-    forbidden_historical_dependencies = {
-        "w3_01_emergent_metric_from_pressure.py",
-        "w3_02_emergent_action_from_pressure.py",
-        "w4_02_biconformal_gravity.py",
-        "w4_04_strain_tensor_action.py",
-        "w4_05_defect_tensor_gravity.py",
-        "w4_06_kleinert_equivalence.py",
-        "work 2",
-        "RefG-GR",
-    }
     declared_dependencies = set(DEPENDENCY_HASHES)
-    historical_or_old_theory_not_used = forbidden_historical_dependencies.isdisjoint(
-        declared_dependencies
+    base_dependency_names = set(dependency_paths(work3))
+    dependency_registry_closed = (
+        declared_dependencies == base_dependency_names
+        and base_dependency_names.issubset(dependency_records)
     )
     downstream_regressions_not_inputs = all(
         name not in declared_dependencies
@@ -943,7 +935,7 @@ def main() -> None:
             ("one_source_ledger_selected_and_consistent", one_source_ledger_selected_and_consistent),
             ("contract_hash_verified", contract_hash_verified),
             ("dependencies_verified", dependencies_verified),
-            ("historical_or_old_theory_not_used", historical_or_old_theory_not_used),
+            ("declared_dependency_registry_closed", dependency_registry_closed),
             ("downstream_regressions_not_inputs", downstream_regressions_not_inputs),
             ("downstream_regressions_pass", downstream_regressions_pass),
         ]

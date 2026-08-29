@@ -63,10 +63,6 @@ the parent README now records a separate conditional operational-EFT
 background equation. Numerical calibration and observable forward maps remain
 open.
 
-W3-36 is unchanged. It remains a historical finite-birth and thermal
-dictionary gate and is not the active source for the causal interpretation of
-the scale split.
-
 ## Files
 
 - `w3_40_expansion_relaxation_causal_lock_preregistration.md`
@@ -78,6 +74,6 @@ the scale split.
 
 - model version: `W3-40-v1.2-SINGLE-DRIVER-EXPANSION-RELAXATION-CAUSAL-LOCK`
 - status: `PASS_EXACT_CAUSAL_LOCK_DICTIONARY__DYNAMICS_AND_OBSERVABLES_OPEN`
-- preregistration SHA-256: `101f1ae30430d519307e390536c0e7c0d6ea740eaeeaaf7458b5bcd8eef2b8d6`
-- source SHA-256: `fda6c5617d4703e2707fe3fb8698c85c9a1a808de2e778106d156b2077127655`
-- result SHA-256: `e8104a664484ea0735387446c94367cca1035877ee6a26413eeddaf158b5be64`
+- preregistration SHA-256: `6da72a4fea86fe6bd4c29f007593c9c2c176062150d2090ee597845a53c9f5eb`
+- source SHA-256: `1b76f5e847a68deacfb345bcf2e98d46ada4e85591e69b1bbc4cc4651945a585`
+- result SHA-256: `6d16003df1f2d7a70371ec254f9cfc1692b7eac3df53874616135792eb2d63cf`

@@ -97,8 +97,7 @@
   and the common material response.
 - `RefG/work 3/Lagrangian_Formulation/RefG_Formal_Proof.md`: conditional
   Einstein--Hilbert overlap branch.
-- W3-01, W3-02 and W4-02--W4-06 are historical exploratory checks, not
-  logical dependencies of this closure.
+- No exploratory predecessor is a logical dependency of this closure.
 
 ### METHOD
 

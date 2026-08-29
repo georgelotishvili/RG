@@ -80,18 +80,18 @@
   - W3-39 exact moving-boundary energy-ledger result:
     ff2440311e2c4ceb5fe5a2393b6730d2a3c2a2c49dd5b2ceaf7e32f0a0ab1160;
   - W3-42 conditional cubic measure preregistration:
-    4cc4674775525a3c76cd8cb282461e5e83b651aff3554de21983568ee7e1f9f1;
+    8ba44af154a3f9a18b207b4f17a3dcecdb27a8a9d59f7f9aa712c0946763ae98;
   - W3-42 verifier source:
-    0593c452dae764c2b0455d31807a6a81d033bd928db40717a0eec6df5fe04188;
+    ae30251c3fb5eefae31dd9310de62dda2d3cf700c030bcb8c1e8f08c3e57724f;
   - W3-42 generated result is validated at runtime against its adjacent
     checksum, PASS/closure flags, and embedded preregistration/source
     provenance; its volatile full-file digest is not frozen;
   - W3-46 state-role contract:
     0109ed3d5e8daec55dbd0f01f8b05932e6f653373438455c32a3d26378e0f3b2;
   - W3-47 preregistration:
-    ed1d5b6c2a982cdaafd6739e6a8388219931300b8df92bf015ab2112001049a5;
+    9b603b1df55edf994f1e528a6cc8e16b69c474dd4c1b3df815e2654a6c279d50;
   - W3-47 no-write verifier source:
-    d65d8644f443d7991fadbf5f808453b4b227fb87bcef789a8e8c8f89860bfc1f.
+    9d09324d9010447eff29e7aabdcd205609dcb26d6c3ca936b6f236901db92c98.
 - METHOD:
   1. Sum the conditional L/N/R local balances and check exact cancellation
      of internal transfers.

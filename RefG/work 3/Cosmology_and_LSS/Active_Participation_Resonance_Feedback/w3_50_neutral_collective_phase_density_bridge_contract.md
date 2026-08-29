@@ -2,7 +2,8 @@
 
 ## Working frame
 
-- One target: instantiate the W3-49 candidate with the smallest post-Genesis
+- One target: instantiate the neutral collective phase-action candidate
+  selected and audited here with the smallest post-Genesis
   foundation-sector rule that can construct the W3-48 participation density
   and current without inserting the W3-47 evolution law.
 - Immediate obstacle: a real oscillon's ordinary oscillation phase is tied to
@@ -28,6 +29,17 @@
   coefficient, particle spectrum, numerical evolution, likelihood, or
   observational claim enters.
 
+The selection audit is part of this contract. The participation variable
+must represent a positive, continuous homogeneous state; remain distinct
+from energy and particle identity; arise from a variational current; be
+coarse-grained independently of the target cosmological law; and expose bulk
+sources separately from flux through a comoving boundary. A signed
+electromagnetic charge and discrete winding, linking, or `Z2` labels fail this
+role. Real-oscillon wave action remains a useful adiabatic crosscheck but does
+not by itself supply an exact current. The least-assumptive surviving class is
+therefore a neutral internal cyclic phase with its conjugate positive
+phase-action density.
+
 ## Selected physical structure
 
 The connected post-Genesis foundation state contains a neutral collective
@@ -48,10 +60,9 @@ This state-side map contains no `A`, `H_A`, W3-47 exponent, pressure law, or
 trace-amplitude rule. On a homogeneous domain it reduces to
 `eta_F=n_C/n_C0`.
 
-W3-50 v1.8 replaces W3-49's open demand for a previously derived `eta_F`
-map with the explicit author-selected state meaning above. Its consequences
-are tested here; its deeper origin from a pregeometric master state remains
-open.
+W3-50 v1.8 fixes the previously open `eta_F` map with the explicit
+author-selected state meaning above. Its consequences are tested here; its
+deeper origin from a pregeometric master state remains open.
 
 The internal phase `theta_C` is distinct from process time, the
 electromagnetic phase, and particle winding or linking. W3-50 selects that
@@ -222,17 +233,15 @@ additional conserved density.
   - intuitive ontology snapshot:
     `e9ef3e7e76606465a56edd9e12de11896d470b7ec62b30ef47311d84b60267f8`;
   - W3-42 state-space and volume-map contract:
-    `4cc4674775525a3c76cd8cb282461e5e83b651aff3554de21983568ee7e1f9f1`;
+    `8ba44af154a3f9a18b207b4f17a3dcecdb27a8a9d59f7f9aa712c0946763ae98`;
   - W3-46 state-role contract:
     `0109ed3d5e8daec55dbd0f01f8b05932e6f653373438455c32a3d26378e0f3b2`;
   - W3-47 participation-kernel contract:
-    `ed1d5b6c2a982cdaafd6739e6a8388219931300b8df92bf015ab2112001049a5`;
+    `9b603b1df55edf994f1e528a6cc8e16b69c474dd4c1b3df815e2654a6c279d50`;
   - W3-48 current-bridge contract:
-    `cd30cdb22d0ad138836afbf1f676b31786c8a9e69cdc42c1baf77603be1fe02b`;
+    `0506ed9c3a690e38a355c9b0db7ce5222cfc013dcd585f26c80b3baa030d4c41`;
   - W3-48 no-write verifier:
-    `b183a4ae919d0f5d296a414340c34d57a271ed0890bef2c30b84b92ba2e54c7f`;
-  - W3-49 candidate-selection contract:
-    `705877bbc7067ca1c95e4507628d69ac7cdbedfb6e0e01e4a97c0fbd1ac04432`.
+    `2083fb081d56796f79c4556ea74e6d3982b774574885c6767e3186dbaf7c1b38`.
 - `METHOD`:
   1. Fix the physical meaning of `eta_F` before writing the action.
   2. Represent the positive density and internal phase as one neutral
@@ -301,8 +310,8 @@ additional conserved density.
   phase-density realization from another mechanism that produces the same
   `Gamma_C=0`. Distinguishing physics requires the future nonhomogeneous
   current, stress response, phase modes, or explicit breaking signature.
-- `BENCHMARK`: W3-49 selects the candidate class and W3-48 supplies the exact
-  acceptance metric `R_eta=(2/5)Gamma_C`. Passing requires zero residual
+- `BENCHMARK`: The selection audit above fixes the candidate class and W3-48
+  supplies the exact acceptance metric `R_eta=(2/5)Gamma_C`. Passing requires zero residual
   without any occurrence of the W3-47 target law in the action or
   state-side definition.
 - `CLOSURE_FLAGS`:
@@ -342,10 +351,15 @@ additional conserved density.
   of the stationary radiative-flux rule. The frozen W3-48 verifier supplies
   the independent rate-algebra check.
 - `PROVENANCE`: Author semantic selection and local RefG snapshots frozen on
-  2026-08-22 with the hashes listed above. Mechanism-class benchmarks and
-  primary references are registered in W3-49. Independent local audits
-  checked ontology compatibility, exact versus adiabatic symmetry,
-  positivity, boundary flux, and circularity before this construction.
+  2026-08-22 with the hashes listed above. Independent local audits checked
+  ontology compatibility, exact versus adiabatic symmetry, positivity,
+  boundary flux, and circularity before this construction. Mechanism-class
+  benchmarks: Hayes, *Proceedings of the Royal Society A* 320, 187 (1970),
+  DOI `10.1098/rspa.1970.0205`; Bretherton and Garrett, *Proceedings of the
+  Royal Society A* 302, 529 (1968), DOI `10.1098/rspa.1968.0034`; Coleman,
+  *Nuclear Physics B* 262, 263 (1985), DOI
+  `10.1016/0550-3213(85)90286-X`; Kawasaki, Takahashi, and Takeda, *Physical
+  Review D* 92, 105024 (2015), DOI `10.1103/PhysRevD.92.105024`.
 - `FILES`: This contract,
   `Cosmology_and_LSS/README.md`, and
   `Lagrangian_Formulation/RefG_Formal_Proof.md`. No new script or result file
@@ -370,7 +384,8 @@ flux.
 
 ## Decision and stopping point
 
-W3-50 supplies an exact positive current realization of the W3-49 candidate.
+W3-50 supplies an exact positive-current realization of the neutral
+collective phase-action class selected and audited above.
 Conditional on the new author-selected `eta_F` meaning and the selected
 W3-42 cubic measure branch, it closes the specific W3-48 current gate on the
 post-Genesis homogeneous state. The W3-47 homogeneous law thereby gains an

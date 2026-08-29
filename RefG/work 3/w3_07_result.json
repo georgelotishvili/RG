@@ -1,7 +1,0 @@
-{
-  "claim_id": "W3_07_SINGULARITY_AVOIDANCE",
-  "model_version": "W3-07-v1.0-NO-SINGULARITY",
-  "status": "PASS",
-  "RefG_Phi_Limit": "P_0",
-  "RefG_Curv_Limit": "2*P_0**3/(G**2*M**2)"
-}

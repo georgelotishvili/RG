@@ -31,7 +31,7 @@ FORMAL_LEDGER = LAGRANGIAN / "RefG_Formal_Proof.md"
 OUTPUT = HERE / "w3_61_result.json"
 HASH_OUTPUT = HERE / "w3_61_result.sha256"
 
-PREREG_SHA256 = "615bd652097aeb748efb23693f5213193e82ac08e3ff4447652a1f05455bca79"
+PREREG_SHA256 = "fa6ed44a9d2b69ebaa81e2a6fffce4ee8c6c391173c455d3e4f4712f72aade53"
 
 DEPENDENCIES = {
     "w3_54_contract": {
@@ -44,7 +44,7 @@ DEPENDENCIES = {
         "path": LAGRANGIAN
         / "Relational_Coframe_TEGR_Phase_Source_Closure"
         / "w3_54_result.json",
-        "sha256": "86607bb0460e9b05edbd53a6e2873cef2bace40fe89cdf06212b4ead70a95b5d",
+        "sha256": "ee3666d4fb4a227b02a2564d1039a1881306b6133621def9c98d1e2c1d00e991",
         "claim_id": "W3_54_RELATIONAL_COFRAME_TEGR_PHASE_SOURCE_CLOSURE",
         "model_version": "W3-54-v1.0-RELATIONAL-COFRAME-TEGR-PHASE-SOURCE-CLOSURE",
         "status": "CONDITIONAL_EXACT_SELECTED_RELATIONAL_COFRAME_MASTER_ACTION_TO_TEGR_EQUIVALENT_EH_AND_PHASE_CURRENT_T",
@@ -53,19 +53,19 @@ DEPENDENCIES = {
         "path": LAGRANGIAN
         / "One_Oscillon_Coframe_Localized_Core"
         / "w3_58_one_oscillon_coframe_localized_core_preregistration.md",
-        "sha256": "962980d4607ba506a5b65fe458f04ab31d8a78ac74511c68d43ff2d95f911dda",
+        "sha256": "ae16e3a326d2af5740936ab15d9aa9de2f0bd9fe4fb8e35b19c21b24ce8bf5db",
     },
     "w3_58_source": {
         "path": LAGRANGIAN
         / "One_Oscillon_Coframe_Localized_Core"
         / "w3_58_one_oscillon_coframe_localized_core.py",
-        "sha256": "f4894b3608a0a5964592fe2d42015497709c35b58ba62a336dc15f7c64bd60cf",
+        "sha256": "b2c7d4380ba06eafefcae83391d321fd9cccb311a2f2a369a3d3b1406ad3dd57",
     },
     "w3_58_result": {
         "path": LAGRANGIAN
         / "One_Oscillon_Coframe_Localized_Core"
         / "w3_58_result.json",
-        "sha256": "04412d4b1c55e5a94eae25ae401f3f574c051f883e78251ec27238679ccb1940",
+        "sha256": "cc80f9799f26547de36cb9509cf5bd4f41746083c3ff47b649bf2882edd891f5",
         "claim_id": "W3_58_ONE_OSCILLON_COFRAME_LOCALIZED_CORE",
         "model_version": "W3-58-v1.0-MINIMAL-U1-SEXTIC-COFRAME-LOCALIZED-CORE",
         "status_prefix": "PASS_CONDITIONAL_EXACT_MINIMAL_COFRAME_U1_CORE_ACTION",

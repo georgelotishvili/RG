@@ -19,28 +19,28 @@ FORMAL_PROOF = (
 DEPENDENCIES = {
     'RefG/work 3/Cosmology_and_LSS/Expansion_Relaxation_Causal_Lock/'
     'w3_40_expansion_relaxation_causal_lock_preregistration.md':
-        '101F1AE30430D519307E390536C0E7C0D6EA740EAEEAAF7458B5BCD8EEF2B8D6',
+        '6DA72A4FEA86FE6BD4C29F007593C9C2C176062150D2090EE597845A53C9F5EB',
     'RefG/work 3/Cosmology_and_LSS/Foundation_State_Space_and_Volume_Map/'
     'w3_42_foundation_state_space_volume_map_preregistration.md':
-        '4CC4674775525A3C76CD8CB282461E5E83B651AFF3554DE21983568EE7E1F9F1',
+        '8BA44AF154A3F9A18B207B4F17A3DCECDB27A8A9D59F7F9AA712C0946763AE98',
     'RefG/work 3/Cosmology_and_LSS/Active_Participation_Resonance_Feedback/'
     'w3_46_active_participation_resonance_feedback_contract.md':
         '0109ED3D5E8DAEC55DBD0F01F8B05932E6F653373438455C32A3D26378E0F3B2',
     'RefG/work 3/Cosmology_and_LSS/Active_Participation_Resonance_Feedback/'
     'w3_47_post_genesis_evolution_pressure_coupling_kernel_preregistration.md':
-        'ED1D5B6C2A982CDAAFD6739E6A8388219931300B8DF92BF015AB2112001049A5',
+        '9B603B1DF55EDF994F1E528A6CC8E16B69C474DD4C1B3DF815E2654A6C279D50',
     'RefG/work 3/Cosmology_and_LSS/Active_Participation_Resonance_Feedback/'
     'w3_47_post_genesis_evolution_pressure_coupling_kernel.py':
-        'D65D8644F443D7991FADBF5F808453B4B227FB87BCEF789A8E8C8F89860BFC1F',
+        '9D09324D9010447EFF29E7AABDCD205609DCB26D6C3CA936B6F236901DB92C98',
     'RefG/work 3/Cosmology_and_LSS/Active_Participation_Resonance_Feedback/'
     'w3_50_neutral_collective_phase_density_bridge_contract.md':
-        '1CB66438A6BF53F1A661A014328204C05EDFE847F81D876DEFE69EAA400591DB',
+        'C9B8E7DC8BEB44E26838BA65A49400A58431FBB06F72A30BB3A4CC99D46DD635',
     'RefG/work 3/Lagrangian_Formulation/'
     'Relational_Coframe_TEGR_Phase_Source_Closure/'
     'w3_54_relational_coframe_tegr_phase_source_closure_contract.md':
         '6CC748EB806D0BCCAAF63105567A5D9B1569C56F6B53951C554EC4BAD1AA9879',
     'intuitive/RefG_GE.md':
-        '172B8B94798B608A429C1CEFA6FA183578CFB12F080E510DA537F1D40E920C82',
+        '23EBE28AA32CF342A682208771320B15E896952DFD801A8CCE459369CCFD00E5',
 }
 
 REQUIRED = (
