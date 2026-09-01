@@ -20,13 +20,13 @@ The verifier may read only these W3-64 files:
 
 ```text
 w3_64_source_first_einstein_strong_field.py
-SHA-256 4ecdd745404d1be64ec9f6f1220b9ce16ddfcd719178783758dcf2cc1fbe6499
+SHA-256 99bc4331bec07219308bd15e43a945792ecd59c60ef959d17684944a6635aa77
 
 w3_64_source_first_einstein_strong_field_preregistration.md
 SHA-256 25e16a499a60d36ef1972eafe70958233b7715ffe04c26d0a771ddd2f02e71b1
 
 w3_64_result.json
-SHA-256 5965c6aef9a3718ec4c028155a4ee3b10ed215f8201c45eec2ac01fbbaee4866
+SHA-256 b0898d5e3fea3e977eb0c78b2a1f8730a5b4c168857d05bdaf95b3119b75d07b
 ```
 
 W3-64 must have `artifact_valid=true`, every closure flag true, one localized Einstein source `T_O`, no second metric and no new gravitational operator.

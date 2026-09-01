@@ -16,22 +16,22 @@ Only the following hash-pinned active-core artifacts may be imported:
 
 ```text
 w3_64_source_first_einstein_strong_field.py
-SHA-256 4ecdd745404d1be64ec9f6f1220b9ce16ddfcd719178783758dcf2cc1fbe6499
+SHA-256 99bc4331bec07219308bd15e43a945792ecd59c60ef959d17684944a6635aa77
 
 w3_64_source_first_einstein_strong_field_preregistration.md
 SHA-256 25e16a499a60d36ef1972eafe70958233b7715ffe04c26d0a771ddd2f02e71b1
 
 w3_64_result.json
-SHA-256 5965c6aef9a3718ec4c028155a4ee3b10ed215f8201c45eec2ac01fbbaee4866
+SHA-256 b0898d5e3fea3e977eb0c78b2a1f8730a5b4c168857d05bdaf95b3119b75d07b
 
 w3_65_fixed_alpha_first_turning_point.py
-SHA-256 66bd707a926188cf1bb9dc7e796946039774d5cb4906dbe9ccfe42db31887a66
+SHA-256 5cc24de6951bbd57e0091b687ab467dac2070eb73403d71c52ff91386dae1b73
 
 w3_65_fixed_alpha_first_turning_point_preregistration.md
-SHA-256 a7709f22a5582677f9f955a0b613900c51da6cd975edc2361c9b559fcbbd4161
+SHA-256 385402e843850725ed562a449adb246b510b65038685cad6521d9ff1c8be3942
 
 w3_65_result.json
-SHA-256 d0adadee88c9f32097c54ad6d8945d4aff46a3bfd3aa493d70957230b921a871
+SHA-256 e3256094f5123e70f747d501d84c7db1301e7a2ab00742fc914e254007c67b0b
 ```
 
 Both upstream artifacts must remain valid. The inherited source ledger is one Einstein–Hilbert metric and one localized source `T_O`; no operator, source, action coefficient, potential coefficient, or fitted parameter may be added.

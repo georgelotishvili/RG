@@ -15,7 +15,8 @@ from scipy.integrate import cumulative_trapezoid, simpson, solve_bvp
 
 
 HERE = Path(__file__).resolve().parent
-WORK3 = HERE.parent
+STRONG_FIELD = HERE.parent
+WORK3 = STRONG_FIELD.parent
 PREREG = HERE / 'w3_64_source_first_einstein_strong_field_preregistration.md'
 OUTPUT = HERE / 'w3_64_result.json'
 W3_54 = (

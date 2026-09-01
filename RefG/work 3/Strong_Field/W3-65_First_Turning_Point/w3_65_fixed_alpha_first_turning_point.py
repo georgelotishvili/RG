@@ -20,8 +20,9 @@ from scipy.integrate import simpson
 sys.dont_write_bytecode = True
 
 HERE = Path(__file__).resolve().parent
-WORK3 = HERE.parent
-W3_64_DIR = WORK3 / 'Strong_Field_Einstein_Continuation'
+STRONG_FIELD = HERE.parent
+WORK3 = STRONG_FIELD.parent
+W3_64_DIR = STRONG_FIELD / 'W3-64_Einstein_Continuation'
 W3_64_SOURCE = W3_64_DIR / 'w3_64_source_first_einstein_strong_field.py'
 W3_64_PREREG = W3_64_DIR / 'w3_64_source_first_einstein_strong_field_preregistration.md'
 W3_64_RESULT = W3_64_DIR / 'w3_64_result.json'
@@ -29,9 +30,9 @@ PREREG = HERE / 'w3_65_fixed_alpha_first_turning_point_preregistration.md'
 OUTPUT = HERE / 'w3_65_result.json'
 
 EXPECTED_HASHES = {
-    'w3_64_source': '4ecdd745404d1be64ec9f6f1220b9ce16ddfcd719178783758dcf2cc1fbe6499',
+    'w3_64_source': '99bc4331bec07219308bd15e43a945792ecd59c60ef959d17684944a6635aa77',
     'w3_64_preregistration': '25e16a499a60d36ef1972eafe70958233b7715ffe04c26d0a771ddd2f02e71b1',
-    'w3_64_result': '5965c6aef9a3718ec4c028155a4ee3b10ed215f8201c45eec2ac01fbbaee4866',
+    'w3_64_result': 'b0898d5e3fea3e977eb0c78b2a1f8730a5b4c168857d05bdaf95b3119b75d07b',
 }
 
 ALPHA = 0.04

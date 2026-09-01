@@ -21,9 +21,10 @@ from scipy.optimize import brentq, minimize_scalar
 
 sys.dont_write_bytecode = True
 HERE = Path(__file__).resolve().parent
-WORK3 = HERE.parent
-W64 = WORK3 / 'Strong_Field_Einstein_Continuation'
-W65 = WORK3 / 'Strong_Field_Einstein_First_Turning_Point'
+STRONG_FIELD = HERE.parent
+WORK3 = STRONG_FIELD.parent
+W64 = STRONG_FIELD / 'W3-64_Einstein_Continuation'
+W65 = STRONG_FIELD / 'W3-65_First_Turning_Point'
 P64S = W64 / 'w3_64_source_first_einstein_strong_field.py'
 P64P = W64 / 'w3_64_source_first_einstein_strong_field_preregistration.md'
 P64R = W64 / 'w3_64_result.json'
@@ -33,12 +34,12 @@ P65R = W65 / 'w3_65_result.json'
 PREREG = HERE / 'w3_66_physical_radial_mode_preregistration.md'
 OUTPUT = HERE / 'w3_66_result.json'
 EXPECTED = {
-    'w64s': '4ecdd745404d1be64ec9f6f1220b9ce16ddfcd719178783758dcf2cc1fbe6499',
+    'w64s': '99bc4331bec07219308bd15e43a945792ecd59c60ef959d17684944a6635aa77',
     'w64p': '25e16a499a60d36ef1972eafe70958233b7715ffe04c26d0a771ddd2f02e71b1',
-    'w64r': '5965c6aef9a3718ec4c028155a4ee3b10ed215f8201c45eec2ac01fbbaee4866',
-    'w65s': '66bd707a926188cf1bb9dc7e796946039774d5cb4906dbe9ccfe42db31887a66',
-    'w65p': 'a7709f22a5582677f9f955a0b613900c51da6cd975edc2361c9b559fcbbd4161',
-    'w65r': 'd0adadee88c9f32097c54ad6d8945d4aff46a3bfd3aa493d70957230b921a871',
+    'w64r': 'b0898d5e3fea3e977eb0c78b2a1f8730a5b4c168857d05bdaf95b3119b75d07b',
+    'w65s': '5cc24de6951bbd57e0091b687ab467dac2070eb73403d71c52ff91386dae1b73',
+    'w65p': '385402e843850725ed562a449adb246b510b65038685cad6521d9ff1c8be3942',
+    'w65r': 'e3256094f5123e70f747d501d84c7db1301e7a2ab00742fc914e254007c67b0b',
 }
 ALPHA, A6 = 0.04, 0.25
 ANCHOR = 1.820210505787701
