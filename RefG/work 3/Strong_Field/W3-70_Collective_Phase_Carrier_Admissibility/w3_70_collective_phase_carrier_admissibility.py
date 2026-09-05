@@ -18,7 +18,7 @@ import sympy as sp
 
 
 CLAIM_ID = "W3_70_COLLECTIVE_PHASE_CARRIER_ADMISSIBILITY"
-MODEL_VERSION = "W3-70-v1.0-COLLECTIVE-PHASE-CARRIER-ADMISSIBILITY"
+MODEL_VERSION = "W3-70-v1.1-COLLECTIVE-PHASE-CARRIER-ADMISSIBILITY"
 PASS_STATUS = (
     "PASS_EXACT_STATIONARY_PHASE_BERNOULLI_AND_RESPONSE_SIGN_AUDIT__"
     "REJECTED_AS_UNIVERSAL_LOCAL_P_CARRIER_BY_HEALTHY_EOS_SIGN_CONTRADICTION__"
@@ -31,7 +31,7 @@ PACKAGE_DIR = SOURCE_PATH.parent
 REPO_ROOT = SOURCE_PATH.parents[4]
 PREREG_PATH = PACKAGE_DIR / "w3_70_collective_phase_carrier_admissibility_preregistration.md"
 RESULT_PATH = PACKAGE_DIR / "w3_70_result.json"
-PREREG_SHA256 = "e91aaa5e6141eaaef13e35b9a00e824c1c11b61e66120f70591dbe14337e2204"
+PREREG_SHA256 = "03aef4ebd535228ff021f58f398d32aa482e8344a88bbc31a5017289f17b8ce0"
 
 EXPECTED_PACKAGE_FILES = {
     "w3_70_collective_phase_carrier_admissibility_preregistration.md",
@@ -40,6 +40,11 @@ EXPECTED_PACKAGE_FILES = {
 }
 
 DEPENDENCIES = {
+    "RefG/work 3/Cosmology_and_LSS/CMB_Closure/"
+    "w3_62_cmb_einstein_source_linear_closure_preregistration.md":
+        "b4068791b63e9a072a897e9aa85eae96c588b0d33533effb9664ffbd667ae810",
+    "RefG/work 3/Cosmology_and_LSS/CMB_Closure/w3_62_result.json":
+        "ebc772b6dae31d395aaf4635095ef8ea01333da6ffeb31bbe0c30da703cac8d1",
     "RefG/work 3/Cosmology_and_LSS/Active_Participation_Resonance_Feedback/"
     "w3_50_neutral_collective_phase_density_bridge_contract.md":
         "c9b8e7dc8beb44e26838ba65a49400a58431fbb06f72a30bb3a4cc99d46dd635",
@@ -94,6 +99,8 @@ REQUIRED_TRUE_FLAGS = {
     "g8_export_not_applicable_exact",
     "dependency_hashes_exact",
     "upstream_status_and_scope_exact",
+    "one_charge_two_measure_jacobian_exact",
+    "operational_density_fifth_power_exact",
     "immutable_controls_exact",
     "candidate_local_extension_registered_exact",
     "static_total_lapse_and_no_flux_branch_registered_exact",
@@ -101,10 +108,10 @@ REQUIRED_TRUE_FLAGS = {
     "sound_speed_log_slope_exact",
     "positive_mass_operational_lapse_sign_exact",
     "healthy_density_response_sign_exact",
-    "candidate_joint_residual_requires_cs2_minus_half_exact",
+    "candidate_joint_residual_requires_cs2_minus_fifth_exact",
     "required_cs2_violates_w3_54_health_exact",
     "zero_sound_speed_regular_response_rejected_exact",
-    "inverse_density_control_matches_at_cs2_half_exact",
+    "inverse_density_control_matches_at_cs2_fifth_exact",
     "inverse_density_control_breaks_homogeneous_dictionary_exact",
     "chemical_potential_lapse_readout_exact",
     "chemical_potential_map_is_passive_exact",
@@ -224,13 +231,13 @@ def audit_preregistration() -> dict[str, Any]:
     text = PREREG_PATH.read_text(encoding="utf-8")
     required_markers = {
         "claim_id": "`W3_70_COLLECTIVE_PHASE_CARRIER_ADMISSIBILITY`",
-        "model_version": "`W3-70-v1.0-COLLECTIVE-PHASE-CARRIER-ADMISSIBILITY`",
-        "candidate_map": "p_n(x)^2 = n_C(x)/n_infinity",
+        "model_version": "`W3-70-v1.1-COLLECTIVE-PHASE-CARRIER-ADMISSIBILITY`",
+        "candidate_map": "p_n(x)^5 = n_C,op(x)/n_infinity",
         "total_lapse": "calN=sqrt(-xi^2)",
         "bernoulli": "mu(n_C) calN = omega_C = mu_infinity",
-        "health": "c_s^2=-1/2",
-        "global_witness": "mu(n_C)=mu_infinity (n_C/n_infinity)^(-1/2)",
-        "inverse_control": "p_inv^2=n_infinity/n_C",
+        "health": "c_s^2=-1/5",
+        "global_witness": "mu(n_C)=mu_infinity (n_C/n_infinity)^(-1/5)",
+        "inverse_control": "p_inv^5=n_infinity/n_C",
         "pass_status": PASS_STATUS,
         "stop_rule": "No new action, equation of state, mixed coupling",
     }
@@ -276,6 +283,9 @@ def audit_upstream() -> tuple[dict[str, Any], bool]:
         "RefG/work 3/Strong_Field/W3-69_Algebraic_Material_Response_Candidate/"
         "w3_69_result.json"
     )
+    w62 = load_json(REPO_ROOT / (
+        "RefG/work 3/Cosmology_and_LSS/CMB_Closure/w3_62_result.json"
+    ))
     w50 = w50_path.read_text(encoding="utf-8")
     w51 = load_json(w51_path)
     w54 = load_json(w54_path)
@@ -283,6 +293,18 @@ def audit_upstream() -> tuple[dict[str, Any], bool]:
     w69 = load_json(w69_path)
 
     checks = {
+        "w62_measure_result_pass": w62.get("aggregate_pass") is True,
+        "w62_density_measure_role_exact": (
+            w62.get("symbolic_registry", {}).get("scale_dictionary", {}).get(
+                "selected_Jacobian_power"
+            ) == [3]
+            and w62.get("symbolic_registry", {}).get("scale_dictionary", {}).get(
+                "nHat_C_op_from_Jacobian"
+            ) == "a_F**(-15/2)"
+            and w62.get("symbolic_registry", {}).get("scale_dictionary", {}).get(
+                "nHat_C_op_target"
+            ) == "a_F**(-15/2)"
+        ),
         "w50_status_exact": (
             "PASS_EXACT_CONDITIONAL_NEUTRAL_PHASE_DENSITY_CANDIDATE_CURRENT__"
             "W3_48_BRIDGE_CLOSED_GIVEN_SELECTED_ETA_AND_CUBIC_MEASURE__"
@@ -356,7 +378,7 @@ def audit_upstream() -> tuple[dict[str, Any], bool]:
 
 
 def exact_symbolic_audit(
-    candidate_power: sp.Rational = sp.Rational(1, 2),
+    candidate_power: sp.Rational = sp.Rational(1, 5),
     bernoulli_sign: int = 1,
 ) -> dict[str, Any]:
     dlog_lapse, cs2 = sp.symbols("dlog_lapse cs2", nonzero=True, real=True)
@@ -366,7 +388,7 @@ def exact_symbolic_audit(
     )
     required_cs2 = sp.solve(sp.Eq(joint_residual, 0), cs2)[0]
 
-    inverse_power = -sp.Rational(1, 2)
+    inverse_power = -sp.Rational(1, 5)
     inverse_dlog_n = dlog_lapse / inverse_power
     inverse_required_cs2 = sp.solve(
         sp.Eq(
@@ -390,7 +412,7 @@ def exact_symbolic_audit(
     y = sp.symbols("y", positive=True)
     mu_density_witness = y ** required_cs2
     chemical_homogeneous_required = sp.solve(
-        sp.Eq(-cs2, sp.Rational(1, 2)),
+        sp.Eq(-cs2, sp.Rational(1, 5)),
         cs2,
     )[0]
     n = sp.symbols("n", positive=True)
@@ -405,7 +427,7 @@ def exact_symbolic_audit(
         sound_speed_thermodynamic - sound_speed_log_slope
     )
     healthy_probe = sp.simplify(
-        weak_dlog_n.subs({u: 1, cs2: sp.Rational(1, 2)})
+        weak_dlog_n.subs({u: 1, cs2: sp.Rational(1, 5)})
     )
     operational_probe = sp.simplify(weak_dlog_lapse.subs(u, 1))
     zero_cs2_residual = sp.simplify(
@@ -421,14 +443,14 @@ def exact_symbolic_audit(
         "candidate_dlogn_over_dlogcalN": sstr(1 / candidate_power),
         "bernoulli_joint_residual": sstr(joint_residual),
         "required_cs2": sstr(required_cs2),
-        "required_cs2_is_minus_half": required_cs2 == -sp.Rational(1, 2),
+        "required_cs2_is_minus_fifth": required_cs2 == -sp.Rational(1, 5),
         "required_cs2_in_closed_health_interval": bool(
             required_cs2.is_real and 0 <= required_cs2 <= 1
         ),
         "inverse_power_dlogp_dlogn": sstr(inverse_power),
         "inverse_required_cs2": sstr(inverse_required_cs2),
-        "inverse_required_cs2_is_plus_half": (
-            inverse_required_cs2 == sp.Rational(1, 2)
+        "inverse_required_cs2_is_plus_fifth": (
+            inverse_required_cs2 == sp.Rational(1, 5)
         ),
         "weak_dlogcalN": sstr(weak_dlog_lapse),
         "weak_dlogmu": sstr(weak_dlog_mu),
@@ -440,7 +462,7 @@ def exact_symbolic_audit(
         "sound_speed_log_slope": sstr(sound_speed_log_slope),
         "sound_speed_definition_residual": sstr(sound_speed_residual),
         "sound_speed_log_slope_exact": sound_speed_residual == 0,
-        "healthy_density_probe_at_u1_cs2half": sstr(healthy_probe),
+        "healthy_density_probe_at_u1_cs2fifth": sstr(healthy_probe),
         "healthy_density_rises_for_positive_u": bool(healthy_probe > 0),
         "operational_p_probe_at_u1": sstr(operational_probe),
         "operational_p_falls_for_positive_u": bool(operational_probe < 0),
@@ -456,14 +478,46 @@ def exact_symbolic_audit(
     }
 
 
+def density_measure_audit(jacobian_power: int, operational_power: int) -> dict[str, Any]:
+    """Reconstruct one conserved charge in the two frozen homogeneous measures."""
+    a = sp.symbols("a_F", positive=True)
+    p = a ** (-sp.Rational(3, 2))
+    A = a / p
+    n_foundation = a ** -3
+    n_operational_direct = A ** -3
+    n_operational_jacobian = p ** jacobian_power * n_foundation
+    n_operational_candidate = p ** operational_power
+    jacobian_residual = sp.simplify(
+        n_operational_direct - n_operational_jacobian
+    )
+    power_residual = sp.simplify(
+        n_operational_direct - n_operational_candidate
+    )
+    charge_residual = sp.simplify(n_operational_jacobian * A**3 - 1)
+    return {
+        "nHat_foundation": sstr(n_foundation),
+        "nHat_operational_direct": sstr(n_operational_direct),
+        "nHat_operational_from_jacobian": sstr(n_operational_jacobian),
+        "nHat_operational_from_candidate_power": sstr(n_operational_candidate),
+        "jacobian_residual": sstr(jacobian_residual),
+        "operational_power_residual": sstr(power_residual),
+        "conserved_charge_residual": sstr(charge_residual),
+        "jacobian_exact": jacobian_residual == 0 and charge_residual == 0,
+        "fifth_power_exact": power_residual == 0 and operational_power == 5,
+        "scope": "HOMOGENEOUS_TWO_MEASURE_DICTIONARY_ONLY",
+    }
+
+
 def evaluate_configuration(config: dict[str, Any]) -> dict[str, bool]:
     expected = {
-        "candidate_power": sp.Rational(1, 2),
+        "candidate_power": sp.Rational(1, 5),
+        "jacobian_power": 3,
+        "operational_density_power": 5,
         "bernoulli_sign": 1,
         "health_min": 0,
         "health_max": 1,
         "zero_cs_response_accepted": False,
-        "homogeneous_slope": sp.Rational(1, 2),
+        "homogeneous_slope": sp.Rational(1, 5),
         "total_lapse_used": True,
         "temporal_only": True,
         "new_action_inserted": False,
@@ -471,6 +525,9 @@ def evaluate_configuration(config: dict[str, Any]) -> dict[str, bool]:
         "candidate_accepted": False,
         "global_solve_opened": False,
     }
+    density = density_measure_audit(
+        int(config["jacobian_power"]), int(config["operational_density_power"])
+    )
     symbolic = exact_symbolic_audit(
         sp.Rational(config["candidate_power"]),
         int(config["bernoulli_sign"]),
@@ -480,6 +537,8 @@ def evaluate_configuration(config: dict[str, Any]) -> dict[str, bool]:
     health_max = sp.Rational(config["health_max"])
 
     checks = {
+        "one_charge_two_measure_jacobian_exact": density["jacobian_exact"],
+        "operational_density_fifth_power_exact": density["fifth_power_exact"],
         "candidate_definition_exact": (
             sp.Rational(config["candidate_power"]) == expected["candidate_power"]
         ),
@@ -489,7 +548,7 @@ def evaluate_configuration(config: dict[str, Any]) -> dict[str, bool]:
             and health_max == expected["health_max"]
         ),
         "required_cs2_exact": (
-            symbolic["required_cs2_is_minus_half"] is True
+            symbolic["required_cs2_is_minus_fifth"] is True
         ),
         "health_veto_exact": (
             not (health_min <= required_cs2 <= health_max)
@@ -526,12 +585,14 @@ def evaluate_configuration(config: dict[str, Any]) -> dict[str, bool]:
 
 
 PRODUCTION_CONFIGURATION = {
-    "candidate_power": sp.Rational(1, 2),
+    "candidate_power": sp.Rational(1, 5),
+    "jacobian_power": 3,
+    "operational_density_power": 5,
     "bernoulli_sign": 1,
     "health_min": 0,
     "health_max": 1,
     "zero_cs_response_accepted": False,
-    "homogeneous_slope": sp.Rational(1, 2),
+    "homogeneous_slope": sp.Rational(1, 5),
     "total_lapse_used": True,
     "temporal_only": True,
     "new_action_inserted": False,
@@ -543,16 +604,21 @@ PRODUCTION_CONFIGURATION = {
 
 def run_mutation_controls() -> dict[str, Any]:
     mutations = {
+        "old_operational_density_equals_p_squared": {"operational_density_power": 2},
+        "wrong_volume_jacobian_power": {"jacobian_power": 2},
+        "old_foundation_slope_used_for_operational_density": {
+            "candidate_power": sp.Rational(1, 2)
+        },
         "wrong_bernoulli_sign": {"bernoulli_sign": -1},
         "inverse_map_substituted_for_candidate": {
-            "candidate_power": -sp.Rational(1, 2)
+            "candidate_power": -sp.Rational(1, 5)
         },
         "negative_sound_speed_declared_healthy": {"health_min": -1},
         "zero_sound_response_silently_accepted": {
             "zero_cs_response_accepted": True
         },
         "homogeneous_dictionary_reversed": {
-            "homogeneous_slope": -sp.Rational(1, 2)
+            "homogeneous_slope": -sp.Rational(1, 5)
         },
         "radial_metric_function_used_as_total_lapse": {"total_lapse_used": False},
         "temporal_factor_promoted_to_full_coframe": {"temporal_only": False},
@@ -603,8 +669,8 @@ def build_flags(
         "g0_goal_pass": prereg_exact,
         "g1_conventions_pass": production_checks["total_lapse_exact"],
         "g2_core_algebra_pass": (
-            symbolic["required_cs2_is_minus_half"] is True
-            and symbolic["inverse_required_cs2_is_plus_half"] is True
+            symbolic["required_cs2_is_minus_fifth"] is True
+            and symbolic["inverse_required_cs2_is_plus_fifth"] is True
         ),
         "g3_structure_pass": (
             production_checks["candidate_rejection_exact"]
@@ -620,6 +686,12 @@ def build_flags(
         "g8_export_not_applicable_exact": True,
         "dependency_hashes_exact": dependency_exact,
         "upstream_status_and_scope_exact": upstream_exact,
+        "one_charge_two_measure_jacobian_exact": (
+            production_checks["one_charge_two_measure_jacobian_exact"]
+        ),
+        "operational_density_fifth_power_exact": (
+            production_checks["operational_density_fifth_power_exact"]
+        ),
         "immutable_controls_exact": immutable_exact,
         "candidate_local_extension_registered_exact": (
             prereg_exact and production_checks["candidate_definition_exact"]
@@ -642,8 +714,8 @@ def build_flags(
         "healthy_density_response_sign_exact": (
             symbolic["healthy_density_rises_for_positive_u"] is True
         ),
-        "candidate_joint_residual_requires_cs2_minus_half_exact": (
-            symbolic["required_cs2_is_minus_half"] is True
+        "candidate_joint_residual_requires_cs2_minus_fifth_exact": (
+            symbolic["required_cs2_is_minus_fifth"] is True
         ),
         "required_cs2_violates_w3_54_health_exact": (
             symbolic["required_cs2_in_closed_health_interval"] is False
@@ -653,11 +725,11 @@ def build_flags(
             symbolic["zero_cs2_regular_linear_response_possible"] is False
             and production_checks["zero_sound_endpoint_exact"]
         ),
-        "inverse_density_control_matches_at_cs2_half_exact": (
-            symbolic["inverse_required_cs2_is_plus_half"] is True
+        "inverse_density_control_matches_at_cs2_fifth_exact": (
+            symbolic["inverse_required_cs2_is_plus_fifth"] is True
         ),
         "inverse_density_control_breaks_homogeneous_dictionary_exact": (
-            symbolic["inverse_power_dlogp_dlogn"] == "-1/2"
+            symbolic["inverse_power_dlogp_dlogn"] == "-1/5"
             and production_checks["homogeneous_slope_exact"]
         ),
         "chemical_potential_lapse_readout_exact": (
@@ -794,7 +866,7 @@ def main() -> int:
         "candidate_rejection_is_computed": (
             flags["candidate_admissible"] is False
             and flags[
-                "candidate_joint_residual_requires_cs2_minus_half_exact"
+                "candidate_joint_residual_requires_cs2_minus_fifth_exact"
             ] is True
             and flags["required_cs2_violates_w3_54_health_exact"] is True
         ),
@@ -809,7 +881,7 @@ def main() -> int:
     status = PASS_STATUS if artifact_valid else FAIL_STATUS
 
     payload: dict[str, Any] = {
-        "schema_version": "W3-70-result-v1.0",
+        "schema_version": "W3-70-result-v1.1",
         "claim_id": CLAIM_ID,
         "model_version": MODEL_VERSION,
         "status": status,
@@ -820,10 +892,10 @@ def main() -> int:
             "AUDIT_WITH_HARD_CARRIER_ROLE_REJECTION"
         ),
         "claim": {
-            "tested_candidate": "p_n^2=n_C/n_infinity",
+            "tested_candidate": "p_n^5=n_C,op/n_infinity",
             "stationary_temporal_identification": "p_n=calN=sqrt(-xi^2)",
             "exact_decision": (
-                "The frozen single-density extension requires c_s^2=-1/2 "
+                "The frozen single-density extension requires c_s^2=-1/5 "
                 "and is rejected by the W3-54 health interval [0,1]."
             ),
             "accepted_upstream_law_falsified": False,
@@ -834,6 +906,9 @@ def main() -> int:
             "new_action_operator_count": 0,
             "new_source_count": 0,
             "density_reference_positive": True,
+            "density_role": "n_C := n_C,op, charge per operational proper volume",
+            "foundation_density_role": "n_C,F, charge per foundation volume",
+            "homogeneous_dictionary": "nHat_C,F=p^2; nHat_C,op=p^3*nHat_C,F=p^5",
             "homogeneous_map_role": "INHERITED_ONLY_ON_FROZEN_HOMOGENEOUS_BRANCH",
             "local_stationary_extension_role": "NEWLY_TESTED_AND_REJECTED",
         },
@@ -850,13 +925,17 @@ def main() -> int:
             ),
             "health_interval": "[0,1]",
         },
+        "density_measure_regression": density_measure_audit(
+            PRODUCTION_CONFIGURATION["jacobian_power"],
+            PRODUCTION_CONFIGURATION["operational_density_power"],
+        ),
         "exact_algebra": symbolic,
         "controls": {
             "inverse_density": {
-                "map": "p_inv^2=n_infinity/n_C",
+                "map": "p_inv^5=n_infinity/n_C",
                 "required_cs2": symbolic["inverse_required_cs2"],
-                "static_health": "PASS_AT_CS2_ONE_HALF",
-                "homogeneous_dictionary": "REVERSES_FROZEN_W3_50_SLOPE",
+                "static_health": "PASS_AT_CS2_ONE_FIFTH",
+                "homogeneous_dictionary": "REVERSES_W3_50_W3_62_OPERATIONAL_DENSITY_SLOPE",
             },
             "chemical_potential": {
                 "map": "p_mu=mu_infinity/mu",
@@ -907,8 +986,8 @@ def main() -> int:
         "physical_decision": {
             "collective_density_as_universal_local_p": "HARD_ROLE_VETO",
             "reason": (
-                "Stationary Bernoulli balance and p_n^2=n_C/n_infinity "
-                "require the unhealthy value c_s^2=-1/2."
+                "Stationary Bernoulli balance and p_n^5=n_C,op/n_infinity "
+                "require the unhealthy value c_s^2=-1/5."
             ),
             "phase_sector_original_roles": "UNCHANGED",
             "inverse_density_control": "NEW_MODEL_VERSION_REQUIRED",

@@ -12,7 +12,7 @@ roles separate:
    collective-phase density.
 
 The construction must reproduce the frozen homogeneous law
-p_t^2=n_C/n_C0, reproduce the exact static Killing-lapse readout without an
+p_t^5=n_C/n_C0 in operational volume, reproduce the exact static Killing-lapse readout without an
 unhealthy density sign, preserve the W3-67 temporal/spatial split, and expose
 the true-horizon branch in a horizon-regular coframe.
 
@@ -31,7 +31,7 @@ calculation. Canon and the intuitive manuscripts remain unchanged.
   a_mu=u^nu nabla_nu u_mu its acceleration, and
   Theta=nabla_mu u^mu its expansion. The covariant one-form
 
-      W_mu = a_mu + (1/2) Theta u_mu
+      W_mu = a_mu + (1/5) Theta u_mu
 
   defines the temporal readout by
 
@@ -41,9 +41,11 @@ calculation. Canon and the intuitive manuscripts remain unchanged.
 
       F_mu_nu = 2 nabla_[mu W_nu] = 0.
 
-  On the homogeneous W3-50 current branch, current conservation gives
-  dot(ln p_t)=(1/2)dot(ln n_C), hence p_t^2=n_C/n_C0 after reference
-  normalization. On a static normalized-Killing branch,
+  On the homogeneous W3-50/W3-62 current branch, n_C denotes the
+  operational-volume density. The normalized volume Jacobian gives
+  n_C/n_C0=p^3(n_C,F/n_C,F0)=p^5, because p^2=n_C,F/n_C,F0.
+  Current conservation therefore gives dot(ln p_t)=(1/5)dot(ln n_C),
+  hence p_t^5=n_C/n_C0 after reference normalization. On a static normalized-Killing branch,
   u^mu=xi^mu/calN, Theta=0, and a_mu=D_mu ln calN, hence p_t=calN. The W3-54
   Euler relation supplies the independent conditional crosscheck
   calN mu_C=constant and therefore p_t=mu_infinity/mu_C with the original
@@ -81,7 +83,7 @@ calculation. Canon and the intuitive manuscripts remain unchanged.
 - TYPE:
   SELECTED_BRANCH_RESTRICTED_COVARIANT_READOUT_CLOSURE_WITH_EXACT_HOMOGENEOUS_STATIC_AND_HORIZON_REDUCTIONS.
 - MODEL_VERSION:
-  W3-71-v1.1-COVARIANT-SCALE-CONNECTION-HORIZON-MATERIAL-SEPARATION.
+  W3-71-v1.2-COVARIANT-SCALE-CONNECTION-HORIZON-MATERIAL-SEPARATION.
   Any change to W_mu, its coefficient, the congruence roles, integrability
   rule, metric count, Schwarzschild benchmark, spatial readout, source ledger,
   intrinsic/external profile roles, horizon decision, or stopping rule creates
@@ -89,12 +91,25 @@ calculation. Canon and the intuitive manuscripts remain unchanged.
 
 ## Assumptions
 
+### Volume correction in v1.2
+
+W3-62 already fixes the distinction between foundation and operational
+volume. Version 1.1 omitted its factor p^3 in the homogeneous reduction.
+Version 1.2 restores that factor and changes the expansion coefficient from
+1/2 to 1/5. Static coframe geometry, the Einstein source and the horizon
+decision retain their original meaning. W3-70's corresponding tested density
+extension now requires c_s^2=-1/5; its healthy-EOS rejection still holds.
+The affected W3-72 rain-connection witness and W3-73 dependency records are
+reverified after this correction. No intrinsic oscillon field is rescaled.
+
 1. W3-54 supplies one connected Lorentzian coframe, one operational metric,
    TEGR/Einstein–Hilbert dynamics, a conserved phase current, and one
    once-counted Hilbert-source ledger.
-2. W3-50 supplies the homogeneous positive current law
-   dot(n_C)+Theta n_C=0 and the selected homogeneous response
-   p^2=n_C/n_C0.
+2. W3-50 supplies the foundation-volume law p^2=n_C,F/n_C,F0.
+   W3-62 fixes n_C=n_C,op in the operational coframe and the normalized
+   homogeneous Jacobian nHat_C,op=p^3 nHat_C,F. Thus
+   dot(n_C)+Theta n_C=0 implies p^5=n_C/n_C0. The local strong-field
+   extension of this density map is tested separately in W3-70.
 3. W3-52 and W3-67 supply the complete standard 1PN/PPN inheritance and prove
    that temporal and spatial ruler factors share their linear term but split
    at quadratic order.
@@ -112,7 +127,7 @@ calculation. Canon and the intuitive manuscripts remain unchanged.
    distinct equilibrium solutions, not the same oscillon viewed from two
    reference environments.
 7. W3-70 excludes the algebraic local identification
-   p_t^2=n_C/n_infinity on the static no-flux branch. It leaves the original
+   p_t^5=n_C/n_infinity on the static no-flux branch. It leaves the original
    collective phase current and Hilbert source unchanged.
 8. The static vacuum benchmark has M>0 and r_s=2GM/c_0^2. The static
    congruence is used only where its Killing vector is timelike.
@@ -192,8 +207,8 @@ Future radial null characteristics obey dr/dT=-v plus-or-minus 1.
 
 ## Freedom ledger
 
-- Coefficient 1/2 in W_mu: fixed by the inherited homogeneous law
-  p_t^2=n_C/n_C0; no fitted freedom.
+- Coefficient 1/5 in W_mu: fixed by the inherited homogeneous law
+  p_t^5=n_C/n_C0 in operational volume; no fitted freedom.
 - Coefficient 1 multiplying a_mu: fixed by the normalized static
   Killing-lapse identity a_mu=D_mu ln calN; no fitted freedom.
 - Reference normalization p_t=1: one conventional normalization at the
@@ -223,6 +238,8 @@ Future radial null characteristics obey dr/dT=-v plus-or-minus 1.
 7. W3-65 first-turning-point result.
 8. W3-67 foundation strong-field response result.
 9. W3-70 collective-phase carrier result.
+10. W3-62 CMB Einstein-source contract, section 2 (one charge, two densities),
+    SHA-256 b4068791b63e9a072a897e9aa85eae96c588b0d33533effb9664ffbd667ae810.
 
 Required upstream statuses and closure flags are the actual current records.
 The verifier must reject a changed dependency hash, a changed source ledger,
@@ -230,25 +247,26 @@ a promoted W3-51 weak metric, a loss of the standard PPN vector, or a change
 to the W3-70 density-carrier decision.
 
 The current W3-52, W3-54, and W3-58 result artifacts are hash-pinned as
-supporting closure records. They do not enlarge the nine-item dependency
+supporting closure records. They do not enlarge the ten-item dependency
 ledger; they certify the exact current status fields read by the verifier.
 
 ## Method
 
 1. Hash-audit every dependency and validate the exact upstream status and
    closure subset used here.
-2. Verify covariantly that u^mu W_mu=-Theta/2 and
+2. Verify covariantly that u^mu W_mu=-Theta/5 and
    h_mu^nu W_nu=a_mu.
 3. On the homogeneous branch, combine
    dot(ln n_C)=-Theta with the first projection and derive
-   p_t^2=n_C/n_C0.
+   p_t^5=n_C/n_C0. Independently reconstruct the common charge from
+   V_op=A^3, V_F=a^3 and A=a/p to recover nHat_C,op=p^5.
 4. On the static normalized-Killing branch, use Theta=0 and
    a_mu=D_mu ln calN to derive p_t=calN.
 5. Independently apply the W3-54 Euler relation
    a_mu=-D_mu ln mu_C and verify
    p_t=mu_infinity/mu_C. Show that
    D ln p_t=-c_s^2 D ln n_C keeps 0<=c_s^2<=1 and never requires
-   c_s^2=-1/2.
+   c_s^2=-1/5.
 6. Derive the isotropic-to-areal Schwarzschild map, prove
    1-r_s/r=p_t^2, prove p_L=((1+p_t)/2)^2, and reproduce the W3-67 weak
    series and full 1PN metric coefficients.
@@ -284,7 +302,7 @@ The aggregate result must preserve exactly these roles:
 
 - p_t: branch-restricted temporal scale readout generated by W_mu;
 - p_L: independent spatial coframe projection;
-- n_C: collective phase-action density;
+- n_C: collective phase-action density per operational volume;
 - R_O^loc: intrinsic charge-moment profile radius in the local frame;
 - R_O^ext: the coordinate value assigned to the same unchanged local profile
   by the external reference standard through the p_L line integral; it is
@@ -311,7 +329,7 @@ duplicate source enters; or any open interior result is promoted.
 
 An exact counterexample within a declared target branch to any projection,
 branch reduction, metric identity, or horizon sign falsifies this model
-version. A healthy W3-54 EOS that forces c_s^2=-1/2 under the differential
+version. A healthy W3-54 EOS that forces c_s^2=-1/5 under the differential
 static bridge would falsify the claimed resolution of the W3-70 sign
 contradiction. A fixed-r timelike Schwarzschild worldline at r<r_s would
 falsify the horizon binary.
@@ -347,7 +365,7 @@ change at least one explicit theorem hypothesis through completed dynamics.
 ## Branches
 
 - Homogeneous selected branch: a_mu=0, F_mu_nu=0,
-  p_t^2=n_C/n_C0.
+  p_t^5=n_C/n_C0, with n_C=n_C,op.
 - Static selected branch: Theta=0, F_mu_nu=0,
   p_t=calN=mu_infinity/mu_C.
 - Static isotropic Schwarzschild exterior: U<2 with exact p_t and p_L.
@@ -360,6 +378,38 @@ change at least one explicit theorem hypothesis through completed dynamics.
 - Deferred finite-image branch: integrate the coframe and null-ray transfer
   across a resolved profile; do not deform the intrinsic local oscillon merely
   to express it in an external ruler convention.
+
+## Integrated relaxation criterion
+
+On the homogeneous selected branch, tau is operational proper time,
+Theta=3 d(ln A)/d tau, and p_t=p. Define
+
+    I(tau)=integral_tau0^tau Theta(s) ds,
+    p(tau)=p0 exp[-I(tau)/5],
+    n_C(tau)=n_C0 exp[-I(tau)].
+
+Differentiation verifies both the corrected scale projection and the
+operational continuity equation. For positive p0 and finite real I,
+the scale remains strictly positive. A uniform upper bound I<=B on a finite
+interval gives p>=p0 exp[-B/5]>0. Thus a regular finite accumulated expansion
+cannot reach zero pressure, with P_F/P_F0=(p/p0)^2 on this branch.
+
+The full asymptotic claim requires I to remain finite on every finite
+proper-time interval and to diverge to positive infinity as tau goes to
+infinity. Conservation alone does not supply this global bound. The exact
+kinematic witnesses p/p0=1/(1+k tau), Theta=5k/(1+k tau), and
+p/p0=1-tau/T, Theta=5/(T-tau), with k,T>0 and 0<=tau<T for the
+second witness, both satisfy the same continuity and scale identities. The
+first approaches zero asymptotically; the second approaches zero at a finite
+endpoint with divergent accumulated expansion. These witnesses test the
+sufficiency of the current law and are not claimed Einstein solutions.
+
+The strong-field pressure and tail response needs a dynamical relation
+between the local foundation state and the already once-counted Hilbert
+source. W3-73's ordinary oscillon current j_O and W3-50's collective current
+j_C retain different roles. The homogeneous Jacobian p^3 is not imposed on
+an arbitrary static or mixed-flow patch. The homogeneous criterion introduces
+no equation of state, radiation sink, or local singularity-resolution claim.
 
 ## Observable map, data role, and identifiability
 
@@ -379,7 +429,7 @@ unidentified without new dynamics.
 
 The exact benchmarks are:
 
-1. W3-50 homogeneous p_t^2=n_C/n_C0;
+1. W3-50/W3-62 homogeneous p_t^5=n_C/n_C0 in operational volume;
 2. W3-54 stationary Bernoulli relation calN mu_C=constant;
 3. W3-67 temporal/spatial Schwarzschild split and standard 1PN limit;
 4. horizon-regular Schwarzschild in ingoing Painlevé–Gullstrand form; and
@@ -397,6 +447,9 @@ Required true:
 - scale_connection_projections_exact
 - target_branch_integrability_exact
 - homogeneous_reduction_exact
+- homogeneous_volume_jacobian_exact
+- integrated_scale_transport_exact
+- finite_expansion_positivity_exact
 - static_killing_reduction_exact
 - w3_54_euler_crosscheck_exact
 - healthy_sound_speed_interval_preserved_exact
@@ -453,6 +506,8 @@ Required false:
 - regular_black_hole_interior_derived
 - singularity_resolution_completed
 - geodesic_completeness_derived
+- strong_field_pressure_feedback_derived
+- global_asymptotic_relaxation_derived
 - new_observation_tested
 - canon_changed
 - intuitive_files_changed
@@ -460,7 +515,9 @@ Required false:
 ## Crosscheck and mutation controls
 
 The homogeneous reduction is derived from both the W_mu projection and direct
-current conservation. The static reduction is derived from normalized Killing
+current conservation with W3-62's volume Jacobian. The integrated criterion
+is checked by differentiation, a positive exponential bound, and the two
+distinct endpoint witnesses above. The static reduction is derived from normalized Killing
 kinematics and independently from the W3-54 Euler/Bernoulli relation. The
 Schwarzschild map is checked by direct metric substitution and by the
 isotropic-to-areal identity. Radial light speeds are obtained from the metric
@@ -485,6 +542,8 @@ The frozen mutation registry is:
 11. finite_radius_relabelled_as_p_L: finite_radius_rule;
 12. p_t_zero_called_local_time_stop: local_time_rule;
 13. interior_singularity_overclaim: promoted_claims.
+14. foundation_density_used_as_operational: volume_jacobian_power;
+15. old_half_expansion_coefficient_restored: theta_coefficient.
 
 Every negative control passes through the same validators as production. The
 result must hash-pin this preregistration and verifier source, contain finite
@@ -508,10 +567,12 @@ projections reproduce both the homogeneous and static temporal readouts. It
 establishes the exact separation of temporal lapse, spatial ruler projection,
 collective density, intrinsic local oscillon profile, and the same profile's
 external ruler projection, together with the horizon-regular causal handoff.
-The next physical input is a horizon-regular nonstatic material-current
-dynamics or an exact elimination from existing fields. A resolved external
-image is a separate ray-transfer calculation; neither task requires declaring
-the local oscillon itself compressed.
+The original horizon handoff supplies the input used by the subsequent
+W3-72 ordinary-current and W3-73 coupled Einstein--scalar stages. The current
+pressure-feedback task requires a local foundation-state relation to the
+once-counted Hilbert source and an evolution bound that applies in the
+inhomogeneous regime. A resolved external image has a separate ray-transfer
+calculation. The intrinsic oscillon profile keeps its local definition.
 
 The preregistered successful status is:
 

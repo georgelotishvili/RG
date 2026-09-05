@@ -6,7 +6,9 @@
 
 **TYPE:** EXACT_ACTION_DERIVED_LOCAL_HORIZON_HANDOFF_WITH_SYMBOLIC_AND_INDEPENDENT_CHART_AUDIT.
 
-**MODEL_VERSION:** W3-72-v1.0-HORIZON-CROSSING-ORDINARY-PHASE-CURRENT.
+**MODEL_VERSION:** W3-72-v1.1-HORIZON-CROSSING-ORDINARY-PHASE-CURRENT.
+
+Version 1.1 inherits the W3-62 operational-volume normalization through the corrected W3-71 scale connection. Its homogeneous coefficient is `1/5`, because `nHat_C,op=p^3 nHat_C,F=p^5`. The rain-branch scale-curvature witness is updated accordingly. The ordinary-phase action, current, stress, horizon fluxes, and local evolution remain unchanged; this normalization adds no dynamical field or source.
 
 ## Assumptions
 
@@ -95,10 +97,10 @@ Every dependency is frozen by exact relative path and SHA-256:
     b0898d5e3fea3e977eb0c78b2a1f8730a5b4c168857d05bdaf95b3119b75d07b
 
     RefG/work 3/Strong_Field/W3-71_Horizon_Material_Scale_Separation/w3_71_horizon_material_scale_separation_preregistration.md
-    45a9a9eed95a2d927a601f6b4e0822994da93176f1c25fe49ff2431bb35e9f4a
+    1d3f74489f6cc52061253b6e1ea3d7f96e5d423f8b2afb88e79a44a38ae916c3
 
     RefG/work 3/Strong_Field/W3-71_Horizon_Material_Scale_Separation/w3_71_result.json
-    5aeeed4a963e1a03769861f5b38e564a74ec718ee1a19048b37ee7affa72be81
+    866657282065918fcecf46075dbc103f3f0bbfe040a9ac348ceef90705c7837b
 
 Archived theory, Work 2, RefG-GR, observational files, and the internet are excluded from the executable dependency graph.
 
@@ -216,10 +218,10 @@ For step 12 the frozen rain-branch obstruction is
 
     a_mu=0,
     Theta=-3 sqrt(r_s)/(2 r^(3/2)),
-    W_T=3 sqrt(r_s)/(4 r^(3/2)),
+    W_T=3 sqrt(r_s)/(10 r^(3/2)),
     W_r=0,
     F_Tr=partial_T W_r-partial_r W_T
-        =9 sqrt(r_s)/(8 r^(5/2)) != 0.
+        =9 sqrt(r_s)/(20 r^(5/2)) != 0.
 
 This nonintegrability blocks a global mixed-branch scalar p_t; it does not obstruct the local coframe, current, stress, or scalar evolution.
 

@@ -19,7 +19,7 @@ import sympy as sp
 
 
 CLAIM_ID = "W3_72_HORIZON_CROSSING_MATERIAL_CURRENT"
-MODEL_VERSION = "W3-72-v1.0-HORIZON-CROSSING-ORDINARY-PHASE-CURRENT"
+MODEL_VERSION = "W3-72-v1.1-HORIZON-CROSSING-ORDINARY-PHASE-CURRENT"
 PASS_STATUS = (
     "PASS_EXACT_ACTION_DERIVED_HORIZON_REGULAR_NONSTATIC_ORDINARY_PHASE_"
     "CURRENT_AND_LOCAL_INITIAL_VALUE_HANDOFF__FINITE_INWARD_CHARGE_"
@@ -36,7 +36,7 @@ PREREG_PATH = (
     PACKAGE_DIR / "w3_72_horizon_crossing_material_current_preregistration.md"
 )
 RESULT_PATH = PACKAGE_DIR / "w3_72_result.json"
-PREREG_SHA256 = "29c0bbad8eee945820efe1eb7c335597bfe2c7f136bf02fdf2bd7e7bca6769a7"
+PREREG_SHA256 = "3aa5da94f6abd830ec6b32ddd82ce94d0223ed60becec91b75ecf41e7950bb38"
 
 EXPECTED_PACKAGE_FILES = {
     "w3_72_horizon_crossing_material_current_preregistration.md",
@@ -68,10 +68,10 @@ DEPENDENCIES = {
         "b0898d5e3fea3e977eb0c78b2a1f8730a5b4c168857d05bdaf95b3119b75d07b",
     "RefG/work 3/Strong_Field/W3-71_Horizon_Material_Scale_Separation/"
     "w3_71_horizon_material_scale_separation_preregistration.md":
-        "45a9a9eed95a2d927a601f6b4e0822994da93176f1c25fe49ff2431bb35e9f4a",
+        "1d3f74489f6cc52061253b6e1ea3d7f96e5d423f8b2afb88e79a44a38ae916c3",
     "RefG/work 3/Strong_Field/W3-71_Horizon_Material_Scale_Separation/"
     "w3_71_result.json":
-        "5aeeed4a963e1a03769861f5b38e564a74ec718ee1a19048b37ee7affa72be81",
+        "866657282065918fcecf46075dbc103f3f0bbfe040a9ac348ceef90705c7837b",
 }
 
 IMMUTABLE_INTUITIVE = {
@@ -1329,11 +1329,12 @@ def stress_transport_audit(config: dict[str, Any]) -> dict[str, Any]:
     )
     radial_speed_horizon = sp.simplify(u_rain[1].subs(r, r_s))
 
-    W_T = 3 * sp.sqrt(r_s) / (4 * r ** sp.Rational(3, 2))
+    scale_connection_coefficient = sp.Rational(1, 5)
+    W_T = sp.simplify(-scale_connection_coefficient * expansion)
     W_r = sp.Integer(0)
     scale_curvature_Tr = sp.simplify(sp.diff(W_r, T) - sp.diff(W_T, r))
     scale_curvature_expected = (
-        9 * sp.sqrt(r_s) / (8 * r ** sp.Rational(5, 2))
+        9 * sp.sqrt(r_s) / (20 * r ** sp.Rational(5, 2))
     )
 
     r_1, r_2, jr_1, jr_2 = sp.symbols(

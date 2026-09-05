@@ -6,7 +6,9 @@
 
 **TYPE:** EXACT_ACTION_DERIVED_LOCAL_COUPLED_SPHERICAL_CONSTRAINED_EVOLUTION_WITH_SYMBOLIC_GEOMETRY_MATTER_AND_FLUX_AUDIT.
 
-**MODEL_VERSION:** W3-73-v1.0-COUPLED-HORIZON-REGULAR-EINSTEIN-COMPLEX-SCALAR.
+**MODEL_VERSION:** W3-73-v1.1-COUPLED-HORIZON-REGULAR-EINSTEIN-COMPLEX-SCALAR.
+
+Version 1.1 synchronizes the dependency chain with the W3-62 operational-volume normalization corrected in W3-71 and propagated through W3-72. All coupled Einstein and ordinary-phase equations in this registration remain unchanged. The passive scale connection contributes no term to their action, source, or evolution.
 
 ## Target and stopping rule
 
@@ -109,16 +111,16 @@ Every dependency is frozen by exact relative path and SHA-256:
     659bdfe171a8279b465fdd49eaf590755da22a7522a83053a4a06450fd745385
 
     RefG/work 3/Strong_Field/W3-71_Horizon_Material_Scale_Separation/w3_71_horizon_material_scale_separation_preregistration.md
-    45a9a9eed95a2d927a601f6b4e0822994da93176f1c25fe49ff2431bb35e9f4a
+    1d3f74489f6cc52061253b6e1ea3d7f96e5d423f8b2afb88e79a44a38ae916c3
 
     RefG/work 3/Strong_Field/W3-71_Horizon_Material_Scale_Separation/w3_71_result.json
-    5aeeed4a963e1a03769861f5b38e564a74ec718ee1a19048b37ee7affa72be81
+    866657282065918fcecf46075dbc103f3f0bbfe040a9ac348ceef90705c7837b
 
     RefG/work 3/Strong_Field/W3-72_Horizon_Crossing_Material_Current/w3_72_horizon_crossing_material_current_preregistration.md
-    29c0bbad8eee945820efe1eb7c335597bfe2c7f136bf02fdf2bd7e7bca6769a7
+    3aa5da94f6abd830ec6b32ddd82ce94d0223ed60becec91b75ecf41e7950bb38
 
     RefG/work 3/Strong_Field/W3-72_Horizon_Crossing_Material_Current/w3_72_result.json
-    269f4de4a7c17c7a0947d2d20288e3003beaa2a159386e94687ba39a5c4736a9
+    fc8d4df43976dc815eeaad8e73fb297c9442fed510b7508b23f8f4e846041b4a
 
 Archived theory, Work 2, RefG-GR, observational files, and external data are excluded from the executable dependency graph.
 

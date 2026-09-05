@@ -20,7 +20,7 @@ import sympy as sp
 
 CLAIM_ID = "W3_71_COVARIANT_SCALE_CONNECTION_AND_HORIZON_MATERIAL_SEPARATION"
 MODEL_VERSION = (
-    "W3-71-v1.1-COVARIANT-SCALE-CONNECTION-HORIZON-MATERIAL-SEPARATION"
+    "W3-71-v1.2-COVARIANT-SCALE-CONNECTION-HORIZON-MATERIAL-SEPARATION"
 )
 PASS_STATUS = (
     "PASS_EXACT_COVARIANT_SCALE_CONNECTION_ON_HOMOGENEOUS_AND_STATIC_BRANCHES__"
@@ -37,7 +37,7 @@ PREREG_PATH = (
     PACKAGE_DIR / "w3_71_horizon_material_scale_separation_preregistration.md"
 )
 RESULT_PATH = PACKAGE_DIR / "w3_71_result.json"
-PREREG_SHA256 = "45a9a9eed95a2d927a601f6b4e0822994da93176f1c25fe49ff2431bb35e9f4a"
+PREREG_SHA256 = "1d3f74489f6cc52061253b6e1ea3d7f96e5d423f8b2afb88e79a44a38ae916c3"
 
 EXPECTED_PACKAGE_FILES = {
     "w3_71_horizon_material_scale_separation_preregistration.md",
@@ -46,6 +46,9 @@ EXPECTED_PACKAGE_FILES = {
 }
 
 DEPENDENCIES = {
+    "RefG/work 3/Cosmology_and_LSS/CMB_Closure/"
+    "w3_62_cmb_einstein_source_linear_closure_preregistration.md":
+        "b4068791b63e9a072a897e9aa85eae96c588b0d33533effb9664ffbd667ae810",
     "CODES.md":
         "27842a2b5d2c602c039dd712cda4086e9b89105ddad81b4d4edbf1585aa8db41",
     "RefG/work 3/Cosmology_and_LSS/Active_Participation_Resonance_Feedback/"
@@ -70,7 +73,7 @@ DEPENDENCIES = {
         "659bdfe171a8279b465fdd49eaf590755da22a7522a83053a4a06450fd745385",
     "RefG/work 3/Strong_Field/W3-70_Collective_Phase_Carrier_Admissibility/"
     "w3_70_result.json":
-        "0f65d89c6595fbb6bfee9c6bbe7fdf292dd60eacaeaafe654161c84eda8d2cf0",
+        "046d1b37f29ce0375608f67145e736681d763f153d31e7bfda7b8f495132c557",
 }
 
 SUPPORTING_CURRENT_RECORDS = {
@@ -116,6 +119,9 @@ REQUIRED_TRUE_FLAGS = {
     "scale_connection_projections_exact",
     "target_branch_integrability_exact",
     "homogeneous_reduction_exact",
+    "homogeneous_volume_jacobian_exact",
+    "integrated_scale_transport_exact",
+    "finite_expansion_positivity_exact",
     "static_killing_reduction_exact",
     "w3_54_euler_crosscheck_exact",
     "healthy_sound_speed_interval_preserved_exact",
@@ -172,6 +178,8 @@ REQUIRED_FALSE_FLAGS = {
     "regular_black_hole_interior_derived",
     "singularity_resolution_completed",
     "geodesic_completeness_derived",
+    "strong_field_pressure_feedback_derived",
+    "global_asymptotic_relaxation_derived",
     "new_observation_tested",
     "canon_changed",
     "intuitive_files_changed",
@@ -224,6 +232,8 @@ EXPECTED_BRANCH_SOURCE_LEDGER = (
 )
 
 FROZEN_MUTATION_REGISTRY = (
+    ("foundation_density_used_as_operational", ("volume_jacobian_power",)),
+    ("old_half_expansion_coefficient_restored", ("theta_coefficient",)),
     ("theta_coefficient_changed", ("theta_coefficient",)),
     (
         "acceleration_coefficient_sign_flipped",
@@ -375,9 +385,9 @@ def audit_preregistration() -> dict[str, Any]:
     markers = {
         "claim_id": CLAIM_ID,
         "model_version": MODEL_VERSION,
-        "scale_connection": "W_mu = a_mu + (1/2) Theta u_mu",
+        "scale_connection": "W_mu = a_mu + (1/5) Theta u_mu",
         "integrability": "F_mu_nu = 2 nabla_[mu W_nu] = 0",
-        "homogeneous_law": "p_t^2=n_C/n_C0",
+        "homogeneous_law": "p_t^5=n_C/n_C0",
         "static_lapse": "p_t=calN",
         "spatial_relation": "p_L=(1+U/2)^(-2)=((1+p_t)/2)^2",
         "pg_characteristics": "dr/dT=-v plus-or-minus 1",
@@ -410,7 +420,7 @@ def audit_preregistration() -> dict[str, Any]:
             re.search(pattern, text, flags=re.MULTILINE)
         )
     mutation_registry_exact = (
-        len(mutation_registry_checks) == 13
+        len(mutation_registry_checks) == 15
         and bool_all(list(mutation_registry_checks.values()))
     )
     true_block = text.split("Required true:", 1)[1].split("Required false:", 1)[0]
@@ -444,6 +454,10 @@ def audit_preregistration() -> dict[str, Any]:
 
 
 def audit_upstream() -> tuple[dict[str, Any], bool]:
+    w62 = (
+        REPO_ROOT / "RefG/work 3/Cosmology_and_LSS/CMB_Closure/"
+        "w3_62_cmb_einstein_source_linear_closure_preregistration.md"
+    ).read_text(encoding="utf-8")
     supporting_records, supporting_hashes_exact = audit_files(
         SUPPORTING_CURRENT_RECORDS
     )
@@ -512,6 +526,10 @@ def audit_upstream() -> tuple[dict[str, Any], bool]:
             "W3_48_BRIDGE_CLOSED_GIVEN_SELECTED_ETA_AND_CUBIC_MEASURE__"
             "MASTER_FOUNDATION_ORIGIN_OPEN"
         ) in w50,
+        "w62_operational_density_jacobian_exact": (
+            "nHat_C,op = p^3 nHat_C,F" in w62
+            and "operational-volume density" in w62
+        ),
         "w50_homogeneous_current_and_readout_exact": (
             "eta_F=n_C/n_C0" in w50
             and "eta_F a^3 = 1" in w50
@@ -637,6 +655,7 @@ def validate_configuration_schema(config: dict[str, Any]) -> bool:
     required = {
         "acceleration_coefficient",
         "theta_coefficient",
+        "volume_jacobian_power",
         "static_density_power",
         "spatial_rule",
         "lapse_rule",
@@ -716,7 +735,7 @@ def exact_symbolic_audit(config: dict[str, Any]) -> dict[str, Any]:
     theta, a_component = sp.symbols("Theta a_component", real=True)
     u_dot_w = -theta_coeff * theta
     spatial_w = accel * a_component
-    temporal_projection_residual = sp.simplify(u_dot_w + theta / 2)
+    temporal_projection_residual = sp.simplify(u_dot_w + theta / 5)
     spatial_projection_residual = sp.simplify(spatial_w - a_component)
 
     t, x = sp.symbols("t x", real=True)
@@ -765,8 +784,60 @@ def exact_symbolic_audit(config: dict[str, Any]) -> dict[str, Any]:
     density_ratio, cal_n = sp.symbols(
         "density_ratio calN", positive=True, finite=True
     )
-    homogeneous_p_squared = density_ratio ** (2 * theta_coeff)
-    homogeneous_residual = sp.simplify(homogeneous_p_squared - density_ratio)
+    # n_C is operational density; W3-50's squared law uses foundation volume.
+    homogeneous_p_fifth = density_ratio ** (5 * theta_coeff)
+    homogeneous_residual = sp.simplify(homogeneous_p_fifth - density_ratio)
+    p_scale, a_scale = sp.symbols("p_scale a_scale", positive=True)
+    jacobian_power = sp.Rational(config["volume_jacobian_power"])
+    n_foundation = a_scale**-3
+    n_operational = (a_scale / p_scale)**-3
+    volume_residual = sp.simplify(
+        n_operational - p_scale**jacobian_power * n_foundation
+    )
+    foundation_branch = a_scale**sp.Rational(-3, 2)
+    fifth_power_residual = sp.simplify(
+        n_operational.subs(p_scale, foundation_branch) - foundation_branch**5
+    )
+
+    # Conditional proper-time transport, with both allowed endpoint behaviours.
+    tau = sp.symbols("tau", nonnegative=True)
+    initial_p, bound, k, endpoint = sp.symbols(
+        "p0 B k T", positive=True, finite=True
+    )
+    accumulated = sp.Function("I", real=True)(tau)
+    transported = initial_p * sp.exp(-theta_coeff * accumulated)
+    integrated_residual = sp.simplify(
+        sp.diff(transported, tau)
+        + sp.diff(accumulated, tau) * transported / 5
+    )
+    current_transport_residual = sp.simplify(
+        sp.diff((transported / initial_p)**5, tau)
+        + sp.diff(accumulated, tau) * (transported / initial_p)**5
+    )
+    lower_bound = initial_p * sp.exp(-bound / 5)
+    lower_bound_positive = sp.ask(sp.Q.positive(lower_bound)) is True
+    exponential_monotonic = sp.ask(
+        sp.Q.negative(sp.diff(initial_p * sp.exp(-bound / 5), bound))
+    ) is True
+    asymptotic_p = initial_p / (1 + k * tau)
+    finite_endpoint_p = initial_p * (1 - tau / endpoint)
+    theta_asymptotic = 5 * k / (1 + k * tau)
+    theta_finite = 5 / (endpoint - tau)
+    endpoint_residuals = [
+        sp.simplify(sp.diff(profile, tau) + expansion * profile / 5)
+        for profile, expansion in (
+            (asymptotic_p, theta_asymptotic),
+            (finite_endpoint_p, theta_finite),
+        )
+    ]
+    endpoint_checks = (
+        all(exact_zero(value) for value in endpoint_residuals)
+        and sp.limit(asymptotic_p, tau, sp.oo) == 0
+        and sp.limit(finite_endpoint_p, tau, endpoint, dir="-") == 0
+        and sp.limit(5 * sp.log(1 + k * tau), tau, sp.oo) == sp.oo
+        and sp.limit(-5 * sp.log(1 - tau / endpoint),
+                     tau, endpoint, dir="-") == sp.oo
+    )
     static_p = cal_n**accel
     static_residual = sp.simplify(static_p - cal_n)
 
@@ -779,7 +850,7 @@ def exact_symbolic_audit(config: dict[str, Any]) -> dict[str, Any]:
         dlog_p_euler.subs(dlog_mu, cs2 * dlog_n) + cs2 * dlog_n
     )
     density_power = config["static_density_power"]
-    registered_density_control_power = sp.Rational(1, 2)
+    registered_density_control_power = sp.Rational(1, 5)
     registered_density_control_cs2 = -registered_density_control_power
     registered_density_control_healthy = bool(
         0 <= registered_density_control_cs2 <= 1
@@ -1073,6 +1144,8 @@ def exact_symbolic_audit(config: dict[str, Any]) -> dict[str, Any]:
         "regular_black_hole_interior_derived",
         "singularity_resolution_completed",
         "geodesic_completeness_derived",
+        "strong_field_pressure_feedback_derived",
+        "global_asymptotic_relaxation_derived",
         "new_observation_tested",
     }
     promoted = set(config["promoted_claims"])
@@ -1103,6 +1176,16 @@ def exact_symbolic_audit(config: dict[str, Any]) -> dict[str, Any]:
             and horizon_pl_limit == sp.Rational(1, 4)
         ),
         "homogeneous_reduction": exact_zero(homogeneous_residual),
+        "homogeneous_volume_jacobian": (
+            exact_zero(volume_residual) and exact_zero(fifth_power_residual)
+        ),
+        "integrated_scale_transport": (
+            exact_zero(integrated_residual)
+            and exact_zero(current_transport_residual)
+        ),
+        "finite_expansion_positivity": (
+            lower_bound_positive and exponential_monotonic and endpoint_checks
+        ),
         "static_killing_reduction": exact_zero(static_residual),
         "w3_54_euler_crosscheck": (
             exact_zero(euler_residual) and exact_zero(eos_slope_residual)
@@ -1112,7 +1195,7 @@ def exact_symbolic_audit(config: dict[str, Any]) -> dict[str, Any]:
             and exact_zero(eos_slope_residual)
             and static_density_health is True
             and static_density_rejected is True
-            and registered_density_control_cs2 == -sp.Rational(1, 2)
+            and registered_density_control_cs2 == -sp.Rational(1, 5)
             and registered_density_control_healthy is False
             and zero_cs2_endpoint_registered
             and unit_cs2_endpoint_registered
@@ -1229,7 +1312,24 @@ def exact_symbolic_audit(config: dict[str, Any]) -> dict[str, Any]:
             "mixed_witness_rectangle_loop": sstr(
                 loop_registry["mixed_witness"]
             ),
-            "homogeneous_p2_residual": sstr(homogeneous_residual),
+            "homogeneous_p5_residual": sstr(homogeneous_residual),
+            "homogeneous_volume_map": "nHat_op=p^3 nHat_F=p^5",
+            "volume_jacobian_residual": sstr(volume_residual),
+            "independent_fifth_power_residual": sstr(fifth_power_residual),
+            "relaxation_criterion": {
+                "domain": "HOMOGENEOUS_BRANCH_OPERATIONAL_PROPER_TIME",
+                "p": sstr(transported),
+                "scale_residual": sstr(integrated_residual),
+                "current_residual": sstr(current_transport_residual),
+                "positive_lower_bound_for_I_le_B": sstr(lower_bound),
+                "lower_bound_positive": lower_bound_positive,
+                "exponential_monotonic": exponential_monotonic,
+                "endpoint_witnesses_pass": endpoint_checks,
+                "asymptotic_witness": sstr(asymptotic_p),
+                "finite_endpoint_witness": sstr(finite_endpoint_p),
+                "dynamical_expansion_bound_derived": False,
+                "witnesses_are_einstein_solutions": False,
+            },
             "static_p_residual": sstr(static_residual),
         },
         "euler_and_health": {
@@ -1454,7 +1554,8 @@ def audit_finite_oscillon() -> dict[str, Any]:
 
 PRODUCTION_CONFIGURATION: dict[str, Any] = {
     "acceleration_coefficient": sp.Integer(1),
-    "theta_coefficient": sp.Rational(1, 2),
+    "theta_coefficient": sp.Rational(1, 5),
+    "volume_jacobian_power": sp.Integer(3),
     "static_density_power": None,
     "spatial_rule": "einstein",
     "lapse_rule": "normalized_killing",
@@ -1478,6 +1579,12 @@ def evaluate_configuration(config: dict[str, Any]) -> dict[str, bool]:
 
 
 MUTATIONS: dict[str, dict[str, Any]] = {
+    "foundation_density_used_as_operational": {
+        "volume_jacobian_power": sp.Integer(0)
+    },
+    "old_half_expansion_coefficient_restored": {
+        "theta_coefficient": sp.Rational(1, 2)
+    },
     "theta_coefficient_changed": {
         "theta_coefficient": sp.Rational(2, 3)
     },
@@ -1485,7 +1592,7 @@ MUTATIONS: dict[str, dict[str, Any]] = {
         "acceleration_coefficient": sp.Integer(-1)
     },
     "static_density_relabelled": {
-        "static_density_power": sp.Rational(1, 2)
+        "static_density_power": sp.Rational(1, 5)
     },
     "p_t_forced_equal_p_L": {"spatial_rule": "temporal"},
     "radial_N_used_as_lapse": {"lapse_rule": "radial_metric"},
@@ -1529,6 +1636,11 @@ MUTATIONS: dict[str, dict[str, Any]] = {
 }
 
 MUTATION_PRIMARY_FAILURES = {
+    "foundation_density_used_as_operational": {"homogeneous_volume_jacobian"},
+    "old_half_expansion_coefficient_restored": {
+        "scale_connection_temporal_projection", "homogeneous_reduction",
+        "integrated_scale_transport",
+    },
     "theta_coefficient_changed": {
         "scale_connection_temporal_projection", "homogeneous_reduction"
     },
@@ -1621,7 +1733,7 @@ def run_mutation_controls() -> dict[str, Any]:
     exact_name_registry = (
         set(MUTATIONS) == set(MUTATION_PRIMARY_FAILURES)
         and set(MUTATIONS) == set(frozen_registry)
-        and len(MUTATIONS) == 13
+        and len(MUTATIONS) == 15
     )
     exact_changed_path_registry = (
         actual_changed_path_registry == frozen_registry
@@ -1697,6 +1809,12 @@ def build_flags(
         "geodesic_completeness_derived": (
             "geodesic_completeness_derived" in promoted
         ),
+        "strong_field_pressure_feedback_derived": (
+            "strong_field_pressure_feedback_derived" in promoted
+        ),
+        "global_asymptotic_relaxation_derived": (
+            "global_asymptotic_relaxation_derived" in promoted
+        ),
         "new_observation_tested": "new_observation_tested" in promoted,
         "canon_changed": not canon_exact,
         "intuitive_files_changed": not immutable_exact,
@@ -1721,6 +1839,9 @@ def build_flags(
             and production["path_independence"]
         ),
         "homogeneous_reduction_exact": production["homogeneous_reduction"],
+        "homogeneous_volume_jacobian_exact": production["homogeneous_volume_jacobian"],
+        "integrated_scale_transport_exact": production["integrated_scale_transport"],
+        "finite_expansion_positivity_exact": production["finite_expansion_positivity"],
         "static_killing_reduction_exact": production[
             "static_killing_reduction"
         ],
@@ -1940,7 +2061,7 @@ def main() -> int:
         ),
         "production_configuration_aggregate": production["aggregate"],
         "registered_mutation_count_exact": (
-            mutations["registered_mutation_count"] == 13
+            mutations["registered_mutation_count"] == 15
         ),
         "all_mutation_primary_failures_observed": mutations["all_detected"],
         "finite_json_inputs": finite["all_finite"],
@@ -1985,9 +2106,9 @@ def main() -> int:
             "observation": "NOT_APPLICABLE",
         },
         "claim": {
-            "connection": "W_mu = a_mu + (1/2) Theta u_mu",
+            "connection": "W_mu = a_mu + (1/5) Theta u_mu",
             "readout": "nabla_mu ln p_t = W_mu where F_mu_nu = 0",
-            "homogeneous_reduction": "p_t^2 = n_C/n_C0",
+            "homogeneous_reduction": "p_t^5 = n_C/n_C0, n_C=n_C,op",
             "static_reduction": "p_t = calN = mu_infinity/mu_C",
             "spatial_factor": (
                 "p_L = (1 + U/2)^(-2) = ((1 + p_t)/2)^2"
@@ -2007,7 +2128,7 @@ def main() -> int:
         "role_ledger": {
             "p_t": "BRANCH_RESTRICTED_TEMPORAL_READOUT",
             "p_L": "INDEPENDENT_SPATIAL_COFRAME_PROJECTION",
-            "n_C": "COLLECTIVE_PHASE_ACTION_DENSITY",
+            "n_C": "COLLECTIVE_PHASE_ACTION_DENSITY_PER_OPERATIONAL_VOLUME",
             "R_O_loc": (
                 "INTRINSIC_CHARGE_MOMENT_RADIUS_IN_THE_LOCAL_ORTHONORMAL_FRAME"
             ),
@@ -2058,6 +2179,11 @@ def main() -> int:
                 "INFERENCE"
             ),
             "global_interior_or_singularity_resolution": "NOT_OPENED",
+            "original_horizon_handoff_realized_in_successors": ["W3-72", "W3-73"],
+            "current_pressure_feedback_input": (
+                "A local foundation-state relation to the once-counted Hilbert "
+                "source and an evolution bound in the inhomogeneous regime."
+            ),
             "next_exact_input": (
                 "A horizon-regular nonstatic timelike material current, or its "
                 "exact elimination from existing fields, with one metric, one "
