@@ -1,5 +1,26 @@
 # Work 3 Cosmology and LSS Ledger
 
+## Covariant-medium integration boundary
+
+The author's static clock--material-label--`H` action is now registered in
+[W3-92](../Strong_Field/W3-92_Covariant_Medium_Integration/FORMAL_COVARIANT_MEDIUM_INTEGRATION.md)
+and the [formal compatibility ledger](../Lagrangian_Formulation/RefG_Formal_Proof.md#10-covariant-medium-strong-field-realization-and-compatibility-ledger).
+The cosmological and CMB closures below retain their own frozen source and
+field-content premises. On a homogeneous clock-aligned background the
+article's projected `H` gradient vanishes, but its algebraic medium response
+and linear perturbations still require a source-matching calculation.
+Consequently the static exterior relation `p=exp(-H)` is not inserted into
+the cosmological equations as a derived universal identification, and the
+article does not automatically inherit the W3-62/W3-63 CMB handoff.
+
+Use W3-62's volume distinction throughout cosmological specialization:
+`a_F` and `n_C,F` describe the foundation measure, whereas `A=a_F/p` and
+`n_C,op` describe the operational coframe and proper current density.
+Normalized densities obey `nHat_C,op=p^3 nHat_C,F=A^(-3)`; the foundation
+relation is `eta_F a_F^3=1`. These are two representations of one charge,
+not additional sources. The established selected map `p=A^(-3/5)` is
+unchanged by the static-action integration.
+
 ## Current account
 
 W3-40 supplies the reduced scale dictionary for the cosmology branch. Its

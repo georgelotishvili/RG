@@ -3,6 +3,18 @@
 **Status:**
 `CONDITIONAL_EXACT_SELECTED_RELATIONAL_COFRAME_MASTER_ACTION_TO_TEGR_EQUIVALENT_EH_AND_PHASE_CURRENT_T`.
 
+The status above belongs to the W3-54 closure retained below. Section 10 adds
+the author's covariant clock--material-label--`H` realization as an explicit
+strong-field action and records its overlap with the established gates. Its
+exact exponential exterior and regular kinematic core have separate evidence
+roles. The integration record is
+[W3-92](../Strong_Field/W3-92_Covariant_Medium_Integration/FORMAL_COVARIANT_MEDIUM_INTEGRATION.md);
+the complete action and article derivations remain in
+[RefG_ka.md](../../../RefG_ka.md). The two actions share one-metric geometry and
+an Einstein--Hilbert operator; equivalence of their full source dynamics is a
+separate matching problem. No existing frozen gate acquires a broader domain
+through this registration.
+
 This document records the bounded post-Genesis continuum endpoint of the RefG
 gravity branch. Conditional on a declared relational-coframe continuum phase,
 W3-54 selects one explicit coframe and phase-current master action. Its
@@ -31,6 +43,15 @@ leading local zero- and two-derivative metric sector of a connected
 post-Genesis low-energy phase. Operational coordinates use `x^0=c0 tau`, so
 all four `x^mu` have length units. The metric is dimensionless,
 `[R]=[Lambda_eff]=L^(-2)`, and `T_mn` has energy-density units.
+
+For cosmological specialization, W3-62 resolves the earlier shared volume
+notation: the covariant coframe uses the operational scale `A` and proper
+current density `n_C,op`, while `a_F` and `n_C,F` refer to the foundation
+measure. Thus `n_C,op A^3=constant`, whereas the selected foundation relation
+is `eta_F a_F^3=1`. Normalized densities obey
+`nHat_C,op=p^3 nHat_C,F`, with `A=a_F/p`. Earlier W3-50/W3-54 formulae below
+retain their registered notation and are interpreted with this W3-62
+distinction; no two densities or source entries are identified implicitly.
 
 The logical order is
 
@@ -748,6 +769,134 @@ with a gauge-invariant local microscopic stress tensor. Lorentz covariance,
 the metric and `T_mn` emerge only in the selected operational IR phase. If a
 future microtheory satisfies all forbidden microscopic premises, the proposed
 composite spin-two branch fails.
+
+## 10. Covariant medium strong-field realization and compatibility ledger
+
+The author's [covariant-medium article](../../../RefG_ka.md), Sections 2--4
+and Appendix A, supplies a concrete additional continuum realization. Its
+gravitational operator is Einstein--Hilbert; the medium's dynamical fields
+are an independent clock `Phi`, three material labels `phi^A`, and a
+deficit-response field `H`. W3-54's torsion selector and phase-current
+variation retain their original premises and do not derive these additional
+medium terms. The bounded checks are collected in the
+[W3-92 integration package](../Strong_Field/W3-92_Covariant_Medium_Integration/FORMAL_COVARIANT_MEDIUM_INTEGRATION.md).
+
+### 10.1. Action and exact exterior
+
+Keep the article's `(+---)` convention, `c=hbar=1`, and
+`M_Pl^(-2)=8 pi G` in this subsection:
+
+```text
+Y=g^{mu nu} partial_mu Phi partial_nu Phi > 0,
+u_mu=partial_mu Phi/sqrt(Y),
+gamma^{mu nu}=u^mu u^nu-g^{mu nu},
+B^{AB}=-g^{mu nu} partial_mu phi^A partial_nu phi^B,
+Yhat=exp(-2H)Y,                 Bhat=exp(2H)B,
+Ihat1=Tr Bhat,
+Ihat2=[(Tr Bhat)^2-Tr(Bhat^2)]/2,
+Ihat3=det Bhat.
+
+S_article=integral d4x sqrt(-g)
+  [M_Pl^2 R/2-M_*^4 F(Yhat,Ihat1,Ihat2,Ihat3)
+   -omega_H M_Pl^2 gamma^{mu nu} partial_mu H partial_nu H]
+  +S_m[g,psi].
+```
+
+The matrix `B^{AB}` is positive definite. Ordinary matter in `S_m` couples
+minimally to the same metric and has no direct `H` coupling. Every field is
+varied before applying a static ansatz. Article signs and the source
+definition must be converted together if the action is rewritten in the
+earlier `(-+++)` convention; a second Einstein--Hilbert term is never added.
+
+At `Yhat=1`, `Bhat=identity`, require
+`F=F_Yhat=F_BhatAB=0`. For `omega_H=1`, the fields
+
+```text
+Phi=t,          phi^A=x^A,          H=m/r,
+ds^2=exp(-2H)dt^2-exp(2H)(dr^2+r^2dOmega^2),
+r>=r_c>0,       m>0
+```
+
+solve every exterior metric and medium equation. In isotropic coordinates,
+the normalized exterior flux is `Q_H=-r^2 H'=m` and `M_ADM=m/G`.
+With `Z=m^2 exp(-2m/r)/r^4`, the exact mixed source and geometry satisfy
+
+```text
+Theta^mu_nu/M_Pl^2=G^mu_nu=Z diag(-1,+1,-1,-1),
+rho=-M_Pl^2 Z,      p_r=-M_Pl^2 Z,      p_t=+M_Pl^2 Z.
+```
+
+This exterior violates the radial NEC. The fixed-background `H`--`H`
+principal block is spatially elliptic; the complete clock--`H`--metric
+constraint, kinetic and stability problem requires the coupled analysis.
+The article's silent point and `omega_H=1` are explicit classical matching
+conditions, not coefficients derived by W3-54 or protected by its selector.
+
+### 10.2. Operational dictionary and the core boundary
+
+On this exact static isotropic exterior, the operational dictionary is
+
+```text
+p_clock=p_ruler=p=exp(-H),
+varphi=2 ln(p)=-2H,
+e^0=p dt,                    e^a=p^(-1) dx^a.
+```
+
+It agrees with the W3-51 static readout at the tested order. The article
+provides independent dynamics for `H`; the dictionary alone does not turn a
+general W3-54 coframe projection into that independent field.
+
+For a general static isotropic metric
+`ds^2=mathcal_B dt^2-mathcal_A d x^2`, the two factors are
+`p_clock=sqrt(mathcal_B)` and `p_ruler=mathcal_A^(-1/2)`. They coincide
+exactly when `mathcal_A mathcal_B=1`. The article's polynomial target core,
+with `x=r/r_c` and `q=2m/r_c`, instead has
+
+```text
+mathcal_A mathcal_B=exp[q(x^2-1)^3],       0<=x<=1.
+```
+
+Its interior therefore has distinct clock and ruler factors. This regular,
+horizonless, geodesically complete kinematic geometry is not a realization
+of a universal single-`p` interior rule. Its effective stress is bounded,
+but its realization by the article action is a separate source problem.
+The restricted static `Phi=t`, `phi^A=x^A`, ordinary-matter-free source test
+rejects this exact polynomial target because it requires negative `H'^2`
+near the centre. That test does not exclude every interior or every allowed
+material-label configuration of the article action.
+
+### 10.3. Exact overlap and untransferred conclusions
+
+| Existing result | Retained meaning after integration |
+|---|---|
+| W3-54 TEGR--Einstein--Hilbert identity | Exact for its selected torsion operator; it can represent the same metric gravitational operator. The article's medium source is additional specified field content, not a W3-54 output. |
+| W3-51 static weak-field result | The exponential exterior has `g_tt=1-2u+2u^2+O(u^3)` and spatial factor `1+2u+2u^2+O(u^3)`, `u=m/r`; the static coefficients associated with `beta=gamma=1` agree. Its spatial second-order coefficient differs from Schwarzschild's `3/2`, beyond the retained W3-52 spatial order. |
+| W3-52 complete PPN implication | The frozen conditional theorem remains valid. Applying it to the article requires a source-derived moving weak-field solution and control of extra fields and preferred-frame effects; the article has not determined `alpha1`, `alpha2` or the full PPN hierarchy. |
+| W3-58/W3-61 ordinary scalar | Retaining the same minimally coupled ordinary action in `S_m` preserves its fixed-metric equations and free vacuum Hessian. The global Fock and particle statements remain fixed-Minkowski statements; they establish neither the health of the coupled medium nor quantum gravitational backreaction. |
+| W3-62/W3-63 cosmology and CMB | Their conditional Einstein--phase-current source and linear initial-value handoff remain in their registered domains. An identical background and perturbed source for the article action has not been established. |
+
+The once-only ledger remains essential. `Theta_medium`, `T_C` and `T_O`
+must not be equated or counted as independent copies of the same physical
+content without an explicit source map. The article clock `Phi`, collective
+phase `theta_C`, ordinary phase `theta_O` and exterior flux `Q_H` likewise
+retain distinct definitions. A metric readout `p` supplies no additional
+stress term beside the variation of the chosen action.
+
+For homogeneous aligned `H(eta)` and `Phi(eta)`,
+`gamma^{mu nu}partial_nu H=0`, so the projected gradient sector vanishes on
+that background. The algebraic `F`-sector, its `H` equation and the linear
+perturbations still require evaluation. A zero projected background alone
+cannot transfer the W3-62/W3-63 closure. In particular, with
+`g_op=A^2 eta` and `phi^A=x^A`, imposing the exterior silent condition
+`Bhat=identity` would require `H=ln(A)`. Adding the exterior dictionary
+`p=exp(-H)` would then give `p=A^(-1)`, whereas the selected W3-62 cosmology
+uses `p=A^(-3/5)`. Those simultaneous additional identifications are not a
+derived cosmological branch of the article.
+
+The integration restores a concrete strong-field action and its exact
+exterior without rewriting the original conditional theorems. The remaining
+direct problem is an action-supported interior and its coupled health, with
+source and domain matching performed before transferring downstream gates.
 
 ## Conclusion and stopping rule
 
