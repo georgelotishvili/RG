@@ -91,11 +91,13 @@ Thumbs.db
 # Internal oscillon/reference diagnostic; excluded from publication exports
 /RefG/work 3/Strong_Field/W3-74_Oscillon_Tidal_Source_Response/oscillon_reference_diagnostic.md
 /RefG/work 3/Strong_Field/W3-74_Oscillon_Tidal_Source_Response/verify_oscillon_reference_diagnostic.py
-# Internal source-health and horizon test; not a publication artifact
-/RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/medium_health_horizon_diagnostic.md
-/RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_medium_health_horizon_diagnostic.py
+# W3-92 research reports and source code are versioned.
 /RefG/work 3/**/*.json
 /RefG/work 3/**/*.png
+# Pinned inputs required to reproduce W3-92 diagnostics.
+!/RefG/work 3/Strong_Field/W3-64_Einstein_Continuation/w3_64_result.json
+!/RefG/work 3/Strong_Field/W3-65_First_Turning_Point/w3_65_result.json
+!/RefG/work 3/Strong_Field/W3-66_Physical_Radial_Mode/w3_66_result.json
 !/RefG/work 3/Cosmology_and_LSS/Expansion_Relaxation_Causal_Lock/w3_40_result.json
 !/RefG/work 3/Genesis_Scenario/w3_37_result.json
 !/RefG/work 3/Genesis_Scenario/w3_38_result.json

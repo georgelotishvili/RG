@@ -11,6 +11,11 @@
 *.tex text eol=lf
 *.txt text eol=lf
 
+# Preserve historical result bytes required by the W3-92 SHA256 pins.
+"RefG/work 3/Strong_Field/W3-64_Einstein_Continuation/w3_64_result.json" -text
+"RefG/work 3/Strong_Field/W3-65_First_Turning_Point/w3_65_result.json" -text
+"RefG/work 3/Strong_Field/W3-66_Physical_Radial_Mode/w3_66_result.json" -text
+
 # Never subject binary publication assets to text normalization.
 *.jpeg binary
 *.jpg binary
