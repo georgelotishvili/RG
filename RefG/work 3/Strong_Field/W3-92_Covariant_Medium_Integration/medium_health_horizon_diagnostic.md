@@ -13,14 +13,19 @@ exponential exterior and selected additive constitutive truncations are
 candidate assumptions, not requirements imposed on every future action.
 The negative results below remain valid in their stated domains.
 
-Current completed calculation: Stage 17's literal one-, two- and
-three-core, same-field initial-data assembly. The constraints and all
-prepared core scales are updated jointly. Matched-grid mass deficits
-and decreasing successive ADM-mass increments survive both refinement
-and directly measured domain changes for all three populations.
-These are prepared Cauchy data, not demonstrated matter equilibrium.
-The local dilation prescription follows from a uniform-background
-identity; it is not a newly derived full foundation-pressure law.
+Current completed calculation: Stage 18's exact initial dynamical
+response of the same one-, two- and three-core prepared sources.
+Both pair centroids and both outer triple centroids accelerate inward
+in the specified coordinate gauge; grid, domain and independent face-
+stencil checks resolve this sign. The isolated and middle triple
+centroids satisfy their reflection-zero controls. Translation-subtracted
+coordinate-width and Klein--Gordon amplitude responses remain OPEN.
+
+Stage 17's jointly updated initial geometry, prepared core scales,
+matched-grid mass deficits and decreasing successive ADM-mass increments
+are unchanged. These are prepared Cauchy data, not demonstrated matter
+equilibrium. The local dilation prescription follows from a uniform-
+background identity; it is not a full foundation-pressure law.
 
 Stage 16 remains a separate, valid kinetic-perturbation/evolution
 result, not a population-addition experiment. Its anchor suite passes;
@@ -3694,3 +3699,270 @@ The official Georgian/English monographs, source article and previous
 solver hashes are unchanged by Stage 17. Only this existing report,
 the current summary in idea.txt, the single new internal solver and
 the precise diagnostic ignore entries were updated.
+
+## Stage 18: initial dynamical release of the assembled cores
+
+### Frozen question and stopping rule (2026-09-10)
+
+Question: when the Stage 17 prepared sources are freely released, do
+their charge centroids have a resolved initial acceleration, and what
+initial change of central coordinate width accompanies that motion?
+The immediate obstacle is that satisfying Einstein constraints does
+not solve the matter evolution. The minimum new result is its exact
+initial current derivative and a controlled numerical centroid test.
+
+- CLAIM_ID / TYPE: W92_ASSEMBLY_INITIAL_CURRENT_RESPONSE_V1;
+  exact initial evolution identity plus numerical evidence.
+- MODEL: unchanged W58/W64 half-normalized Einstein--complex-sextic
+  action, alpha=0.04, Stage 17 anchor and prepared profiles.
+- ASSUMPTIONS / DOMAIN: the very same N=1,2,3 separated, equal,
+  in-phase cores at nearest-neighbour distance24; the initial slice
+  has K_ij=0, gamma_ij=psi^4 delta_ij and its solved maximal lapse N_l.
+  Choose zero shift and zero initial shift derivative. The evolution
+  derivative is evaluated at t=0; no conformal-flatness assumption
+  is made about subsequent slices.
+- FREEDOMS: no new physical parameter, force, damping, constitutive
+  law, or prescribed equilibrium. Grid, domain and derivative stencil
+  are numerical choices, not fitted response coefficients.
+- FILES: extend population_assembly_initial_data.py, this existing
+  report, and the current summary in intuitive/idea.txt. No new folder,
+  official-monograph change, ignore rule, commit, push or release.
+- METHOD: differentiate the covariantly conserved scalar current at
+  the actual initial slice. Conservative cylindrical face fluxes
+  give charge-centroid and central-second-moment accelerations.
+  Include regional charge exchange across the fixed Voronoi interfaces.
+- BENCHMARKS / CROSSCHECKS: stationary phase N_l*q=Omega*f gives
+  exactly zero response; uniform prescribed transport acceleration
+  changes the centroid but leaves the central width unchanged;
+  global reflection symmetry and charge conservation provide controls.
+  A distinct differentiation/integration route checks the production
+  stencil. Both routes share the initial geometry and action.
+- MAIN NUMERICS: same h=0.5,0.25, cylindrical radius48, |z|<=96;
+  direct domain checks at h=0.5, radius64, |z|<=128 for all populations.
+  A sole h=0.125 refinement is available if it can change the primary
+  motion decision. Never reduce the response threshold to obtain a sign.
+- PRIMARY PASS: inherited preparation/constraint/overlap/peak gates;
+  finite current derivatives; algebraic and conservation controls;
+  every noncentral core acceleration resolved above three times
+  both its grid and domain discrepancies and an absolute 1e-12 floor.
+  Either direction is an admissible output. The middle triple core
+  and isolated core are reflection-zero controls, not failed signals.
+- SECONDARY: report coordinate central-width acceleration separately
+  from bulk motion. Compare it to the matching isolated numerical
+  response, grid discrepancy and domain discrepancy. An unresolved
+  width response stays unresolved; it is not a stability result.
+  Also evaluate the translation-subtracted Klein--Gordon squared-
+  amplitude acceleration over each charge-weighted core. A constant
+  phase frequency makes the initial current derivative vanish even
+  for an amplitude profile violating the matter equation, so this
+  separate residual is necessary. Resolve it only above three times
+  the matching isolated residual and grid/domain discrepancies;
+  otherwise retain an upper-resolution statement. This secondary
+  decision does not extend the primary stopping rule.
+- FAIL / FALSIFIER: failed conservation, source provenance or control
+  invalidates the diagnostic; unresolvable acceleration gives OPEN.
+  Resolved outward motion falsifies attraction for these prepared data,
+  not the whole theory. No outcome is changed to match intuition.
+- OBSERVABLE MAP: current-weighted centroid and central width on the
+  specified asymptotically normalized coordinate slice. Local proper
+  shape, late-time equilibrium and radiation require additional
+  geometric/evolution information.
+- DATA ROLE / FORWARD MODEL / IDENTIFIABILITY: N/A for observations;
+  this is a local-in-time theoretical diagnostic, with no data fit
+  or uniqueness claim. The existing action and solver are the source.
+- STOP: a validated initial-motion decision, or its named failed gate.
+  Long-time evolution, relaxation, stability, mass saturation and a
+  nonsingular black hole are separate outcomes, not inferred here.
+
+### Exact current response at the initial slice
+
+Write phi=f real, Pi=i*q, P=i*psi^6*q and y=N_l*q.
+The positive scalar-charge density per coordinate volume is D=f*P_imag.
+With coordinate flux F^i=-N_l*sqrt(gamma)*gamma^ij*
+Im(phi^* partial_j phi), current conservation is partial_t D+div F=0.
+Initially F=0, partial_t D=0 and partial_t phi=i*y. Therefore
+
+~~~text
+partial_t F = N_l*psi^2*(y*grad f-f*grad y),
+partial_t^2 D = -div(partial_t F).
+~~~
+
+The potential cancels from this derivative. Terms containing time
+derivatives of lapse or metric multiply the initially zero spatial
+phase current. The equation is an exact initial derivative of the
+full retained dynamics, not a finite-time evolution in a frozen metric.
+Using y=Omega*f gives zero identically, including the uniform external
+embedding of Stage 17.
+
+For each fixed coordinate region let Q=integral D, c=integral z*D/Q,
+and R2=integral (rho_cyl^2+(z-c)^2)*D/Q. All first derivatives vanish.
+The full second derivative D_tt, including boundary flux, gives
+
+~~~text
+c_tt  = integral (z-c)*D_tt / Q,
+R2_tt = integral (rho_cyl^2+(z-c)^2-R2)*D_tt / Q.
+~~~
+
+Factors of 4*pi cancel in these ratios. Regional Q_tt is measured,
+not set to zero. A uniform bulk acceleration alone gives c_tt=a_z
+and R2_tt=0 in a boundary-free translated profile. In a freely evolving
+geometry, coordinate R2_tt by itself is not an intrinsic deformation
+measurement. This is the necessary distinction between moving a core
+and changing its internal structure.
+
+For the complementary field test set B=|phi|^2. The initial
+Klein--Gordon equation gives
+
+~~~text
+v'(f) = f-f^3+0.25*f^5,
+B_tt = 2*N_l*f*psi^(-6)*div(N_l*psi^2*grad f)
+       -2*N_l^2*f*v'(f)+2*y^2,
+B_tt,comoving = B_tt+c_tt*partial_z(f^2).
+~~~
+
+The last correction removes a uniform coordinate translation from
+the core profile. Divide by the local lapse squared to express this
+translation-subtracted response in initial normal-clock units, and
+quote the charge-weighted RMS normalized by
+2*f0^2*(Omega/N_l,isolated(0))^2. This normalization avoids using tiny
+tail amplitudes as denominators. The result is a normal-clock-normalized,
+translation-subtracted profile residual, not the uncorrected derivative
+along a fixed normal observer, a proper-size Hessian or a stability
+eigenvalue.
+The homogeneous stationary amplitude and its deliberately mismatched
+frequency provide zero and nonzero controls for this complementary
+equation. No secondary field response is interpreted without its
+isolated, spatial-resolution and domain controls.
+
+### Completed nine-case test and numerical controls
+
+The registered six main cases and three enlarged-domain cases were
+executed together from one freshly reconstructed background. The
+production flux uses second-order face differences. The independent
+route uses fourth-order interior face reconstruction, reverting to
+second order at edge faces; both use the same conservative cylindrical
+divergence. The whole independent scheme is not fourth order.
+
+Before the physical comparison, the implementation also required the
+independent-stencil discrepancy in the three-times resolution test,
+and an outermost-internal/maximum flux ratio below 1e-8. These conditions
+were fixed before the pair/triple runs. The latter checks that setting
+the outer boundary flux to zero does not truncate an appreciable signal.
+Global charge conservation then telescopes by construction; it is an
+implementation control, not an independent continuum accuracy proof.
+Regional charge transfer is retained and checked against interface flux.
+
+All nine manufactured algebra controls passed. They include stationary
+coordinate-frequency cancellation, the proper-frequency force identity,
+rigid translation with zero central-width response, sign reversal and
+actual omitted-flux rejection. The homogeneous field with f=0.2 has
+zero amplitude acceleration at frequency 0.98, whereas frequency 1 gives
+B_tt=0.003168 despite zero current response. This explicitly checks why
+the current diagnostic alone cannot establish matter equilibrium.
+
+All nine physical cases passed their 16 individual response conditions.
+All seven aggregate response conditions, all 99 inherited assembly
+conditions and all nine algebra-control conditions are true. These are
+nested implementation/accuracy checks, not separate physical predictions.
+Across production and independent routes in all cases:
+
+~~~text
+max |total Q_tt|                         = 3.61e-18
+max |total coordinate centroid_tt|       = 3.88e-15
+max |regional Q_tt + outward flux_t|     = 1.62e-18
+max outermost-internal/max flux ratio    = 1.57e-31
+~~~
+
+### Resolved primary result: initial inward motion
+
+All accelerations below use the retained dimensionless code coordinates
+and asymptotically normalized coordinate time. They are charge-centroid
+accelerations, not invariant point-particle accelerations.
+
+| Core | Main h=0.5 | Main h=0.25 | Larger domain h=0.5 | Independent faces h=0.25 |
+| --- | ---: | ---: | ---: | ---: |
+| N=2, left | +0.000971509412 | +0.000990529581 | +0.000968550659 | +0.000995816305 |
+| N=2, right | -0.000971509412 | -0.000990529581 | -0.000968550659 | -0.000995816305 |
+| N=3, left | +0.001190228296 | +0.001213765466 | +0.001173318265 | +0.001220338843 |
+| N=3, right | -0.001190228296 | -0.001213765466 | -0.001173318265 | -0.001220338843 |
+
+Thus each noncentral centroid accelerates toward the other cores.
+On the fine production grid the isolated centroid response is
+-3.83e-15 and the middle triple response is -2.58e-15: both are
+reflection-zero controls, not physically outward motions.
+
+For either pair core the absolute grid, domain and independent-stencil
+discrepancies are respectively 1.90202e-5, 2.95875e-6 and 5.28672e-6.
+For either outer triple core they are 2.35372e-5, 1.69100e-5 and
+6.57338e-6. Each signal exceeds three times each discrepancy and the
+absolute floor. These are the registered numerical resolution criteria,
+not statistical confidence intervals or rigorous continuum error bounds.
+
+This closes the primary question:
+INITIAL_CENTROID_RESPONSE_VALIDATED for these prepared configurations.
+It adds the initial matter-evolution response to the earlier constraint
+solution without inserting an attraction force or evolving a frozen
+metric. It does not establish the later trajectory or final equilibrium.
+
+### Secondary result: internal-profile response remains OPEN
+
+The production isolated coordinate-width acceleration changes from
+-0.002299833424 at h=0.5 to -0.000610739562 at h=0.25. Subtract this
+matching isolated numerical response before interpreting the assembled
+coordinate central-second-moment signal:
+
+| Core (mirror partners equal) | Fine isolated-subtracted R2_tt | Grid discrepancy | Decision |
+| --- | ---: | ---: | --- |
+| N=2, either | 9.31777e-6 | 4.91612e-5 | OPEN |
+| N=3, outer | 1.32906e-5 | 7.28778e-5 | OPEN |
+| N=3, middle | 3.29507e-5 | 9.72377e-5 | OPEN |
+
+All signals are smaller than their grid discrepancies. Neither an
+intrinsic contraction nor shape preservation follows from these values.
+Even a resolved coordinate-width response would require the appropriate
+metric evolution for an intrinsic proper-size interpretation.
+
+The normalized isolated KG amplitude RMS is 0.012913178419 at h=0.5
+and 0.003421383704 at h=0.25. The fine assembled-minus-isolated RMS
+excesses are:
+
+| Core (mirror partners equal) | Fine RMS excess | Grid discrepancy | Decision |
+| --- | ---: | ---: | --- |
+| N=2, either | 0.000169683680 | 0.000144234631 | OPEN |
+| N=3, outer | 0.000258369875 | 0.000218025818 | OPEN |
+| N=3, middle | 0.000185949026 | 0.000413389493 | OPEN |
+
+Every excess is also below the isolated fine RMS floor 0.003421383704.
+This subtracts two scalar RMS values; it is not pointwise subtraction
+of an isolated field. No resolved amplitude readjustment, its absence,
+or instability is inferred. The independent-stencil and domain results
+are included in the reproducible comparison packet and do not close
+either secondary gate.
+
+### Reproduction, invariance and stopping decision
+
+~~~text
+python -B population_assembly_initial_data.py --response-suite
+~~~
+
+Run from this directory. The command recomputes the nine prepared
+states, evaluates both response routes, and emits the complete cases
+and comparisons as JSON to stdout without creating a result file.
+The completed run returned exit 0 in 76.735s with unchanged pinned input
+files and source throughout. Script SHA256:
+32299ba3daa1277def4483bf8a41b6457ccaf4f7aaebd6eff299975854962fd5.
+
+The optional state snapshot and new response helpers leave the previous
+source preparation unchanged. Removing only those additions reconstructs
+the Stage 17 source hash 04c1b038...2ee2 exactly; an independent AST check
+also preserves all previous non-CLI equations/functions. All nine ADM
+masses equal the Stage 17 values at the reported floating-point precision.
+The article, Georgian/English monographs and previous evolution solver
+are unchanged. No new physical coefficient or constitutive law was added.
+
+The registered primary stopping condition is met; the reserve refinement
+is not used to chase a secondary signal. The next physical bridge remains
+the coupled evolution or equilibrium of the same source, with internal
+response separated from bulk motion and numerical preparation error.
+Stage 18 does not prove a complete pressure law, relaxed self-regulation,
+mass saturation, a horizon or singularity removal.

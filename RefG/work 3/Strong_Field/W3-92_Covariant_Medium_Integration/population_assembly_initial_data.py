@@ -265,7 +265,7 @@ def solve_lapse(grid, psi, data):
     return W/psi, W, monopole, coefficient, residual
 
 
-def run_case(core, count=1, separation=28.0, h=0.5, radius=32.0, half_height=64.0):
+def run_case(core, count=1, separation=28.0, h=0.5, radius=32.0, half_height=64.0, state_sink=None):
     grid = CylindricalGrid(radius, half_height, h)
     centres = (np.arange(count)-(count-1)/2)*separation
     if np.max(abs(centres))+3*core.r90 >= half_height:
@@ -391,6 +391,9 @@ def run_case(core, count=1, separation=28.0, h=0.5, radius=32.0, half_height=64.
             psi_centre_relative=abs(float(psi_centres[0])/core.psi0-1),
             lapse_centre_relative=abs(float(lapse_centres[0])/core.lapse0-1))
         gates["pilot_isolated_anchor_calibration"] = max(calibration.values()) < NUMERICAL_CONTRACT["pilot_anchor_relative_tolerance"]
+    if state_sink is not None:
+        state_sink.update(grid=grid, core=core, data=data, psi=psi, lapse=lapse,
+                          factors=factors, centres=centres)
     return dict(
         status="INITIAL_DATA_ONLY", numerical_pilot_pass=bool(all(gates.values())),
         count=count, separation=separation, h=h, radius=radius, half_height=half_height,
@@ -423,6 +426,331 @@ def run_case(core, count=1, separation=28.0, h=0.5, radius=32.0, half_height=64.
             "common_clock_ruler_scaling_proved": False,
             "medium_F_or_PF_derived": False, "black_hole_or_singularity_claim": False,
             "continuum_or_domain_convergence_proved": False})
+
+
+# BEGIN INITIAL CURRENT RESPONSE HELPERS
+RESPONSE_PREVIOUS_SOURCE_SHA256 = "04c1b038fde6bea877b7990d24622ef65bf99c58840366628d630f5fa0962ee2"
+
+
+def current_acceleration_flux(grid, f, y, psi, lapse, order=2):
+    """d/dt of outward charge flux at real phi, imaginary normal momentum."""
+    fr = np.zeros((grid.nr+1, grid.nz))
+    fz = np.zeros((grid.nr, grid.nz+1))
+    pref_r = (lapse[:-1]+lapse[1:])/2*((psi[:-1]+psi[1:])/2)**2
+    pref_z = (lapse[:, :-1]+lapse[:, 1:])/2*((psi[:, :-1]+psi[:, 1:])/2)**2
+    fr[1:-1] = pref_r*(y[:-1]*f[1:]-f[:-1]*y[1:])/grid.h
+    fz[:, 1:-1] = pref_z*(y[:, :-1]*f[:, 1:]-f[:, :-1]*y[:, 1:])/grid.h
+    if order == 4:
+        def face(a, axis):
+            v = np.moveaxis(a, axis, 0)
+            average = (-v[:-3]+9*v[1:-2]+9*v[2:-1]-v[3:])/16
+            derivative = (v[:-3]-27*v[1:-2]+27*v[2:-1]-v[3:])/(24*grid.h)
+            return np.moveaxis(average, 0, axis), np.moveaxis(derivative, 0, axis)
+        for axis in (0, 1):
+            ff, df = face(f, axis)
+            yy, dy = face(y, axis)
+            pp, _ = face(psi, axis)
+            nn, _ = face(lapse, axis)
+            value = nn*pp**2*(yy*df-ff*dy)
+            if axis == 0:
+                fr[2:-2] = value
+            else:
+                fz[:, 2:-2] = value
+    elif order != 2:
+        raise ValueError("Only second/fourth face stencils are registered")
+    return fr, fz
+
+
+def current_response_moments(grid, D, flux_r, flux_z, centres):
+    """All regional derivatives include charge transfer across their boundary."""
+    redges = np.arange(grid.nr+1)*grid.h
+    Dtt = -(np.diff(redges[:, None]*flux_r, axis=0)/(grid.R*grid.h)+
+            np.diff(flux_z, axis=1)/grid.h)
+    Q = grid.integral(D)/(4*np.pi)
+    Qtt = grid.integral(Dtt)/(4*np.pi)
+    mean = grid.integral(grid.Z*D)/(4*np.pi*Q)
+    total_acceleration = (grid.integral(grid.Z*Dtt)/(4*np.pi)-mean*Qtt)/Q
+    nearest = np.argmin(abs(grid.Z[None, :, :]-centres[:, None, None]), axis=0)
+    regions = []
+    for i, centre in enumerate(centres):
+        mask = nearest == i
+        q = grid.integral(D*mask)/(4*np.pi)
+        qtt = grid.integral(Dtt*mask)/(4*np.pi)
+        zmean = grid.integral(grid.Z*D*mask)/(4*np.pi*q)
+        square = grid.R**2+(grid.Z-zmean)**2
+        r2 = grid.integral(square*D*mask)/(4*np.pi*q)
+        zacc = (grid.integral(grid.Z*Dtt*mask)/(4*np.pi)-zmean*qtt)/q
+        r2acc = (grid.integral(square*Dtt*mask)/(4*np.pi)-r2*qtt)/q
+        columns = np.flatnonzero(mask[0])
+        outflux = 2*np.pi*grid.h*np.sum(grid.r*(
+            flux_z[:, columns[-1]+1]-flux_z[:, columns[0]]))/(4*np.pi)
+        regions.append(dict(
+            label=i, nominal_centre_z=float(centre), initial_centroid_z=float(zmean),
+            regional_Q=q, regional_Qtt=qtt, regional_outward_flux_derivative=float(outflux),
+            regional_balance_residual=float(qtt+outflux),
+            coordinate_centroid_acceleration=float(zacc),
+            coordinate_charge_R2=float(r2),
+            coordinate_central_R2_second_derivative=float(r2acc)))
+    omitted_tail = max(float(np.max(abs(flux_r[-2]))),
+                       float(np.max(abs(flux_z[:, 1]))),
+                       float(np.max(abs(flux_z[:, -2]))))
+    flux_scale = max(float(np.max(abs(flux_r))), float(np.max(abs(flux_z))), 1e-30)
+    return dict(
+        total_Q=Q, total_Qtt=Qtt, total_initial_centroid_z=float(mean),
+        total_coordinate_centroid_acceleration=float(total_acceleration),
+        integrated_absolute_Dtt=grid.integral(abs(Dtt))/(4*np.pi),
+        max_abs_flux_derivative=flux_scale, outermost_internal_flux_ratio=omitted_tail/flux_scale,
+        regions=regions)
+
+
+def field_modulus_acceleration(grid, f, y, psi, lapse, order=2):
+    """Initial second coordinate-time derivative of |phi| squared."""
+    fr = np.zeros((grid.nr+1, grid.nz))
+    fz = np.zeros((grid.nr, grid.nz+1))
+    fr[1:-1] = (lapse[:-1]+lapse[1:])/2*((psi[:-1]+psi[1:])/2)**2*np.diff(f, axis=0)/grid.h
+    fz[:, 1:-1] = (lapse[:, :-1]+lapse[:, 1:])/2*((psi[:, :-1]+psi[:, 1:])/2)**2*np.diff(f, axis=1)/grid.h
+    if order == 4:
+        for axis in (0, 1):
+            v, pp, nn = [np.moveaxis(a, axis, 0) for a in (f, psi, lapse)]
+            df = (v[:-3]-27*v[1:-2]+27*v[2:-1]-v[3:])/(24*grid.h)
+            pface = (-pp[:-3]+9*pp[1:-2]+9*pp[2:-1]-pp[3:])/16
+            nface = (-nn[:-3]+9*nn[1:-2]+9*nn[2:-1]-nn[3:])/16
+            value = np.moveaxis(nface*pface**2*df, 0, axis)
+            if axis == 0:
+                fr[2:-2] = value
+            else:
+                fz[:, 2:-2] = value
+    elif order != 2:
+        raise ValueError("Only second/fourth face stencils are registered")
+    redges = np.arange(grid.nr+1)*grid.h
+    divergence = (np.diff(redges[:, None]*fr, axis=0)/(grid.R*grid.h)+
+                  np.diff(fz, axis=1)/grid.h)
+    potential_derivative = f-f**3+SEXTIC*f**5
+    return 2*f*lapse*divergence/psi**6-2*lapse**2*f*potential_derivative+2*y**2
+
+
+def regional_field_modulus_control(state, moments, order):
+    grid,core,data,psi,lapse,centres,factors=[state[k] for k in
+        ("grid","core","data","psi","lapse","centres","factors")]
+    f=data["phi"]
+    y=lapse*data["P"]/psi**6
+    Btt=field_modulus_acceleration(grid,f,y,psi,lapse,order)
+    dzf=np.zeros_like(f)
+    for centre,b in zip(centres,factors):
+        distance=np.sqrt(grid.R**2+(grid.Z-centre)**2)
+        dzf+=core.evaluate(b*b*distance)[1]*b*b*(grid.Z-centre)/distance
+    derivative_modulus=2*f*dzf
+    density=f*data["P"]
+    nearest=np.argmin(abs(grid.Z[None,:,:]-centres[:,None,None]),axis=0)
+    normalization=2*core.f0**2*(core.omega/core.lapse0)**2
+    outputs=[]
+    for i,region in enumerate(moments["regions"]):
+        mask=nearest==i
+        comoving=Btt+region["coordinate_centroid_acceleration"]*derivative_modulus
+        projected=comoving/lapse**2
+        raw=Btt/lapse**2
+        weight=grid.integral(density*mask)
+        rms=float(np.sqrt(grid.integral(density*mask*projected**2)/weight)/normalization)
+        raw_rms=float(np.sqrt(grid.integral(density*mask*raw**2)/weight)/normalization)
+        centre_value=float(grid.centre_values(projected,centres)[i]/normalization)
+        outputs.append(dict(label=i,normal_projection_comoving_modulus_RMS=rms,
+                            normal_projection_raw_modulus_RMS=raw_rms,
+                            normalized_centre_comoving_modulus_second_derivative=centre_value,
+                            normalization=normalization))
+    return outputs
+
+
+def initial_response_algebra_controls():
+    """Synthetic controls, not a physical evolution or calibration fit."""
+    grid = CylindricalGrid(8.0, 12.0, 0.25)
+    f = np.exp(-(grid.R**2+(grid.Z-0.7)**2)/2)
+    psi = 1+0.02*np.exp(-(grid.R**2+grid.Z**2)/16)
+    lapse = 0.95+0.02*np.tanh(grid.Z/4)
+    omega = 0.73
+    constant_errors = []
+    for order in (2, 4):
+        fr, fz = current_acceleration_flux(grid, f, omega*f, psi, lapse, order)
+        constant_errors.append(max(float(np.max(abs(fr))), float(np.max(abs(fz)))))
+    # With constant proper phase rate, the discrete cross product gives the
+    # lapse-gradient force with the same face normalization on both sides.
+    fr, fz = current_acceleration_flux(grid, f, omega*lapse*f, psi, lapse)
+    expected_r = -omega*(lapse[:-1]+lapse[1:])/2*((psi[:-1]+psi[1:])/2)**2*f[:-1]*f[1:]*np.diff(lapse, axis=0)/grid.h
+    expected_z = -omega*(lapse[:, :-1]+lapse[:, 1:])/2*((psi[:, :-1]+psi[:, 1:])/2)**2*f[:, :-1]*f[:, 1:]*np.diff(lapse, axis=1)/grid.h
+    rest_error = max(float(np.max(abs(fr[1:-1]-expected_r))),
+                     float(np.max(abs(fz[:, 1:-1]-expected_z))))
+    # A translated localized positive density with Fdot=a D has mean
+    # coordinate acceleration a and zero central-width second derivative.
+    D = np.exp(-(grid.R**2+(grid.Z-0.7)**2))
+    acceleration = 0.03
+    sr = np.zeros((grid.nr+1, grid.nz))
+    sz = np.zeros((grid.nr, grid.nz+1))
+    sz[:, 1:-1] = acceleration*(D[:, :-1]+D[:, 1:])/2
+    translation = current_response_moments(grid, D, sr, sz, np.array([0.7]))["regions"][0]
+    inverse = current_response_moments(grid, D, sr, -sz, np.array([0.7]))["regions"][0]
+    omitted = current_response_moments(grid, D, sr, np.zeros_like(sz), np.array([0.7]))["regions"][0]
+    constant_f=np.full_like(f,0.2)
+    ones=np.ones_like(f)
+    correct_frequency=np.sqrt(1-0.2**2+SEXTIC*0.2**4)
+    exact_modulus=field_modulus_acceleration(grid,constant_f,correct_frequency*constant_f,ones,ones)
+    wrong_modulus=field_modulus_acceleration(grid,constant_f,constant_f,ones,ones)
+    wrong_rate_flux=current_acceleration_flux(grid,constant_f,constant_f,ones,ones)
+    gates = dict(
+        constant_coordinate_phase_rate_zero_flux=max(constant_errors)<1e-12,
+        constant_proper_phase_rate_face_identity=rest_error<1e-12,
+        synthetic_translation_centroid=abs(translation["coordinate_centroid_acceleration"]-acceleration)<1e-9,
+        synthetic_translation_zero_central_R2=abs(translation["coordinate_central_R2_second_derivative"])<1e-9,
+        reversed_flux_reverses_acceleration=abs(inverse["coordinate_centroid_acceleration"]+acceleration)<1e-9,
+        omitted_nonzero_flux_rejected=abs(omitted["coordinate_centroid_acceleration"]-acceleration)>1e-9,
+        homogeneous_exact_frequency_modulus_stationary=float(np.max(abs(exact_modulus)))<1e-12,
+        homogeneous_wrong_frequency_detected=float(np.max(abs(wrong_modulus-0.003168)))<1e-12,
+        zero_current_does_not_imply_KG_equilibrium=(
+            max(float(np.max(abs(a))) for a in wrong_rate_flux)<1e-12 and
+            float(np.max(abs(wrong_modulus)))>0.003))
+    return dict(gates={k: bool(v) for k, v in gates.items()},
+                constant_rate_max_errors=constant_errors, proper_rate_face_error=rest_error,
+                synthetic_translation=translation,
+                omitted_flux_translation=omitted,
+                homogeneous_correct_frequency=float(correct_frequency),
+                homogeneous_wrong_frequency_modulus_acceleration=float(wrong_modulus[0,0]))
+
+
+def initial_response_case(core, count=1, h=0.5, radius=48.0, half_height=96.0, D=24.0):
+    state = {}
+    assembly = run_case(core, count=count, separation=D, h=h, radius=radius,
+                        half_height=half_height, state_sink=state)
+    grid, data, psi, lapse = [state[k] for k in ("grid", "data", "psi", "lapse")]
+    f = data["phi"]
+    normal_momentum = data["P"]/psi**6
+    y = lapse*normal_momentum
+    density = f*data["P"]
+    results = {}
+    for order, name in ((2, "production"), (4, "independent")):
+        fr, fz = current_acceleration_flux(grid, f, y, psi, lapse, order)
+        results[name] = current_response_moments(grid, density, fr, fz, state["centres"])
+        results[name]["field_modulus_controls"]=regional_field_modulus_control(state,results[name],order)
+    constant_errors = []
+    for order in (2, 4):
+        fr, fz = current_acceleration_flux(grid, f, core.omega*f, psi, lapse, order)
+        constant_errors.append(max(float(np.max(abs(fr))), float(np.max(abs(fz)))))
+    gates = dict(assembly_constraints=bool(assembly["numerical_pilot_pass"]),
+                 constant_frequency_control=max(constant_errors)<1e-12)
+    for name, result in results.items():
+        acc = [r["coordinate_centroid_acceleration"] for r in result["regions"]]
+        widths = [r["coordinate_central_R2_second_derivative"] for r in result["regions"]]
+        qscale = result["total_Q"]*max(1.0, core.omega**2)
+        gates[name+"_finite"] = all(np.isfinite(v) for v in acc+widths)
+        gates[name+"_field_modulus_finite"] = all(
+            np.isfinite(v) for region in result["field_modulus_controls"] for v in region.values())
+        gates[name+"_total_charge_acceleration"] = abs(result["total_Qtt"])/qscale < 1e-10
+        gates[name+"_zero_net_centroid_acceleration"] = abs(result["total_coordinate_centroid_acceleration"]) < 1e-10
+        gates[name+"_mirror_centroid_parity"] = max(abs(np.asarray(acc)+np.asarray(acc)[::-1])) < 1e-10
+        gates[name+"_regional_current_balance"] = max(abs(r["regional_balance_residual"]) for r in result["regions"])/qscale < 1e-10
+        gates[name+"_outer_tail_flux_negligible"] = result["outermost_internal_flux_ratio"] < 1e-8
+    return dict(
+        status="INITIAL_RESPONSE_ONLY", assembly=assembly,
+        gates={k: bool(v) for k, v in gates.items()}, response=results,
+        constant_frequency_control_max_flux=constant_errors,
+        scope={
+            "derivative": "Exact initial Noether-current derivative, spatially discretized",
+            "time": "Coordinate time of the prepared maximal slice with zero shift",
+            "centroid": "Charge centroid of a coordinate Voronoi region, including regional charge transfer",
+            "width": "Coordinate central R-squared only; not proper deformation or shape preservation",
+            "field_modulus": "Normal-clock-normalized comoving-profile initial KG residual; not proper width or a stability theorem",
+            "metric_first_derivative": "Zero at K_ij=0, zero shift; no second metric derivative supplied",
+            "evolution_performed": False, "relaxation_proved": False,
+            "equilibrium_proved": False, "singularity_resolution": False})
+
+
+def compare_initial_response_packets(main_packets, domain_packet):
+    """Primary motion resolved separately from optional coordinate-width response."""
+    assembly_main = {n: dict(p, cases={h: c["assembly"] for h, c in p["cases"].items()})
+                     for n, p in main_packets.items()}
+    assembly_domain = dict(domain_packet, cases={n: c["assembly"] for n, c in domain_packet["cases"].items()})
+    assembly_check = compare_assembly_packets(assembly_main, assembly_domain)
+    algebra = initial_response_algebra_controls()
+    gates = dict(assembly_validated=assembly_check["status"]=="ASSEMBLY_INITIAL_DATA_VALIDATED",
+                 algebra_controls=all(algebra["gates"].values()))
+    all_cases = [c for p in main_packets.values() for c in p["cases"].values()]+list(domain_packet["cases"].values())
+    gates["all_initial_response_gates"] = all(all(c["gates"].values()) for c in all_cases)
+    primary, secondary, modulus_secondary = {}, {}, {}
+
+    def case(n, grid):
+        return (domain_packet["cases"][str(n)] if grid=="domain"
+                else main_packets[str(n)]["cases"][grid])
+
+    def assess(fine, coarse, extended, stencil):
+        errors = dict(grid=abs(fine-coarse), domain=abs(extended-coarse),
+                      independent_stencil=abs(fine-stencil))
+        resolved = abs(fine) > max(1e-12, 3*max(errors.values()))
+        return dict(fine=fine, coarse=coarse, domain_control=extended,
+                    independent_stencil=stencil, discrepancies=errors,
+                    resolved=bool(resolved),
+                    direction="positive" if fine>0 else "negative" if fine<0 else "zero")
+
+    for n in (2, 3):
+        for i in (0, n-1):
+            key=f"N{n}_core{i}"
+            orientation=1.0 if i==0 else -1.0
+            def motion(grid, stencil="production"):
+                return orientation*case(n, grid)["response"][stencil]["regions"][i]["coordinate_centroid_acceleration"]
+            primary[key]=assess(motion("0.25"),motion("0.5"),motion("domain"),motion("0.25","independent"))
+            primary[key]["interpretation"]="positive means initially inward in the chosen coordinate gauge"
+            gates[key+"_motion_resolved"]=primary[key]["resolved"]
+        for i in range(n):
+            key=f"N{n}_core{i}"
+            def width(grid, stencil="production"):
+                a=case(n,grid)["response"][stencil]["regions"][i]["coordinate_central_R2_second_derivative"]
+                b=case(1,grid)["response"][stencil]["regions"][0]["coordinate_central_R2_second_derivative"]
+                return a-b
+            secondary[key]=assess(width("0.25"),width("0.5"),width("domain"),width("0.25","independent"))
+            def modulus(grid,stencil="production"):
+                a=case(n,grid)["response"][stencil]["field_modulus_controls"][i]["normal_projection_comoving_modulus_RMS"]
+                b=case(1,grid)["response"][stencil]["field_modulus_controls"][0]["normal_projection_comoving_modulus_RMS"]
+                return a-b
+            modulus_secondary[key]=assess(modulus("0.25"),modulus("0.5"),modulus("domain"),modulus("0.25","independent"))
+            floor=case(1,"0.25")["response"]["production"]["field_modulus_controls"][0]["normal_projection_comoving_modulus_RMS"]
+            modulus_secondary[key]["isolated_fine_RMS_floor"]=floor
+            modulus_secondary[key]["resolved"]=bool(
+                modulus_secondary[key]["resolved"] and abs(modulus_secondary[key]["fine"])>3*floor)
+    return dict(
+        status="INITIAL_CENTROID_RESPONSE_VALIDATED" if all(gates.values()) else "INITIAL_CENTROID_RESPONSE_OPEN",
+        gates={k:bool(v) for k,v in gates.items()}, primary_coordinate_motion=primary,
+        secondary_isolated_subtracted_coordinate_R2=secondary,
+        secondary_status="RESOLVED" if all(v["resolved"] for v in secondary.values()) else "OPEN",
+        secondary_isolated_subtracted_modulus_RMS=modulus_secondary,
+        modulus_secondary_status="RESOLVED" if all(v["resolved"] for v in modulus_secondary.values()) else "OPEN",
+        assembly_comparison=assembly_check, algebra_controls=algebra,
+        scope={"primary": "Instantaneous coordinate charge-centroid response of prepared cores",
+               "secondary": "Coordinate second moment, not proper deformation",
+               "full_evolution":False,"equilibrium":False,"PF_closure":False,"singularity_resolution":False})
+
+
+def run_response_suite():
+    start=time.perf_counter()
+    output=dict(code_sha256=sha(__file__))
+    try:
+        module,mod65,mod64,solution,anchor,pins,base_sha=load_background()
+        core=IsolatedCore(mod64,solution,anchor)
+        def unchanged():
+            return sha(HERE/"nonlinear_equilibrium_evolution.py")==base_sha and all(sha(module.SF/p)==v for p,v in pins.items())
+        common=dict(source_sha256=sha(__file__),base_source_sha256=base_sha,
+                    dependency_sha256=pins,background=core.mapping)
+        main={}
+        for n in (1,2,3):
+            main[str(n)]=dict(common,count=n,cases={str(h):initial_response_case(
+                core,count=n,h=h,radius=48.0,half_height=96.0,D=24.0) for h in (.5,.25)},
+                inputs_unchanged=unchanged())
+        domain=dict(common,cases={str(n):initial_response_case(
+            core,count=n,h=.5,radius=64.0,half_height=128.0,D=24.0) for n in (1,2,3)},
+            inputs_unchanged=unchanged())
+        output.update(main=main,domain=domain,comparison=compare_initial_response_packets(main,domain),
+                      inputs_unchanged=unchanged())
+    except Exception as error:
+        output.update(status="DIAGNOSTIC_FAILED",error=f"{type(error).__name__}: {error}")
+    output["elapsed_seconds"]=time.perf_counter()-start
+    print(json.dumps(output,indent=2,allow_nan=False))
+    return 0 if output.get("inputs_unchanged") and output.get("comparison",{}).get("status")=="INITIAL_CENTROID_RESPONSE_VALIDATED" else 1
+# END INITIAL CURRENT RESPONSE HELPERS
 
 
 # BEGIN ASSEMBLY COMPARISON AND REPRODUCTION HELPERS
@@ -591,12 +919,16 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pilot", action="store_true")
     parser.add_argument("--suite", action="store_true")
+    parser.add_argument("--initial-response", action="store_true")
+    parser.add_argument("--response-suite", action="store_true")
     parser.add_argument("--count", type=int, default=1)
     parser.add_argument("--separation", type=float, default=28.0)
     parser.add_argument("--h", type=float, default=0.5)
     parser.add_argument("--radius", type=float, default=32.0)
     parser.add_argument("--half-height", type=float, default=64.0)
     args = parser.parse_args()
+    if args.response_suite:
+        return run_response_suite()
     if args.suite:
         return run_registered_suite()
     start = time.perf_counter()
@@ -614,8 +946,12 @@ def main():
             count, h, radius, height = 1, 0.5, 32.0, 64.0
         else:
             count, h, radius, height = args.count, args.h, args.radius, args.half_height
-        result["case"] = run_case(core, count=count, separation=args.separation,
-                                  h=h, radius=radius, half_height=height)
+        if args.initial_response:
+            result["case"] = initial_response_case(core, count=count, D=args.separation,
+                                                   h=h, radius=radius, half_height=height)
+        else:
+            result["case"] = run_case(core, count=count, separation=args.separation,
+                                      h=h, radius=radius, half_height=height)
         result["inputs_unchanged"] = (
             sha(HERE / "nonlinear_equilibrium_evolution.py") == source_sha
             and all(sha(module.SF/path)==digest for path, digest in pins.items()))
@@ -624,7 +960,9 @@ def main():
         result["error"] = f"{type(error).__name__}: {error}"
     result["elapsed_seconds"] = time.perf_counter()-start
     print(json.dumps(result, indent=2, allow_nan=False))
-    return 0 if result.get("inputs_unchanged") and result.get("case", {}).get("numerical_pilot_pass") else 1
+    case_pass = (all(result.get("case", {}).get("gates", {}).values())
+                 if args.initial_response else result.get("case", {}).get("numerical_pilot_pass"))
+    return 0 if result.get("inputs_unchanged") and result.get("case") and case_pass else 1
 
 
 if __name__ == "__main__":
