@@ -88,6 +88,12 @@ Thumbs.db
 .vscode/
 
 # RefG work 3 generated outputs
+# Internal oscillon/reference diagnostic; excluded from publication exports
+/RefG/work 3/Strong_Field/W3-74_Oscillon_Tidal_Source_Response/oscillon_reference_diagnostic.md
+/RefG/work 3/Strong_Field/W3-74_Oscillon_Tidal_Source_Response/verify_oscillon_reference_diagnostic.py
+# Internal source-health and horizon test; not a publication artifact
+/RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/medium_health_horizon_diagnostic.md
+/RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_medium_health_horizon_diagnostic.py
 /RefG/work 3/**/*.json
 /RefG/work 3/**/*.png
 !/RefG/work 3/Cosmology_and_LSS/Expansion_Relaxation_Causal_Lock/w3_40_result.json
