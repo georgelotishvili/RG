@@ -13,13 +13,20 @@ exponential exterior and selected additive constitutive truncations are
 candidate assumptions, not requirements imposed on every future action.
 The negative results below remain valid in their stated domains.
 
-Current completed calculation: Stage 18's exact initial dynamical
-response of the same one-, two- and three-core prepared sources.
-Both pair centroids and both outer triple centroids accelerate inward
-in the specified coordinate gauge; grid, domain and independent face-
-stencil checks resolve this sign. The isolated and middle triple
-centroids satisfy their reflection-zero controls. Translation-subtracted
-coordinate-width and Klein--Gordon amplitude responses remain OPEN.
+Current completed calculation: Stage 19's aggregate equilibrium mass
+and size at the same total conserved phase charge as n=1,2,3,4 separated
+anchor references. Relative to n*M0, the joined neutral scalar
+equilibria have mass deficits of 13.9862%, 22.1044% and 27.9509%
+for n=2,3,4. ADM and Komar mass agree; tolerance, domain and independent
+quadrature checks pass. Bulk radii and compactness are directly computed.
+These configurations remain horizonless. Their conserved-charge
+comparison does not identify Q with a count of arbitrary matter particles.
+
+Stage 18's initial coordinate-centroid attraction remains a result of
+its neutral scalar configurations. It is not a universal statement about
+the net interaction of physical particles. Its internal-profile response
+stays unresolved and is not the active follow-through. Current scope is
+aggregate mass, size and the strong-field endpoint, not particle motion.
 
 Stage 17's jointly updated initial geometry, prepared core scales,
 matched-grid mass deficits and decreasing successive ADM-mass increments
@@ -3966,3 +3973,232 @@ the coupled evolution or equilibrium of the same source, with internal
 response separated from bulk motion and numerical preparation error.
 Stage 18 does not prove a complete pressure law, relaxed self-regulation,
 mass saturation, a horizon or singularity removal.
+
+## Stage 19: aggregate equilibrium mass and size at matched conserved charge
+
+### Scope correction and frozen calculation (2026-09-10)
+
+The current user-directed target is aggregate mass, bulk size and the
+strong-field endpoint. Stage 18 remains a valid initial response of its
+neutral scalar model; generalizing it to the net interaction of all
+physical particles would omit their other interactions. Its internal-
+profile and mutual-motion follow-through is outside the present task.
+
+The existing W64/W65 spherical stationary source already supplies the
+shorter route. Solve for one continuous equilibrium with the same total
+conserved phase charge as n infinitely separated copies of the original
+anchor, then compare its ADM mass with n times the anchor ADM mass.
+Here n counts reference objects in the separated state; it does not
+identify phase charge with electric charge, universal particle count,
+or the number of distinct cores inside the joined configuration.
+
+- CLAIM_ID / TYPE: W92_AGGREGATE_MATCHED_CHARGE_MASS_SIZE_V1;
+  numerical equilibrium energy comparison within the retained action.
+- CLAIM: determine the sign and magnitude of n*M0-M_eq(n*Q0), together
+  with bulk radii and compactness, for n=1,2,3,4.
+- MODEL / DEPENDENCIES: unchanged W58/W64 sextic scalar and one Einstein
+  metric, alpha=0.04, sextic=0.25; original W65 anchor and tested
+  pre-turn branch. W66's prior radial tests retain their sampled scope.
+  No extra fluid, charge interaction, EOS or pressure law is introduced.
+- DOMAIN / ASSUMPTIONS: spherical, nodeless, stationary, nonrotating,
+  asymptotically flat solutions. The joined state is a continuous
+  scalar-source equilibrium benchmark, not a derived coarse-graining
+  of a general mixture of electrons, nuclei and other particles.
+  Original anchor f0=1.820210505787701, upper branch bound f0=2.18.
+  Initial separated reference has zero relative kinetic energy and
+  vanishing interaction at infinite separation. Compare equal total Q.
+- FREEDOMS: n is a source-amount label for this comparison; central
+  amplitude is solved to impose Q, not fitted to a desired mass deficit.
+  Potential, coupling and reference core stay fixed.
+- CONVENTIONS: W64 code units, areal r and time normalized at infinity;
+  ds^2=-sigma^2*F*dt^2+dr^2/F+r^2*dOmega^2,
+  F=1-2*alpha*M(r)/r, phi=f(r)*exp(i*Omega*t).
+- METHOD: reuse the original BVP with bounded continuation steps <=0.02
+  (at most 24 initial seed steps), then a bracketed charge-target root
+  with at most 20 iterations. Targets beyond the declared branch give
+  OPEN rather than continuation through an untested endpoint.
+- NUMERICS: main R=80,tol=1e-7; tolerance control R=80,tol=3e-8;
+  domain control R=100,tol=3e-8, for all four targets. All target charges
+  use the freshly computed main Q0. A reference-amplitude adjustment
+  of at most 1e-5 is allowed solely if needed to match Q0 in the controls.
+  Independent six-point composite Gauss quadrature (panels <=0.1)
+  checks mass, charge and the Komar ledger against the original dense
+  Simpson integration and boundary mass.
+- PRIMARY PASS: original profile/equation/centre/tail gates; relative
+  charge mismatch <2e-8; finite observables, F>0; independent energy/
+  charge ledger discrepancies <5e-6; tolerance/domain changes in mass,
+  charge and radii <5e-5. For each n>1 accept either deficit sign only
+  above three times tolerance, domain, quadrature and charge-mismatch
+  energy budgets, and a 1e-8 absolute fractional floor.
+- FAIL / FALSIFIER: a failed equation/ledger/control invalidates that
+  numerical result. A resolved nonpositive deficit rejects the expected
+  positive binding comparison at that target, not the complete theory.
+  Insufficient numerical resolution stays OPEN.
+- CONTROLS: n=1 reproduces the reference. Actual validator mutations
+  reject wrong charge, nonfinite output, an inadmissible horizon chart
+  and duplicated source mass; the sign discriminator accepts resolved
+  positive and negative test values.
+- OUTPUT / OBSERVABLE MAP: total ADM mass; fixed-charge reference mass
+  and energy difference; proper source energy; charge-weighted RMS
+  areal/proper radii; mass-enclosing R99; central lapse, maximum local
+  compactness and curvature. A bulk body's size is not the size of a
+  constituent or a local measuring rod.
+- DATA ROLE / FORWARD MODEL / IDENTIFIABILITY: N/A for observational
+  claims; this is an unfitted equilibrium benchmark, not a merger
+  waveform, cosmological prediction or unique physical interpretation.
+- FILES / PROVENANCE: extend the existing population assembly script
+  with a separate aggregate-equilibrium mode, this report and idea.txt;
+  preserve old calculations and pinned dependencies. Stdout only,
+  no new files, official-monograph edits, ignore rules or publication.
+- STOP / CLOSURE: obtain the matched-charge mass-size table and its
+  controls, or identify the failed gate. These equilibria alone do not
+  establish a formation process, universal mass limit or regular black
+  hole. No particle-motion or molecular calculation follows this stage.
+
+### Independent aggregate energy ledger
+
+Let rho, p_r and p_t be the total scalar Hilbert source in the retained
+model. W64's exact stationary equations give
+
+~~~text
+M' = r^2*rho,
+(ln sigma)' = alpha*r*(rho+p_r)/F,
+p_r' = -(rho+p_r)*alpha*(M+r^3*p_r)/(r^2*F)
+       +2*(p_t-p_r)/r.
+
+Q = integral r^2*Omega*f^2/(sigma*F) dr,
+M_ADM = M(infinity) = integral r^2*rho dr,
+E_proper = integral r^2*rho/sqrt(F) dr,
+K(r) = r^2*sqrt(F)*(sigma*sqrt(F))'/alpha
+     = sigma*(M+r^3*p_r),
+K' = sigma*r^2*(rho+p_r+2*p_t).
+~~~
+
+At a regular centre K=0; in the asymptotic vacuum K=M_ADM. Thus the
+Komar source integral checks the mass inferred from geometry while
+including stresses and clock normalization. Proper energy has its own
+meaning: E_proper-M_ADM=integral r^2*rho*(1/sqrt(F)-1)dr. For positive
+rho and 0<F<=1 it is nonnegative, a gravitational binding contribution.
+Equating unweighted proper energy with ADM mass would erase this
+physical distinction.
+
+All dimensionless energy integrals have the same physical prefactor
+4*pi*m_s/lambda; physical charge has prefactor 4*pi/lambda and length
+is r/m_s in c=hbar=1 units. No extra local redshift multiplier is
+applied to a mass already read from the metric.
+
+For each matched-charge equilibrium, DeltaM=n*M0-M_eq. This compares
+two energies at the same conserved charge. A positive difference is
+an available binding-energy difference, not a calculated radiation
+efficiency or proof that a merger reaches that particular equilibrium.
+The matched-charge error is budgeted through Omega*abs(deltaQ).
+
+The use of conserved scalar charge, stationary mass and a mass-enclosing
+radius follows the standard Einstein--scalar setup; see
+[Siemonsen and East, section II.1](https://arxiv.org/html/2306.17265v2).
+The action and normalization used here remain the repository's W64
+ones, not the different potential or normalization in that reference.
+
+### Completed matched-charge mass-size result
+
+The main reference is Q0=8.58838286008662, M0=7.9689569805342035.
+Four matched targets were computed in each of the main, tighter-tolerance
+and enlarged-domain configurations. Fourteen continuation seed steps
+bracketed the targets; no new branch or parameter search was opened.
+The tighter-tolerance results are:
+
+| n, separated references | Solved f0 | Target Q/Q0 | Joined ADM mass | Joined mass / single reference mass | Deficit from n references |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 1 | 1.820210505788 | 1 | 7.968956979244 | 1.000000000 | 0 |
+| 2 | 1.950283652305 | 2 | 13.708806050793 | 1.720276077 | 13.98619615% |
+| 3 | 2.000617258805 | 3 | 18.622388639354 | 2.336866504 | 22.10444986% |
+| 4 | 2.089277741224 | 4 | 22.966252844390 | 2.881964717 | 27.95088208% |
+
+The tighter single-reference mass differs from the main reference by
+1.62e-10 relatively; each comparison uses its own same-accuracy reference.
+All target charges use the common main Q0. The largest relative
+charge mismatch over all twelve records is 2.04e-10, included through
+the first-law energy budget.
+
+In single-reference mass units, successive equal-Q0 increments add
+0.720276077, 0.616590427 and 0.545098213 to the joined mass.
+This is decreasing finite-interval mass addition in the three computed
+intervals; no extrapolated terminal mass is assigned.
+
+The outer mass-enclosing radius and charge-weighted bulk size measure
+different features of the same profile:
+
+| n | Charge RMS areal radius | Charge RMS proper distance | Areal R99 of mass | max 2*alpha*M(r)/r | Central lapse |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 1 | 2.235872530 | 2.332863593 | 5.221894531 | 0.171643371 | 0.754692095 |
+| 2 | 2.327141867 | 2.476678677 | 4.946137262 | 0.280244431 | 0.618956605 |
+| 3 | 2.439507085 | 2.649021080 | 4.898192699 | 0.366993334 | 0.509900455 |
+| 4 | 2.445083148 | 2.740467057 | 4.735767911 | 0.456683646 | 0.383965464 |
+
+Proper RMS uses the charge-weighted square of
+ell(r)=integral_0^r dr'/sqrt(F(r')). It is not an external constituent
+radius. The charge RMS areal radius grows by about 9.36% from n=1 to 4,
+while mass grows by about 188.20%; the configuration becomes more compact.
+R99 decreases. No common multiplicative contraction of the whole body
+or of all its constituents is inferred from these different measures.
+
+### Energy closure and numerical verification
+
+| n | Proper source energy | Komar source integral | ADM mass |
+| --- | ---: | ---: | ---: |
+| 1 | 8.540227233411 | 7.968956978954 | 7.968956979244 |
+| 2 | 15.403891722172 | 13.708806050472 | 13.708806050793 |
+| 3 | 21.842457860360 | 18.622388638995 | 18.622388639354 |
+| 4 | 28.412079994204 | 22.966252843678 | 22.966252844390 |
+
+All twelve configurations pass their six aggregate-record conditions.
+All eleven suite conditions and all nine synthetic controls pass,
+including actual wrong-charge, nonfinite, horizon-chart and duplicate-
+source rejection, both signs of binding, and the fractional-floor test.
+Inherited scalar, Einstein and anisotropic-conservation residuals have
+maximum normalized value 4.11e-6. The largest collocation residual is
+9.99e-8. The maximum relative discrepancy across independent energy,
+charge and radius ledgers is 1.84e-10.
+
+Across tolerance/domain controls, relative mass changes are <=1.62e-10
+and radius changes <=2.46e-7. The binding fractions have maximum
+relative change 9.68e-10. Their signs survive the registered three-times
+error criterion and the 1e-8 absolute fractional floor. These are empirical
+resolution checks, not rigorous continuum error bounds.
+
+At n=4, minimum F=0.543316354 and maximum dimensionless Kretschmann
+scalar=0.437299562. The computed configurations have regular centres,
+finite curvature and F>0 throughout the sampled domain. They are
+horizonless equilibria, not constructed nonsingular black holes.
+Their existence and lower energy do not by themselves supply the
+dynamics of assembling the separated references or a new stability proof.
+
+### Reproduction and completion
+
+~~~text
+python -B population_assembly_initial_data.py --aggregate-equilibrium-suite
+~~~
+
+The frozen suite completed with exit 0 in 3.3834s and status
+FIXED_CHARGE_AGGREGATE_EQUILIBRIA_VALIDATED. It emits the complete
+twelve records, error comparisons and gates to stdout; no result file
+is created. A second complete execution returned the same status in
+3.3890s; all twelve masses, charges, proper energies, radii and binding
+fractions repeated with zero observed floating-point difference.
+Source SHA256:
+6f88d0986e2ed1db7d903853ad2b776592fe6e683f0331c7348aca9419c42d8d.
+
+Removing only the marked aggregate helpers and CLI additions and restoring
+the previous mode-specific docstring reconstructs the exact Stage 18 hash
+32299ba3...fd5. The retained equations and previous modes are unchanged;
+all pinned inputs and the running source also pass their unchanged checks.
+An independent symbolic derivation verifies the Komar/TOV ledger, and a
+separate read-only code audit verifies quadrature, Q matching and radii.
+
+The bounded target is complete: the retained neutral scalar action has
+joint equilibria with substantially lower mass than the matched-charge
+separated reference, and their bulk size is now quantified. The remaining
+strong-field task concerns the physical continuation and endpoint of an
+aggregate source. A universal constituent-population identification, the
+additional foundation-pressure closure and black-hole singularity removal
+remain separate from this demonstrated energy comparison.

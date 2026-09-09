@@ -1,7 +1,9 @@
-"""Bounded, axisymmetric, same-field core-assembly Cauchy-data diagnostic.
+"""Bounded same-field assembly, initial-response and equilibrium diagnostics.
 
-This is not an equilibrium solver or a singularity-removal calculation.
-N labels spatially separated prepared cores, not ordinary Noether charge.
+Default assembly and response modes do not establish stationary equilibria.
+The aggregate-equilibrium mode separately solves retained spherical equations
+at fixed total Noether charge; its n counts separated reference objects only.
+No mode establishes a black hole or removal of a spacetime singularity.
 Only stdout is produced. Original W65 backgrounds are recomputed and pinned.
 """
 from __future__ import annotations
@@ -915,18 +917,258 @@ def run_registered_suite():
 # END ASSEMBLY COMPARISON AND REPRODUCTION HELPERS
 
 
+# BEGIN FIXED-CHARGE AGGREGATE EQUILIBRIUM HELPERS
+AGGREGATE_PREVIOUS_SHA256 = "32299ba3daa1277def4483bf8a41b6457ccaf4f7aaebd6eff299975854962fd5"
+
+
+def aggregate_record_gates(record):
+    def finite(value):
+        if isinstance(value,dict):
+            return all(finite(v) for v in value.values())
+        if isinstance(value,(tuple,list)):
+            return all(finite(v) for v in value)
+        return bool(np.isfinite(value)) if isinstance(value,(int,float,np.number)) else True
+    mass=record["ADM_mass"]
+    denominators_positive=mass>0 and record["Q"]>0 and record["proper_energy"]>0
+    discrepancies = {
+        "mass_gauss": abs(record["mass_gauss"]/mass-1),
+        "Komar_volume": abs(record["Komar_volume"]/mass-1),
+        "Komar_boundary": abs(record["Komar_boundary"]/mass-1),
+        "charge_gauss": abs(record["charge_gauss"]/record["Q"]-1),
+        "proper_energy_gauss": abs(record["proper_energy_gauss"]/record["proper_energy"]-1),
+        "areal_radius_gauss": abs(record["charge_rms_areal_gauss"]/record["charge_rms_areal"]-1),
+        "proper_radius_gauss": abs(record["charge_rms_proper_gauss"]/record["charge_rms_proper"]-1)}
+    gates=dict(
+        inherited_profile=record["inherited_profile_pass"] is True,
+        finite=finite(record), positive_source=denominators_positive,
+        regular_static_chart=record["minimum_N"]>0 and record["maximum_compactness"]<1 and record["central_lapse"]>0,
+        fixed_charge=abs(record["Q"]/record["target_Q"]-1)<2e-8,
+        independent_ledgers=max(discrepancies.values())<5e-6)
+    return {k:bool(v) for k,v in gates.items()},discrepancies
+
+
+def aggregate_sign_decision(value, errors, reference_scale=1.):
+    resolved=abs(value)>max(1e-8*reference_scale,3*max(errors.values()))
+    return dict(value=float(value),errors={k:float(v) for k,v in errors.items()},
+                reference_mass=float(reference_scale),fraction=float(value/reference_scale),
+                fractional_errors={k:float(v/reference_scale) for k,v in errors.items()},
+                minimum_fractional_floor=1e-8,
+                resolved=bool(resolved),direction="positive" if value>0 else "negative" if value<0 else "zero")
+
+
+def aggregate_validator_controls():
+    import copy
+    base=dict(ADM_mass=2.,Q=3.,target_Q=3.,proper_energy=2.2,mass_gauss=2.,
+              Komar_volume=2.,Komar_boundary=2.,charge_gauss=3.,proper_energy_gauss=2.2,
+              charge_rms_areal=4.,charge_rms_areal_gauss=4.,
+              charge_rms_proper=4.5,charge_rms_proper_gauss=4.5,
+              inherited_profile_pass=True,minimum_N=.7,maximum_compactness=.3,
+              central_lapse=.8,maximum_Kretschmann=.5)
+    tests=dict(positive_control=all(aggregate_record_gates(base)[0].values()))
+    mutations={"Q":3.1,"charge_rms_proper":float("nan"),"minimum_N":-.1,"mass_gauss":4.}
+    names={"Q":"charge_mismatch","charge_rms_proper":"nonfinite","minimum_N":"horizon_chart","mass_gauss":"duplicated_mass_source"}
+    for key,value in mutations.items():
+        changed=copy.deepcopy(base);changed[key]=value
+        tests[names[key]+"_rejected"]=not all(aggregate_record_gates(changed)[0].values())
+    tests["positive_binding_sign_accepted"]=aggregate_sign_decision(1.,{"test":.01})["resolved"]
+    tests["negative_binding_sign_accepted"]=aggregate_sign_decision(-1.,{"test":.01})["resolved"]
+    tests["unresolved_sign_rejected"]=not aggregate_sign_decision(.01,{"test":.02})["resolved"]
+    tests["fractional_floor_enforced"]=not aggregate_sign_decision(1e-7,{"test":0.},100.)["resolved"]
+    return tests
+
+
+def aggregate_observe(mod65,mod64,solution,f0,n,target_Q,radius):
+    from scipy.integrate import simpson
+    obs=mod65.observe(mod64,solution,f0,radius=radius,points=16001,with_residuals=True)
+    inherited=mod65.compact_record(f0,obs)
+    # Distinct composite Gauss integration, six nodes on each <=0.1 interval.
+    count=int(np.ceil(radius/.1));edges=np.linspace(0,radius,count+1)
+    nodes,weights=np.polynomial.legendre.leggauss(6)
+    x=((edges[:-1,None]+edges[1:,None])/2+
+       (edges[1:,None]-edges[:-1,None])*nodes/2).ravel()
+    w=((edges[1:,None]-edges[:-1,None])*np.broadcast_to(weights,(count,6))/2).ravel()
+    f,fp,mass,logsigma=solution.sol(x)
+    omega=mod64.omega_from_parameter(solution.p)
+    fields=mod64.matter_arrays(f,fp,mass,logsigma,x,ALPHA,omega)
+    sigma,N,rho,pr,pt=[fields[k] for k in ("sigma","N","rho","p_r","p_t")]
+    qdensity=x*x*omega*f*f/(sigma*N)
+    # Proper distance is independently accumulated on a regular dense grid;
+    # the small omitted origin interval has N=1+O(r^2).
+    dense=np.linspace(mod64.EPS,radius,32001)
+    yd=solution.sol(dense)
+    Nd=1-2*ALPHA*yd[2]/dense
+    length=mod64.EPS+cumulative_trapezoid(1/np.sqrt(Nd),dense,initial=0)
+    length_at_x=PchipInterpolator(np.r_[0.,dense],np.r_[0.,length])(x)
+    qd=dense*dense*omega*yd[0]**2/(np.exp(yd[3])*Nd)
+    qg=float(np.sum(w*qdensity))
+    qdense=float(simpson(qd,x=dense))
+    fields_end=mod64.matter_arrays(yd[0,-1:],yd[1,-1:],yd[2,-1:],yd[3,-1:],
+                                   dense[-1:],ALPHA,omega)
+    record=dict(
+        reference_core_count=n,target_Q=target_Q,f0=float(f0),Omega=float(omega),
+        ADM_mass=obs["misner_sharp_adm_mass_dimensionless"],
+        Q=obs["noether_charge_dimensionless"],proper_energy=obs["proper_energy_dimensionless"],
+        charge_rms_areal=obs["charge_rms_radius_dimensionless"],
+        charge_rms_proper=float(np.sqrt(simpson(qd*length**2,x=dense)/qdense)),
+        mass_R99_areal=float(np.interp(.99*yd[2,-1],yd[2],dense)),
+        maximum_compactness=obs["maximum_compactness_2alphaM_over_x"],
+        minimum_N=obs["minimum_N"],central_lapse=obs["central_lapse_sigma"],
+        maximum_abs_Ricci=obs["maximum_abs_Ricci_over_m_squared"],
+        maximum_Kretschmann=obs["maximum_Kretschmann_over_m_four"],
+        mass_gauss=float(np.sum(w*x*x*rho)),
+        charge_gauss=qg,proper_energy_gauss=float(np.sum(w*x*x*rho/np.sqrt(N))),
+        Komar_volume=float(np.sum(w*x*x*sigma*(rho+pr+2*pt))),
+        Komar_boundary=float(fields_end["sigma"][0]*(yd[2,-1]+radius**3*fields_end["p_r"][0])),
+        charge_rms_areal_gauss=float(np.sqrt(np.sum(w*qdensity*x*x)/qg)),
+        charge_rms_proper_gauss=float(np.sqrt(np.sum(w*qdensity*length_at_x**2)/qg)),
+        inherited_profile_pass=bool(mod65.basic_profile_pass(inherited)),
+        inherited_profile_record=inherited,quadrature_panel_max=.1,quadrature_order=6)
+    gates,discrepancies=aggregate_record_gates(record)
+    record.update(gates=gates,ledger_relative_discrepancies=discrepancies)
+    return record
+
+
+def aggregate_match_charge(mod65,mod64,target_Q,seed_cache,bracket,radius,tolerance):
+    from scipy.optimize import brentq
+    from scipy.integrate import simpson
+    calls=0
+    def at(f0):
+        nonlocal calls
+        f0=float(f0)
+        if f0 not in seed_cache:
+            if calls>=20:
+                raise RuntimeError("Matched-charge root exceeded 20 new BVP evaluations")
+            nearest=min(seed_cache,key=lambda k:abs(k-f0))
+            seed=seed_cache[nearest][0]
+            sol=mod65.solve_at(mod64,f0,seed,radius=radius,tolerance=tolerance)
+            x=np.linspace(mod64.EPS,radius,16001);f,fp,M,ls=sol.sol(x)
+            N=1-2*ALPHA*M/x;om=mod64.omega_from_parameter(sol.p)
+            charge=float(simpson(x*x*om*f*f/(np.exp(ls)*N),x=x))
+            seed_cache[f0]=(sol,charge);calls+=1
+        return seed_cache[f0][1]-target_Q
+    lo,hi=map(float,bracket)
+    if lo==hi:
+        root=lo
+    else:
+        root=float(brentq(at,lo,hi,xtol=2e-10,rtol=2e-14,maxiter=20))
+    residual=at(root)
+    if abs(residual/target_Q)>=2e-8:
+        raise RuntimeError("Matched-charge root did not meet its frozen Q tolerance")
+    return root,seed_cache[root][0],dict(new_BVP_calls=calls,charge_residual=residual,bracket=[lo,hi])
+
+
+def run_aggregate_equilibrium_suite():
+    """Fixed-Q spherical equilibrium energy/radius benchmark, not a merger."""
+    from scipy.integrate import simpson
+    started=time.perf_counter()
+    result=dict(code_sha256=sha(__file__),previous_source_sha256=AGGREGATE_PREVIOUS_SHA256,
+                validator_controls=aggregate_validator_controls())
+    try:
+        module,mod65,mod64,anchor_solution,anchor,pins,base_sha=load_background()
+        q0=float(anchor["record"]["charge"]);fanchor=float(mod65.ANCHOR_F0)
+        result.update(base_source_sha256=base_sha,dependency_sha256=pins,reference_Q0=q0)
+        def charge(sol,radius):
+            x=np.linspace(mod64.EPS,radius,16001);f,fp,M,ls=sol.sol(x)
+            return float(simpson(x*x*mod64.omega_from_parameter(sol.p)*f*f/
+                                  (np.exp(ls)*(1-2*ALPHA*M/x)),x=x))
+        cache={fanchor:(anchor_solution,charge(anchor_solution,80.))}
+        cursor=fanchor;seed_sol=anchor_solution;seed_steps=0
+        roots={1:(fanchor,anchor_solution,dict(new_BVP_calls=0,charge_residual=cache[fanchor][1]-q0,bracket=[fanchor,fanchor]))}
+        for n in (2,3,4):
+            target=n*q0
+            lower=cursor
+            while cache[cursor][1]<target:
+                lower=cursor
+                cursor=min(2.18,cursor+.02)
+                if cursor<=lower or seed_steps>=24:
+                    raise RuntimeError("Target charge not bracketed before the registered finite branch limit")
+                seed_sol=mod65.solve_at(mod64,cursor,seed_sol,radius=80.,tolerance=1e-7)
+                cache[cursor]=(seed_sol,charge(seed_sol,80.));seed_steps+=1
+            roots[n]=aggregate_match_charge(mod65,mod64,target,cache,(lower,cursor),80.,1e-7)
+        configurations={}
+        for name,radius,tolerance in (("main",80.,1e-7),("tight",80.,3e-8),("domain",100.,3e-8)):
+            records={}
+            for n in (1,2,3,4):
+                f0,sol,rootinfo=roots[n];target=n*q0
+                if name!="main":
+                    sol=mod65.solve_at(mod64,f0,sol,radius=radius,tolerance=tolerance)
+                    local={f0:(sol,charge(sol,radius))}
+                    tolerance_Q=2e-8 if n==1 else 1e-11
+                    if abs(local[f0][1]/target-1)>=tolerance_Q:
+                        lo=max(fanchor-(1e-5 if n==1 else 0),f0-(1e-5 if n==1 else .002))
+                        hi=min(2.18,f0+(1e-5 if n==1 else .002))
+                        f0,sol,rootinfo=aggregate_match_charge(mod65,mod64,target,local,(lo,hi),radius,tolerance)
+                    else:
+                        rootinfo=dict(new_BVP_calls=1,charge_residual=local[f0][1]-target,bracket=[f0,f0])
+                row=aggregate_observe(mod65,mod64,sol,f0,n,target,radius)
+                row["root_diagnostics"]=rootinfo
+                records[str(n)]=row
+            M1=records["1"]["ADM_mass"]
+            for n in (1,2,3,4):
+                row=records[str(n)]
+                row.update(matched_separated_reference_mass=n*M1,
+                           canonical_separated_reference_mass=n*anchor["record"]["ADM_mass"],
+                           available_binding_energy=n*M1-row["ADM_mass"],
+                           available_binding_fraction=(n*M1-row["ADM_mass"])/(n*M1))
+            configurations[name]=dict(radius=radius,tolerance=tolerance,records=records)
+        gates=dict(validator_controls=all(result["validator_controls"].values()),
+                   all_equilibrium_gates=all(all(row["gates"].values()) for cfg in configurations.values() for row in cfg["records"].values()))
+        comparisons={}
+        for n in (1,2,3,4):
+            key=str(n);a,b,c=[configurations[k]["records"][key] for k in ("main","tight","domain")]
+            changes={k:max(abs(a[k]-b[k]),abs(b[k]-c[k]))/max(abs(b[k]),1e-30)
+                     for k in ("ADM_mass","Q","charge_rms_areal","charge_rms_proper","mass_R99_areal")}
+            if n>1:
+                changes["binding_fraction"]=max(abs(a["available_binding_fraction"]-b["available_binding_fraction"]),
+                    abs(b["available_binding_fraction"]-c["available_binding_fraction"]))/max(abs(b["available_binding_fraction"]),1e-30)
+            gates["N"+key+"_resolution_domain"]=max(changes.values())<5e-5
+            comparisons[key]=dict(relative_changes=changes)
+            if n>1:
+                single=configurations["tight"]["records"]["1"]
+                errors=dict(tolerance=abs(a["available_binding_energy"]-b["available_binding_energy"]),
+                    domain=abs(b["available_binding_energy"]-c["available_binding_energy"]),
+                    quadrature=abs(b["mass_gauss"]-b["ADM_mass"])+n*abs(single["mass_gauss"]-single["ADM_mass"]),
+                    charge_mismatch=b["Omega"]*abs(b["Q"]-b["target_Q"])+n*single["Omega"]*abs(single["Q"]-single["target_Q"]))
+                decision=aggregate_sign_decision(b["available_binding_energy"],errors,b["matched_separated_reference_mass"])
+                comparisons[key]["binding_decision"]=decision
+                gates["N"+key+"_binding_sign_resolved"]=decision["resolved"]
+        unchanged=(sha(HERE/"nonlinear_equilibrium_evolution.py")==base_sha and
+                   all(sha(module.SF/path)==v for path,v in pins.items()))
+        gates["inputs_unchanged"]=unchanged
+        gates["source_unchanged_during_run"]=sha(__file__)==result["code_sha256"]
+        result.update(configurations=configurations,comparisons=comparisons,gates={k:bool(v) for k,v in gates.items()},
+            main_seed_steps=seed_steps,inputs_unchanged=unchanged,
+            status="FIXED_CHARGE_AGGREGATE_EQUILIBRIA_VALIDATED" if all(gates.values()) else "FIXED_CHARGE_AGGREGATE_EQUILIBRIA_OPEN",
+            scope={"model":"Retained neutral complex scalar spherical equilibrium benchmark",
+                   "n":"Number of separated anchor reference objects used to set total Q, not a universal oscillon or electron count",
+                   "binding":"Available stationary binding energy at fixed total Q, not a simulated radiated fraction",
+                   "merged_cores_remain_identifiable":False,"time_evolution":False,"new_stability_proof":False,
+                   "medium_PF_closure":False,"black_hole_or_singularity_resolution":False},
+            units={"energy":"(4 pi m_s/lambda) times dimensionless energy",
+                   "charge":"(4 pi/lambda) times dimensionless Q","radius":"dimensionless radius/m_s"})
+    except Exception as error:
+        result.update(status="DIAGNOSTIC_FAILED",error=f"{type(error).__name__}: {error}")
+    result["elapsed_seconds"]=time.perf_counter()-started
+    print(json.dumps(result,indent=2,allow_nan=False))
+    return 0 if result.get("status")=="FIXED_CHARGE_AGGREGATE_EQUILIBRIA_VALIDATED" else 1
+# END FIXED-CHARGE AGGREGATE EQUILIBRIUM HELPERS
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pilot", action="store_true")
     parser.add_argument("--suite", action="store_true")
     parser.add_argument("--initial-response", action="store_true")
     parser.add_argument("--response-suite", action="store_true")
+    parser.add_argument("--aggregate-equilibrium-suite", action="store_true")
     parser.add_argument("--count", type=int, default=1)
     parser.add_argument("--separation", type=float, default=28.0)
     parser.add_argument("--h", type=float, default=0.5)
     parser.add_argument("--radius", type=float, default=32.0)
     parser.add_argument("--half-height", type=float, default=64.0)
     args = parser.parse_args()
+    if args.aggregate_equilibrium_suite:
+        return run_aggregate_equilibrium_suite()
     if args.response_suite:
         return run_response_suite()
     if args.suite:
