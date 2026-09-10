@@ -1154,6 +1154,262 @@ def run_aggregate_equilibrium_suite():
 # END FIXED-CHARGE AGGREGATE EQUILIBRIUM HELPERS
 
 
+# BEGIN AGGREGATE COLLAPSE EVOLUTION HELPERS
+COLLAPSE_PREVIOUS_SHA256 = "6f88d0986e2ed1db7d903853ad2b776592fe6e683f0331c7348aca9419c42d8d"
+
+
+def aggregate_phase_imprint(r, field, momentum, kappa=.1, length=4.):
+    theta=kappa*length**2*(1-np.exp(-r*r/(2*length**2)))
+    phase=np.exp(1j*theta)
+    return np.array([field*phase,momentum*phase])
+
+
+def aggregate_collapse_event(samples, floors):
+    try:
+        values=np.array([[s[k] for k in ("t","mass_R50","mass_R90","maximum_compactness")] for s in samples])
+        valid=(len(samples)>=2 and np.all(np.isfinite(values)) and np.all(np.diff(values[:,0])>0)
+               and values[0,0]>=0 and np.all(values[:,1:3]>0) and np.all((values[:,3]>=0)&(values[:,3]<1))
+               and all(np.isfinite(floors[k]) and floors[k]>=0 for k in ("mass_R50","mass_R90","maximum_compactness")))
+    except (KeyError,TypeError,ValueError,IndexError):
+        valid=False
+    if not valid:
+        return dict(classification="INVALID_EVENT_INPUT",input_validation=False)
+    t=np.array([s["t"] for s in samples])
+    keys=("mass_R50","mass_R90")
+    curves={k:np.array([s[k] for s in samples])/samples[0][k] for k in keys}
+    minima={k:int(np.argmin(curves[k])) for k in keys}
+    depths={k:float(1-curves[k][minima[k]]) for k in keys}
+    contracted=all(depths[k]>=1e-3 and depths[k]>3*floors[k] for k in keys)
+    compactness=np.array([s["maximum_compactness"] for s in samples])
+    recovered=[]
+    for j in range(len(samples)):
+        if not contracted or any(t[j]-t[minima[k]]<8 for k in keys):
+            continue
+        radius_return=all(curves[k][j]-curves[k][minima[k]]>=.25*depths[k] and
+                          curves[k][j]-curves[k][minima[k]]>3*floors[k] for k in keys)
+        cp=int(np.argmax(compactness[:j+1]))
+        if radius_return and cp<j and compactness[cp]-compactness[j]>max(1e-3,3*floors["maximum_compactness"]):
+            recovered.append(j)
+    return dict(classification="RESOLVED_CONTRACTION_AND_ARREST" if recovered else "FINITE_WINDOW_OUTCOME_OPEN",input_validation=True,
+                resolved_contraction=bool(contracted),contraction_depths=depths,
+                minimum_times={k:float(t[minima[k]]) for k in keys},numerical_control_floors=floors,
+                shared_recovery_time=float(t[recovered[0]]) if recovered else None,
+                scope="Finite-window aggregate contraction and partial recovery; not universal stability or singularity removal")
+
+
+def aggregate_collapse_controls():
+    t=np.arange(0.,96.25,.25)
+    def sample(r,c):
+        return [dict(t=float(x),mass_R50=float(a),mass_R90=float(2*a),maximum_compactness=float(b))
+                for x,a,b in zip(t,r,c)]
+    floors=dict(mass_R50=1e-5,mass_R90=1e-5,maximum_compactness=1e-5)
+    u=sample(1-.1*np.sin(np.pi*t/96),.4+.1*np.sin(np.pi*t/96))
+    flat=sample(np.ones_like(t),np.full_like(t,.4))
+    inward=sample(1-.002*t,.4+.002*t)
+    r=(np.arange(160)+.5)*.025;f=np.exp(-r*r);p=1j*f
+    state=aggregate_phase_imprint(r,f,p);reverse=aggregate_phase_imprint(r,f,p,-.1)
+    def inward_flux(s):
+        grad=np.gradient(s[0],r)
+        return (float(np.sum(r*r*np.real(np.conjugate(s[1])*grad)))>0 and
+                float(np.sum(-r*r*np.imag(np.conjugate(s[0])*grad)))<0)
+    controls=dict(
+        manufactured_return_accepted=aggregate_collapse_event(u,floors)["classification"]=="RESOLVED_CONTRACTION_AND_ARREST",
+        constant_radius_rejected=aggregate_collapse_event(flat,floors)["classification"]=="FINITE_WINDOW_OUTCOME_OPEN",
+        continuing_contraction_rejected=aggregate_collapse_event(inward,floors)["classification"]=="FINITE_WINDOW_OUTCOME_OPEN",
+        pointwise_charge_preserved=bool(np.max(abs(np.imag(np.conjugate(state[0])*state[1])-f*f))<1e-14),
+        inward_phase_flux=inward_flux(state),reversed_phase_rejected=not inward_flux(reverse))
+    for name,key,value in (("nonfinite","mass_R50",float("nan")),("invalid_radius","mass_R90",-1.),("nonmonotonic_time","t",-1.)):
+        altered=[dict(s) for s in u];altered[30][key]=value
+        controls[name+"_rejected"]=aggregate_collapse_event(altered,floors)["classification"]=="INVALID_EVENT_INPUT"
+    return controls
+
+
+def aggregate_collapse_background():
+    from scipy.integrate import simpson
+    module,mod65,mod64,sol,anchor,pins,base_sha=load_background()
+    target=4*anchor["record"]["charge"];cache={}
+    def charge(s,radius):
+        x=np.linspace(mod64.EPS,radius,16001);f,fp,M,ls=s.sol(x)
+        return float(simpson(x*x*mod64.omega_from_parameter(s.p)*f*f/
+                             (np.exp(ls)*(1-2*ALPHA*M/x)),x=x))
+    fanchor=float(mod65.ANCHOR_F0)
+    cache[fanchor]=(sol,charge(sol,80.))
+    sequence=list(np.arange(fanchor+.02,2.10,.02))+[2.10]
+    for f0 in sequence:
+        sol=mod65.solve_at(mod64,float(f0),sol,radius=80.,tolerance=1e-7)
+        cache[float(f0)]=(sol,charge(sol,80.))
+    f0,sol,main_root=aggregate_match_charge(mod65,mod64,target,cache,(2.08,2.10),80.,1e-7)
+    sol=mod65.solve_at(mod64,f0,sol,radius=128.,tolerance=3e-8)
+    f0,sol,final_root=aggregate_match_charge(mod65,mod64,target,{f0:(sol,charge(sol,128.))},(2.08,2.10),128.,3e-8)
+    record=aggregate_observe(mod65,mod64,sol,f0,4,target,128.)
+    if not all(record["gates"].values()):
+        raise RuntimeError("The fresh fixed-Q n4 aggregate background failed its inherited gates")
+    return module,mod64,sol,dict(record=record,seed_steps=len(sequence),main_root=main_root,final_root=final_root),pins,base_sha
+
+
+def aggregate_collapse_case(module,mod64,solution,h=.1,duration=96.,radius=96.,kappa=.1,courant=.2,target_charge=None):
+    grid=module.Grid(radius,h);r=grid.r
+    f,fp,M,ls=solution.sol(r);omega=mod64.omega_from_parameter(solution.p)
+    p0=1j*omega*f/(np.exp(ls)*(1-2*ALPHA*M/r))
+    state=aggregate_phase_imprint(r,f,p0,kappa)
+    qreference=float(np.sum(grid.vol*np.imag(np.conjugate(f)*p0)))
+    intervals=int(round(duration/.25));dt=.25/int(np.ceil(.25/(courant*h)))
+    steps=int(round(.25/dt));grid.time_step=dt
+    result=dict(h=h,duration=duration,radius=radius,kappa=kappa,length=4.,dt=dt,courant=courant,
+                samples=[],local_flux_checks=[],status="COMPLETED",boundary="Zero scalar boundary flux; larger-domain control required")
+    started=time.perf_counter();t=0.;checkpoint=None
+    def measure():
+        row=grid.diagnostics(state,t);g=grid.geometry(*state)
+        s=abs(state[0])**2;v=s/2-s*s/4+SEXTIC*s**3/6
+        rho=g["N"]*(abs(state[1])**2+abs(g["gradient"])**2)/2+v
+        row.update(mass_R50=float(np.interp(.5*g["mass_outer"],np.r_[0,g["mass"]],np.r_[0,r])),
+                   mass_R90=float(np.interp(.9*g["mass_outer"],np.r_[0,g["mass"]],np.r_[0,r])),
+                   maximum_compactness=float(1-min(g["N"])),maximum_density=float(max(rho)),
+                   central_density=float((9*rho[0]-rho[1])/8),
+                   mass_monotonicity_defect=float(max(0.,-min(np.diff(g["mass"])))/g["mass_outer"]))
+        if not all(np.isfinite(v) for v in row.values()):
+            raise FloatingPointError("Nonfinite aggregate diagnostic")
+        return row
+    try:
+        first=measure();result["samples"].append(first);checkpoint=(t,state.copy())
+        g=grid.geometry(*state);rhs=grid.rhs(state)
+        mflux=r*r*g["sigma"]*g["N"]**2*np.real(np.conjugate(state[1])*g["gradient"])
+        qflux=-r*r*g["c"]*np.imag(np.conjugate(state[0])*g["gradient"])
+        qdot=grid.vol*np.imag(np.conjugate(rhs[0])*state[1]+np.conjugate(state[0])*rhs[1])
+        square=abs(state[0])**2;pot=square/2-square**2/4+SEXTIC*square**3/6
+        mprime=r*r*(g["N"]*(abs(state[1])**2+abs(g["gradient"])**2)/2+pot)
+        initial_mass_rates={key:float((fraction*mflux[-1]-np.interp(first[key],r,mflux))/np.interp(first[key],r,mprime))
+                            for key,fraction in (("mass_R50",.5),("mass_R90",.9))}
+        result["initial"]=dict(same_grid_reference_charge=qreference,
+            phase_charge_relative_error=abs(first["charge"]/qreference-1),
+            continuum_target_charge=target_charge,
+            continuum_charge_relative_error=abs(qreference/target_charge-1) if target_charge is not None else None,
+            mass_radius_rates=initial_mass_rates,
+            areal_charge_rms_rate=float(np.sum((r*r-first["charge_rms_areal"]**2)*qdot)/(2*first["charge"]*first["charge_rms_areal"])),
+            inward_mass_flux_weighted=float(np.sum(grid.vol*mflux)),
+            outward_charge_flux_weighted=float(np.sum(grid.vol*qflux)),
+            unchirped_ADM_mass=float(grid.geometry(f.astype(complex),p0)["mass_outer"]))
+        result["local_flux_checks"].append(dict(t=t,**grid.local_flux_check(state)))
+        half=grid.local_flux_check(state,eta=5e-7)
+        result["initial_directional_step_sensitivity"]=abs(result["local_flux_checks"][0]["local_mass_flux_relative_l2"]-half["local_mass_flux_relative_l2"])
+        if first["minimum_N"]<.05:
+            result["status"]="APPROACH_LIMIT"
+        for j in range(intervals):
+            if result["status"]!="COMPLETED":
+                break
+            for _ in range(steps):
+                k1=grid.rhs(state);k2=grid.rhs(state+dt*k1/2)
+                k3=grid.rhs(state+dt*k2/2);k4=grid.rhs(state+dt*k3)
+                state=state+dt*(k1+2*k2+2*k3+k4)/6;t+=dt
+            row=measure();result["samples"].append(row);checkpoint=(t,state.copy())
+            if (j+1)%16==0 or j==intervals-1:
+                result["local_flux_checks"].append(dict(t=t,**grid.local_flux_check(state)))
+            if row["minimum_N"]<.05:
+                result["status"]="APPROACH_LIMIT"
+    except Exception as error:
+        result.update(status="NUMERICAL_DIAGNOSTIC_FAILED",error=f"{type(error).__name__}: {error}",
+                      last_completed_time=float(t),failure_scope="Polar-areal chart or numerical diagnostic failure; not a detected singularity")
+    if result["status"]!="COMPLETED" and checkpoint is not None:
+        ct,cs=checkpoint
+        result["last_valid_sampled_state"]=dict(t=float(ct),r=r.tolist(),
+            field_real=cs[0].real.tolist(),field_imaginary=cs[0].imag.tolist(),
+            momentum_real=cs[1].real.tolist(),momentum_imaginary=cs[1].imag.tolist(),
+            momentum_convention="Pi=phi_t/(sigma*N); geometry is reconstructed from this state")
+    if result["samples"]:
+        first=result["samples"][0];checks=result["local_flux_checks"]
+        summary=dict(maximum_relative_charge_drift=max(abs(s["charge"]/first["charge"]-1) for s in result["samples"]),
+                     maximum_relative_mass_drift=max(abs(s["ADM_mass"]/first["ADM_mass"]-1) for s in result["samples"]),
+                     maximum_characteristic_Courant=dt*grid.stage_max_speed/h,
+                     minimum_N_RHS_stages=grid.stage_min_N,minimum_sigma_RHS_stages=grid.stage_min_sigma,
+                     maximum_negative_charge_fraction=max(s["negative_charge_fraction"] for s in result["samples"]))
+        for key in ("local_mass_flux_relative_l2","mass_radial_constraint_relative_l2","lapse_radial_constraint_relative_l2"):
+            summary["maximum_"+key]=max((c[key] for c in checks),default=1e300)
+        summary["maximum_relative_semidiscrete_charge_rate"]=max((abs(c["semidiscrete_charge_rate"])/first["charge"] for c in checks),default=1e300)
+        initial=result.get("initial",{})
+        gates=dict(completed=result["status"]=="COMPLETED",
+            charge_budget=summary["maximum_relative_charge_drift"]<1e-5,mass_budget=summary["maximum_relative_mass_drift"]<5e-3,
+            pointwise_charge=initial.get("phase_charge_relative_error",1)<1e-12,
+            characteristic_Courant=summary["maximum_characteristic_Courant"]<.45,
+            semidiscrete_charge=summary["maximum_relative_semidiscrete_charge_rate"]<1e-10,
+            initial_directional_step=result.get("initial_directional_step_sensitivity",1)<1e-6,
+            monotone_mass=max(s["mass_monotonicity_defect"] for s in result["samples"])<1e-9)
+        if kappa>0:
+            gates["initial_inward_flow"]=all(v<0 for v in initial.get("mass_radius_rates",{"missing":1}).values()) and initial.get("areal_charge_rms_rate",1)<0
+        result.update(summary=summary,gates={k:bool(v) for k,v in gates.items()})
+    result["elapsed_seconds"]=time.perf_counter()-started
+    print(f"Aggregate evolution h={h} kappa={kappa} R={radius}: {result['status']}, t={t:.3f}",file=sys.stderr,flush=True)
+    return result
+
+
+def run_aggregate_collapse_suite(pilot=False,flow_strength=.1):
+    if flow_strength not in (.1,.01):
+        raise ValueError("Only the two preregistered aggregate-flow strengths are available")
+    result=dict(code_sha256=sha(__file__),previous_source_sha256=COLLAPSE_PREVIOUS_SHA256,
+                controls=aggregate_collapse_controls(),cases={},pilot=bool(pilot),flow_strength=flow_strength)
+    started=time.perf_counter()
+    try:
+        module,mod64,solution,background,pins,base_sha=aggregate_collapse_background()
+        result.update(background=background,base_source_sha256=base_sha,dependency_sha256=pins)
+        specifications=[("flow_coarse",.1,96.,flow_strength,.2)]
+        if not pilot:
+            specifications += [("flow_middle",.05,96.,flow_strength,.2),("flow_fine",.025,96.,flow_strength,.2),
+                               ("zero_middle",.05,96.,0.,.2),("zero_fine",.025,96.,0.,.2),
+                               ("half_time_step",.025,96.,flow_strength,.1),("larger_domain",.05,128.,flow_strength,.2)]
+        for name,h,radius,kappa,courant in specifications:
+            result["cases"][name]=aggregate_collapse_case(module,mod64,solution,h,12. if pilot else 96.,radius,kappa,courant,
+                                                         target_charge=background["record"]["target_Q"])
+        cases=result["cases"]
+        gates=dict(controls=all(result["controls"].values()),
+                   case_numerics=all(all(c.get("gates",{"missing":False}).values()) for c in cases.values()),
+                   source_unchanged=sha(__file__)==result["code_sha256"],
+                   dependencies_unchanged=sha(HERE/"nonlinear_equilibrium_evolution.py")==base_sha and all(sha(module.SF/p)==v for p,v in pins.items()))
+        if any(c["status"]=="NUMERICAL_DIAGNOSTIC_FAILED" for c in cases.values()):
+            result["status"]="NUMERICAL_DIAGNOSTIC_FAILED"
+        elif any(c["status"]=="APPROACH_LIMIT" for c in cases.values()):
+            result["status"]="APPROACH_LIMIT"
+        elif pilot:
+            result["status"]="PILOT_NUMERICS_PASSED" if all(gates.values()) else "PILOT_NUMERICS_OPEN"
+        else:
+            keys=("mass_R50","mass_R90","charge_rms_areal","charge_rms_proper","central_amplitude","minimum_N")
+            wave=lambda case,key:np.array([s[key] for s in case["samples"]])
+            def errors(a,b):
+                return {k:float(np.sqrt(np.mean((wave(a,k)-wave(b,k))**2))/max(np.sqrt(np.mean(wave(b,k)**2)),1e-14)) for k in keys}
+            coarse,middle,fine=[cases[k] for k in ("flow_coarse","flow_middle","flow_fine")]
+            e01,e12=errors(coarse,middle),errors(middle,fine)
+            et,ed=errors(fine,cases["half_time_step"]),errors(middle,cases["larger_domain"])
+            ratios={k:e12[k]/max(e01[k],1e-14) for k in keys}
+            gates.update(spatial_convergence=all(e12[k]<5e-3 or ratios[k]<.6 for k in keys),
+                         timestep_control=max(et.values())<5e-3,domain_control=max(ed.values())<5e-3)
+            for key in ("local_mass_flux_relative_l2","mass_radial_constraint_relative_l2","lapse_radial_constraint_relative_l2"):
+                a=middle["summary"]["maximum_"+key];b=fine["summary"]["maximum_"+key]
+                gates[key]=b<5e-3 and (b<1e-6 or b/max(a,1e-14)<.6)
+            floors={}
+            for k in ("mass_R50","mass_R90","maximum_compactness"):
+                def delta(case):
+                    z=wave(case,k)
+                    return z/z[0]-1 if k!="maximum_compactness" else z-z[0]
+                envelope=lambda a:float(max(abs(a)))
+                floors[k]=max(envelope(delta(fine)-delta(middle)),envelope(delta(fine)-delta(cases["half_time_step"])),
+                              envelope(delta(middle)-delta(cases["larger_domain"])),envelope(delta(cases["zero_fine"])),1e-12)
+            event=aggregate_collapse_event(fine["samples"],floors)
+            gates["event_input_validation"]=event["input_validation"]
+            result.update(convergence=dict(coarse_middle=e01,middle_fine=e12,ratios=ratios,half_step=et,domain=ed),
+                          event=event)
+            result["status"]=event["classification"] if all(gates.values()) else "NUMERICAL_VALIDATION_OPEN"
+        result["gates"]={k:bool(v) for k,v in gates.items()}
+        result["scope"]=dict(model="Spherical neutral scalar aggregate at Q=4Q0 with an externally prepared inward phase gradient",
+            requested_flow_strength=flow_strength,
+            fixed_charge_not_particle_count=True,no_charge_projection=True,finite_duration_only=True,
+            no_universal_stability_or_black_hole_or_singularity_claim=True,
+            mass_budget="Closed-domain ADM energy, including energy added by preparation; not a radiated mass measurement")
+    except Exception as error:
+        result.update(status="NUMERICAL_DIAGNOSTIC_FAILED",error=f"{type(error).__name__}: {error}")
+    result["elapsed_seconds"]=time.perf_counter()-started
+    print(json.dumps(result,indent=2,allow_nan=False))
+    return 0 if result.get("status") in ("RESOLVED_CONTRACTION_AND_ARREST","FINITE_WINDOW_OUTCOME_OPEN","PILOT_NUMERICS_PASSED") else 1
+# END AGGREGATE COLLAPSE EVOLUTION HELPERS
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pilot", action="store_true")
@@ -1161,12 +1417,19 @@ def main():
     parser.add_argument("--initial-response", action="store_true")
     parser.add_argument("--response-suite", action="store_true")
     parser.add_argument("--aggregate-equilibrium-suite", action="store_true")
+    parser.add_argument("--aggregate-collapse-suite", action="store_true")
+    parser.add_argument("--aggregate-collapse-pilot", action="store_true")
+    parser.add_argument("--aggregate-weak-flow-suite", action="store_true")
     parser.add_argument("--count", type=int, default=1)
     parser.add_argument("--separation", type=float, default=28.0)
     parser.add_argument("--h", type=float, default=0.5)
     parser.add_argument("--radius", type=float, default=32.0)
     parser.add_argument("--half-height", type=float, default=64.0)
     args = parser.parse_args()
+    if args.aggregate_weak_flow_suite:
+        return run_aggregate_collapse_suite(flow_strength=.01)
+    if args.aggregate_collapse_suite or args.aggregate_collapse_pilot:
+        return run_aggregate_collapse_suite(pilot=args.aggregate_collapse_pilot)
     if args.aggregate_equilibrium_suite:
         return run_aggregate_equilibrium_suite()
     if args.response_suite:

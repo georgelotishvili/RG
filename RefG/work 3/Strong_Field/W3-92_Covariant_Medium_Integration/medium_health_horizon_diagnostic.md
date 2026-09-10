@@ -13,14 +13,17 @@ exponential exterior and selected additive constitutive truncations are
 candidate assumptions, not requirements imposed on every future action.
 The negative results below remain valid in their stated domains.
 
-Current completed calculation: Stage 19's aggregate equilibrium mass
-and size at the same total conserved phase charge as n=1,2,3,4 separated
-anchor references. Relative to n*M0, the joined neutral scalar
-equilibria have mass deficits of 13.9862%, 22.1044% and 27.9509%
-for n=2,3,4. ADM and Komar mass agree; tolerance, domain and independent
-quadrature checks pass. Bulk radii and compactness are directly computed.
-These configurations remain horizonless. Their conserved-charge
-comparison does not identify Q with a count of arbitrary matter particles.
+Current completed calculation: Stage 20's finite inward-flow response
+of the Stage 19 n=4 compact aggregate. The weaker prepared flow
+(kappa=0.01) produces numerically resolved compression, arrest and
+partial re-expansion, followed by oscillation over T=96. The stronger
+flow (kappa=0.1) has independently resolved compression through T=16;
+its later near-horizon evolution fails the local accuracy requirements
+and remains APPROACH_LIMIT/OPEN. The full numerical and physical
+outcomes are separated below. Stage 19's fixed-charge equilibrium
+binding-energy results remain unchanged. Neither stage constructs a
+nonsingular trapped black hole or identifies Q with an arbitrary
+matter-particle count.
 
 Stage 18's initial coordinate-centroid attraction remains a result of
 its neutral scalar configurations. It is not a universal statement about
@@ -4202,3 +4205,337 @@ strong-field task concerns the physical continuation and endpoint of an
 aggregate source. A universal constituent-population identification, the
 additional foundation-pressure closure and black-hole singularity removal
 remain separate from this demonstrated energy comparison.
+
+## Stage 20 — Fixed-charge aggregate inward-flow evolution
+
+Preregistered 2026-09-10, before the physical pilot or suite. The question
+is whether a specified inward-moving aggregate contracts and subsequently
+arrests that compression under the retained equations. Decreasing
+equilibrium mass increments across different charges are the Stage 19
+result; the present question concerns time evolution at one charge.
+
+### Model, initial data and exact flux check
+
+Keep the W64 canonical complex scalar, sextic=0.25, alpha=0.04, and the
+same Einstein metric. Reconstruct the n=4 equilibrium at Q=4*Q0 from the
+original W65 anchor, using bounded continuation steps <=0.02 and the
+existing charge matcher on [2.08,2.10]. Extend the profile to R=128 with
+collocation tolerance 3e-8. No molecular, particle-spectrum, new
+constitutive-law or observational-fit calculation enters this test.
+
+Use the evolution variable Pi=phi_t/(sigma*F). Imprint a phase:
+
+~~~text
+theta(r) = kappa*L^2*(1-exp(-r^2/(2*L^2))), kappa=0.1, L=4,
+phi(r,0) = f(r)*exp(i*theta(r)),
+Pi(r,0) = i*Omega*f(r)/(sigma_old(r)*F_old(r))*exp(i*theta(r)).
+
+Q = integral r^2*Im(conj(phi)*Pi) dr,
+j_Q,out = -r^2*sigma*F*Im(conj(phi)*phi_r),
+M_t = r^2*sigma*F^2*Re(conj(Pi)*phi_r).
+~~~
+
+For theta'>0 and Omega>0, charge initially flows inward and enclosed
+mass initially increases. At fixed total mass a mass-containing radius
+has initial velocity -M_t/M_r<0. Verify these signs from the actual
+discrete initial state, not merely from the verbal label "compression".
+Multiplying both variables by the same phase preserves charge pointwise;
+the phase gradient adds initial energy. Recompute both metric functions
+from the constraints. Do not keep the equilibrium geometry, reproject Q,
+remove energy by hand or insert a restoring force during evolution.
+Kappa and L are declared initial-data choices, not fitted constants.
+
+### Frozen numerical cases and diagnostics
+
+- Optional implementation pilot: h=0.1, R=96, T=12, same preparation.
+- Main chirped cases: h=0.1,0.05,0.025, R=96, T=96, Courant=0.2.
+- Unchirped controls: h=0.05,0.025, R=96, T=96.
+- Time-step control: chirped h=0.025, R=96, Courant=0.1, T=96.
+- Domain control: chirped h=0.05, R=128, Courant=0.2, T=96.
+- Seven full cases; sample every 0.25. Use the pinned Grid equations and
+  fourth-order Runge--Kutta pattern. Stdout only; preserve case failures.
+
+Primary observables are areal radii enclosing 50% and 90% of the ADM
+mass and maximum compactness. Also retain charge-weighted RMS areal and
+proper radii, central/maximal density and amplitude, lapse, charge,
+ADM mass, negative-charge fraction, local constraints and mass-flux
+residuals. Total ADM energy is the energy on the numerical slice;
+redistribution out of the core is not automatically loss from that slice.
+
+Frozen numerical gates:
+
+- Initial phase imprint changes same-grid Q by <1e-12 relatively; report
+  continuum-target interpolation error separately, without normalization.
+- Charge drift <1e-5, ADM drift <5e-3, actual CFL <0.45 and relative
+  semidiscrete charge rate <1e-10.
+- Finest independent mass-flux/radial-constraint residuals <5e-3 and
+  fine/middle residual ratio <0.6 unless already below 1e-6.
+- For R50, R90, charge RMS areal radius, central amplitude and minimum F:
+  normalized RMS fine/middle differences <5e-3 OR refinement ratio <0.6.
+- Time-step and domain changes <5e-3 in those waveform measures.
+- Running source and pinned dependencies stay unchanged during execution.
+
+These are empirical discretization checks, not rigorous error bounds.
+Old amplitude/radius-excursion gates are inapplicable to an intentionally
+compressed body and are not used.
+
+### Physical decision and stops
+
+For a qualified finite compression-arrest event, both R50 and R90 must
+first contract by at least 1e-3 fractionally and by more than three times
+their numerical/control floors, then recover at least 25% of their
+contraction depths at a shared time. Require at least eight time units
+available after the minima and a resolved compactness decrease.
+Record event times and depths rather than only a Boolean label.
+Event significance uses maximum-in-time (not RMS) differences between
+normalized fine/middle, time-step and domain traces, together with
+maximum unchirped-control drift. RMS is retained only for the separate
+waveform-convergence gates. Invalid or nonchronological traces cannot
+qualify. All seven cases are attempted even if a preceding case reaches
+its coordinate limit; compare full-window waveforms only when the
+required full traces exist.
+
+Numerical validity and physical outcome are separate. Possible outcomes
+include validated finite compression arrest, continuing contraction over
+the finite interval, unresolved dynamics, or an approach/chart limit.
+A sampled minimum F<0.05 stops the case as APPROACH_LIMIT. This is a
+declared coordinate-safety boundary, not a detected horizon. Nonpositive F,
+nonfinite geometry or failure of the integrating factor retains the last
+valid sample and exception as CHART_LIMIT/DIAGNOSTIC_FAILED, not as
+singularity formation or collapse arrest. Do not extend T indefinitely.
+
+Before physical execution, manufactured controls must accept a
+contracting-then-recovering trace with declining compactness and reject
+constant or monotonically contracting traces. Check both flux signs,
+exact phase-charge preservation, invalid traces and validator mutations.
+
+### Scope boundary and provenance
+
+A resolved rebound is a result for this finite preparation, not proof of
+permanent stability, arbitrary-load saturation or a nonsingular trapped
+black hole. The retained action satisfies T_kk=sum_A(k.grad(phi_A))^2>=0.
+With Einstein dynamics, a closed trapped surface and the global
+hypotheses of Penrose's theorem, null completeness cannot also hold.
+Binding energy alone does not change that null contraction. See the
+existing W64/W73 gates and
+[the primary rigidity analysis of Penrose's theorem](https://doi.org/10.1007/s00220-024-05210-4).
+This test can establish avoidance of further compression for a tested
+state; it does not silently supply an additional foundation-pressure law.
+
+Only the existing population script, this diagnostic and idea.txt are
+edited. The official monographs, source article and pinned nonlinear
+solver remain unchanged. Pre-Stage-20 population SHA256:
+6f88d0986e2ed1db7d903853ad2b776592fe6e683f0331c7348aca9419c42d8d.
+
+### Stage 20 first execution — the stronger inward-flow case
+
+The frozen implementation SHA256 was
+275c36caa3d88fa1a36cb2c9679a51be85ecb329cb5d63b70c5faf0ca3625713.
+All nine manufactured controls passed; removing the marked helper block
+and CLI additions reconstructs the exact preceding Stage 19 source.
+The T=12 pilot completed, with inward initial R50 and R90 rates
+-0.106707 and -0.055857. Its charge drift was 7.65e-11 and ADM drift
+2.68e-4. This pilot was an implementation check, not a convergence proof.
+
+All seven main cases were attempted. All five chirped cases reached
+the registered F<0.05 safety limit before T=96; both unchirped controls
+completed T=96. No contraction-arrest event was certified.
+
+| Chirped case | Last sampled t | minimum F | R50 | R90 | Maximum relative ADM drift |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| h=0.1, R=96 | 22.50 | 0.04807957 | 1.23269947 | 1.77944278 | 0.00603812 |
+| h=0.05, R=96 | 23.75 | 0.04496972 | 1.23881817 | 1.78086045 | 0.00226612 |
+| h=0.025, R=96 | 24.25 | 0.04962305 | 1.24127279 | 1.78463780 | 0.00063945 |
+| h=0.025, half time step | 24.25 | 0.04962305 | 1.24127279 | 1.78463780 | 0.00063945 |
+| h=0.05, R=128 | 23.75 | 0.04496972 | 1.23881817 | 1.78086045 | 0.00226612 |
+
+The finest initial R50 and R90 were 2.47434954 and 3.63398532.
+All reported minima occurred at the final sampled times. Near the
+safety limit the local diagnostics do NOT meet the registered accuracy:
+the finest maximum mass-flux residual is 0.56245 and the independent
+radial-mass residual is 0.04378. The stopping time also changes under
+spatial refinement. Consequently, these late values are raw diagnostic
+outputs, not a validated continuum collapse endpoint. Small global
+charge/energy errors and successful time-step/domain comparisons do not
+override failed local Einstein checks.
+
+The unchirped fine control has ADM drift 8.86e-9, charge drift 1.23e-13,
+and minimum F>=0.54332285 over T=96. Its R50 varies between
+2.47435984 and 2.47449630. Thus the tested equilibrium itself remains
+quiet while the added inward flow produces substantial compression.
+Neither run constructs a trapped surface or reaches a singularity.
+
+The main status is APPROACH_LIMIT (exit 1), with source/dependency
+integrity and manufactured controls passing. The incomplete evolution
+and failed near-limit local residuals remain explicitly open. No
+threshold, equation or result was changed to call this arrest.
+
+### Stage 20 contrast — preregistered before its execution
+
+One further preparation distinguishes a finite restoring response from
+an assertion of arrest under the previous inward loading: set
+kappa=0.01, exactly one tenth of the first phase gradient. Keep n=4,
+Q, L=4, action, geometry, T=96, all seven numerical cases, event criteria,
+error budgets and safety stops unchanged. This is a declared weaker
+initial flow, not a modification of the physical law or a search over
+amplitudes until a positive outcome is found. Preserve the kappa=0.1
+outcome above independently.
+
+Use the existing script's --aggregate-weak-flow-suite preset. The
+original --aggregate-collapse-suite retains kappa=0.1. A positive
+weaker-flow result would establish a finite response range for this
+equilibrium; it would not repair the unvalidated late stronger-flow
+evolution or establish universal collapse prevention. If the contrast
+also fails, retain that outcome without an amplitude scan.
+
+One bounded numerical localization check is additionally registered
+after observing the first run's late accuracy failure: repeat only the
+common regular interval 0<=t<=16 at kappa=0.1, R=96, with
+h=0.05,0.025,0.0125 and Courant=0.2. This adds one finer grid; it does not
+extend the evolution or bypass the F guard. Apply the same charge, ADM,
+CFL, independent local-constraint and waveform-refinement thresholds.
+Its purpose is to distinguish resolved earlier compression from the
+unresolved near-limit endpoint, not to certify the latter. No event
+arrest is inferred from ending this diagnostic at t=16. This is a
+post-initial-run diagnostic, not part of the original blind test.
+
+### Completed weaker-flow result
+
+The fixed kappa=0.01 suite completed all seven cases to T=96 and returned
+RESOLVED_CONTRACTION_AND_ARREST, exit 0, in 184.23 seconds. All nine
+manufactured controls, all per-case numerical conditions and all eleven
+suite gates passed. This is a weaker inward perturbation of the same
+compact body, not a weak-gravity replacement for it.
+
+On the finest principal grid (h=0.025), the inward initial rates are
+R50_dot=-0.01117981 and R90_dot=-0.00571365. Initial Q is preserved
+exactly to the printed precision by the phase preparation. Geometry is
+recomputed; the added initial ADM energy is 0.00279330 in code units.
+For comparison the stronger preparation adds 0.27722089 on the same
+grid. These are different initial energies, not changes in the equations.
+
+| Mass-containing areal radius | Initial | Minimum | Time of minimum | At shared recovery time t=21 |
+| --- | ---: | ---: | ---: | ---: |
+| R50 | 2.474468021 | 2.402971504 | 12.75 | 2.446127416 |
+| R90 | 3.635645868 | 3.566696396 | 10.75 | 3.606485073 |
+
+Thus R50 contracts by 2.889369% and R90 by 1.896485%. At t=21,
+60.36% and 57.71% of their respective contraction depths have recovered.
+The registered minimum-to-recovery time and significance conditions
+are satisfied for both radii. Maximum compactness rises from 0.45671275
+to 0.46575564, then decreases to 0.46036189 at t=21. Maximum density
+rises from 4.21848 to 5.13854 and is 4.27897 at t=21. Over the full
+window the body continues to oscillate; it is not claimed to have
+settled into its original equilibrium.
+
+The L-infinity event-error envelopes are 3.43813e-4 for fractional R50,
+3.98905e-4 for fractional R90 and 1.68476e-4 for absolute compactness.
+Contraction and recovery exceed the registered three-times floors.
+An additional independent validator check rejects both an otherwise
+recovering trace below its error floor and empty input.
+
+| Maximum numerical diagnostic | h=0.1 | h=0.05 | h=0.025 |
+| --- | ---: | ---: | ---: |
+| Relative charge drift | 1.046e-10 | 4.001e-12 | 1.266e-13 |
+| Relative ADM drift | 2.251e-5 | 5.172e-6 | 1.255e-6 |
+| Independent mass-flux residual | 4.575e-4 | 1.181e-4 | 2.960e-5 |
+| Independent radial-mass residual | 1.584e-3 | 3.923e-4 | 9.802e-5 |
+| Independent radial-lapse residual | 7.744e-4 | 1.893e-4 | 4.706e-5 |
+
+The fine/middle waveform RMS discrepancies are <=2.35e-4, with
+refinement ratios 0.2386--0.2616. Halving the time step changes these
+waveforms by <=3.73e-10; enlarging the domain changes them by <=1.54e-16.
+The larger-domain agreement is expected while the signal remains away
+from the zero-flux outer boundary. Charge conservation and small ADM
+drift are numerical checks of closed-domain evolution, not a measured
+radiated mass. No charge projection, damping or external arrest force
+is applied.
+
+### Completed localization of the stronger-flow accuracy limit
+
+The separately registered T=16 runs at h=0.05,0.025,0.0125 all passed
+their nine per-case numerical gates; their seven common-interval
+convergence/provenance conditions passed in 31.12 seconds. This
+diagnostic adds one finer spatial resolution, not an indefinite time
+extension.
+
+At h=0.0125 the initial and final values are:
+
+| Observable | t=0 | t=16 |
+| --- | ---: | ---: |
+| R50 | 2.474427774 | 1.360850303 |
+| R90 | 3.633834230 | 2.407194292 |
+| Charge RMS areal radius | 2.445079749 | 1.644764372 |
+| Charge RMS proper radius | 2.744516425 | 2.339078586 |
+| Maximum compactness | 0.462437565 | 0.748319672 |
+| Minimum F | 0.537562435 | 0.251680328 |
+| Central lapse | 0.376526168 | 0.043189400 |
+| Maximum density | 4.21857698 | 23.42279423 |
+| Q | 34.353701781195 | 34.353701781194 |
+| ADM mass | 23.243407796484 | 23.243185474262 |
+
+This resolves 45.00% R50 contraction and 33.76% R90 contraction over
+the declared interval. The finest maximum mass-flux, radial-mass and
+radial-lapse residuals are 8.57625e-4, 2.58204e-4 and 6.05334e-5,
+with refinement ratios 0.24947, 0.24989 and 0.24707. Waveform
+fine/middle errors are <=6.08e-5, with ratios 0.2380--0.2662.
+Maximum relative Q and ADM drift are 2.30e-14 and 9.57e-6.
+
+Consequently, the substantial earlier compression is not explained
+away by the later accuracy failure. Conversely, this shorter validated
+interval does not validate the near-limit endpoint or turn it into a
+singularity proof.
+
+### Reproduction, decision and remaining physical boundary
+
+The completed code SHA256 is
+c199c4e7f423df635635a9f04ccf461c7507b9b5f6b6a276dfc539c3668c1f27.
+The two strength presets leave the retained equations and thresholds
+unchanged; reversing only the selector/metadata additions reconstructs
+the initial Stage 20 source 275c36ca...5713.
+
+~~~text
+python -B population_assembly_initial_data.py --aggregate-collapse-suite
+python -B population_assembly_initial_data.py --aggregate-weak-flow-suite
+~~~
+
+The first command deliberately retains the unresolved stronger-flow
+status; success of the second does not overwrite it. The early-interval
+localization is reproduced with the existing helper calls, without
+creating a separate driver or results file:
+
+~~~python
+import population_assembly_initial_data as p
+module, mod64, sol, background, pins, base_sha = p.aggregate_collapse_background()
+for h in (0.05, 0.025, 0.0125):
+    case = p.aggregate_collapse_case(
+        module, mod64, sol, h=h, duration=16.0, radius=96.0,
+        kappa=0.1, courant=0.2, target_charge=background["record"]["target_Q"])
+    print(case)
+~~~
+
+The physical decision is now sharper than an equilibrium mass table:
+the retained coupled scalar--geometry model has a resolved finite
+restoring response for the weaker specified inward flow. It does not
+follow that every added inward energy is stopped. The stronger run's
+late fate remains open because spatially resolved local Einstein
+constraints are lost before the registered safety limit. The next
+necessary strong-flow calculation must address that localization and
+the regular horizon-crossing initial-value problem, not molecular
+structure or another equilibrium mass-sum comparison.
+
+No algebraic error in the retained continuum feedback equations was
+identified in these checks. Nor was a complete additional foundation
+pressure law derived. If the intended endpoint is a trapped, complete,
+nonsingular spacetime, the W64/W73 null-convergence boundary still
+requires an explicit physical resolution; a lower ADM binding energy
+or a coordinate change alone does not supply it.
+
+The official Georgian/English monographs, original article and pinned
+nonlinear solver retain their starting hashes. Only the existing
+population script and this report are tracked modifications; idea.txt
+contains the corresponding private plain-language status. No new
+folder, output artifact, ignore rule, commit or publication was created.
+The original Stage 19 equilibrium suite was rerun with the completed
+source: all eleven gates and nine controls pass, with unchanged
+matched-charge masses, in 3.35 seconds. Git whitespace validation passes.
