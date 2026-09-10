@@ -13,17 +13,23 @@ exponential exterior and selected additive constitutive truncations are
 candidate assumptions, not requirements imposed on every future action.
 The negative results below remain valid in their stated domains.
 
-Current completed calculation: Stage 20's finite inward-flow response
-of the Stage 19 n=4 compact aggregate. The weaker prepared flow
-(kappa=0.01) produces numerically resolved compression, arrest and
-partial re-expansion, followed by oscillation over T=96. The stronger
-flow (kappa=0.1) has independently resolved compression through T=16;
-its later near-horizon evolution fails the local accuracy requirements
-and remains APPROACH_LIMIT/OPEN. The full numerical and physical
-outcomes are separated below. Stage 19's fixed-charge equilibrium
-binding-energy results remain unchanged. Neither stage constructs a
-nonsingular trapped black hole or identifies Q with an arbitrary
-matter-particle count.
+Current completed calculation: Stage 22's same-continuum-initial-slice
+regular-gauge test of the Stage 19 n=4 aggregate. An origin quadrature
+defect was identified with an exact static control and repaired without
+changing the source equations. The corrected strong-flow evolution
+passes bulk AND origin gates through regular time T=9.4, central proper
+time 3.539321393. The original polar comparison covers proper time
+3.323808328; on that overlap the refined central density difference is
+0.03485%. Later regular-gauge samples fail the origin checks and are
+not physical endpoint results. No trapped horizon or singularity
+removal has been demonstrated.
+
+Stage 21's verified polar-slice compression (R50 -49.03%, R90 -45.83%
+through polar T=20), Stage 20's weaker-flow compression/arrest/
+re-expansion, and Stage 19's fixed-charge binding-energy results remain
+in their stated domains. Coordinate times and radial slices from the
+two gauges must not be compared as identical events. Q is not
+identified with an arbitrary matter-particle count.
 
 Stage 18's initial coordinate-centroid attraction remains a result of
 its neutral scalar configurations. It is not a universal statement about
@@ -4539,3 +4545,449 @@ folder, output artifact, ignore rule, commit or publication was created.
 The original Stage 19 equilibrium suite was rerun with the completed
 source: all eleven gates and nine controls pass, with unchanged
 matched-charge masses, in 3.35 seconds. Git whitespace validation passes.
+
+## Stage 21 — Strong-flow spatial-accuracy repair
+
+Registered before the new numerical tests, 2026-09-10.
+
+- CLAIM / TYPE: identify and reduce the spatial error limiting the
+  existing kappa=0.1 aggregate evolution; numerical method verification.
+- Fixed physics and data: W64 sextic scalar, alpha=0.04, Stage 20 n=4
+  fixed-charge background, L=4 and kappa=0.1. No new source, force,
+  constitutive law, damping, charge projection or amplitude search.
+- First isolation test: reproduce one h=0.025 late state and differentiate
+  the actual discrete geometry map analytically along its RHS. Compare
+  with centred directional differences at several step sizes and the
+  independent Einstein mass-flux equation. Report both absolute and
+  relative residuals. This distinguishes diagnostic roundoff from
+  discretization inconsistency.
+- Minimal candidate repair: integrate the same linear radial constraint
+  M'=b-q*M by stable, interval-local exponential quadrature instead of
+  globally multiplying exp(J) and applying a trapezoidal primitive.
+  Existing field equations, canonical momentum, flux and charge measure
+  remain fixed. Check known linear-ODE solutions, quadrature refinement,
+  the original equilibrium, and agreement with the old method as h->0.
+- The candidate lives in an explicitly separate helper/class in the
+  existing population script. The pinned nonlinear solver and all old
+  execution modes remain intact. Editing is limited to that script,
+  this report and private idea.txt.
+- After isolation and method controls, test the unchanged stronger
+  initial preparation to T=32, R=48, at h=0.025,0.0125,0.00625.
+  One half-step and R=64 control use the middle/fine resolution as
+  needed by the measured error; no extrapolation replaces a run.
+  Stop at minimum F<0.01 or a nonfinite/invalid chart. The smaller
+  positive-F guard is a new numerical domain, not a horizon detection.
+- Acceptance: relative Q drift<1e-5, ADM drift<5e-3, CFL<0.45;
+  maximum independent local mass-flux, radial-mass and radial-lapse
+  residuals<5e-3 on the finest common interval, refinement ratio<0.6
+  unless already<1e-6. Waveform differences<5e-3 or ratio<0.6;
+  time-step/domain differences<5e-3. Freeze physical conclusions at the
+  last interval meeting all required checks. Tests use common times
+  rather than comparing different stopping instants.
+- STOP / FAILURE: finish with a validated extension and observed
+  response, or name the unresolved numerical/coordinate boundary.
+  Reaching a guard, lapse collapse or failed constraints is not proof
+  of a spacetime singularity or physical arrest. Existing local PG
+  identities do not automatically provide a global evolution solver.
+- Observation/data-fit fields: N/A; no observational inference is
+  made in this numerical repair. Source hashes and regression checks
+  distinguish the new method from previous valid results.
+
+### Isolation result and exact numerical correction
+
+The unchanged Stage 20 source c199c4e7...c1f27 reproduced the h=0.025,
+R=96 stronger-flow state at t=24.25, minimum F=0.0496230542.
+The analytic directional derivative of the actual discrete mass map
+disagrees with the independent Einstein mass flux by 0.684004 in the
+registered weighted relative norm (absolute norm 0.186531, scale
+0.272704). The centred finite difference at eta=1e-4 agrees with the
+analytic tangent to 5.23e-8 in the same normalization. Values
+eta=1e-3,1e-5,1e-6,1e-7 retain the large Einstein discrepancy.
+Thus the discrepancy is in the discrete operators, rather than an
+artifact of the finite-difference step used to check them.
+
+The largest pointwise mismatch is near r=1.8375: computed M_t=0.3805904,
+Einstein flux=0.2415601, F=0.0511146. The maximum cell increment of J
+is 0.272306; J itself is only about 6.995. This is a spatial-resolution
+and quadrature problem, not floating-point overflow of exp(J).
+The previously stored maximum residual 0.56245 sampled t=24; the
+present test also checks the final guard sample at t=24.25.
+
+The continuum radial equation is already linear in the enclosed mass:
+
+~~~text
+S=|Pi|^2+|phi_r|^2, q=alpha*r*S,
+b=r^2*(S/2+V), M'=b-q*M.
+~~~
+
+On one cell, linearly reconstruct q and b between the two centres.
+The exact variation-of-constants step contains only decaying weights:
+
+~~~text
+A=h*(qL+qR)/2,
+B(u)=h*(qL*(1-u)+(qR-qL)*(1-u^2)/2),
+M_R=exp(-A)*M_L
+    +h*integral_0^1 exp(-B(u))*(bL+(bR-bL)*u) du.
+~~~
+
+At the origin use q proportional to r and b proportional to r^2.
+The outer half-cell has the constant-coefficient exponential solution,
+evaluated with expm1 and its regular q=0 limit. No mass clipping or
+source alteration enters this construction. Four-node Gauss--Legendre
+integration is checked against eight nodes, with an actual geometry
+difference gate of 1e-6. The linear spatial reconstruction remains
+second-order; extra quadrature nodes do not increase that spatial order.
+Independent mass-flux and radial-constraint tests remain mandatory.
+
+The five frozen repaired runs are h=0.025,0.0125,0.00625 at R=48,
+plus h=0.00625 with half the time step and h=0.0125 at R=64.
+All use the identical stronger initial preparation and T=32.
+Local checks are taken every unit of coordinate time and at the final
+guard sample. Comparisons use a shared time interval.
+
+Existing horizon-regular resources were also checked. W73 derives
+same-action PG equations on a smooth annulus; W83 implements an
+excised annular evolution with a different potential and an already
+trapped inner boundary. Neither supplies a ready global continuation
+of this initial state. A PG spatial slice is flat whereas this stored
+polar slice has radial metric 1/F; copying one snapshot into the other
+would change the initial-value problem. The present repair therefore
+keeps the original slicing and source.
+
+### Completed Stage 21 tests and validated interval
+
+The five-case suite was completed twice. Both executions returned
+VALIDATED_PREFIX_ENDPOINT_OPEN: all registered checks pass on
+0 <= t <= 20; the common interval through t=30 does not pass.
+The repeated common-interval and validated-prefix records are identical.
+Times and radii here are the retained dimensionless simulation units,
+not seconds or kilometres and not a calibrated astrophysical object.
+
+Six manufactured method controls pass. Absolute constant-ODE, zero-q
+and regular-centre errors are 1.33e-15, 2.84e-14 and 2.17e-19;
+the manufactured GL4/GL8 discrepancy is 5.54e-11.
+At h=0.025,0.0125,0.00625 the equilibrium relative mass errors are
+2.63921e-5,6.58787e-6,1.64562e-6. Lapse and metric errors also
+converge with approximately one-quarter error per halving of h;
+their finest errors are 2.64420e-6 and 3.37678e-6.
+
+| Run | h | R | Last sampled t | Execution status |
+| --- | ---: | ---: | ---: | --- |
+| Coarse | 0.025 | 48 | 32.00 | COMPLETED |
+| Middle | 0.0125 | 48 | 30.75 | APPROACH_LIMIT |
+| Fine | 0.00625 | 48 | 30.50 | APPROACH_LIMIT |
+| Half time step | 0.00625 | 48 | 30.50 | APPROACH_LIMIT |
+| Larger domain | 0.0125 | 64 | 30.75 | APPROACH_LIMIT |
+
+These are execution endpoints, not validated physical endpoints.
+In particular, the coarse run completing T=32 is not a success:
+its local residuals and late mass budget fail. No entry represents
+a detected horizon, singularity or stopped contraction.
+
+The finest validated evolution gives:
+
+| Observable | t=0 | t=20 |
+| --- | ---: | ---: |
+| R50 | 2.474449925 | 1.261255637 |
+| R90 | 3.633789134 | 1.968437578 |
+| Charge RMS areal radius | 2.445082298 | 1.475605155 |
+| Charge RMS proper radius | 2.744510615 | 2.257588899 |
+| Maximum compactness | 0.462444049 | 0.856502743 |
+| Minimum F | 0.537555951 | 0.143497257 |
+| Central lapse | 0.376522675 | 0.007906992 |
+| Maximum density | 4.21859934 | 27.90433454 |
+| ADM mass | 23.243533589 | 23.243249962 |
+| Conserved Q | 34.3535740257004 | 34.3535740257004 |
+
+Thus R50 contracts by 49.02885% and R90 by 45.82961%.
+Both still decrease over the final quarter-time interval:
+R50 goes from 1.264017722 to 1.261255637, and R90 from
+1.989307444 to 1.968437578. No stronger-flow arrest or re-expansion
+is observed in the validated interval. Finite density over this
+finite interval does not establish a universal density bound.
+
+On 0 <= t <= 20, the maximum fine-grid mass-flux, radial-mass and
+radial-lapse relative residuals are 2.96587e-3,3.56450e-5,2.55907e-5.
+Their fine/middle ratios are 0.25024,0.24984,0.24876.
+Waveform middle/fine RMS discrepancies are <=5.13e-5; their
+refinement ratios are 0.2454--0.2594. Half-step and domain waveform
+differences are <=1.14e-12 and <=1.62e-16.
+Maximum fine-grid relative Q drift is 1.89e-15 and ADM drift 1.22024e-5.
+The latter is a numerical closed-domain energy defect, not measured
+radiation or evidence of physical mass loss. The actual GL4/GL8
+geometry differences on the validated interval are <=2.14e-15.
+
+At t=21 the fine local mass-flux residual is 5.48205e-3, above
+the unchanged 5e-3 threshold; the half-step result is 5.47847e-3.
+A separate same-state test at t=21 varied the directional-difference
+step over 1e-3,1e-4,1e-5,1e-6,5e-7. The relative residual stays
+between 5.48087e-3 and 5.48460e-3 (absolute norm about 4.474e-3),
+so the failed threshold is not removed by changing that diagnostic
+step. This is a numerical consistency test, not an observation.
+By the common t=30 endpoint the fine mass-flux and lapse residuals
+are 2.21761 and 1.16800e-2. Radial mass alone still passes there
+(2.76684e-3), but cannot replace the other equations. Coarse-grid
+quadrature also fails by t=30. The visibly similar radius curves and
+excellent charge conservation therefore do not validate that endpoint.
+
+### Same-grid comparison: what the candidate actually improves
+
+Two additional old-method runs to T=20 at R=48, h=0.0125,0.00625
+used the identical physical preparation and diagnostic cadence.
+The comparison prevents attributing a finer-grid improvement
+to the new mass integrator alone.
+
+| Maximum residual through T=20, h=0.00625 | Original method | Cell-local method |
+| --- | ---: | ---: |
+| Local mass-flux equation | 2.43165e-3 | 2.96587e-3 |
+| Radial mass equation | 2.67380e-4 | 3.56450e-5 |
+| Radial lapse equation | 2.55978e-5 | 2.55907e-5 |
+| Relative ADM drift | 8.80518e-6 | 1.22024e-5 |
+
+The radial mass residual improves by about 7.5 times. The local
+mass-flux and ADM defects do not improve. The old fine method also
+satisfies the individual local thresholds through T=20.
+Old/new final R50 and R90 differences are only 1.53e-5 and 3.42e-5
+relative on the finest grid; their corresponding middle-grid
+differences are 6.11e-5 and 1.35e-4, consistent with second-order
+agreement. The candidate is retained as a separately selectable
+numerical test, not promoted as a complete cure or substituted for
+the original solver.
+
+### Reproduction, regression and next boundary
+
+Final population-source SHA256:
+64c8ae6e0105fbba2753b299f5862557f3388def4c068c9088aecc69ac115c76.
+The earlier numerical execution used 30e2c964...c2639; subsequent
+cleanup removed duplicate uncalled suite/CLI definitions and tightened
+sample-time and equilibrium-geometry checks, without changing the
+evolution. The entire five-case physical suite was then repeated
+with the final source in 309.91 seconds.
+
+~~~text
+python -B population_assembly_initial_data.py --aggregate-spatial-repair-suite
+~~~
+
+This command deliberately returns exit code 1 for the partially
+validated outcome. Its JSON contains the successful prefix and the
+failed longer interval separately. Only stdout is used for results.
+Environment: Python 3.10.6, NumPy 1.24.3, SciPy 1.15.2, Numba 0.63.1.
+The new optional method uses existing Numba with cache=False and
+fastmath=False; no dependency installation or JIT cache is created.
+
+Eight separate validator controls pass: a complete valid trace is
+accepted; missing diagnostics, missing samples, shifted times, excessive
+mass drift, excessive flux residual, inaccurate quadrature and an
+invalid time window are rejected. CLI parsing is checked. The original
+Stage 19 equilibrium suite again passes all eleven gates and nine
+controls; the original Stage 20 pilot passes all four gates and nine
+controls. Source and dependency hashes remain fixed during the runs.
+
+The bounded decision is that mass quadrature alone does not remove
+the strong-flow numerical obstruction. Further blind halving of the
+same uniform grid is not the selected next step. The next required
+numerical task is a horizon-regular formulation of the same initial
+data and source, first checked against this validated pre-horizon
+interval. A general spherical 3+1 slice can retain the existing
+initial spatial geometry; a PG implementation instead needs a genuine
+constraint-consistent slicing construction. Neither may copy and
+relabel the present snapshot or infer interior regularity from its
+external lapse. This is a change of numerical description, not a
+new singularity-removal mechanism.
+
+Official monographs, the original article, and the pinned nonlinear
+solver retain their starting hashes. Changes stay in this existing
+report, the population script and private idea.txt; no additional
+folder, result file, ignore rule, commit or publication was created.
+
+## Stage 22 — Same-slice horizon-regular evolution
+
+Preregistered 2026-09-10 before execution. Goal: continue the same
+Stage 20 aggregate with a horizon-regular spherical slicing, preserving
+the initial field, charge, mass and intrinsic spatial geometry.
+The cosmological background remains fixed by the author's current
+scope; no calibrated cosmological-negligibility claim is made.
+Allowed edits: the population script, this report and private idea.txt.
+The original action, monographs and pinned solver remain unchanged.
+
+Use a general areal-radius spatial metric, not a flat PG replacement:
+
+~~~text
+ds^2=-L^2 dT^2+(dr+beta dT)^2/A+r^2 dOmega^2
+v=r k, beta=L v, A=1-2 alpha M/r+v^2
+P=Pi_normal/sqrt(A), Phi=phi_r
+rho=A*(|P|^2+|Phi|^2)/2+V, S=sqrt(A)*Re(conj(P)*Phi)
+M_r=r^2*(rho+v*S)
+Kr=k+r*k_r-alpha*r*S
+phi_T=L*sqrt(A)*P+beta*Phi
+P_T=r^-2 partial_r[r^2*(L*sqrt(A)*Phi+beta*P)]-L*V_phi/sqrt(A)
+M_T=L*r^2*(v*A*(|P|^2+|Phi|^2)+(A+v^2)*S)
+k_T=beta*k_r+L*(k^2+alpha*M/r^3+alpha*(rho-2V))-A*L_r/r
+~~~
+
+K_ij=-Lie_n(gamma_ij)/2, k=Ktheta_theta and 4piG is absorbed into
+alpha=0.04. The potential and dimensionless fields are exactly the
+retained sextic model. L(r) is prescribed from the initial polar lapse
+sigma*sqrt(F), F=1-2alpha*M/r, and is held fixed in this first bounded
+test. Initial k=0, phi and P are the original polar field and momentum.
+Thus A=F on the initial slice and Pi_normal=sqrt(F)*P; setting the
+radial spatial metric to one would be different initial data.
+
+The characteristics -beta +/- L*sqrt(A) remain real at F=0 when A>0.
+This slicing can still fail through caustics or A losing positivity.
+Neither such a failure nor reaching a numerical guard is a singularity
+test. The unused metric evolution identity and Hamiltonian constraint
+are checked independently of the production mass update.
+
+Minimal verification: exact algebra/charge-flux controls; vacuum and
+stationary limits; annular Schwarzschild-PG horizon control; unchanged
+initial data/charge; then a main kappa=0.1 run. Pilot h=0.05,T=12,R=32;
+if regular, compare h=0.05,0.025,0.0125, half time step and R=48.
+Maximum Courant<0.4, relative Q drift<1e-5, ADM drift<5e-3;
+finest normalized Hamiltonian and independent metric residual<5e-3
+with fine/middle ratio<0.6 unless<1e-6; waveform error<5e-3 or ratio<0.6.
+Initial slice matching errors<1e-10; no physical state projection.
+Compare central amplitude/density with the original polar evolution
+at equal central proper time, not equal coordinate times or unrelated
+radial slices. Cross-gauge central errors must be<5e-3 and decrease
+under refinement, unless already<1e-6.
+
+Stop after this finite window and its checks, at loss of finite A>0
+or an unresolved centre/constraint, or at verified horizon crossing.
+Two attempted spatial resolutions of a failing pilot decide whether
+it is a convergent coordinate/physical boundary or an open numerical
+failure. No amplitude search, new source, dissipation, cosmological
+forcing, or singularity-removal claim is part of this stage.
+
+### Origin audit and numerical repair
+
+The first seven-case run used source
+`3688a40612196dea482f74e15deacd2f1c55de6ae4054ff2321b6c3e9b58f52a`.
+It passed the registered **bulk** gates through regular time T=9.5
+(central proper time 3.576999904), including agreement with the original
+polar centre through proper time 3.323808328. This is NOT retained as
+a fully validated central-geometry result: an additional exact-static
+test identified a consistency defect in cells excluded by the bulk D4
+residuals. All five strong-flow attempts subsequently exceeded the
+Courant guard near T=10.24--10.26; their late local residuals also failed.
+
+The defect is specific and reproducible. Linear interpolation of the
+mass source b=r^2*rho gives, for constant rho and q=0,
+M[1]=31*rho*h^3/24 instead of 27*rho*h^3/24. Its absolute error is
+O(h^3), but its fixed-cell relative error does not vanish. The induced
+O(h^2) lapse error enters L_r/r and produces a nonvanishing central
+k_T error. In the exact static core phi=sqrt(2), P=0, V=1/3, that error
+approaches alpha/27=0.00148148148 rather than zero. No continuum sign
+or physical-source error was identified.
+
+The new initializer retains the explicit r and r^2 factors while
+interpolating the smooth functions q/r and b/r^2. Positive decaying
+Gauss--Legendre weights solve the same mass constraint; the lapse
+primitive uses the same interpolant. The old Stage 21 quadrature is
+retained unchanged for reproducibility. The new initializer has the
+same continuum initial data, not a claim of bit-identical discrete
+mass with Stage 21. Its regular-slice mapping preserves the corrected
+polar initial geometry and normal momentum exactly.
+
+| Grid h | Old static central abs(k_T) | Corrected abs(k_T) |
+|---:|---:|---:|
+| 0.05 | 1.481612e-3 | 9.876791e-8 |
+| 0.025 | 1.481514e-3 | 2.469156e-8 |
+| 0.0125 | 1.481490e-3 | 6.173340e-9 |
+| 0.00625 | 1.481484e-3 | 1.543379e-9 |
+
+The corrected constant-density mass profile is exact to relative
+8.9e-16; the scalar RHS vanishes. Independent nonzero-q integration
+agrees within 5.6e-16 and its lapse primitive within 6.3e-17.
+These are numerical verification cases, not a new physical core model.
+
+Before the corrected physical rerun, two origin gates were added:
+abs(3M[0]/r[0]^3-rho[0]-v[0]S[0])/abs(rho[0]), and the first-two-cell
+anisotropy abs(Kr-k) normalized by the local extrinsic/density scale.
+Both must be below 0.005 and decrease with refinement like the bulk
+residuals. They are O(h^2) regular-centre tests, not exact finite-cell
+identities. A static-origin gate separately rejects the original
+nonzero limit. The result validator also rejects missing or shifted
+samples, nonfinite inputs, a nonmonotone reference clock and inadequate
+time coverage. Cross-gauge comparison explicitly reports its proper-time
+overlap; agreement on that overlap does not certify a later unreferenced
+part of the regular evolution.
+
+### Corrected physical run and bounded decision
+
+Executed source:
+`ee348a45a6c683674e328ba945f2c6dff4232693a97f96e9a67e8ef20e487730`.
+All seven regular cases and two fresh polar references were run.
+All four algebra controls, fourteen synthetic validator checks, four
+origin controls, vacuum/charge checks and the annular Schwarzschild-PG
+test pass. Six initial-slice matching errors are zero in every case.
+The corrected source and all pinned dependencies remained unchanged
+during execution.
+
+The longest passing prefix on the declared 0.1 output-time search is
+T=9.4 (not a continuous-time exact endpoint). All times and densities
+below use the retained model's dimensionless units.
+
+| Finest h=0.0125 quantity | Initially | At regular T=9.4 |
+|---|---:|---:|
+| Central proper time | 0 | 3.539321393 |
+| Central scalar amplitude | 2.089277741 | 2.769919884 |
+| Central normal-frame density | 4.218606796 | 44.70392623 |
+| Minimum F=1-2alpha M/r | 0.537560657 | 0.418142984 |
+| Minimum A | 0.537560657 | 0.432235288 |
+
+Prefix maximum residuals (fine value; fine/middle ratio):
+Hamiltonian 8.46518e-5; 0.25099,
+independent metric 3.24786e-5; 0.24917,
+origin Hamiltonian 0.002743996; 0.25267,
+origin isotropy 0.004853157; 0.26598.
+The maximum middle/fine normalized waveform difference is 0.00066801;
+all four waveform refinement ratios are approximately 0.25.
+The half-step difference is at most 2.39e-11 and the outer-domain
+central/metric traces agree to recorded precision. Fine charge drift
+is 5.56e-15; finite-outer-radius mass drift is zero in this test.
+The field is negligible at that boundary; the finite-radius mass is
+used as an ADM estimate, not an exact infinity integral.
+
+Independent polar comparison ends at central proper time
+3.323808328. On this overlap, fine central amplitude/density errors
+are 2.00980e-5 and 3.48451e-4, versus 7.91719e-5 and 0.00138338 on the
+middle pair. The fine polar reference's local mass-flux residual is
+0.002433634. Thus the new evolution reaches about 6.48% farther in
+central proper time than that reference. The extra interval is checked
+by independent origin/bulk residuals, refinement and step/domain
+controls; it has no second-gauge reference beyond the stated overlap.
+
+Both zero-flow controls complete T=12. Fine max(abs(k)) is now
+1.08467e-5, versus 0.1105869 in the uncorrected initialization; the
+middle corrected value is 4.33850e-5. This removes the previously
+nonconvergent central drift. The fine zero-flow density change over
+the validated prefix is below 0.01788%.
+
+The endpoint remains open. At common T=10.3, origin Hamiltonian and
+isotropy residuals reach 0.8928 and 0.4050; the independent metric
+refinement ratio also fails. Later Courant guards stop strong cases
+near T=10.40. These are numerical rejection conditions, not proof of
+physical collapse, a slicing singularity, or arrest. Conserved total
+charge and boundary mass cannot override failed local constraints.
+No F<0 trapped region was obtained in a validated interval.
+
+The next bounded task is centre-regular evolution variables and a
+controlled alternative lapse prescription for the same source and
+initial data, compared at equal central proper time. It must first
+reproduce this prefix and pass the origin controls. Merely decreasing
+the time step to postpone the Courant stop is insufficient. No new
+pressure law or singularity-avoidance mechanism is inferred from this
+numerical repair.
+
+Reproduction: `population_assembly_initial_data.py --horizon-regular-checks`
+returns 0 when the cheap controls pass. `--horizon-regular-suite`
+emits all raw samples, gates and the validated prefix to stdout and
+returns 1 with `VALIDATED_REGULAR_PREFIX_ENDPOINT_OPEN`: this deliberately
+does not label an unfinished physical endpoint as a completed solution.
+An incomplete pilot also returns 1. Legacy equilibrium regression
+again passes all eleven gates; the legacy collapse pilot passes its
+four gates and nine controls. The old solver, original article and
+official monographs retain their starting hashes. Only this report,
+the existing population script and private idea.txt were changed;
+no result files, extra folders, ignore rules or publication were added.

@@ -1247,8 +1247,9 @@ def aggregate_collapse_background():
     return module,mod64,sol,dict(record=record,seed_steps=len(sequence),main_root=main_root,final_root=final_root),pins,base_sha
 
 
-def aggregate_collapse_case(module,mod64,solution,h=.1,duration=96.,radius=96.,kappa=.1,courant=.2,target_charge=None):
-    grid=module.Grid(radius,h);r=grid.r
+def aggregate_collapse_case(module,mod64,solution,h=.1,duration=96.,radius=96.,kappa=.1,courant=.2,target_charge=None,
+                            grid_factory=None,approach_floor=.05,local_check_stride=16,retain_final_state=False):
+    grid=(module.Grid if grid_factory is None else grid_factory)(radius,h);r=grid.r
     f,fp,M,ls=solution.sol(r);omega=mod64.omega_from_parameter(solution.p)
     p0=1j*omega*f/(np.exp(ls)*(1-2*ALPHA*M/r))
     state=aggregate_phase_imprint(r,f,p0,kappa)
@@ -1290,9 +1291,11 @@ def aggregate_collapse_case(module,mod64,solution,h=.1,duration=96.,radius=96.,k
             outward_charge_flux_weighted=float(np.sum(grid.vol*qflux)),
             unchirped_ADM_mass=float(grid.geometry(f.astype(complex),p0)["mass_outer"]))
         result["local_flux_checks"].append(dict(t=t,**grid.local_flux_check(state)))
+        if hasattr(grid,"spatial_diagnostic"):
+            result["local_flux_checks"][-1]["spatial_quadrature"]=grid.spatial_diagnostic(state)
         half=grid.local_flux_check(state,eta=5e-7)
         result["initial_directional_step_sensitivity"]=abs(result["local_flux_checks"][0]["local_mass_flux_relative_l2"]-half["local_mass_flux_relative_l2"])
-        if first["minimum_N"]<.05:
+        if first["minimum_N"]<approach_floor:
             result["status"]="APPROACH_LIMIT"
         for j in range(intervals):
             if result["status"]!="COMPLETED":
@@ -1302,14 +1305,16 @@ def aggregate_collapse_case(module,mod64,solution,h=.1,duration=96.,radius=96.,k
                 k3=grid.rhs(state+dt*k2/2);k4=grid.rhs(state+dt*k3)
                 state=state+dt*(k1+2*k2+2*k3+k4)/6;t+=dt
             row=measure();result["samples"].append(row);checkpoint=(t,state.copy())
-            if (j+1)%16==0 or j==intervals-1:
+            if (j+1)%local_check_stride==0 or j==intervals-1 or (grid_factory is not None and row["minimum_N"]<approach_floor):
                 result["local_flux_checks"].append(dict(t=t,**grid.local_flux_check(state)))
-            if row["minimum_N"]<.05:
+                if hasattr(grid,"spatial_diagnostic"):
+                    result["local_flux_checks"][-1]["spatial_quadrature"]=grid.spatial_diagnostic(state)
+            if row["minimum_N"]<approach_floor:
                 result["status"]="APPROACH_LIMIT"
     except Exception as error:
         result.update(status="NUMERICAL_DIAGNOSTIC_FAILED",error=f"{type(error).__name__}: {error}",
                       last_completed_time=float(t),failure_scope="Polar-areal chart or numerical diagnostic failure; not a detected singularity")
-    if result["status"]!="COMPLETED" and checkpoint is not None:
+    if (result["status"]!="COMPLETED" or retain_final_state) and checkpoint is not None:
         ct,cs=checkpoint
         result["last_valid_sampled_state"]=dict(t=float(ct),r=r.tolist(),
             field_real=cs[0].real.tolist(),field_imaginary=cs[0].imag.tolist(),
@@ -1337,6 +1342,10 @@ def aggregate_collapse_case(module,mod64,solution,h=.1,duration=96.,radius=96.,k
             gates["initial_inward_flow"]=all(v<0 for v in initial.get("mass_radius_rates",{"missing":1}).values()) and initial.get("areal_charge_rms_rate",1)<0
         result.update(summary=summary,gates={k:bool(v) for k,v in gates.items()})
     result["elapsed_seconds"]=time.perf_counter()-started
+    if hasattr(grid,"maximum_cell_delta_J"):
+        result["maximum_cell_delta_J"]=grid.maximum_cell_delta_J
+        result["spatial_method"]="Positive cell-local GL4 mass integration with unchanged scalar equations and lapse quadrature"
+        result["approach_floor"]=approach_floor
     print(f"Aggregate evolution h={h} kappa={kappa} R={radius}: {result['status']}, t={t:.3f}",file=sys.stderr,flush=True)
     return result
 
@@ -1410,6 +1419,705 @@ def run_aggregate_collapse_suite(pilot=False,flow_strength=.1):
 # END AGGREGATE COLLAPSE EVOLUTION HELPERS
 
 
+# BEGIN CELL-LOCAL SPATIAL REPAIR HELPERS
+SPATIAL_PREVIOUS_SHA256 = "c199c4e7f423df635635a9f04ccf461c7507b9b5f6b6a276dfc539c3668c1f27"
+_FITTED_MASS_COMPILED = None
+
+
+def _fitted_mass_recurrence(q,b,h,nodes,weights):
+    """M'=b-q*M; positive quadrature, no growing integrating factor."""
+    mass=np.empty(len(q))
+    length=h/2
+    first=0.
+    for j in range(len(nodes)):
+        u=(nodes[j]+1)/2
+        remaining=.5*q[0]*length*(1-u*u)
+        first+=weights[j]*np.exp(-remaining)*b[0]*u*u
+    mass[0]=length*first/2
+    maximum_jump=q[0]*length/2
+    for i in range(1,len(q)):
+        jump=.5*h*(q[i-1]+q[i])
+        value=0.
+        for j in range(len(nodes)):
+            u=(nodes[j]+1)/2
+            remaining=.5*h*(1-u)*(q[i-1]*(1-u)+q[i]*(1+u))
+            value+=weights[j]*np.exp(-remaining)*((1-u)*b[i-1]+u*b[i])
+        mass[i]=np.exp(-jump)*mass[i-1]+h*value/2
+        maximum_jump=max(maximum_jump,jump)
+    jump=q[-1]*length
+    phi1=-np.expm1(-jump)/jump if jump!=0 else 1.
+    outer=np.exp(-jump)*mass[-1]+length*b[-1]*phi1
+    return mass,outer,max(maximum_jump,jump)
+
+
+def fitted_mass_kernel():
+    global _FITTED_MASS_COMPILED
+    if _FITTED_MASS_COMPILED is None:
+        from numba import njit
+        _FITTED_MASS_COMPILED=njit(cache=False,fastmath=False)(_fitted_mass_recurrence)
+    return _FITTED_MASS_COMPILED
+
+
+def fitted_grid_factory(module,order=4):
+    kernel=fitted_mass_kernel()
+    nodes,weights=np.polynomial.legendre.leggauss(order)
+    class FittedGrid(module.Grid):
+        def __init__(self,radius,h):
+            super().__init__(radius,h)
+            self.maximum_cell_delta_J=0.
+        def geometry(self,field,momentum):
+            grad=self.gradient(field);square=abs(field)**2
+            potential=square/2-square**2/4+SEXTIC*square**3/6
+            kinetic=abs(momentum)**2+abs(grad)**2
+            q=ALPHA*self.r*kinetic;b=self.r**2*(kinetic/2+potential)
+            if not np.all(np.isfinite(q)) or not np.all(np.isfinite(b)) or np.min(b)<0:
+                raise FloatingPointError("Invalid source in positive cell-local mass recurrence")
+            J=self.primitive(q,1);Jouter=J[-1]+q[-1]*self.h/2
+            mass,mass_outer,jump=kernel(q,b,self.h,nodes,weights)
+            self.maximum_cell_delta_J=max(self.maximum_cell_delta_J,float(jump))
+            N=1-2*ALPHA*mass/self.r;sigma=np.exp(J-Jouter);sigma0=float(np.exp(-Jouter))
+            if not np.all(np.isfinite(mass)) or not np.isfinite(mass_outer) or np.min(N)<=0 or np.min(sigma)<=0 or sigma0<=0:
+                raise FloatingPointError("Cell-local evolution left the regular polar-areal chart or resolved lapse range")
+            return dict(N=N,sigma=sigma,c=N*sigma,mass=mass,mass_outer=float(mass_outer),sigma0=sigma0,gradient=grad)
+        def spatial_diagnostic(self,state):
+            g=self.geometry(*state);s=abs(state[0])**2
+            kinetic=abs(state[1])**2+abs(g["gradient"])**2
+            q=ALPHA*self.r*kinetic;b=self.r**2*(kinetic/2+s/2-s*s/4+SEXTIC*s**3/6)
+            n8,w8=np.polynomial.legendre.leggauss(8)
+            m8,out8,jump=kernel(q,b,self.h,n8,w8);N8=1-2*ALPHA*m8/self.r
+            errors=dict(mass_profile=float(max(abs(g["mass"]-m8)/np.maximum(abs(m8),1e-30))),
+                        outer_mass=float(abs(g["mass_outer"]/out8-1)) if out8>0 else float(abs(g["mass_outer"]-out8)),
+                        N_profile=float(max(abs(g["N"]-N8)/np.maximum(abs(N8),1e-14))))
+            return dict(quadrature_order=order,control_order=8,maximum_cell_delta_J=float(jump),
+                        maximum_seen_cell_delta_J=self.maximum_cell_delta_J,relative_errors=errors,
+                        quadrature_pass=bool(max(errors.values())<1e-6))
+    return FittedGrid
+
+
+def fitted_spatial_controls(module):
+    kernel=fitted_mass_kernel()
+    n4,w4=np.polynomial.legendre.leggauss(4);n8,w8=np.polynomial.legendre.leggauss(8)
+    q=np.full(32,.8);b=np.full(32,.7);h=.25
+    mass,out,_=kernel(q,b,h,n4,w4)
+    exact=mass[0]*np.exp(-q[0]*h*np.arange(len(q)))+b[0]/q[0]*(-np.expm1(-q[0]*h*np.arange(len(q))))
+    constant_error=float(max(abs(mass-exact)))
+    # A continuous piecewise-linear source with q=0 integrates exactly;
+    # the centre separately uses its declared r^2 regular series.
+    r=(np.arange(32)+.5)*h;poly=1.3*r*r
+    zero,zero_out,_=kernel(np.zeros(32),poly,h,n4,w4)
+    expected=poly[0]*r[0]/3+np.r_[0,np.cumsum((poly[:-1]+poly[1:])*h/2)]
+    centre_error=abs(zero[0]-1.3*r[0]**3/3)
+    zero_error=float(max(abs(zero-expected)))
+    qvar=.2+2*np.sin(r)**2;bvar=.1+r*r*np.exp(-r)
+    a,ao,jump=kernel(qvar,bvar,h,n4,w4);c,co,_=kernel(qvar,bvar,h,n8,w8)
+    quadrature_error=float(max(max(abs(a-c))/max(c),abs(ao-co)/co))
+    grid=fitted_grid_factory(module)(8.,.1);vacuum=grid.geometry(np.zeros(80,complex),np.zeros(80,complex))
+    tests=dict(constant_coefficient_ODE=constant_error<1e-12,
+               zero_q_piecewise_polynomial=zero_error<1e-12,regular_centre_polynomial=centre_error<1e-14,
+               nonnegative_source_positive_mass=bool(min(a)>0 and ao>0),
+               GL4_GL8_agreement=quadrature_error<1e-8,
+               vacuum_geometry=bool(max(abs(vacuum["mass"]))==0 and vacuum["mass_outer"]==0 and
+                                    max(abs(vacuum["N"]-1))==0 and max(abs(vacuum["sigma"]-1))==0))
+    return dict(tests={k:bool(v) for k,v in tests.items()},errors=dict(constant=constant_error,zero_q=zero_error,centre=float(centre_error),
+                                       quadrature=quadrature_error),maximum_test_cell_delta_J=float(jump),
+                method_order="Piecewise-linear source and retained field gradients: second-order spatial method")
+def fitted_equilibrium_control(module,mod64,solution):
+    factory=fitted_grid_factory(module);rows={}
+    reference_mass=float(solution.sol(48.)[2])
+    reference_lapse=float(np.exp(solution.sol(mod64.EPS)[3]))
+    omega=mod64.omega_from_parameter(solution.p)
+    for h in (.025,.0125,.00625):
+        grid=factory(48.,h);f,fp,M,ls=solution.sol(grid.r)
+        N=1-2*ALPHA*M/grid.r;p=1j*omega*f/(np.exp(ls)*N)
+        g=grid.geometry(f.astype(complex),p)
+        rows[str(h)]=dict(mass=abs(g["mass_outer"]/reference_mass-1),
+                         central_lapse=abs(g["sigma0"]/reference_lapse-1),
+                         metric_N=float(max(abs(g["N"]/N-1))))
+    middle,fine=rows["0.0125"],rows["0.00625"]
+    gates={k:fine[k]<5e-3 and (fine[k]<1e-6 or fine[k]/max(middle[k],1e-14)<.6) for k in fine}
+    return dict(relative_errors=rows,gates={k:bool(v) for k,v in gates.items()})
+
+
+def spatial_prefix_verdict(cases,end):
+    names=("coarse","middle","fine","half_step","domain")
+    keys=("mass_R50","mass_R90","charge_rms_areal","charge_rms_proper","central_amplitude","minimum_N")
+    if end<1 or int(end)!=end or not all(n in cases for n in names):
+        return dict(end=end,passed=False,gates={"all_cases":False})
+    rows={n:[s for s in cases[n]["samples"] if s["t"]<=end+1e-7] for n in names}
+    checks={n:[s for s in cases[n]["local_flux_checks"] if s["t"]<=end+1e-7] for n in names}
+    covered=all(len(rows[n])==round(4*end)+1 and
+        all(abs(s["t"]-i*.25)<1e-7 for i,s in enumerate(rows[n])) and
+        all(any(abs(d["t"]-t)<1e-7 and "spatial_quadrature" in d for d in checks[n])
+            for t in range(int(end)+1)) for n in names)
+    if not covered:
+        return dict(end=end,passed=False,gates={"complete_sample_and_diagnostic_coverage":False})
+    budgets={}
+    for n in names:
+        first=rows[n][0];initial=cases[n]["initial"]
+        budgets[n]=dict(
+            charge=max(abs(s["charge"]/first["charge"]-1) for s in rows[n]),
+            mass=max(abs(s["ADM_mass"]/first["ADM_mass"]-1) for s in rows[n]),
+            semidiscrete_charge=max(abs(d["semidiscrete_charge_rate"])/first["charge"] for d in checks[n]),
+            quadrature=max(max(d["spatial_quadrature"]["relative_errors"].values()) for d in checks[n]))
+    gates=dict(complete_sample_and_diagnostic_coverage=True,
+        charge_budget=max(b["charge"] for b in budgets.values())<1e-5,
+        mass_budget=max(b["mass"] for b in budgets.values())<5e-3,
+        semidiscrete_charge=max(b["semidiscrete_charge"] for b in budgets.values())<1e-10,
+        quadrature=max(b["quadrature"] for b in budgets.values())<1e-6,
+        initial_preparation=all(cases[n]["initial"]["phase_charge_relative_error"]<1e-12
+            and all(v<0 for v in cases[n]["initial"]["mass_radius_rates"].values())
+            and cases[n]["initial"]["areal_charge_rms_rate"]<0
+            and cases[n]["initial_directional_step_sensitivity"]<1e-6 for n in names),
+        CFL=all(cases[n]["summary"]["maximum_characteristic_Courant"]<.45 for n in names),
+        monotone_mass=all(max(s["mass_monotonicity_defect"] for s in rows[n])<1e-9 for n in names))
+    wave=lambda n,k:np.array([s[k] for s in rows[n]])
+    def error(a,b):
+        return {k:float(np.sqrt(np.mean((wave(a,k)-wave(b,k))**2))/
+                  max(np.sqrt(np.mean(wave(b,k)**2)),1e-14)) for k in keys}
+    e01,e12,et,ed=error("coarse","middle"),error("middle","fine"),error("fine","half_step"),error("middle","domain")
+    ratios={k:e12[k]/max(e01[k],1e-14) for k in keys}
+    gates.update(spatial_convergence=all(e12[k]<5e-3 or ratios[k]<.6 for k in keys),
+                 timestep=max(et.values())<5e-3,domain=max(ed.values())<5e-3)
+    local={}
+    for k in ("local_mass_flux_relative_l2","mass_radial_constraint_relative_l2","lapse_radial_constraint_relative_l2"):
+        values={n:max(d[k] for d in checks[n]) for n in names}
+        ratio=values["fine"]/max(values["middle"],1e-14)
+        gates[k]=values["fine"]<5e-3 and (values["fine"]<1e-6 or ratio<.6)
+        local[k]=dict(maxima=values,fine_middle_ratio=ratio)
+    return dict(end=end,passed=bool(all(gates.values())),gates={k:bool(v) for k,v in gates.items()},
+        budgets=budgets,local_checks=local,convergence=dict(coarse_middle=e01,middle_fine=e12,
+        ratios=ratios,half_step=et,domain=ed),fine_initial=rows["fine"][0],fine_final=rows["fine"][-1])
+
+
+def run_spatial_repair_suite():
+    started=time.perf_counter()
+    result=dict(code_sha256=sha(__file__),previous_source_sha256=SPATIAL_PREVIOUS_SHA256,cases={})
+    try:
+        module,mod64,solution,background,pins,base_sha=aggregate_collapse_background()
+        result.update(background=background,dependency_sha256=pins,base_source_sha256=base_sha)
+        result["method_controls"]=fitted_spatial_controls(module)
+        result["equilibrium_geometry_control"]=fitted_equilibrium_control(module,mod64,solution)
+        factory=fitted_grid_factory(module)
+        equilibrium=[]
+        for h in (.025,.0125,.00625):
+            grid=factory(48.,h);f,fp,M,ls=solution.sol(grid.r)
+            pi=1j*mod64.omega_from_parameter(solution.p)*f/(np.exp(ls)*(1-2*ALPHA*M/grid.r))
+            g=grid.geometry(f,pi)
+            equilibrium.append(dict(h=h,ADM_mass=g["mass_outer"],
+                relative_mass_error=abs(g["mass_outer"]/background["record"]["ADM_mass"]-1),
+                quadrature=grid.spatial_diagnostic(np.array([f.astype(complex),pi]))))
+        eqerr=[v["relative_mass_error"] for v in equilibrium]
+        prechecks=dict(method_controls=all(result["method_controls"]["tests"].values()),
+            stationary_geometry=all(result["equilibrium_geometry_control"]["gates"].values()),
+            stationary_limit=eqerr[-1]<5e-3 and (eqerr[-1]<1e-8 or eqerr[-1]/eqerr[-2]<.6),
+            stationary_quadrature=all(v["quadrature"]["quadrature_pass"] for v in equilibrium))
+        result.update(equilibrium=equilibrium,prechecks=prechecks)
+        if not all(prechecks.values()):
+            raise RuntimeError("Spatial-method prerequisite failed")
+        specs=(("coarse",.025,48.,.2),("middle",.0125,48.,.2),("fine",.00625,48.,.2),
+               ("half_step",.00625,48.,.1),("domain",.0125,64.,.2))
+        for name,h,radius,courant in specs:
+            result["cases"][name]=aggregate_collapse_case(module,mod64,solution,h=h,duration=32.,
+                radius=radius,kappa=.1,courant=courant,target_charge=background["record"]["target_Q"],
+                grid_factory=factory,approach_floor=.01,local_check_stride=4,retain_final_state=True)
+        last=min(c["samples"][-1]["t"] if c["samples"] else 0 for c in result["cases"].values())
+        common=int(np.floor(last+1e-7))
+        result["common_interval"]=spatial_prefix_verdict(result["cases"],common)
+        result["latest_validated_prefix"]=None
+        for end in range(common,0,-1):
+            verdict=spatial_prefix_verdict(result["cases"],end)
+            if verdict["passed"]:
+                result["latest_validated_prefix"]=verdict
+                break
+        integrity=dict(source_unchanged=sha(__file__)==result["code_sha256"],
+            dependencies_unchanged=sha(HERE/"nonlinear_equilibrium_evolution.py")==base_sha
+                and all(sha(module.SF/p)==v for p,v in pins.items()))
+        result["integrity"]=integrity
+        if not all(integrity.values()):
+            result["status"]="SOURCE_INTEGRITY_FAILED"
+        elif common>=32 and result["common_interval"]["passed"] and all(c["status"]=="COMPLETED" for c in result["cases"].values()):
+            result["status"]="STRONG_FLOW_VALIDATED_TO_T32"
+        elif result["latest_validated_prefix"]:
+            result["status"]="VALIDATED_PREFIX_ENDPOINT_OPEN"
+        else:
+            result["status"]="SPATIAL_REPAIR_OPEN"
+        result["scope"]=dict(unchanged_continuum_action=True,unchanged_strong_initial_preparation=True,
+            method="Cell-local radial mass quadrature; retained second-order field flux and gradient",
+            physical_endpoint="Infer only within validated prefix; positive-F guard is not a horizon or singularity",
+            horizon_crossing=False,singularity_resolution=False)
+    except Exception as error:
+        result.update(status="DIAGNOSTIC_FAILED",error=f"{type(error).__name__}: {error}")
+    result["elapsed_seconds"]=time.perf_counter()-started
+    print(json.dumps(result,indent=2,allow_nan=False))
+    return 0 if result.get("status")=="STRONG_FLOW_VALIDATED_TO_T32" else 1
+# END CELL-LOCAL SPATIAL REPAIR HELPERS
+
+
+# BEGIN SAME-SLICE HORIZON-REGULAR HELPERS
+REGULAR_PREVIOUS_SHA256 = "64c8ae6e0105fbba2753b299f5862557f3388def4c068c9088aecc69ac115c76"
+
+
+def regular_grid_factory(module):
+    class RegularGrid(module.Grid):
+        def __init__(self,radius,h,lapse=None):
+            super().__init__(radius,h)
+            self.lapse=np.ones_like(self.r) if lapse is None else np.array(lapse,dtype=float)
+            self.lapse_r=self.derivative(self.lapse)
+            self.lapse_centre=float((9*self.lapse[0]-self.lapse[1])/8)
+            self.maximum_courant=0.
+        def derivative(self,y):
+            out=self.gradient(y)
+            out[-1]=(3*y[-1]-4*y[-2]+y[-3])/(2*self.h)
+            return out
+        def geometry(self,state):
+            if not np.all(np.isfinite(state)):
+                raise FloatingPointError("Nonfinite horizon-regular state")
+            field,P=state[:2];mass,k=state[2].real,state[3].real
+            v=self.r*k;F=1-2*ALPHA*mass/self.r;A=F+v*v
+            if min(A)<=0 or min(self.lapse)<=0:
+                raise FloatingPointError("General areal slice lost A>0 or positive lapse")
+            root=np.sqrt(A);grad=self.derivative(field);s=abs(field)**2
+            V=s/2-s*s/4+SEXTIC*s**3/6
+            rho=A*(abs(P)**2+abs(grad)**2)/2+V
+            S=root*np.real(np.conjugate(P)*grad);beta=self.lapse*v
+            return dict(A=A,F=F,v=v,beta=beta,root=root,gradient=grad,rho=rho,V=V,S=S,
+                        pr=rho-2*V,Kr=k+self.r*self.derivative(k)-ALPHA*self.r*S)
+        def rhs(self,state):
+            g=self.geometry(state);field,P=state[:2];M,k=state[2].real,state[3].real
+            L=self.lapse;r=self.r;c=L*g["root"];beta=g["beta"]
+            speed=float(max(abs(beta)+c))
+            if self.time_step is not None:
+                number=self.time_step*speed/self.h
+                self.maximum_courant=max(self.maximum_courant,number)
+                if number>=.4:
+                    raise FloatingPointError("Horizon-regular Courant bound exceeded")
+            # Divergence and its negative weighted adjoint form a charge pair.
+            advflux=np.zeros(len(r)+1,complex);waveflux=advflux.copy()
+            B=self.edges[1:-1]**2*(beta[:-1]+beta[1:])/2
+            advflux[1:-1]=B*(P[:-1]+P[1:])/2
+            advfield=np.zeros(len(r),complex)
+            face=B*np.diff(field)/2
+            advfield[:-1]+=face/self.vol[:-1];advfield[1:]+=face/self.vol[1:]
+            waveflux[1:-1]=self.edges[1:-1]**2*(c[:-1]+c[1:])/2*np.diff(field)/self.h
+            square=abs(field)**2;force=(1-square+SEXTIC*square**2)*field
+            out=np.zeros_like(state)
+            out[0]=c*P+advfield
+            out[1]=np.diff(waveflux+advflux)/self.vol-L*force/g["root"]
+            out[2]=L*r*r*(g["v"]*g["A"]*(abs(P)**2+abs(g["gradient"])**2)
+                         +(g["A"]+g["v"]**2)*g["S"])
+            out[3]=beta*self.derivative(k)+L*(k*k+ALPHA*M/r**3+ALPHA*g["pr"])-g["A"]*self.lapse_r/r
+            return out
+        def measure(self,state,t):
+            g=self.geometry(state);rhs=self.rhs(state);f,P=state[:2];M,k=state[2].real,state[3].real
+            r=self.r
+            d4=lambda a:(a[:-4]-8*a[1:-3]+8*a[3:-1]-a[4:])/(12*self.h)
+            inside=r[2:-2]<=min(15.,self.radius-2*self.h)
+            rms=lambda z:float(np.linalg.norm(z[inside]))
+            source=r*r*(g["rho"]+g["v"]*g["S"])
+            ham=rms(d4(M)-source[2:-2])/max(rms(source[2:-2]),1e-14)
+            At=-2*ALPHA*rhs[2].real/r+2*r*r*k*rhs[3].real
+            target=g["beta"][2:-2]*d4(g["A"])-(
+                2*r*k*g["A"]*self.lapse_r+2*ALPHA*self.lapse*r*g["A"]*g["S"])[2:-2]
+            # Normalize by unsummed physical terms, including an O(rho) scale.
+            scale=(abs(At)+abs(2*r*k*g["A"]*self.lapse_r)+
+                   abs(2*ALPHA*self.lapse*r*g["A"]*g["S"])+ALPHA*self.lapse*(abs(g["rho"])+abs(g["pr"])))[2:-2]
+            metric=rms(At[2:-2]-target)/max(rms(scale),1e-14)
+            charge=float(np.sum(self.vol*np.imag(np.conjugate(f)*P)))
+            qrate=float(np.sum(self.vol*np.imag(np.conjugate(rhs[0])*P+np.conjugate(f)*rhs[1])))
+            centre=lambda a:(9*a[0]-a[1])/8
+            monotone=np.all(np.diff(M)>=-1e-9*max(abs(M[-1]),1.))
+            # Origin-sensitive checks supplement bulk D4 residuals, which omit
+            # the first two cells. A smooth spherical source obeys these to O(h^2).
+            origin_ham=abs(3*M[0]/r[0]**3-(g["rho"][0]+g["v"][0]*g["S"][0]))/max(abs(g["rho"][0]),1e-14)
+            origin_isotropy=float(max(abs(g["Kr"][:2]-k[:2]))/max(
+                np.sqrt(ALPHA*max(abs(g["rho"][:2]))),max(abs(k[:2])),1e-14))
+            return dict(t=float(t),central_proper_time=float(t*self.lapse_centre),
+                charge=charge,ADM_mass=float(M[-1]),central_amplitude=float(abs(centre(f))),
+                central_density=float(centre(g["rho"])),maximum_density=float(max(g["rho"])),
+                minimum_F=float(min(g["F"])),minimum_A=float(min(g["A"])),
+                maximum_compactness=float(1-min(g["F"])),maximum_abs_k=float(max(abs(k))),
+                hamiltonian_residual=ham,metric_evolution_residual=metric,
+                relative_charge_rate=abs(qrate)/max(abs(charge),1e-14),
+                maximum_Courant=self.maximum_courant,
+                origin_hamiltonian_residual=float(origin_ham),
+                origin_isotropy_residual=origin_isotropy,
+                mass_R50=float(np.interp(.5*M[-1],np.r_[0,M],np.r_[0,r])) if monotone else None,
+                mass_R90=float(np.interp(.9*M[-1],np.r_[0,M],np.r_[0,r])) if monotone else None)
+    return RegularGrid
+
+
+def origin_regular_grid_factory(module):
+    """Polar initializer with explicit regular radial powers in M'=b-q*M.
+
+    Interpolate q/r and b/r**2, rather than q and b.  Constant smooth core
+    sources then retain their exact r and r**2 dependence in every cell.
+    The continuum constraint and the scalar gradient are unchanged.
+    """
+    from numba import njit
+    nodes,weights=np.polynomial.legendre.leggauss(8)
+
+    @njit(cache=False,fastmath=False)
+    def recurrence(qfactor,ufactor,h,nodes,weights):
+        n=len(qfactor);mass=np.empty(n);J=np.empty(n);r0=h/2
+        J[0]=qfactor[0]*r0*r0/2;value=0.
+        for j in range(len(nodes)):
+            u=(nodes[j]+1)/2;r=r0*u
+            remaining=qfactor[0]*r0*r0*(1-u*u)/2
+            value+=weights[j]*np.exp(-remaining)*r*r*ufactor[0]
+        mass[0]=r0*value/2;maximum_jump=J[0]
+        for i in range(1,n):
+            a=(i-.5)*h;q0=qfactor[i-1];q1=qfactor[i]
+            jump=h*(q0*(a/2+h/6)+q1*(a/2+h/3))
+            value=0.
+            for j in range(len(nodes)):
+                u=(nodes[j]+1)/2;z=1-u;r=a+h*u
+                # Positive endpoint weights avoid cancellation for steep q.
+                remaining=h*(q0*z*z*(a/2+h*(1+2*u)/6)+
+                             q1*z*(a*(1+u)/2+h*(1+u+u*u)/3))
+                source=r*r*(z*ufactor[i-1]+u*ufactor[i])
+                value+=weights[j]*np.exp(-remaining)*source
+            mass[i]=np.exp(-jump)*mass[i-1]+h*value/2
+            J[i]=J[i-1]+jump;maximum_jump=max(maximum_jump,jump)
+        # Last half-cell holds the smooth factors constant, not q and b.
+        a=(n-.5)*h;length=h/2;outer_r=n*h
+        jump=qfactor[-1]*(outer_r*outer_r-a*a)/2;value=0.
+        for j in range(len(nodes)):
+            u=(nodes[j]+1)/2;r=a+length*u
+            remaining=qfactor[-1]*(outer_r-r)*(outer_r+r)/2
+            value+=weights[j]*np.exp(-remaining)*r*r*ufactor[-1]
+        outer=np.exp(-jump)*mass[-1]+length*value/2
+        return mass,outer,J,J[-1]+jump,max(maximum_jump,jump)
+
+    class OriginRegularGrid(module.Grid):
+        def __init__(self,radius,h):
+            super().__init__(radius,h)
+            self.maximum_cell_delta_J=0.
+        def geometry(self,field,momentum):
+            grad=self.gradient(field);square=abs(field)**2
+            potential=square/2-square*square/4+SEXTIC*square**3/6
+            kinetic=abs(momentum)**2+abs(grad)**2
+            qfactor=ALPHA*kinetic;ufactor=kinetic/2+potential
+            if (not np.all(np.isfinite(qfactor)) or not np.all(np.isfinite(ufactor))
+                    or np.min(qfactor)<0 or np.min(ufactor)<0):
+                raise FloatingPointError("Invalid source in origin-regular mass quadrature")
+            mass,outer,J,Jouter,jump=recurrence(qfactor,ufactor,self.h,nodes,weights)
+            self.maximum_cell_delta_J=max(self.maximum_cell_delta_J,float(jump))
+            N=1-2*ALPHA*mass/self.r;sigma=np.exp(J-Jouter);sigma0=float(np.exp(-Jouter))
+            if (not np.all(np.isfinite(mass)) or not np.isfinite(outer) or np.min(N)<=0
+                    or np.min(sigma)<=0 or sigma0<=0):
+                raise FloatingPointError("Origin-regular initializer left positive-F polar slice")
+            return dict(N=N,sigma=sigma,c=N*sigma,mass=mass,mass_outer=float(outer),
+                        sigma0=sigma0,gradient=grad)
+    return OriginRegularGrid
+
+
+def regular_initial_data(module,mod64,solution,h,radius,kappa):
+    old=origin_regular_grid_factory(module)(radius,h);r=old.r
+    f,fp,M,ls=solution.sol(r);omega=mod64.omega_from_parameter(solution.p)
+    P=1j*omega*f/(np.exp(ls)*(1-2*ALPHA*M/r))
+    prepared=aggregate_phase_imprint(r,f,P,kappa)
+    g=old.geometry(*prepared);L=g["sigma"]*np.sqrt(g["N"])
+    grid=regular_grid_factory(module)(radius,h,L)
+    state=np.array([prepared[0],prepared[1],g["mass"],np.zeros_like(r)],complex)
+    new=grid.geometry(state)
+    qold=float(np.sum(old.vol*np.imag(np.conjugate(prepared[0])*prepared[1])))
+    qnew=float(np.sum(grid.vol*np.imag(np.conjugate(state[0])*state[1])))
+    matching=dict(field=float(max(abs(state[0]-prepared[0]))),momentum=float(max(abs(state[1]-prepared[1]))),
+        mass=float(max(abs(state[2].real-g["mass"]))),spatial_metric=float(max(abs(new["A"]-g["N"]))),
+        charge=abs(qnew/qold-1),normal_momentum=float(max(abs(new["root"]*state[1]-np.sqrt(g["N"])*prepared[1]))))
+    return grid,state,matching
+
+
+def regular_algebra_controls():
+    import sympy as sp
+    r,a,M,k,kr,L,Lr,P2,D2,S,V=sp.symbols("r a M k kr L Lr P2 D2 S V",real=True)
+    v=r*k;A=1-2*a*M/r+v*v;rho=(P2+A*D2)/2+V;pr=rho-2*V
+    Mr=r*r*(rho+v*S);Ar=2*a*M/r**2-2*a*Mr/r+2*r*k*k+2*r*r*k*kr
+    Kr=k+r*kr-a*r*S
+    kt=L*v*kr+L*(k*k+a*M/r**3+a*pr)-A*Lr/r
+    admkt=L*v*kr+L*((1-A)/r**2-Ar/(2*r)+(Kr+2*k)*k-2*a*V)-A*Lr/r
+    Mt=L*r*r*(v*(P2+A*D2)+(A+v*v)*S)
+    At=-2*a*Mt/r+2*r*r*k*kt
+    identity=sp.simplify(At-L*v*Ar+2*r*k*A*Lr+2*a*L*r*A*S)
+    bad=sp.simplify(identity+2*a/r*L*r*r*v*(P2+A*D2))
+    return dict(ADM_angular=sp.simplify(kt-admkt)==0,independent_metric=identity==0,
+                omitted_shift_mass_term_rejected=bad!=0,
+                horizon_characteristics=sp.simplify(A-v*v-(1-2*a*M/r))==0)
+
+
+def regular_case(module,mod64,solution,h=.05,duration=12.,radius=32.,courant=.1,kappa=.1):
+    grid,state,match=regular_initial_data(module,mod64,solution,h,radius,kappa)
+    sample_dt=.05;steps=int(np.ceil(sample_dt/(courant*h)));dt=sample_dt/steps
+    grid.time_step=dt;records=[];status="COMPLETED";reason=None;t=0.
+    try:
+        records.append(grid.measure(state,t))
+        for j in range(round(duration/sample_dt)):
+            for i in range(steps):
+                a=grid.rhs(state);b=grid.rhs(state+dt*a/2)
+                c=grid.rhs(state+dt*b/2);d=grid.rhs(state+dt*c)
+                state=state+dt*(a+2*b+2*c+d)/6;t+=dt
+            records.append(grid.measure(state,t))
+            if records[-1]["minimum_F"]<-.02:
+                status="TRAPPED_REGION_CANDIDATE"
+                break
+    except Exception as error:
+        status="NUMERICAL_OR_SLICE_LIMIT";reason=f"{type(error).__name__}: {error}"
+    first=records[0] if records else None
+    summary=dict(maximum_Courant=grid.maximum_courant)
+    if records:
+        summary.update(charge_drift=max(abs(s["charge"]/first["charge"]-1) for s in records),
+            mass_drift=max(abs(s["ADM_mass"]/first["ADM_mass"]-1) for s in records),
+            maximum_hamiltonian=max(s["hamiltonian_residual"] for s in records),
+            maximum_metric_residual=max(s["metric_evolution_residual"] for s in records),
+            maximum_charge_rate=max(s["relative_charge_rate"] for s in records))
+    print(f"Regular gauge h={h} kappa={kappa} R={radius}: {status}, t={t:.4f}",file=sys.stderr,flush=True)
+    return dict(h=h,radius=radius,courant=courant,dt=dt,kappa=kappa,duration=duration,
+                status=status,error=reason,matching=match,summary=summary,samples=records,
+                initial_lapse_centre=grid.lapse_centre)
+def run_regular_suite(pilot=False):
+    result=dict(code_sha256=sha(__file__),previous_sha256=REGULAR_PREVIOUS_SHA256,
+                algebra=regular_algebra_controls(),cases={},pilot=bool(pilot))
+    try:
+        result["validation_controls"]=regular_validation_controls()
+        if not all(result["validation_controls"].values()):
+            raise RuntimeError("Regular gauge result-validator control failed")
+        module,mod64,sol,bg,pins,base=aggregate_collapse_background()
+        result.update(base_sha256=base,dependency_sha256=pins)
+        result["origin_control"]=regular_origin_controls(module)
+        if not all(result["origin_control"]["gates"].values()):
+            raise RuntimeError("Regular origin consistency control failed")
+        grid=regular_grid_factory(module)(8.,.05)
+        zero=np.zeros((4,len(grid.r)),complex)
+        controls=dict(vacuum=bool(max(abs(grid.rhs(zero)).ravel())==0))
+        y=zero.copy();r=grid.r
+        y[0]=.01*np.exp(-r*r)*(1+.2j*r*r);y[1]=.02j*np.exp(-r*r)
+        y[2]=.01*r**3/(1+r**3);y[3]=.01*np.exp(-r*r)
+        controls["charge_adjoint"]=grid.measure(y,0)["relative_charge_rate"]<1e-12
+        pg=[]
+        for h in (.05,.025,.0125):
+            test=regular_grid_factory(module)(8.,h);r=test.r
+            state=np.zeros((4,len(r)),complex);state[2]=25.
+            state[3]=np.sqrt(2*ALPHA*25/r**3)
+            rhs=test.rhs(state);g=test.geometry(state);inside=(r>=1)&(r<=7)
+            error=float(max(abs(rhs[3,inside])/(1.5*abs(state[3,inside])**2)))
+            pg.append(dict(h=h,error=error,minimum_A=float(min(g["A"])),
+                           crosses_F_zero=bool(min(g["F"])<0 and max(g["F"])>0)))
+        result["Schwarzschild_PG_control"]=pg
+        controls["Schwarzschild_PG"]=pg[-1]["error"]<5e-3 and pg[-1]["error"]/pg[-2]["error"]<.6 and all(v["crosses_F_zero"] for v in pg)
+        result["controls"]={k:bool(v) for k,v in controls.items()}
+        if not all(result["algebra"].values()) or not all(controls.values()):
+            raise RuntimeError("Regular gauge algebra or charge control failed")
+        specs=[("coarse",.05,32.,.1,.1)]
+        if not pilot:
+            specs += [("middle",.025,32.,.1,.1),("fine",.0125,32.,.1,.1),
+                      ("half_step",.0125,32.,.05,.1),("domain",.025,48.,.1,.1),
+                      ("zero_middle",.025,32.,.1,0.),("zero_fine",.0125,32.,.1,0.)]
+        for name,h,radius,courant,kappa in specs:
+            result["cases"][name]=regular_case(module,mod64,sol,h=h,radius=radius,
+                                               courant=courant,kappa=kappa)
+        if not pilot:
+            refs={}
+            for h in (.0125,.00625):
+                old=module.Grid(32.,h);r=old.r;f,fp,M,ls=sol.sol(r)
+                P=1j*mod64.omega_from_parameter(sol.p)*f/(np.exp(ls)*(1-2*ALPHA*M/r))
+                state=aggregate_phase_imprint(r,f,P,.1)
+                old.time_step=.1*h
+                rows=[];t=0.;tau=0.;previous_lapse=None
+                for j in range(401):
+                    g=old.geometry(*state);s=abs(state[0])**2
+                    rho=g["N"]*(abs(state[1])**2+abs(g["gradient"])**2)/2+s/2-s*s/4+SEXTIC*s**3/6
+                    if previous_lapse is not None:tau+=.025*(previous_lapse+g["sigma0"])
+                    previous_lapse=g["sigma0"]
+                    rows.append(dict(t=t,central_proper_time=tau,
+                        central_amplitude=float(abs((9*state[0,0]-state[0,1])/8)),
+                        central_density=float((9*rho[0]-rho[1])/8)))
+                    if j%20==0:
+                        rows[-1]["local_mass_flux_relative_l2"]=old.local_flux_check(state)["local_mass_flux_relative_l2"]
+                    if j==400:break
+                    for i in range(round(.05/old.time_step)):
+                        dt=old.time_step;a=old.rhs(state);b=old.rhs(state+dt*a/2)
+                        c=old.rhs(state+dt*b/2);d=old.rhs(state+dt*c)
+                        state+=dt*(a+2*b+2*c+d)/6;t+=dt
+                refs[str(h)]=rows
+            result["polar_centre_references"]=refs
+            last=min(c["samples"][-1]["t"] for c in result["cases"].values())
+            last_tenth=int(np.floor(10*last+1e-6))
+            result["last_common_interval"]=regular_verdict(result["cases"],refs,last_tenth/10)
+            result["validated_prefix"]=None
+            for n in range(last_tenth,0,-1):
+                verdict=regular_verdict(result["cases"],refs,n/10)
+                if verdict["passed"]:
+                    result["validated_prefix"]=verdict
+                    break
+        result["source_unchanged"]=sha(__file__)==result["code_sha256"]
+        result["dependencies_unchanged"]=sha(HERE/"nonlinear_equilibrium_evolution.py")==base and all(sha(module.SF/p)==v for p,v in pins.items())
+        result["status"]=("PILOT_RECORDED" if pilot else "VALIDATED_REGULAR_PREFIX_ENDPOINT_OPEN"
+            if result["validated_prefix"] and result["source_unchanged"] and result["dependencies_unchanged"]
+            else "REGULAR_GAUGE_VALIDATION_OPEN")
+    except Exception as error:
+        result.update(status="DIAGNOSTIC_FAILED",error=f"{type(error).__name__}: {error}")
+    print(json.dumps(result,indent=2,allow_nan=False))
+    # Execution alone never closes the cross-gauge/refinement gates.
+    return 0 if (pilot and result.get("status")=="PILOT_RECORDED"
+        and result.get("source_unchanged") and result.get("dependencies_unchanged")
+        and all(c["status"]=="COMPLETED" for c in result["cases"].values())) else 1
+
+
+def regular_verdict(cases,refs,end):
+    from scipy.interpolate import PchipInterpolator
+    names=("coarse","middle","fine","half_step","domain")
+    # Result validation must reject corrupt/shifted data, not just count rows.
+    try:
+        if not np.isfinite(end) or end<=0 or abs(end/.05-round(end/.05))>1e-7:
+            return dict(end=end,passed=False,gates={"window":False})
+        expected=np.arange(round(end/.05)+1)*.05
+        all_names=names+("zero_middle","zero_fine")
+        rows={n:[s for s in cases[n]["samples"] if s["t"]<=end+1e-7] for n in all_names}
+        required=("t","central_proper_time","charge","ADM_mass","central_amplitude",
+            "central_density","minimum_F","minimum_A","maximum_Courant",
+            "relative_charge_rate","hamiltonian_residual","metric_evolution_residual",
+            "origin_hamiltonian_residual","origin_isotropy_residual")
+        for n in all_names:
+            trace=rows[n]
+            if len(trace)!=len(expected) or not np.allclose(
+                    [s["t"] for s in trace],expected,rtol=0,atol=1e-7):
+                return dict(end=end,passed=False,gates={"coverage":False})
+            if (not np.all(np.isfinite([[s[k] for k in required] for s in trace]))
+                or trace[0]["charge"]==0 or trace[0]["ADM_mass"]==0
+                or not np.all(np.diff([s["central_proper_time"] for s in trace])>0)
+                or abs(trace[0]["central_proper_time"])>1e-7
+                or not cases[n]["matching"]
+                or not np.all(np.isfinite(list(cases[n]["matching"].values())))):
+                return dict(end=end,passed=False,gates={"finite_inputs":False})
+        for h in ("0.0125","0.00625"):
+            trace=refs[h];flux=[s["local_mass_flux_relative_l2"] for s in trace
+                               if "local_mass_flux_relative_l2" in s]
+            if (len(trace)<2 or not flux or not np.all(np.isfinite(flux))
+                or not np.all(np.isfinite([[s[k] for k in
+                    ("central_proper_time","central_amplitude","central_density")] for s in trace]))
+                or abs(trace[0]["central_proper_time"])>1e-7
+                or not np.all(np.diff([s["central_proper_time"] for s in trace])>0)):
+                return dict(end=end,passed=False,gates={"reference_inputs":False})
+    except (KeyError,TypeError,ValueError):
+        return dict(end=end,passed=False,gates={"input_structure":False})
+    keys=("central_amplitude","central_density","minimum_F","minimum_A")
+    budgets={n:dict(Q=max(abs(s["charge"]/rows[n][0]["charge"]-1) for s in rows[n]),
+                    M=max(abs(s["ADM_mass"]/rows[n][0]["ADM_mass"]-1) for s in rows[n]),
+                    CFL=max(s["maximum_Courant"] for s in rows[n]),
+                    Qrate=max(s["relative_charge_rate"] for s in rows[n])) for n in names}
+    wave=lambda n,k:np.array([s[k] for s in rows[n]])
+    def errors(a,b):
+        return {k:float(np.sqrt(np.mean((wave(a,k)-wave(b,k))**2))/max(np.sqrt(np.mean(wave(b,k)**2)),1e-14)) for k in keys}
+    em,ef,et,ed=errors("coarse","middle"),errors("middle","fine"),errors("fine","half_step"),errors("middle","domain")
+    ratios={k:ef[k]/max(em[k],1e-14) for k in keys}
+    gates=dict(coverage=True,finite_inputs=True,reference_inputs=True,
+        charge=max(v["Q"] for v in budgets.values())<1e-5,
+        mass=max(v["M"] for v in budgets.values())<5e-3,CFL=max(v["CFL"] for v in budgets.values())<.4,
+        semidiscrete_charge=max(v["Qrate"] for v in budgets.values())<1e-10,
+        initial_matching=all(max(cases[n]["matching"].values())<1e-10 for n in names),
+        refinement=all(ef[k]<5e-3 or ratios[k]<.6 for k in keys),
+        time_control=max(et.values())<5e-3,domain_control=max(ed.values())<5e-3)
+    residuals={}
+    for key in ("hamiltonian_residual","metric_evolution_residual",
+                "origin_hamiltonian_residual","origin_isotropy_residual"):
+        middle=max(s[key] for s in rows["middle"]);fine=max(s[key] for s in rows["fine"])
+        ratio=fine/max(middle,1e-14);gates[key]=fine<5e-3 and (fine<1e-6 or ratio<.6)
+        residuals[key]=dict(middle=middle,fine=fine,ratio=ratio)
+    cross={}
+    common_tau=min(rows["fine"][-1]["central_proper_time"],rows["middle"][-1]["central_proper_time"],
+                   refs["0.00625"][-1]["central_proper_time"],refs["0.0125"][-1]["central_proper_time"])
+    target=np.linspace(0,common_tau,301)
+    for name,h in (("middle","0.0125"),("fine","0.00625")):
+        cross[name]={}
+        for key in ("central_amplitude","central_density"):
+            def curve(data):
+                return PchipInterpolator([s["central_proper_time"] for s in data],[s[key] for s in data])(target)
+            a,b=curve(rows[name]),curve(refs[h])
+            cross[name][key]=float(max(abs(a-b))/max(max(abs(b)),1e-14))
+    gates["cross_gauge"]=all(cross["fine"][k]<5e-3 and
+        (cross["fine"][k]<1e-6 or cross["fine"][k]/max(cross["middle"][k],1e-14)<.6) for k in cross["fine"])
+    ref_residual={h:max(s.get("local_mass_flux_relative_l2",0.) for s in refs[h]) for h in refs}
+    gates["polar_reference_accuracy"]=ref_residual["0.00625"]<5e-3 and ref_residual["0.00625"]/max(ref_residual["0.0125"],1e-14)<.6
+    zero={}
+    for name in ("zero_middle","zero_fine"):
+        trace=[s for s in cases[name]["samples"] if s["t"]<=end+1e-7]
+        zero[name]={k:max(abs(s[k]/trace[0][k]-1) for s in trace) for k in ("central_amplitude","central_density","ADM_mass","charge")}
+    gates["zero_flow"]=max(zero["zero_fine"].values())<5e-3
+    return dict(end=end,passed=bool(all(gates.values())),gates={k:bool(v) for k,v in gates.items()},
+        budgets=budgets,residuals=residuals,convergence=dict(middle_fine=ef,ratios=ratios,half_step=et,domain=ed),
+        cross_gauge=dict(proper_time_end=common_tau,
+            covers_regular_prefix=bool(common_tau>=rows["fine"][-1]["central_proper_time"]-1e-7),
+            errors=cross,reference_flux_residual=ref_residual),zero_flow=zero,
+        first=rows["fine"][0],last=rows["fine"][-1])
+
+
+def regular_validation_controls():
+    """Synthetic parser/verdict checks, not physical evolutions."""
+    from copy import deepcopy
+    names=("coarse","middle","fine","half_step","domain","zero_middle","zero_fine")
+    cases={}
+    for n in names:
+        residual=.0004 if n in ("coarse","middle","domain","zero_middle") else .0001
+        samples=[dict(t=.05*j,central_proper_time=.025*j,charge=1.,ADM_mass=1.,
+            central_amplitude=2.,central_density=4.,minimum_F=.6,minimum_A=.6,
+            maximum_Courant=.1,relative_charge_rate=0.,hamiltonian_residual=residual,
+            metric_evolution_residual=residual,origin_hamiltonian_residual=residual,
+            origin_isotropy_residual=residual) for j in range(5)]
+        cases[n]=dict(samples=samples,matching={"field":0.})
+    refs={h:[dict(s,local_mass_flux_relative_l2=res) for s in cases["fine"]["samples"]]
+          for h,res in (("0.0125",.0004),("0.00625",.0001))}
+    controls={"valid_fixture":regular_verdict(cases,refs,.2)["passed"]}
+    mutations={
+        "shifted_time":("t",.11), "nonfinite_field":("central_amplitude",float("nan")),
+        "nonfinite_residual":("metric_evolution_residual",float("nan")),
+        "charge_drift":("charge",1.01), "mass_drift":("ADM_mass",1.01),
+        "hamiltonian_failure":("hamiltonian_residual",.1),
+        "metric_failure":("metric_evolution_residual",.1),
+        "origin_failure":("origin_isotropy_residual",.1)}
+    for name,(key,value) in mutations.items():
+        bad=deepcopy(cases);bad["fine"]["samples"][2][key]=value
+        controls[name+"_rejected"]=not regular_verdict(bad,refs,.2)["passed"]
+    bad=deepcopy(cases);bad["zero_fine"]["samples"].pop()
+    controls["missing_zero_sample_rejected"]=not regular_verdict(bad,refs,.2)["passed"]
+    bad=deepcopy(cases);bad["fine"]["matching"]["field"]=.01
+    controls["mismatched_initial_slice_rejected"]=not regular_verdict(bad,refs,.2)["passed"]
+    bad=deepcopy(refs);bad["0.00625"][2]["central_proper_time"]=0.
+    controls["nonmonotone_reference_rejected"]=not regular_verdict(cases,bad,.2)["passed"]
+    controls["uncovered_window_rejected"]=not regular_verdict(cases,refs,.3)["passed"]
+    shorter={h:trace[:-1] for h,trace in refs.items()}
+    controls["overlap_not_full_coverage"]=not regular_verdict(cases,shorter,.2)["cross_gauge"]["covers_regular_prefix"]
+    return {k:bool(v) for k,v in controls.items()}
+
+
+def regular_origin_controls(module):
+    """Exact static constant-potential core; tests include the FIRST cell."""
+    rows=[]
+    for h in (.05,.025,.0125,.00625):
+        data={"h":h}
+        for name,factory in (("old",fitted_grid_factory),("corrected",origin_regular_grid_factory)):
+            grid=factory(module)(4.,h);r=grid.r
+            field=np.full(len(r),np.sqrt(2),complex);P=np.zeros(len(r),complex)
+            g=grid.geometry(field,P);lapse=g["sigma"]*np.sqrt(g["N"])
+            new=regular_grid_factory(module)(4.,h,lapse)
+            state=np.array([field,P,g["mass"],np.zeros(len(r))],complex)
+            rhs=new.rhs(state)
+            exact_mass=r**3/9
+            data[name]=dict(central_k_rate=float(abs(rhs[3,0])),
+                mass_relative_error=float(max(abs(g["mass"]/exact_mass-1))),
+                scalar_rate=float(max(abs(rhs[:2]).ravel())))
+        rows.append(data)
+    coarse,fine=rows[-2],rows[-1]
+    error=fine["corrected"]["central_k_rate"]
+    gates=dict(constant_density_mass=fine["corrected"]["mass_relative_error"]<1e-11,
+        scalar_stationarity=fine["corrected"]["scalar_rate"]<1e-12,
+        corrected_central_stationarity=error<1e-6 and
+            (error<1e-10 or error/coarse["corrected"]["central_k_rate"]<.6),
+        original_bias_detected=fine["old"]["central_k_rate"]>1e-4 and
+            fine["old"]["central_k_rate"]/coarse["old"]["central_k_rate"]>.9)
+    return dict(rows=rows,gates={k:bool(v) for k,v in gates.items()})
+# END SAME-SLICE HORIZON-REGULAR HELPERS
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pilot", action="store_true")
@@ -1420,12 +2128,29 @@ def main():
     parser.add_argument("--aggregate-collapse-suite", action="store_true")
     parser.add_argument("--aggregate-collapse-pilot", action="store_true")
     parser.add_argument("--aggregate-weak-flow-suite", action="store_true")
+    parser.add_argument("--aggregate-spatial-repair-suite", action="store_true")
+    parser.add_argument("--horizon-regular-pilot", action="store_true")
+    parser.add_argument("--horizon-regular-suite", action="store_true")
+    parser.add_argument("--horizon-regular-checks", action="store_true")
     parser.add_argument("--count", type=int, default=1)
     parser.add_argument("--separation", type=float, default=28.0)
     parser.add_argument("--h", type=float, default=0.5)
     parser.add_argument("--radius", type=float, default=32.0)
     parser.add_argument("--half-height", type=float, default=64.0)
     args = parser.parse_args()
+    if args.horizon_regular_checks:
+        checks=dict(algebra=regular_algebra_controls(),validator=regular_validation_controls())
+        spec=importlib.util.spec_from_file_location("regular_check_base",HERE/"nonlinear_equilibrium_evolution.py")
+        module=importlib.util.module_from_spec(spec);sys.modules[spec.name]=module;spec.loader.exec_module(module)
+        origin=regular_origin_controls(module)
+        checks["origin"]=origin["gates"]
+        print(json.dumps({"origin_values":origin["rows"]},indent=2,allow_nan=False))
+        print(json.dumps(checks,indent=2,allow_nan=False))
+        return 0 if all(all(v.values()) for v in checks.values()) else 1
+    if args.horizon_regular_pilot or args.horizon_regular_suite:
+        return run_regular_suite(pilot=args.horizon_regular_pilot)
+    if args.aggregate_spatial_repair_suite:
+        return run_spatial_repair_suite()
     if args.aggregate_weak_flow_suite:
         return run_aggregate_collapse_suite(flow_strength=.01)
     if args.aggregate_collapse_suite or args.aggregate_collapse_pilot:
