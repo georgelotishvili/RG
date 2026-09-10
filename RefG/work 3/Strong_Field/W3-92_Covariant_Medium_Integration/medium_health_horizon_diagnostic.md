@@ -13,7 +13,17 @@ exponential exterior and selected additive constitutive truncations are
 candidate assumptions, not requirements imposed on every future action.
 The negative results below remain valid in their stated domains.
 
-Current completed work: Stage 27's derivative-medium prototype passes
+Current completed work: Stage 28 excludes the frozen Stage 27 witness's
+regular homogeneous return to weak GR and the prototype's nontrivial
+static spherical scalar exterior with the registered flat-vacuum
+boundary. The stationary phi=q t+chi(r), q!=0, decaying-spatial-gradient
+loophole fails its exact asymptotic stress test too. The constant-scalar
+branch persists with ordinary matter, so a source-generated RefG deficit
+has not been obtained merely by introducing this scalar. The frozen
+prototype is not selected for a new collapse run. General time-dependent
+inhomogeneous or cosmological completions are outside these exclusions.
+
+Stage 27's derivative-medium prototype passes
 the local on-shell negative-null-source and constrained linear-health
 gate. On the sampled interval [-0.001,0.001], both scalar coefficients
 remain positive, scalar speed stays below the matter light speed, and
@@ -5978,3 +5988,206 @@ the exact checks, actual sampled bounds and both failed wider probes.
 `physical_EFT_band_known=false`,
 `healthy_branch_connection_proved=false`, `regular_black_hole=false`.
 All official files and both physical evolution solvers are unchanged.
+
+## Stage 28: frozen prototype connection to the ordinary exterior
+
+### Registered bounded decision (2026-09-10)
+
+- CLAIM_ID / TYPE: W92_CUBIC_MEDIUM_CONNECTION_V1; exact branch and
+  source-compatibility test of the frozen Stage 27 prototype.
+- TARGET / MINIMUM RESULT: decide whether its local active state has
+  the required ordinary-GR connection in the simplest homogeneous and
+  static spherical realizations, before starting a collapse calculation.
+- MODEL / FREEDOM: exactly the Stage 27 polynomial, constant positive
+  EH coefficient and cubic G3=X; one matter metric, canonical ordinary
+  sector counted once. No retuned coefficient, new interaction,
+  compensating exterior stress, prescribed core or observation fit.
+- DEPENDENCIES / PROVENANCE: Stage 27 on-shell witness and action;
+  pre-Stage-28 verifier SHA256
+  `5325c85f48c99b57c0009270f6c5a31c658316cae4c0b54c14403afaf52f5b96`.
+  The root article and both official monographs remain read-only. Existing
+  mass, size and clock readouts are compatibility constraints, not proof
+  that differently defined fields or currents coincide.
+- ASSUMPTIONS / DOMAIN: (i) regular flat homogeneous trajectories,
+  conserved shift charge, positive finite scale factor at every interior
+  point, continuous finite Hubble rate, and canonical weak-gradient limit;
+  (ii) smooth static spherical scalar and metric outside a regular horizon,
+  asymptotic flatness, scalar gradient tending to zero, finite current norm
+  and no external shift-current source; (iii) separately test the necessary
+  asymptotic stress condition for phi=q t+chi(r), chi' and second derivatives
+  tending to zero, constant q, and vacuum at spatial infinity.
+- CONVENTIONS: signature -+++, X=-partial(phi)^2/2. Hc denotes Hubble,
+  not the article deficit H. Static r is areal radius. Multiplying every
+  component of a conserved current by -1 does not change its equation;
+  the cosmological charge convention must match Stage 27 explicitly.
+- METHOD / CROSSCHECK: lapse-derived homogeneous charge versus covariant
+  Noether current; spherical reduced-action variation versus direct
+  current substitution; exact polynomial gcd/Bezout certificate for the
+  asymptotic stress condition. Known scalar no-hair arguments are checked
+  against this action rather than applied to every RefG branch.
+- PASS_CONDITION / FAIL_CONDITION: exact residuals and provenance checks
+  pass; a connection is accepted only if the corresponding necessary
+  conditions hold. A proved incompatibility rejects that route, not the
+  local Stage 27 witness. A nonzero claimed-identity residual is a test
+  failure. No forced branch switch or hidden division by zero is allowed.
+- FALSIFIER / BRANCHES: an admissible nontrivial branch satisfying the
+  stated boundary/regularity conditions falsifies its proposed exclusion.
+  General time dependence, external current flow, cosmological boundaries,
+  nonsmooth interfaces and a changed action remain outside this test.
+- RESIDUAL / ERROR / HEALTH: exact symbolic identities and rational
+  certificates; no numerical trajectory or wavelength-band claim.
+  Existing Stage 27 health evidence remains restricted to its own interval.
+- OBSERVABLE_MAP: necessary ordinary exterior has vanishing additional
+  asymptotic stress; a shared metric supplies clocks and rods, but does not
+  by itself establish the RefG pressure/oscillon-mass constitutive map.
+- DATA_ROLE / FORWARD_MODEL / IDENTIFIABILITY: no observational data,
+  detector model or fit; no empirical preference or unique microscopic
+  identification. N/A to observational calibration.
+- BENCHMARK: exact constant-scalar EH limit, canonical weak kinetic term,
+  and a control polynomial with an explicit double root.
+- CLOSURE_FLAGS: compute each exact compatibility/obstruction separately;
+  full RefG reduction, healthy inhomogeneous completion, singularity
+  removal and observational pass remain false unless actually established.
+- FILES / STOP: this report, its existing verifier and intuitive/idea.txt
+  only. Stop after the connection decision and required crosschecks.
+  No new folder, full collapse evolution or additional candidate action.
+
+### Physical identification and source-selection test
+
+RefG_GE.md section 1.5 requires the reciprocal chain: oscillon source,
+changed environment, updated source, all from one action and energy
+balance. Lines 334--347 attach the common p readout to the biconformal
+branch; section 3.1 defines the general clock/rod factors sqrt(B) and
+1/sqrt(A) separately. Stage 27 preserves a common matter metric and
+once-only accounting, but its scalar/current has no derived identification
+with the article's deficit H, oscillon population or p. The article's
+equation (14) contains its own response source; the W92 formal map and
+W88 native-phase reduction do not identify that source with this scalar.
+
+An exact source-selection test makes the gap concrete. For any smooth
+ordinary-matter metric, phi=phi0+eps*zeta gives
+L_medium=eps^2 X_zeta-g eps^3 X_zeta Box(zeta)+O(eps^4).
+There is no linear scalar source, and the constant-medium background
+stress vanishes. All Einstein/ordinary-matter solutions thus remain
+exact solutions; where the regular Cauchy problem is unique, constant
+scalar initial data remain on that branch. Metric-mediated response on
+an already active medium is possible, but requires specified nonconstant
+initial/boundary data. An added oscillon alone does not compel this
+new scalar to become its deficit.
+
+### Homogeneous connection: conserved-charge obstruction
+
+Direct covariant variation gives
+
+~~~text
+j^mu=(K_X-g Box(phi)) nabla^mu phi-g nabla^mu X,
+nabla_mu j^mu=0.
+~~~
+
+For v=phi_dot, j^t=-J, where J=v K_X+3g Hc v^2 is the Stage 27
+momentum density. Independent homogeneous action variation gives a^3 J.
+At a=v=Hc=g=1, the conserved charge is a^3 J=-1. For a>0, J<0.
+Starting at v=1, a continuous regular trajectory cannot cross v=0,
+where J would vanish at a finite regular point.
+
+For bounded Hc and v tending to zero from above, however,
+
+~~~text
+J/v=1+3 Hc v+v^2/2-(423/2)v^4+401v^6-195v^8 -> 1.
+~~~
+
+This contradicts J/v<0 even if a tends to infinity. Keeping J<0 would
+require Hc<-K_X/(3v), diverging negatively. The ordinary-vacuum Friedmann
+constraint independently gives
+
+~~~text
+Hc_+/-=v^3/2 +/- sqrt(v^6/4+(v^2 K_X-K)/3)
+      = +/- v/sqrt(6)+O(v^3).
+~~~
+
+Thus the registered homogeneous weak-GR connection is excluded before
+testing stability. Spatial current flow can change the premise and is
+not excluded. This shift charge has no established positive particle-count
+interpretation; its sign alone does not supply or invalidate such a map.
+
+### Static spherical connection: zero-current obstruction
+
+For areal r, ds^2=-f dt^2+dr^2/h+r^2 dOmega^2, phi=chi(r), and f,h>0
+outside the horizon, direct current substitution and independent radial
+action variation agree, without imposing an Einstein equation:
+
+~~~text
+X=-h chi'^2/2,
+j^r=h chi'[K_X-g h chi'(2/r+f'/(2f))],
+C=r^2 sqrt(f/h) j^r=constant,
+j_mu j^mu=C^2/(r^4 f).
+~~~
+
+Finite current norm at a regular finite-area horizon forces C=0.
+Flat asymptotics with chi' tending to zero select the zero-gradient
+branch. At every regular exterior radius its bracket equals K_X(0)=1
+and d(j^r)/d(chi')=h>0. This branch is isolated: a continuous solution
+cannot leave it at a finite exterior radius by switching algebraic roots.
+The scalar is constant throughout the exterior; in ordinary vacuum the
+remaining equations are GR vacuum equations. This independently
+specializes [Hui and Nicolis](https://arxiv.org/abs/1202.1296).
+General dynamical interiors are outside this argument.
+
+### Stationary time-dependent loophole: exact asymptotic stress test
+
+The form phi=q t+chi(r) evades static-scalar arguments in some other
+actions; see [Babichev and Charmousis](https://arxiv.org/abs/1312.3204).
+Under our registered Minkowski vacuum boundary with vanishing spatial
+scalar gradient and covariant Hessian, X_infinity=q^2/2. Cubic stress
+vanishes, leaving T_mu_nu=K_X partial_mu(phi) partial_nu(phi)+K eta_mu_nu.
+Spatial equations require K=0, and the temporal equation requires
+q^2 K_X=0. Nonzero q needs a common root of K and K_X.
+
+For p(X)=2K(X), exact certificates are
+
+~~~text
+gcd_Q[p,p']=1,
+resultant(p,p')=1307153227777572864 != 0,
+(-3X^3-3X^2-X+3)p
+ +(2X^4-X^3-X^2-3)p' = 1 (mod 7).
+~~~
+
+Leading coefficients preserve both degrees modulo 7. The executable
+prints a rational Bezout certificate as well. There is no common root
+anywhere, hence no positive one. The q=0 canonical vacuum survives.
+No compensating stress or polynomial retuning was introduced.
+
+### Verified decision and stopping point
+
+All 41 Stage 28 checks pass: independent current/action variations,
+exact root and modular certificates, a double-root positive control,
+wrong-current controls and protected dependencies. These verify the
+exclusions, not a successful black hole. Regressions preserve Stage 27
+at 60/60, Stage 26 at 27/27 and Stage 25 at 17/17. Analytic targets were
+derived before execution: this is reproducible exact verification,
+not an observational prediction.
+
+The local Stage 27 result remains valid. The tested ordinary-exterior
+routes fail, and a source-generated deficit is not selected by adding
+minimally coupled matter to the constant-medium branch. A full collapse
+run with the frozen prototype is therefore not selected. General spatial
+current flow, cosmological boundaries or a changed action require a
+separate physical selection. They do not inherit a connection from
+the local witness.
+
+The next useful development must supply that source/background selection
+from the RefG continuum description and test its weak mass/clock/rod
+readout with nonzero matter. Renaming phi as p or extending the same
+homogeneous run cannot supply it. No node model is required.
+
+Reproduce: `python -B verify_medium_health_horizon_diagnostic.py
+--prototype-connection-only` (one command). The unchanged Stage 27
+function's AST hash is
+`6679259ab55cff585633099c20705017cd2286293426d6cb77eb80f8cf2533d5`.
+`homogeneous_witness_to_weak_GR_excluded=true`,
+`static_regular_vacuum_exterior_hair_excluded=true`,
+`stationary_nonzero_q_flat_vacuum_boundary_excluded=true`;
+`full_time_dependent_inhomogeneous_case_excluded=false`,
+`RefG_theory_excluded=false`, `regular_black_hole=false`.
+Official monographs, root article and physical evolution solvers remain
+unchanged. No new file, folder, numerical collapse or publication.

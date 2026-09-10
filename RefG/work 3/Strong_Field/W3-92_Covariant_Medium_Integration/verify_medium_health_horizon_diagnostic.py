@@ -3282,7 +3282,183 @@ def derivative_medium_prototype_main():
     return 0 if passed else 1
 
 
+def prototype_connection_main():
+    '''Stage 28: exact connection tests for the frozen Stage 27 action.'''
+    import ast
+    checks=[]
+
+    def exact(name,value,target=0):
+        residual=simp(value-target)
+        checks.append(dict(name=name,passed=bool(residual==0),residual=str(residual)))
+
+    def truth(name,value):
+        checks.append(dict(name=name,passed=bool(value)))
+
+    pins={ARTICLE:EXPECTED_SHA,ROOT/'intuitive/RefG_GE.md':INTUITIVE_GE_SHA,
+        ROOT/'intuitive/RefG_EN.tex':
+            '0b58fe40157d5049aba397090f947d9169089490eeeaa67145743915504b2b04',
+        HERE/'nonlinear_equilibrium_evolution.py':
+            '2c310a3a600b2ced39333c14a208a2fcb97ed6178c6906e0a55366e35ab1e4ca',
+        HERE/'population_assembly_initial_data.py':
+            'df0d16c7715a2c3e3e02ec3487f2cad2860bf772e69983de6e2fb5af295af97d'}
+    hashes={str(p.relative_to(ROOT)):sha(p) if p.is_file() else None for p in pins}
+    tree=ast.parse(Path(__file__).read_text(encoding='utf-8'))
+    prototype=next(n for n in tree.body if isinstance(n,ast.FunctionDef)
+                   and n.name=='derivative_medium_prototype_main')
+    prototype_hash=hashlib.sha256(ast.dump(prototype,include_attributes=False).encode()).hexdigest()
+    expected_prototype='6679259ab55cff585633099c20705017cd2286293426d6cb77eb80f8cf2533d5'
+    if (any(hashes[str(p.relative_to(ROOT))]!=h for p,h in pins.items())
+            or prototype_hash!=expected_prototype):
+        print(json.dumps(dict(status='DEPENDENCY_FAILURE',hashes=hashes,
+            prototype_ast_sha256=prototype_hash),indent=2))
+        return 1
+    truth('frozen_dependencies_and_prototype',True)
+
+    x=s.symbols('X',real=True)
+    K=x+x*x/2-282*x**3+802*x**4-624*x**5
+    Kx=s.diff(K,x)
+    exact('canonical_vacuum_energy',K.subs(x,0))
+    exact('canonical_vacuum_kinetic_coefficient',Kx.subs(x,0),1)
+
+    # Constant phi is a solution on ANY ordinary-matter metric:
+    # derivative interactions have no term linear in a scalar perturbation.
+    eps,xx,box=s.symbols('eps X_perturbation box_perturbation',real=True)
+    g=s.symbols('g',positive=True)
+    scalar_expansion=s.expand(K.subs(x,eps**2*xx)-g*eps**3*xx*box)
+    exact('constant_medium_zero_action_density',scalar_expansion.subs(eps,0))
+    exact('no_linear_medium_source_on_constant_branch',
+          s.diff(scalar_expansion,eps).subs(eps,0))
+    exact('canonical_quadratic_medium_on_arbitrary_metric',
+          scalar_expansion.coeff(eps,2),xx)
+    exact('cubic_interaction_first_enters_at_third_order',
+          scalar_expansion.coeff(eps,3),-g*xx*box)
+
+    # Current convention: j^mu=(K_X-g Box(phi))*nabla^mu phi-g*nabla^mu X.
+    # The Stage 27 scalar momentum J is -j^t, not j^t.
+    v=s.symbols('v',positive=True)
+    H,acc=s.symbols('Hubble phi_ddot',real=True)
+    a=s.symbols('a',positive=True)
+    kv=Kx.subs(x,v*v/2)
+    J=v*kv+3*g*H*v*v
+    covariant_jt=(kv-g*(-acc-3*H*v))*(-v)-g*(-v*acc)
+    exact('covariant_current_matches_cosmological_momentum',covariant_jt,-J)
+    Lmini_scalar=a**3*K.subs(x,v*v/2)+g*a**3*H*v**3
+    exact('independent_cosmological_scalar_momentum',s.diff(Lmini_scalar,v),a**3*J)
+    exact('witness_charge',(a**3*J).subs({a:1,H:1,v:1,g:1}),-1)
+    exact('zero_velocity_has_zero_current',J.subs(v,0))
+    weak_ratio=s.limit(J/v,v,0,dir='+')
+    exact('bounded_H_weak_current_sign',weak_ratio,1)
+    threshold=-kv/(3*g*v)
+    exact('negative_current_H_threshold',J,3*g*v*v*(H-threshold))
+    truth('negative_current_requires_divergent_H_in_weak_limit',
+          s.limit(threshold,v,0,dir='+')==-s.oo)
+    # Both flat-vacuum Friedmann roots are regular and approach weak GR.
+    E=v*v*kv-K.subs(x,v*v/2)
+    Hplus=v**3/2+s.sqrt(v**6/4+E/3)
+    Hminus=v**3/2-s.sqrt(v**6/4+E/3)
+    for name,root,limit in [('expanding',Hplus,1/s.sqrt(6)),
+                            ('contracting',Hminus,-1/s.sqrt(6))]:
+        exact('Friedmann_root_'+name,3*root**2-3*root*v**3-E)
+        exact('weak_Friedmann_slope_'+name,s.limit(root/v,v,0,dir='+'),limit)
+    time=s.symbols('time',real=True)
+    at=s.Function('a')(time);jt=s.Function('J')(time)
+    exact('homogeneous_covariant_current_divergence',
+          (s.diff(-at**3*jt,time)/at**3).subs(s.diff(at,time),at*H),
+          -s.diff(jt,time)-3*H*jt)
+
+    # Independent radial reduction without imposing Einstein's equations.
+    r=s.symbols('r',positive=True)
+    f=s.Function('f',positive=True)(r)
+    h=s.Function('h',positive=True)(r)
+    w=s.Function('chi_prime',real=True)(r)
+    W=r*r*s.sqrt(f/h)
+    Xr=-h*w*w/2
+    boxr=s.diff(W*h*w,r)/W
+    Jr_cov=h*w*(Kx.subs(x,Xr)-g*boxr)-g*h*s.diff(Xr,r)
+    bracket=Kx.subs(x,Xr)-g*h*w*(2/r+s.diff(f,r)/(2*f))
+    Jr=h*w*bracket
+    exact('radial_covariant_current',Jr_cov,Jr)
+    Lrad=W*(K.subs(x,Xr)-g*Xr*boxr)
+    radial_momentum=s.diff(Lrad,w)-s.diff(s.diff(Lrad,s.diff(w,r)),r)
+    exact('independent_radial_action_momentum',radial_momentum,-W*Jr)
+    exact('radial_current_has_no_second_scalar_derivative',
+          s.diff(Jr_cov,s.diff(w,r)))
+    flux=s.symbols('flux',real=True)
+    exact('conserved_flux_norm',(flux/W)**2/h,flux**2/(r**4*f))
+    F0=s.symbols('f_horizon',positive=True)
+    rh=s.symbols('r_horizon',positive=True)
+    nonzero_flux=s.symbols('nonzero_flux',positive=True)
+    truth('nonzero_flux_norm_diverges_at_finite_area_horizon',
+          s.limit(nonzero_flux**2/(rh**4*F0),F0,0,dir='+')==s.oo)
+    exact('zero_gradient_branch_bracket',bracket.subs(w,0),1)
+    exact('zero_gradient_branch_is_simple',s.diff(Jr,w).subs(w,0),h)
+    exact('unbraided_radial_control',Jr.subs(g,0),h*w*Kx.subs(x,Xr))
+    # A lost normalization or sign would fail these unchanged identities.
+    truth('wrong_Friedmann_charge_sign_rejected',simp((J-covariant_jt).subs(
+        {v:1,H:1,g:1}))!=0)
+    truth('dropped_cubic_radial_current_rejected',
+          simp(Jr-h*w*Kx.subs(x,Xr))!=0)
+
+    # phi=q*t+chi(r) can evade static-scalar no-hair in other actions.
+    # Under the registered decaying-gradient Minkowski boundary, all cubic
+    # asymptotic stresses vanish and T=K_X dphi*dphi+K eta remains.
+    q=s.symbols('q',nonzero=True,real=True)
+    k0,k1=s.symbols('K_infinity KX_infinity',real=True)
+    minkowski=s.diag(-1,1,1,1)
+    grad=s.Matrix([q,0,0,0])
+    stress=k1*(grad*grad.T)+k0*minkowski
+    exact('asymptotic_spatial_stress',stress[1,1],k0)
+    exact('asymptotic_temporal_after_spatial_condition',
+          stress[0,0].subs(k0,0),q*q*k1)
+    condition=s.solve([stress[1,1],stress[0,0]],(k0,k1),dict=True)
+    truth('nonzero_q_requires_double_zero',condition==[{k0:0,k1:0}])
+    p=s.Poly(2*K,x,domain=s.QQ);dp=p.diff()
+    gcd=s.gcd(p,dp)
+    u,z,d=s.gcdex(p,dp)
+    exact('polynomial_no_multiple_root',gcd.as_expr(),1)
+    exact('rational_Bezout_certificate',(u*p+z*dp).as_expr(),1)
+    resultant=s.resultant(p.as_expr(),dp.as_expr(),x)
+    exact('independent_exact_resultant',resultant,1307153227777572864)
+    um=-3*x**3-3*x*x-x+3
+    vm=2*x**4-x**3-x*x-3
+    mod_certificate=s.Poly(um*p.as_expr()+vm*dp.as_expr()-1,x,modulus=7)
+    truth('independent_mod7_Bezout_certificate',mod_certificate.is_zero)
+    truth('mod7_leading_coefficients_preserve_degrees',
+          int(p.LC())%7!=0 and int(dp.LC())%7!=0)
+    # Positive control detects a real double root instead of always rejecting.
+    control=s.Poly(x*(x-1)**2,x,domain=s.QQ)
+    exact('double_root_positive_control',
+          s.gcd(control,control.diff()).as_expr(),x-1)
+    exact('double_root_control_zero_resultant',
+          s.resultant(control.as_expr(),control.diff().as_expr(),x))
+    exact('q_zero_canonical_vacuum_remains',K.subs(x,0))
+    truth('dependencies_unchanged',all(sha(p)==h for p,h in pins.items()))
+    passed=all(row['passed'] for row in checks)
+    print(json.dumps(dict(
+        status='REGISTERED_PROTOTYPE_CONNECTION_ROUTES_EXCLUDED' if passed else 'CONNECTION_TEST_FAILED',
+        check_count=len(checks),checks=checks,python=platform.python_version(),sympy=s.__version__,
+        dependency_hashes=hashes,prototype_ast_sha256=prototype_hash,
+        contract_sha256=sha(CONTRACT),verifier_sha256=sha(Path(__file__)),
+        polynomial=str(K),certificate=dict(polynomial=str(p.as_expr()),
+            derivative=str(dp.as_expr()),gcd=str(gcd.as_expr()),
+            resultant=str(resultant),bezout_u=str(u.as_expr()),bezout_v=str(z.as_expr()),
+            mod7_u=str(um),mod7_v=str(vm)),
+        scope_flags=dict(constant_medium_branch_with_matter=passed,
+            homogeneous_witness_to_weak_GR_excluded=passed,
+            static_regular_vacuum_exterior_hair_excluded=passed,
+            stationary_nonzero_q_flat_vacuum_boundary_excluded=passed,
+            full_time_dependent_inhomogeneous_case_excluded=False,
+            prototype_globally_impossible=False,RefG_theory_excluded=False,
+            RefG_pressure_readout_derived=False,oscillon_population_map_derived=False,
+            healthy_inhomogeneous_completion=False,physical_EFT_band_known=False,
+            regular_black_hole=False,official_theory_changed=False,
+            physical_evolution_solvers_changed=False)),indent=2,allow_nan=False))
+    return 0 if passed else 1
+
+
 if __name__ == '__main__':
+    if sys.argv[1:] == ['--prototype-connection-only']:
+        raise SystemExit(prototype_connection_main())
     if sys.argv[1:] == ['--derivative-medium-prototype-only']:
         raise SystemExit(derivative_medium_prototype_main())
     if sys.argv[1:] == ['--joint-response-focusing-only']:
@@ -3312,5 +3488,5 @@ if __name__ == '__main__':
                          '--feedback-interface-only | --same-field-response-only | '
                          '--closure-selection-only | --self-regulation-audit-only | '
                          '--source-completeness-only | --joint-response-focusing-only | '
-                         '--derivative-medium-prototype-only]')
+                         '--derivative-medium-prototype-only | --prototype-connection-only]')
     raise SystemExit(main())
