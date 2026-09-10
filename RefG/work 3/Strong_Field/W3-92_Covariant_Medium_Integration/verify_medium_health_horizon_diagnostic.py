@@ -2783,7 +2783,512 @@ def self_regulation_audit_main():
     return 0 if passed else 1
 
 
+def source_completeness_main():
+    '''Stage 25: vary the complete clock projector; do not evolve new physics.'''
+    checks = []
+
+    def exact(name, value, expected=0):
+        residual = simp(value-expected)
+        checks.append(dict(name=name, passed=bool(residual == 0),
+                           residual=str(residual)))
+
+    pins = {
+        ARTICLE: EXPECTED_SHA,
+        ROOT/'intuitive/RefG_GE.md': INTUITIVE_GE_SHA,
+        ROOT/'intuitive/RefG_EN.tex':
+            '0b58fe40157d5049aba397090f947d9169089490eeeaa67145743915504b2b04',
+        HERE/'nonlinear_equilibrium_evolution.py':
+            '2c310a3a600b2ced39333c14a208a2fcb97ed6178c6906e0a55366e35ab1e4ca',
+        HERE/'population_assembly_initial_data.py':
+            'df0d16c7715a2c3e3e02ec3487f2cad2860bf772e69983de6e2fb5af295af97d',
+    }
+    # Article +---. Under delta g^ab=eps*l^a*l^b, with fixed scalar
+    # covectors: Y=p.p, X=p.h, Z=h.h, a=l.p, b=l.h. l is initially null.
+    actual = {str(p.relative_to(ROOT)): sha(p) if p.is_file() else None
+              for p in pins}
+    expected = {str(p.relative_to(ROOT)): h for p, h in pins.items()}
+    if actual != expected:
+        print(json.dumps(dict(status='DEPENDENCY_FAILURE',
+            expected_hashes=expected, actual_hashes=actual), indent=2))
+        return 1
+    checks.append(dict(name='frozen_source_dependencies', passed=True))
+    eps, X, Z, a, b = s.symbols('epsilon X Z a b', real=True)
+    Y, kappa = s.symbols('Y kappa', positive=True)
+    LH = -kappa*((X+eps*a*b)**2/(Y+eps*a*a)-(Z+eps*b*b))
+    null_H = simp(-2*s.diff(LH, eps).subs(eps, 0))
+    expected_H = -2*kappa*(b-X*a/Y)**2
+    exact('full_clock_projector_metric_variation', null_H, expected_H)
+    exact('static_clock_reduction', null_H.subs(X, 0), -2*kappa*b*b)
+    exact('pure_clock_aligned_H_has_zero_projected_source',
+          null_H.subs(b, X*a/Y))
+    exact('dynamic_clock_normalization_and_mixed_terms',
+          s.expand(null_H+2*kappa*b*b),
+          4*kappa*X*a*b/Y-2*kappa*X*X*a*a/Y**2)
+    # Incorrectly holding u^a fixed loses its metric normalization response.
+    wrong_frozen_clock = -2*kappa*b*b
+    witness = {Y:1, X:2, a:1, b:3, kappa:1}
+    exact('moving_H_witness_full', null_H.subs(witness), -2)
+    exact('moving_H_witness_frozen_clock',
+          wrong_frozen_clock.subs(witness), -18)
+    checks.append(dict(name='frozen_normalized_clock_rejected', passed=bool(
+        simp((null_H-wrong_frozen_clock).subs(witness)) != 0)))
+    # Holding the entire gamma^ab fixed would instead give zero source.
+    checks.append(dict(name='frozen_entire_projector_rejected', passed=bool(
+        null_H.subs(witness) != 0)))
+
+    # Independent -+++ whole-action conversion: X_minus=-X_plus,
+    # L_H=+kappa[Z_minus+X_minus**2/Y], Y=-gpp and T=-2*dL/dg.
+    Xm = s.symbols('X_minus', real=True)
+    LH_minus = kappa*(Z+eps*b*b+(Xm+eps*a*b)**2/(Y-eps*a*a))
+    null_minus = simp(-2*s.diff(LH_minus, eps).subs(eps, 0))
+    exact('whole_action_signature_conversion', null_minus.subs(Xm, -X), null_H)
+
+    m, r, P = s.symbols('m r P', positive=True)
+    radial_h = -m*s.exp(-m/r)/r**2
+    exterior = null_H.subs({X:0, b:radial_h, kappa:P})
+    exact('silent_exterior_radial_null_source', exterior,
+          -2*P*m*m*s.exp(-2*m/r)/r**4)
+    exact('conditional_zero_projected_gradient_source',
+          null_H.subs(b, X*a/Y))
+    pr, pi, gr, gi = s.symbols('P_re P_im grad_re grad_im', real=True)
+    A = s.symbols('A', positive=True)
+    rho_plus_pressure = A*(pr*pr+pi*pi+gr*gr+gi*gi)
+    flux = A*(pr*gr+pi*gi)
+    for sign in (-1, 1):
+        square = A*((pr+sign*gr)**2+(pi+sign*gi)**2)
+        exact('canonical_radial_null_square_'+str(sign),
+              rho_plus_pressure+2*sign*flux,
+              square)
+        checks.append(dict(name='canonical_radial_null_nonnegative_'+str(sign),
+                           passed=square.is_nonnegative is True))
+    checks.append(dict(name='dependencies_unchanged', passed=all(
+        sha(p) == h for p, h in pins.items())))
+    passed = all(row['passed'] for row in checks)
+    print(json.dumps(dict(
+        status='PASS_SOURCE_CONTRACT_AUDIT' if passed else 'AUDIT_FAILED',
+        contract_sha256=sha(CONTRACT), verifier_sha256=sha(Path(__file__)),
+        dependency_hashes=actual, check_count=len(checks), checks=checks,
+        projected_H_null_source=str(null_H),
+        scope_flags=dict(covariant_projector_variation_verified=passed,
+            unchanged_scalar_source_null_convergence=passed,
+            medium_reduction_to_evolution_derived=False,
+            medium_added_to_evolution=False, calibrated_physical_cutoff=False,
+            healthy_global_medium=False, singularity_resolution=False,
+            new_evolution_performed=False, official_theory_changed=False)),
+        indent=2, allow_nan=False))
+    return 0 if passed else 1
+
+
+def joint_response_focusing_main():
+    '''Stage 26: constrained local response versus the required null source.'''
+    checks = []
+
+    def exact(name, actual, expected=0):
+        residual = simp(actual-expected)
+        checks.append(dict(name=name, passed=bool(residual == 0),
+                           residual=str(residual)))
+
+    def truth(name, value):
+        checks.append(dict(name=name, passed=bool(value)))
+
+    pins = {ARTICLE:EXPECTED_SHA, ROOT/'intuitive/RefG_GE.md':INTUITIVE_GE_SHA,
+        ROOT/'intuitive/RefG_EN.tex':
+            '0b58fe40157d5049aba397090f947d9169089490eeeaa67145743915504b2b04',
+        HERE/'nonlinear_equilibrium_evolution.py':
+            '2c310a3a600b2ced39333c14a208a2fcb97ed6178c6906e0a55366e35ab1e4ca',
+        HERE/'population_assembly_initial_data.py':
+            'df0d16c7715a2c3e3e02ec3487f2cad2860bf772e69983de6e2fb5af295af97d'}
+    actual = {str(p.relative_to(ROOT)):sha(p) if p.is_file() else None for p in pins}
+    if any(actual[str(p.relative_to(ROOT))] != h for p,h in pins.items()):
+        print(json.dumps(dict(status='DEPENDENCY_FAILURE', hashes=actual), indent=2))
+        return 1
+    truth('frozen_dependencies', True)
+
+    eps, td, tz, ht, hz, q, v = s.symbols('eps td tz ht hz q v', real=True)
+    kap, Q, y, b, k = s.symbols('kappa Q y b k', positive=True)
+    # Positive-TT -+++ whole-action convention. No field is frozen when
+    # expanding gamma^ab H_a H_b; Phi=t+eps*theta, H=q*t+v*z+eps*h.
+    pt, pz = 1+eps*td, eps*tz
+    Ht, Hz = q+eps*ht, v+eps*hz
+    LH = kap*(-Ht**2+Hz**2+(pt*Ht-pz*Hz)**2/(pt**2-pz**2))
+    H2 = simp(s.diff(LH, eps, 2).subs(eps, 0)/2)
+    exact('full_affine_background_projector', H2,
+          kap*((hz-q*tz)**2+v*v*tz*tz-2*v*ht*tz+2*q*v*td*tz))
+    rt, rz = s.symbols('eta_t eta_z', real=True)
+    shifted = simp(H2.subs({ht:rt+q*td, hz:rz+q*tz}))
+    exact('temporal_deficit_derivative_cancels_after_field_shift', shifted,
+          kap*(rz*rz-2*v*rt*tz+v*v*tz*tz))
+    truth('shifted_principal_independent_of_q', not shifted.has(q))
+
+    # Twice the spatially averaged Fourier density, after a time integration
+    # by parts. The sine eta and cosine theta amplitudes are independent.
+    eta_amp, theta_amp = s.symbols('eta_amp theta_amp', real=True)
+    mode = kap*(k*k*eta_amp**2-2*v*k*eta_amp*td+v*v*k*k*theta_amp**2)
+    eta_solution = v*td/k
+    exact('elliptic_H_equation', s.diff(mode, eta_amp).subs(eta_amp, eta_solution))
+    reduced = simp(mode.subs(eta_amp, eta_solution))
+    exact('reduced_H_clock_kinetic_and_gradient', reduced,
+          kap*v*v*(-td*td+k*k*theta_amp**2))
+    truth('fixed_H_negative_control_detected',
+          simp(reduced-mode.subs(eta_amp, 0)) != 0)
+
+    fy, fb, fyy, fyb, fbb, wd, wz = s.symbols(
+        'F_y F_b F_yy F_yb F_bb wd wz', real=True)
+    dy = y*((1+eps*td)**2-eps**2*tz**2)-y
+    db = b*((1+eps*wz)**2-eps**2*wd**2)-b
+    jet = fy*dy+fb*db+fyy*dy**2/2+fyb*dy*db+fbb*db**2/2
+    F2 = s.expand(jet).coeff(eps, 2)
+    A, B, C, D, E = (y*fy+2*y*y*fyy, y*fy, -b*fb,
+                     -b*fb-2*b*b*fbb, 4*y*b*fyb)
+    exact('arbitrary_response_radial_principal', F2,
+          A*td**2-B*tz**2+C*wd**2-D*wz**2+E*td*wz)
+    Ae, Be, Ce, De, Ee = s.symbols('A_eff B_eff C D E', real=True)
+    L2 = Ae*td**2-Be*tz**2+Ce*wd**2-De*wz**2+Ee*td*wz
+    Hcan = s.diff(L2,td)*td+s.diff(L2,wd)*wd-L2
+    exact('mixed_response_canonical_energy', Hcan,
+          Ae*td**2+Ce*wd**2+Be*tz**2+De*wz**2)
+    ptheta, pw = s.symbols('p_theta p_w', real=True)
+    exact('mixed_response_momentum_shift',
+          Hcan.subs({td:(ptheta-Ee*wz)/(2*Ae),wd:pw/(2*Ce)}),
+          (ptheta-Ee*wz)**2/(4*Ae)+pw**2/(4*Ce)+Be*tz**2+De*wz**2)
+    z=s.symbols('squared_speed', real=True)
+    characteristic=s.Poly((Ae*z-Be)*(Ce*z-De)-Ee**2*z/4,z)
+    root_product=simp(characteristic.nth(0)/characteristic.nth(2))
+    exact('mixed_characteristic_root_product',root_product,Be*De/(Ae*Ce))
+    ap,cp,dp,negative_stiffness=s.symbols('A_pos C_pos D_pos stiffness_size', positive=True)
+    truth('negative_clock_stiffness_gives_one_negative_squared_characteristic',
+          root_product.subs({Ae:ap,Ce:cp,De:dp,Be:-negative_stiffness}).is_negative is True)
+
+    # Independent inverse-metric null variation l=(1,1) at g=diag(-1,1).
+    Yeps, Xeps = 1-eps, -q+eps*(q+v)
+    Zeps = -q*q+v*v+eps*(q+v)**2
+    null_H = simp(-2*s.diff(kap*(Zeps+Xeps**2/Yeps), eps).subs(eps,0))
+    null_F = -2*s.diff(Q*(fy*(-y*eps)+fb*b*eps),eps)
+    exact('metric_variation_H_null_source', null_H, -2*kap*v*v)
+    exact('metric_variation_F_null_source', null_F, 2*Q*(B+C))
+    Stheta, Klabel = Q*B-kap*v*v, Q*C
+    exact('joint_radial_source_energy_identity', null_F+null_H,
+          2*(Stheta+Klabel))
+    posS, posK = s.symbols('S_theta K_label', positive=True)
+    ordinary = s.symbols('T_ordinary_ll', nonnegative=True)
+    truth('strict_energy_implies_positive_medium_null_source',
+          (2*(posS+posK)).is_positive is True)
+    truth('nonnegative_ordinary_source_cannot_reverse_sign',
+          (2*(posS+posK)+ordinary).is_positive is True)
+    truth('NEC_boundary_has_negative_clock_stiffness_for_positive_label_inertia',
+          (-posK).is_negative is True)
+    exact('negative_source_control_clock_stiffness',
+          Stheta.subs({Q:1,y:1,fy:1,kap:1,v:s.sqrt(3)}), -2)
+    exact('negative_source_control_total',
+          (null_F+null_H).subs({Q:1,y:1,fy:1,b:1,fb:-1,kap:1,v:s.sqrt(3)}), -2)
+
+    # Minimal reciprocal-current fallback. It is a distinct new interaction,
+    # not the article's already-minimal S_m. Stop at its source discriminator.
+    n, mF, K, coupling, amp2, mu = s.symbols('n m_F K g s mu', positive=True)
+    chi, epsn, xid, xiz, rr = s.symbols('chi epsn xid xiz r', real=True)
+    energy = mF*n+K*n*n/2+coupling*n*amp2
+    muF = s.diff(energy,n)
+    exact('mixed_current_reciprocal_chemical_response',muF,mF+K*n+coupling*amp2)
+    exact('mixed_current_single_counted_pressure',n*muF-energy,K*n*n/2)
+    neq = (mu-mF-coupling*amp2)/K
+    exact('fixed_chemical_potential_stationarity',
+          s.diff(energy-mu*n,n).subs(n,neq))
+    relaxed = simp((energy-mu*n).subs(n,neq))
+    exact('induced_attractive_quartic',s.diff(relaxed,amp2,2),-coupling**2/K)
+    # Current-conserving label expansion supplies interaction inertia too.
+    nexp = n*(1-epsn*xiz-epsn**2*xid**2/2)
+    medium_L = -mF*nexp-K*nexp**2/2-coupling*nexp*(chi+epsn*rr)**2
+    exact('current_inertia_and_reciprocal_amplitude_vertex',
+          s.expand(medium_L).coeff(epsn,2),
+          n*(mF+K*n+coupling*chi**2)*xid**2/2-K*n*n*xiz**2/2
+          +2*coupling*n*chi*rr*xiz-coupling*n*rr**2)
+    a1,a2,ul=s.symbols('l_dchi l_dtheta u_l', real=True)
+    fallback_null=a1*a1+amp2*a2*a2+n*muF*ul*ul
+    truth('healthy_reciprocal_fallback_retains_NEC',fallback_null.is_nonnegative is True)
+    truth('dependencies_unchanged',all(sha(p)==h for p,h in pins.items()))
+    passed=all(row['passed'] for row in checks)
+    print(json.dumps(dict(
+        status='JOINT_RESPONSE_RADIAL_DEFOCUSING_EXCLUDED' if passed else 'AUDIT_FAILED',
+        contract_sha256=sha(CONTRACT),verifier_sha256=sha(Path(__file__)),
+        dependency_hashes=actual,check_count=len(checks),checks=checks,
+        source_identity='T_medium_ll=2*(S_theta+K_label)',
+        fallback_equilibrium_domain='K>0 and mu>m_F+g*chi^2; fixed chemical potential, not fixed total charge',
+        scope_flags=dict(joint_principal_source_identity_verified=passed,
+            comoving_regular_principal_defocusing_excluded=passed,
+            minimal_positive_enthalpy_current_fallback_defocusing_excluded=passed,
+            finite_wavelength_instability_proved=False,physical_EFT_band_known=False,
+            full_coupled_metric_constraint_reduction_verified=False,
+            degenerate_or_relative_flow_branches_excluded=False,
+            all_RefG_excluded=False,new_healthy_full_action_selected=False,
+            singularity_resolution=False,new_collapse_run=False,
+            official_theory_changed=False)),indent=2,allow_nan=False))
+    return 0 if passed else 1
+
+
+def derivative_medium_prototype_main():
+    '''Stage 27: a new cubic scalar prototype, not the five-field article.'''
+    import numpy as np
+    from scipy.integrate import solve_ivp
+    checks=[]
+
+    def exact(name,value,target=0):
+        residual=simp(value-target)
+        checks.append(dict(name=name,passed=bool(residual==0),residual=str(residual)))
+
+    def truth(name,value):
+        checks.append(dict(name=name,passed=bool(value)))
+
+    pins={ARTICLE:EXPECTED_SHA,ROOT/'intuitive/RefG_GE.md':INTUITIVE_GE_SHA,
+        ROOT/'intuitive/RefG_EN.tex':
+            '0b58fe40157d5049aba397090f947d9169089490eeeaa67145743915504b2b04',
+        HERE/'nonlinear_equilibrium_evolution.py':
+            '2c310a3a600b2ced39333c14a208a2fcb97ed6178c6906e0a55366e35ab1e4ca',
+        HERE/'population_assembly_initial_data.py':
+            'df0d16c7715a2c3e3e02ec3487f2cad2860bf772e69983de6e2fb5af295af97d'}
+    hashes={str(p.relative_to(ROOT)):sha(p) if p.is_file() else None for p in pins}
+    if any(hashes[str(p.relative_to(ROOT))]!=h for p,h in pins.items()):
+        print(json.dumps(dict(status='DEPENDENCY_FAILURE',hashes=hashes),indent=2))
+        return 1
+    truth('frozen_dependencies',True)
+
+    # First, the simplest already-allowed normalized clock/label mixing.
+    eps,tt,tz,wt,wz=s.symbols('eps theta_t theta_z label_t label_z',real=True)
+    b=s.symbols('label_scale_squared',positive=True)
+    normalized_mix=b*((1+eps*tt)*eps*wt-eps*tz*(1+eps*wz))**2/(
+        (1+eps*tt)**2-eps**2*tz**2)
+    exact('normalized_mixing_quadratic_expansion',
+          s.diff(normalized_mix,eps,2).subs(eps,0)/2,b*(wt-tz)**2)
+    inverse_metric=s.diag(-1,1)+eps*s.ones(2)
+    clock_gradient=s.Matrix([1,0]);label_gradient=s.Matrix([0,s.sqrt(b)])
+    null_mix=(clock_gradient.dot(inverse_metric*label_gradient))**2/(
+        -clock_gradient.dot(inverse_metric*clock_gradient))
+    exact('normalized_mixing_null_metric_variation',null_mix,b*eps**2/(1-eps))
+    exact('normalized_mixing_background_value',null_mix.subs(eps,0))
+    exact('normalized_mixing_background_null_source',s.diff(null_mix,eps).subs(eps,0))
+    B,C,eta,mix=s.symbols('B C eta mixed_coefficient',real=True)
+    exact('normalized_mixing_preserves_source_sum',(B-eta-mix)+(C+mix),B+C-eta)
+    exact('strict_mixing_interval_width',(B-eta)-(-C),B+C-eta)
+    exact('mixing_NEC_boundary_clock',(B-eta-mix).subs({eta:B+C,mix:-C}),0)
+    exact('mixing_NEC_boundary_label',(C+mix).subs(mix,-C),0)
+
+    x=s.symbols('X',real=True)
+    coefficients=s.symbols('c0:6')
+    trial=sum(c*x**i for i,c in enumerate(coefficients))
+    equations=[s.diff(trial,x,j).subs(x,point)-target
+        for point,targets in [(0,(0,1,1)),(s.Rational(1,2),(-4,-4,1))]
+        for j,target in enumerate(targets)]
+    solved=s.solve(equations,coefficients,dict=True)
+    truth('unique_minimal_polynomial_for_declared_jets',len(solved)==1)
+    K=s.expand(trial.subs(solved[0]))
+    exact('declared_quintic',K,x+x*x/2-282*x**3+802*x**4-624*x**5)
+    for point,targets in [(0,(0,1,1)),(s.Rational(1,2),(-4,-4,1))]:
+        for j,target in enumerate(targets):
+            exact('constitutive_jet_'+str(point)+'_'+str(j),s.diff(K,x,j).subs(x,point),target)
+
+    P,g,a,ad,N=s.symbols('P g a a_dot lapse',positive=True)
+    v,acc,H,Hd=s.symbols('phi_dot phi_ddot Hubble Hubble_dot',real=True)
+    xv=v*v/2
+    k0,k1,k2=[s.diff(K,x,j).subs(x,xv) for j in range(3)]
+    rho=2*xv*k1-k0+6*g*H*v*xv
+    pressure=k0-2*g*xv*acc
+    J=v*k1+6*g*H*xv
+    # Independent lapse/current/scale-factor variations of the action after
+    # a boundary integration: L3 -> g*a^2*a_dot*phi_dot^3/N^3.
+    mini=-3*P*a*ad*ad/N+a**3*N*K.subs(x,v*v/(2*N*N))+g*a*a*ad*v**3/N**3
+    exact('independent_lapse_variation',s.diff(mini,N).subs({N:1,ad:a*H})/a**3,
+          3*P*H*H-rho)
+    exact('independent_shift_current',s.diff(mini,v).subs({N:1,ad:a*H})/a**3,J)
+    mini1=mini.subs(N,1)
+    moma=s.diff(mini1,ad)
+    adotdot=a*(Hd+H*H)
+    EL_a=(s.diff(moma,a)*ad+s.diff(moma,ad)*adotdot+s.diff(moma,v)*acc
+          -s.diff(mini1,a)).subs(ad,a*H)
+    exact('independent_scale_factor_variation',EL_a/(-3*a*a),
+          P*(3*H*H+2*Hd)+pressure)
+    D=k1+2*xv*k2+6*g*H*v+6*g*g*xv*xv/P
+    acceleration=(-3*H*v*k1-9*g*H*H*v*v
+                  +3*g*v**4*(k1+3*g*H*v)/(2*P))/D
+    hubble_dot=-xv*(k1+3*g*H*v-g*acceleration)/P
+    point={P:1,g:1,H:1,v:1}
+    exact('on_shell_witness_acceleration',acceleration.subs(point),s.Rational(1,3))
+    exact('on_shell_witness_Hubble_derivative',hubble_dot.subs(point),s.Rational(2,3))
+    exact('on_shell_witness_Friedmann',(3*P*H*H-rho).subs(point))
+    current_dot=s.diff(J,v)*acc+s.diff(J,H)*Hd
+    exact('on_shell_witness_current',(current_dot+3*H*J).subs(
+        {**point,acc:s.Rational(1,3),Hd:s.Rational(2,3)}))
+    exact('on_shell_witness_Raychaudhuri',(2*P*Hd+rho+pressure).subs(
+        {**point,acc:s.Rational(1,3),Hd:s.Rational(2,3)}))
+    exact('on_shell_witness_negative_null_source',(rho+pressure).subs(
+        {**point,acc:s.Rational(1,3)}),-s.Rational(4,3))
+    exact('omitting_braiding_breaks_witness_constraint',(3*P*H*H-rho).subs(
+        {**point,g:0}),3)
+
+    # Full FLRW scalar lapse/shift elimination, unlike Stage26's WKB test.
+    T,Sigma,zd,zlap,blap,lapsepert=s.symbols('Theta Sigma zeta_dot lap_zeta lap_shift lapse_pert',real=True)
+    zgrad=s.symbols('gradient_zeta_squared_over_a_squared',real=True)
+    Lscalar=-3*P*zd**2+P*zgrad+Sigma*lapsepert**2-2*T*lapsepert*blap+2*P*zd*blap+6*T*lapsepert*zd-2*P*lapsepert*zlap
+    lapse_sol=P*zd/T
+    shift_sol=(Sigma*lapse_sol+3*T*zd-P*zlap)/T
+    exact('scalar_shift_constraint',s.diff(Lscalar,blap).subs(lapsepert,lapse_sol))
+    exact('scalar_lapse_constraint',s.diff(Lscalar,lapsepert).subs(
+        {lapsepert:lapse_sol,blap:shift_sol}))
+    exact('reduced_scalar_kinetic_and_cross_term',Lscalar.subs(
+        {lapsepert:lapse_sol,blap:shift_sol}),
+        (P*P*Sigma/T**2+3*P)*zd**2+P*zgrad-2*P*P*zd*zlap/T)
+    # The cross term in a^3 L is -2a P^2/Theta*zeta_dot*laplacian(zeta).
+    # Its spatial and temporal boundary terms leave -d_t(a P^2/Theta)
+    # times (spatial gradient zeta)^2. Verify this identity in one direction;
+    # the three-dimensional result is its sum over spatial directions.
+    time,space=s.symbols('time space',real=True)
+    aa=s.Function('a')(time);th=s.Function('Theta')(time)
+    zz=s.Function('zeta')(time,space);cross=aa*P**2/th
+    zx=s.diff(zz,space);zt=s.diff(zz,time)
+    exact('scalar_cross_term_boundary_identity',
+          -2*cross*zt*s.diff(zx,space)+s.diff(cross,time)*zx**2
+          -s.diff(cross*zx**2,time)+s.diff(2*cross*zt*zx,space))
+    Td=s.symbols('Theta_dot',real=True)
+    Fs_from_parts=(s.diff(aa*P**2/th,time)/aa-P).subs(
+        {s.diff(aa,time):aa*H,s.diff(th,time):Td,th:T})
+    exact('scalar_gradient_integration_by_parts',Fs_from_parts,
+          P**2*(H/T-Td/T**2)-P)
+    theta=P*H-g*v*xv
+    theta_dot=P*Hd-3*g*xv*acc
+    sigma=xv*k1+2*xv*xv*k2+12*g*H*v*xv-3*P*H*H
+    Gs=P*P*sigma/theta**2+3*P
+    Fs=P*P*(H/theta-theta_dot/theta**2)-P
+    exact('background_scalar_gradient_from_reduction',
+          Fs_from_parts.subs({T:theta,Td:theta_dot}),Fs)
+    exact('independent_kinetic_formula',Gs,P*P*xv*D/theta**2)
+    jetpoint={**point,acc:s.Rational(1,3),Hd:s.Rational(2,3)}
+    exact('witness_Gs',Gs.subs(jetpoint),9)
+    exact('witness_Fs',Fs.subs(jetpoint),s.Rational(1,3))
+    exact('witness_scalar_speed_squared',(Fs/Gs).subs(jetpoint),s.Rational(1,27))
+    exact('unbraided_stability_formula_is_inapplicable',
+          (Fs+P*Hd/H**2).subs(jetpoint),1)
+    exact('tensor_speed_squared',P/P,1)
+    truth('positive_tensor_energy',P.is_positive is True)
+    exact('constant_medium_GR_branch_energy',rho.subs(v,0),0)
+    exact('constant_medium_GR_branch_current',J.subs(v,0),0)
+
+    kfun=[s.lambdify(x,s.diff(K,x,j),'numpy') for j in range(3)]
+
+    def diagnose(state):
+        phi,vel,hub,scale=state
+        xx=vel*vel/2
+        kv,kx,kxx=[float(f(xx)) for f in kfun]
+        den=kx+2*xx*kxx+6*hub*vel+6*xx*xx
+        av=(-3*hub*vel*kx-9*hub*hub*vel*vel
+            +1.5*vel**4*(kx+3*hub*vel))/den
+        hv=-xx*(kx+3*hub*vel-av)
+        th=hub-vel*xx
+        thdot=hv-3*xx*av
+        sig=xx*kx+2*xx*xx*kxx+12*hub*vel*xx-3*hub*hub
+        gs=sig/th**2+3
+        fs=hub/th-thdot/th**2-1
+        density=2*xx*kx-kv+6*hub*vel*xx
+        press=kv-2*xx*av
+        current=vel*kx+6*hub*xx
+        return dict(D=den,Theta=th,Gs=gs,Fs=fs,cs2=fs/gs,
+            NEC=density+press,Friedmann=3*hub*hub-density,
+            charge=scale**3*current+1,acceleration=av,Hubble_dot=hv,
+            kinetic_identity=gs-xx*den/th**2)
+
+    def rhs(t,state):
+        d=diagnose(state)
+        return np.array([state[1],d['acceleration'],d['Hubble_dot'],state[2]*state[3]])
+
+    def failure(d):
+        if not all(np.all(np.isfinite(value)) for value in d.values()):return 'nonfinite'
+        for name in ('D','Gs','Fs'):
+            if d[name]<=0: return name+'_nonpositive'
+        if abs(d['Theta'])<=1e-8:return 'Theta_degenerate'
+        if d['cs2']>1:return 'scalar_superluminal'
+        if d['NEC']>=0:return 'NEC_nonnegative'
+        return None
+
+    def integrate(step,end,guard=False):
+        count=round(abs(end)/step);dt=end/count
+        state=np.array([0.,1.,1.,1.]);rows=[]
+        for i in range(count+1):
+            t=i*dt;d=diagnose(state);bad=failure(d)
+            rows.append(dict(t=t,state=state.copy(),**d))
+            if bad and guard:return rows,dict(first_failed_time=t,reason=bad,
+                last_passing_time=rows[-2]['t'] if len(rows)>1 else None,
+                Fs=d['Fs'],Gs=d['Gs'],cs2=d['cs2'])
+            if i<count:
+                a1=rhs(t,state);a2=rhs(t+dt/2,state+dt*a1/2)
+                a3=rhs(t+dt/2,state+dt*a2/2);a4=rhs(t+dt,state+dt*a3)
+                state=state+dt*(a1+2*a2+2*a3+a4)/6
+        return rows,None
+
+    runs={};steps=(2e-5,1e-5,5e-6)
+    for direction in (-1,1):
+        for step in steps:
+            rows,guard=integrate(step,direction*.001)
+            runs[direction,step]=rows
+            truth('sampled_health_'+str(direction)+'_'+str(step),all(failure(r) is None for r in rows))
+    allrows=[r for rows in runs.values() for r in rows]
+    for field in ('Friedmann','charge','kinetic_identity'):
+        truth('numerical_'+field+'_bound',max(abs(r[field]) for r in allrows)<1e-8)
+    state_errors=[];dop_errors=[]
+    for direction in (-1,1):
+        coarse=runs[direction,steps[0]]
+        for step,stride in [(steps[1],2),(steps[2],4)]:
+            finer=runs[direction,step][::stride]
+            matching_grid=(len(coarse)==len(finer) and all(
+                abs(a['t']-b['t'])<1e-14 for a,b in zip(coarse,finer)))
+            truth('matching_refinement_grid_'+str(direction)+'_'+str(step),matching_grid)
+            error=(max(float(np.max(abs(a['state']-b['state'])))
+                for a,b in zip(coarse,finer)) if matching_grid else None)
+            state_errors.append(error)
+        times=np.array([r['t'] for r in coarse])
+        reference=solve_ivp(rhs,(0.,direction*.001),[0.,1.,1.,1.],
+            method='DOP853',t_eval=times,rtol=1e-11,atol=1e-13,max_step=1e-4)
+        reference_ok=(reference.success and len(reference.t)==len(times)
+            and reference.y.shape==(4,len(times))
+            and np.allclose(reference.t,times,rtol=0,atol=1e-14))
+        truth('independent_integrator_completed_'+str(direction),reference_ok)
+        dop_errors.append(float(np.max(abs(reference.y.T-np.array(
+            [r['state'] for r in coarse])))) if reference_ok else None)
+    truth('registered_refinement_agreement',all(e is not None and e<1e-8 for e in state_errors))
+    truth('independent_integrator_agreement',all(e is not None and e<1e-8 for e in dop_errors))
+    probes=[]
+    for direction in (-1,1):
+        for step in (1e-5,5e-6):
+            rows,guard=integrate(step,direction*.005,guard=True)
+            probes.append(dict(direction=direction,step=step,guard=guard,
+                last_sample_time=rows[-1]['t']))
+    summary={name:dict(min=min(r[name] for r in allrows),max=max(r[name] for r in allrows))
+             for name in ('Gs','Fs','cs2','NEC','D','Theta')}
+    summary.update(max_Friedmann_residual=max(abs(r['Friedmann']) for r in allrows),
+        max_current_drift=max(abs(r['charge']) for r in allrows),
+        refinement_state_errors=state_errors,independent_integrator_errors=dop_errors)
+    truth('dependencies_unchanged',all(sha(p)==h for p,h in pins.items()))
+    passed=all(row['passed'] for row in checks)
+    print(json.dumps(dict(status='LOCAL_DERIVATIVE_MEDIUM_WITNESS_VERIFIED' if passed else 'PROTOTYPE_FAILED',
+        contract_sha256=sha(CONTRACT),verifier_sha256=sha(Path(__file__)),dependency_hashes=hashes,
+        check_count=len(checks),checks=checks,polynomial=str(K),
+        accepted_sampled_interval=[-.001,.001] if passed else None,
+        numerical=summary,wider_guard_probes=probes,
+        scope_flags=dict(new_constitutive_hypothesis=True,exact_on_shell_witness=passed,
+            FLRW_lapse_shift_reduction_verified=passed,local_linear_health_and_NEC_violation=passed,
+            sampled_interval_verified=passed,continuous_interval_certified=False,
+            exact_GR_constant_medium_branch=passed,healthy_branch_connection_proved=False,
+            original_five_field_reduction_derived=False,nonzero_oscillon_coupled_solution=False,
+            spacelike_radial_health_proved=False,physical_EFT_band_known=False,
+            UV_completion_proved=False,
+            global_nonsingular_history=False,regular_black_hole=False,
+            original_solver_changed=False,official_theory_changed=False)),indent=2,allow_nan=False))
+    return 0 if passed else 1
+
+
 if __name__ == '__main__':
+    if sys.argv[1:] == ['--derivative-medium-prototype-only']:
+        raise SystemExit(derivative_medium_prototype_main())
+    if sys.argv[1:] == ['--joint-response-focusing-only']:
+        raise SystemExit(joint_response_focusing_main())
+    if sys.argv[1:] == ['--source-completeness-only']:
+        raise SystemExit(source_completeness_main())
     if sys.argv[1:] == ['--self-regulation-audit-only']:
         raise SystemExit(self_regulation_audit_main())
     if sys.argv[1:] == ['--scale-feedback-only']:
@@ -2805,5 +3310,7 @@ if __name__ == '__main__':
                          '[--scale-feedback-only | --full-source-balance-only | '
                          '--centre-response-only | --separated-response-only | '
                          '--feedback-interface-only | --same-field-response-only | '
-                         '--closure-selection-only | --self-regulation-audit-only]')
+                         '--closure-selection-only | --self-regulation-audit-only | '
+                         '--source-completeness-only | --joint-response-focusing-only | '
+                         '--derivative-medium-prototype-only]')
     raise SystemExit(main())

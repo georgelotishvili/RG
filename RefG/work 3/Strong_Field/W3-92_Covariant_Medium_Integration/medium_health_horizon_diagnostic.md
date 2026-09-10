@@ -13,7 +13,36 @@ exponential exterior and selected additive constitutive truncations are
 candidate assumptions, not requirements imposed on every future action.
 The negative results below remain valid in their stated domains.
 
-Current completed calculation: Stage 24's interior-curvature evolution
+Current completed work: Stage 27's derivative-medium prototype passes
+the local on-shell negative-null-source and constrained linear-health
+gate. On the sampled interval [-0.001,0.001], both scalar coefficients
+remain positive, scalar speed stays below the matter light speed, and
+tensor speed equals it. This is a newly constructed single-medium-scalar
+action with a constant-medium GR branch, not a derivation from the
+five-field article. Wider continuation fails its gradient/speed gates.
+No global healthy completion, branch connection or black hole is claimed.
+
+Stage 26's completed joint response/focusing test: for the
+article action with clock-comoving material labels on a regular
+short-wave branch, positive joint principal energy forces positive radial
+null source, for arbitrary algebraic F_med. The existing negative H term
+cannot reverse that source healthily in this class. Temporal H evolution
+alone does not change this local identity. A minimal reciprocal-current
+interaction also retains null convergence. No full healthy replacement
+or singularity-free endpoint was obtained; the precise excluded class
+and the remaining structural alternatives are recorded in Stage 26.
+
+Stage 25's completed source-contract audit: the population
+solver evolves reciprocal Einstein--scalar feedback, while the article's
+independent H/clock/material-label source is outside its action. The full
+covariant projected-H null source is an exact negative square; its clock
+normalization terms are now independently checked. This existing term can
+change null convergence, but the recorded medium responses do not yet
+supply an accepted healthy full completion or a calibrated cutoff. Stage
+14 already recorded the static source distinction; Stage 25 extends its
+verification to time-dependent H and ties it to the actual evolution code.
+
+Latest completed evolution: Stage 24's interior-curvature evolution
 of the same Stage 19 n=4 aggregate. All twenty-five registered accuracy
 gates pass through T=21.1, central proper time 3.998101565. From Stage
 23's accepted T=16.2 slice to this slice, central density grows by
@@ -5395,3 +5424,557 @@ the physical endpoint remains open; the accepted-prefix gates pass.
 The legacy `--horizon-regular-checks` regression passes all twenty-two
 checks. Official monographs, the article and the base evolution solver
 retain their starting hashes. No extra result files or folders were added.
+
+## Stage 25: source completeness after the trapped-interior benchmark
+
+### Registered question and stopping rule (2026-09-10)
+
+- CLAIM_ID / TYPE: W92_SOURCE_COMPLETENESS_V1; source-contract audit and
+  exact covariant metric variation, not a new collapse evolution.
+- CLAIM: determine which reciprocal responses Stages 16--24 actually
+  evolve, identify the existing article term that can change null
+  convergence, and decide whether the recorded action reductions or
+  validity scales authorize its use in that solver.
+- DEPENDENCIES: unchanged W54/W58/W64 contracts; article (5)--(16),
+  Appendix A; W92 integration map and Stages 9--15; frozen Stage 24 code.
+- DOMAIN / CONVENTIONS: timelike clock gradient, real fields, omega_H>0;
+  article +--- with Theta_ab=g_ab L-2 dL/dg^ab. A null vector l is
+  null at the unperturbed metric. Scalar covectors are held fixed during
+  metric variation; the normalized clock vector is varied with the metric.
+- METHOD: differentiate the full projected-H action along
+  delta g^ab=epsilon l^a l^b, independently of a static ansatz. Compare
+  its exact square with the canonical scalar source and the silent
+  exponential exterior. Repeat the established centre/closure checks.
+- PASS / FALSIFIER: all symbolic residuals must vanish; a deliberately
+  frozen clock projector must fail on a rational moving-H witness.
+  Source hashes must match before the algebra runs. A source-contract
+  match requires the omitted Euler--Lagrange equations as well as the
+  metric equation; matching a metric/readout alone is insufficient.
+- FREEDOM / ERROR / OBSERVATIONS: no fitted parameter, new medium law,
+  observational data, new cutoff, or numerical endpoint. Exact algebra
+  and source provenance have separate status from physical health.
+- FILES / STOP: existing report, existing verifier, idea.txt only.
+  Stop after the field/source comparison and existing health decision.
+  Preserve all physical evolution equations and official monographs.
+  Neither a new long integration nor a replacement constitutive family
+  is part of this stage.
+
+### Source ledger: what the evolution actually includes
+
+| Item | Existing source and actual scope |
+|---|---|
+| Localized oscillon action | W58 selects a canonical complex U(1) field with quartic/sextic self-interaction. Environmental coefficient selection and the foundation-pressure bridge remain outside that derivation. |
+| Joint gravity and matter | W64 minimally couples that action to EH, with one scalar Hilbert source. Current density, stresses and gradients determine geometry, which feeds back into field propagation. |
+| Mass, size and time | Binding, evolving radii and proper-time lapse are included. The conserved U(1) charge is not an arbitrary species-independent particle count. |
+| Article medium | Independent H, clock Phi, three material labels, their currents and F_med stress are absent from the population evolution. The variable H in CentralClockGrid.measure is a geometric abbreviation, not this field. |
+| Relation between actions | W92's formal integration map explicitly preserves the separate source contracts. No consistent reduction of all article field equations to the evolved scalar-only system has been derived. |
+| Physical validity scale | W54 assumes cutoff-suppressed omitted operators but does not determine the cutoff. Numerical chart, step and residual limits supply no physical density/curvature threshold. |
+
+Provenance within Work 3: W58
+`Lagrangian_Formulation/One_Oscillon_Coframe_Localized_Core/`
+`w3_58_one_oscillon_coframe_localized_core_preregistration.md`, especially
+the selected-action and environmental-bridge exclusions; W64
+`w3_64_source_first_einstein_strong_field_preregistration.md`, source
+contract and coupled equations; this folder's
+`FORMAL_COVARIANT_MEDIUM_INTEGRATION.md`, action/compatibility map.
+The implemented source is in `nonlinear_equilibrium_evolution.py`
+(`rhs` and metric/source construction), and the unchanged potential and
+stress in `population_assembly_initial_data.py` (horizon-regular
+equations and the clock-grid `rhs` methods). Stage 15 already verifies the joint-feedback
+interpretation. The new audit preserves that successful result.
+
+### Full projector variation, including a time-dependent deficit
+
+Use P=M_Pl^2, Q=M_*^4, p_a=partial_a Phi, h_a=partial_a H,
+Y=p.p>0, X=p.h, u_a=p_a/sqrt(Y), and
+w_a=h_a-(X/Y)p_a. The existing article action gives
+
+~~~text
+L_H = -omega_H P (X^2/Y - h.h),
+Theta_H,ab = omega_H P [g_ab w.w - 2 w_a w_b],
+Theta_H(ll) = -2 omega_H P [l.h - (u.l)(u.h)]^2.
+~~~
+
+This is a nonpositive contribution for omega_H>0. It can oppose the
+canonical scalar's null focusing wherever l.w is nonzero. It belongs
+to the article action already; no saturation correction has been added.
+The algebraic response contributes, in the same convention,
+
+~~~text
+Theta_F(ll) = 2Q [exp(-2H) F_Yhat (l.p)^2
+                 - exp(2H) F_BhatAB (l.partial phi^A)(l.partial phi^B)].
+~~~
+
+For the exact null contraction, perturb the inverse metric by epsilon
+l^a l^b while keeping all scalar covectors fixed. Then
+Y -> Y+epsilon(l.p)^2 and X -> X+epsilon(l.p)(l.h).
+Their ratio must also be varied. The explicit check finds the mixed
+term +4 omega_H P (u.h)(u.l)(l.h) and the normalization term
+-2 omega_H P (u.h)^2(u.l)^2. An incorrectly fixed u^a loses both.
+The rational witness Y=1,X=2,l.p=1,l.h=3,omega_H P=1 gives the exact
+source -2, whereas that incorrect variation gives -18. Freezing the
+entire projector incorrectly gives zero. These are verifier controls,
+not a defect found in the scalar-only evolution, where this source is
+not implemented at all.
+
+Reversing the whole action under the -+++ convention yields
+w_a=h_a+u_a(u.h) and the same physical null-source sign. Changing only
+one source sign would change the model. On the article's static silent
+exterior, H=m/r and the radial orthonormal derivative is
+-m exp(-m/r)/r^2, giving
+
+~~~text
+Theta_H(ll) = -2P m^2 exp(-2m/r)/r^4 < 0  (m>0, omega_H=1).
+~~~
+
+The canonical complex scalar instead has
+T(ll)=|l.partial psi|^2>=0. In the accepted A>0 numerical chart,
+rho+p_r +/- 2J_hat=A|Pi +/- partial_r psi|^2. The two sources therefore
+cannot represent the same nonzero silent exterior. This exact static
+obstruction was established in Stage 14; it remains valid.
+
+### Central response and the next physical gate
+
+At a smooth spherical centre, isotropy makes the spatial projection
+w_a vanish, including for time-dependent H. The negative H-gradient
+source is then zero at the centre and starts at order r^2 nearby.
+It supplies no standalone central density cap. The article's nonsilent
+F response and the independent H/clock/label equations must supply the
+central state and its evolution. Stage 9's source-flux balance and
+Stage 10's regular central jet are the existing starting equations.
+
+Existing constitutive decisions remain unchanged. The original F_min
+has a degenerate silent quadratic form; its tested nondegenerate
+positive-energy central branch exceeds the common metric cone. The
+separated response has a healthy central window but fails its tested
+static transition/silent tensor gates. Other recorded completions have
+their own failed coupled-health gates. These conclusions apply to the
+specified candidates and domains. There is no accepted full-medium
+replacement ready to insert into the collapse solver.
+
+The next physical task is a minimal *joint* matter--medium response
+closure: use the existing field content and reciprocal-equilibrium
+requirements to specify one action, then test its constrained local
+kinetic/gradient system and weak-field matching before evolving a
+compact body. The ordinary source must be counted once. A scalar-only
+reduction must satisfy every omitted field equation as well as its
+stress restriction. An exponential exterior is an optional candidate
+branch, not a condition imposed on every completion. A physical cutoff
+may be used only after it has been derived or independently fixed.
+
+Thus further scalar-only time extension is not the next closure step.
+Stage 24 remains a validated benchmark for its chosen action; full
+foundation self-regulation and a nonsingular black-hole endpoint are
+the outstanding physical targets.
+
+### Executed checks and reproducibility
+
+`python -B verify_medium_health_horizon_diagnostic.py --source-completeness-only`
+returns `PASS_SOURCE_CONTRACT_AUDIT`, exit 0, with 17/17 checks. It
+verifies the covariant H identity, signature conversion, static and
+clock-aligned limits, canonical null squares, negative controls, and
+unchanged hashes. The smooth-centre interpretation also uses spherical
+regularity, as stated above. It does not perform new time evolution.
+An independent derivation reproduced the metric variation exactly.
+
+Fresh regression modes `--centre-response-only`,
+`--closure-selection-only`, and `--full-source-balance-only` return
+50/50, 54/54 and 63/63 checks respectively, all exit 0. These successful
+checks reproduce the recorded physical acceptance failures as well as
+the valid identities; a verifier pass does not promote a failed model.
+
+Status: `source_contract_audited=true`,
+`covariant_H_null_source_verified=true`,
+`medium_reduction_to_evolution_derived=false`,
+`calibrated_physical_cutoff=false`, `healthy_global_medium=false`,
+`singularity_resolution=false`. Both official monographs, the article,
+the base evolution solver and the population solver retain their
+registered starting hashes. Only this report, its verifier and the
+internal idea file were updated. No new result artifacts were created.
+
+## Stage 26: joint local response and the radial focusing gate
+
+### Frozen decision contract (2026-09-10)
+
+- CLAIM_ID / TYPE: W92_JOINT_RESPONSE_FOCUSING_V1; exact local principal
+  source/stability discriminator, with one minimal mixed-source fallback.
+- TARGET: determine whether changing the existing algebraic F_med can
+  give a healthy radial null-defocusing branch before any new collapse
+  integration. The physical novelty is the joint clock--H constraint
+  at nonzero spatial deficit gradient, not another static mass sum.
+- MODEL / FREEDOM: unchanged EH, arbitrary twice-differentiable
+  F(Yhat,I1,I2,I3), projected-H term with omega_H>0, and minimally coupled
+  canonical ordinary matter. F's local slopes and Hessian are free;
+  no exponential exterior, polynomial form, or radial profile is imposed.
+  A second, distinct internal test permits U=g n chi^2 in the W75
+  ordinary/current action; it is a new interaction, not an inherited law.
+- DOMAIN: local orthonormal clock frame, material labels at rest in
+  that frame, positive spatial strain eigenvalues, radial wavevector,
+  nonzero wavenumber. H may have both temporal and radial derivatives.
+  Use frozen-background leading two-derivative principal terms, a regular
+  constraint branch, positive physical quadratic energy, and an accessible
+  short-wave band if interpreting the result as a physical EFT test.
+- METHOD: expand the normalized projector directly; eliminate its
+  elliptic H perturbation before testing clock/label energy. Independently
+  vary the metric to obtain the radial null source. Test mixed terms by
+  the canonical Hamiltonian, not by isolated frequencies alone.
+- PASS / FALSIFIER: symbolic residuals must be zero and deliberate
+  fixed-H controls must fail. A viable candidate for this target must
+  simultaneously pass joint principal energy and allow negative total
+  radial null source. A positive source identity under those energy
+  conditions excludes only this stated route/branch.
+- ERROR / HEALTH / OBSERVATIONS: exact principal algebra; no finite-k
+  remainder or physical cutoff supplied. Gravitational/background terms
+  subleading on the declared regular short-wave branch are not a full
+  finite-object mode calculation. No data or fit; no observational pass.
+  Degenerate kinetic/constraint branches, relative label-clock flow,
+  additional derivative operators and other global hypotheses are separate.
+- FILES / STOP: existing report, verifier and idea.txt. Stop after the
+  joint source/energy identity and the fallback's source decision. No
+  long evolution, full-function fit, node dynamics or official edits.
+
+### Exact joint response: the missing H variation matters
+
+Use the positive-TT -+++ convention, Q=M_*^4>0 and
+kappa=omega_H M_Pl^2>0. In a local orthonormal clock frame take
+Phi proportional to t+theta and H=q*t+v*z+h to principal order.
+The material labels are at rest in this frame; z is radial. Directly
+expanding the normalized projector, with every field varied, gives
+
+~~~text
+L_H2/kappa = (h_z-q theta_z)^2 + v^2 theta_z^2
+            -2v h_t theta_z +2qv theta_t theta_z.
+eta=h-q theta:
+L_H2/kappa = eta_z^2 -2v eta_t theta_z +v^2 theta_z^2.
+~~~
+
+Thus time dependence q of the deficit alone does not alter this
+principal problem. At k!=0, solve the elliptic eta equation rather
+than fixing eta. A sine/cosine Fourier pair and time integration by
+parts reduce its density to
+
+~~~text
+L_H2,reduced = -kappa v^2 (theta_t^2-theta_z^2).
+~~~
+
+For arbitrary F, let y=Yhat and b be the radial eigenvalue of Bhat;
+F_b is the derivative of that one eigenvalue with the other two held
+fixed. Put B=y F_y, C=-b F_b. The uneliminated F principal block has
+clock inertia A=B+2y^2 F_yy, longitudinal spatial coefficient
+D=C-2b^2 F_bb, and mixed coefficient E=4yb F_yb. After the H constraint,
+
+~~~text
+L2 = (QA-kappa v^2) theta_t^2 -(QB-kappa v^2) theta_z^2
+     +QC xi_t^2-QD xi_z^2+QE theta_t xi_z.
+S_theta=QB-kappa v^2,  K_label=QC.
+~~~
+
+The mixed term shifts the canonical clock momentum. The Hamiltonian
+still requires S_theta>0 and K_label>0 for strictly positive physical
+principal energy. An independent metric variation gives the decisive
+identity
+
+~~~text
+T_medium(ll) = 2Q(y F_y-b F_b)-2kappa v^2
+             = 2(S_theta+K_label) > 0.
+T_total(ll)  = T_medium(ll)+|l.partial psi_O|^2 > 0.
+~~~
+
+The radial null vector is normalized as l=(1,1) in the local t,z frame.
+The arbitrary Hessian and its mixed terms cannot reverse this sign
+while the two necessary energy coefficients are positive. At medium
+NEC saturation S_theta=-K_label<0 already. For positive clock inertia
+and longitudinal spatial coefficient, the mixed dispersion polynomial
+(A_eff z-S_theta)(K_label z-QD)-(QE)^2 z/4 has root product
+S_theta QD/(A_eff K_label)<0: one squared characteristic is negative.
+A failed inertia instead violates the positive-energy gate directly.
+This is an open sign obstruction, not only a degenerate endpoint.
+
+Einstein/ordinary-field constraints are retained through the regular
+short-wave ordering: their O(P k^2) metric blocks and at-most-O(k)
+mixing produce subleading corrections. They cannot cancel a strict
+leading sign failure on that branch. A finite object, degenerate
+constraints or the absence of a band k_background<<k<<Lambda_EFT
+requires a separate analysis. No numerical cutoff has been determined.
+The executable eliminates H, not the complete lapse/shift system;
+`full_coupled_metric_constraint_reduction_verified=false` is retained.
+
+### Minimal reciprocal interaction: useful feedback, unchanged null sign
+
+The already-recorded W75 mutation U=g n chi^2 can be tested as a new
+interaction without treating its old action-mutation failure as a
+physical rejection. With epsilon_F=m_F n+K n^2/2, K>0, its independent
+current variation and single-counted stress give
+
+~~~text
+mu_F=m_F+K n+g chi^2,  p_F=K n^2/2,
+T_total(ll)=(l.partial chi)^2+chi^2(l.partial theta_O)^2
+            +n mu_F(u.l)^2 >= 0  for n>0, mu_F>0.
+~~~
+
+There is genuine reciprocal feedback. At fixed chemical potential,
+n_eq=(mu-m_F-g chi^2)/K where mu>m_F+g chi^2; eliminating that equilibrium
+response induces -g^2 chi^4/(2K) in the effective potential. A
+current-conserving displacement independently reproduces the inertia
+n mu_F and the amplitude--compression vertex. This supplies neither
+the missing negative null source nor a fixed-charge global elimination.
+Its source test ends this fallback before a new collapse simulation.
+It is distinct from the article's currently minimal ordinary matter.
+
+### Decision and reproducibility
+
+`python -B verify_medium_health_horizon_diagnostic.py --joint-response-focusing-only`
+returns `JOINT_RESPONSE_RADIAL_DEFOCUSING_EXCLUDED`, exit 0, with
+27/27 checks. Independent projector and current derivations agree.
+The verified result is the stated exclusion, not a healthy new law.
+Fresh regressions `--source-completeness-only`, `--centre-response-only`
+and `--closure-selection-only` returned 17/17, 50/50 and 54/54 respectively,
+all exit 0. Their existing physical acceptance boundaries are unchanged.
+
+Changing coefficients or replacing F by another algebraic polynomial
+within the same regular comoving class will not supply the targeted
+healthy radial defocusing. Further development must change a named
+structural premise: justify a genuine constraint-degenerate branch,
+relative material/clock dynamics, or additional derivative structure;
+alternatively establish a different global route to regularity. These
+are alternatives to be selected and tested, not mechanisms established
+by this calculation. Time dependence of H alone has been explicitly
+tested and supplies no escape in the retained local principal regime.
+
+Status: `joint_principal_source_identity_verified=true`,
+`comoving_regular_principal_defocusing_excluded=true`,
+`new_healthy_full_action_selected=false`, `singularity_resolution=false`.
+There is no whole-RefG exclusion or finite-wavelength instability claim.
+Existing mass deficits, stable cores and scalar evolution results retain
+their original actions and evidence. Official texts and both physical
+evolution solvers are unchanged. No long integration or extra artifact
+was created.
+
+Literature context only: [Dubovsky et al., NEC and superluminal propagation](https://arxiv.org/abs/hep-th/0512260)
+examines the relation between energy conditions and perturbative stability;
+[Ballesteros et al., self-gravitating media](https://arxiv.org/abs/1603.02956)
+classifies media by their scalar content and symmetries. The specific
+identity above is derived from the local RefG action, without importing
+either paper's no-go assumptions or claiming their solutions as RefG results.
+
+## Stage 27: derivative-coupled medium prototype
+
+### Registered construction and validation contract (2026-09-10)
+
+- CLAIM_ID / TYPE: W92_CUBIC_MEDIUM_LOCAL_WITNESS_V1; new internal
+  action prototype, exact on-shell witness and finite-interval numerical
+  verification of linear scalar/tensor health. This is not a black hole.
+- TARGET: exhibit a dynamical source that reverses null convergence
+  while the constrained physical scalar and tensor perturbations have
+  positive kinetic/gradient coefficients and speeds at most the matter
+  light speed. First test the existing normalized clock-label operator;
+  then admit one derivative-coupled scalar prototype if that route fails.
+- ACTION: S=integral sqrt(-g)[P R/2+K(X)-g X Box(phi)]+S_O[g,psi_O],
+  X=-partial(phi)^2/2, signature -+++. S_O remains the canonical W58
+  ordinary field, counted once. phi is a proposed normalized collective
+  deficit variable. In THIS prototype it replaces the tested five-field
+  medium sector; no reduction of that sector to this action is claimed.
+- PHYSICAL CHOICE: preserve constant-shift symmetry, one matter metric,
+  constant positive EH coefficient and second-order Horndeski equations;
+  add derivative mixing between medium and geometry. This structure is
+  borrowed from cubic kinetic gravity braiding and must be credited.
+  It is a new hypothesis, not a term derived from the RefG microphysics.
+- FREEDOM / UNITS: with X=Lambda^4 x, K=Lambda^4 k(x),
+  G3=g X/Lambda^3. Set P=Lambda^2=g=1 for the dimensionless witness.
+  Choose the lowest-degree polynomial satisfying k(0)=0,k'(0)=1,
+  k''(0)=1 and k(1/2)=-4,k'(1/2)=-4,k''(1/2)=1. These are explicit
+  constitutive construction conditions, not observationally fitted data
+  or uniquely predicted coefficients. No black-hole mass scale is fixed.
+- BACKGROUND: flat homogeneous FLRW, ordinary field psi_O=0 (an exact
+  branch), initial a=1,phi=0,phi_dot=1,Hubble=1. The action determines
+  both accelerations. Scalar lapse and shift are eliminated explicitly
+  on Theta!=0; tensor coefficients are evaluated from the same action.
+- NUMERICAL VALIDATION: an independent exploratory pilot identifies
+  [-0.001,0.001] as the test interval. Freeze it now. Compare RK4 steps
+  2e-5,1e-5,5e-6 with independent DOP853 at rtol=1e-11,atol=1e-13.
+  Require sampled Gs>0,Fs>0,0<Fs/Gs<=1,rho+p<0,Theta!=0,D!=0;
+  maximum Friedmann/current drifts <1e-8 and common-time state agreement
+  <1e-8. Roundoff-dominated differences are not assigned an artificial
+  convergence order. Additional +/-0.005 probes stop at their first
+  failed health guard and are never merged into the accepted interval.
+- ERROR / SCOPE: exact witness plus sampled numerical interval, not
+  interval-arithmetic certification, nonlinear stability, a selected UV
+  cutoff, a radial/spacelike-gradient solution, or singularity resolution.
+  Canonical linear GR-vacuum recovery and connection of that vacuum to
+  the active branch are distinct questions. No observational pass.
+- FILES / STOP: existing report/verifier and idea.txt only. Stop after
+  the necessary local gate, conservation/refinement tests and honest
+  endpoint guards. No new full collapse or official monograph edits.
+
+### Structural choice and exact action
+
+The most immediate extension of Stage 26 is the already-allowed
+normalized clock--label term Q lambda exp(2H) sum(u.partial phi^A)^2.
+On the comoving background its quadratic contribution is
+Q b lambda(xi_t-theta_z)^2 and its background Hilbert null source is
+zero. With L=b lambda, it moves the two necessary energy coefficients
+to B-eta-L and C+L. Their strict positivity requires
+-C<L<B-eta, possible exactly when B+C-eta>0. The old source-sign
+obstruction survives arbitrary finite mixing coefficients. It is not
+necessary to prescribe a silent or exponential exterior for this test.
+
+The selected next prototype instead changes the derivative structure.
+Cubic kinetic gravity braiding supplies second-order field equations
+and a nontrivial metric--scalar kinetic coupling; it is an established
+construction, not a RefG discovery. The perturbation conventions and
+constraint action follow [Kobayashi, Yamaguchi and Yokoyama, sections 3--4](https://arxiv.org/html/1105.5723v4).
+Specializing that action and independently varying the homogeneous
+lapse, scale factor and scalar gives the equations below.
+
+The six registered jet conditions fix
+
+~~~text
+K(X)=X+X^2/2-282X^3+802X^4-624X^5,  G3(X)=X,  P=1.
+~~~
+
+The polynomial is a transparent local constitutive witness. Its
+coefficients are chosen to exhibit the required regime and canonical
+vacuum jet; they have not been derived from the RefG substrate or fitted
+to observations. The initial quartic construction was discarded before
+adoption because K_XX(0)<0; the selected minimal quintic enforces
+K_XX(0)=1 as well as K(0)=0,K_X(0)=1. This extra condition is not a UV
+completion proof. The polynomial is not assigned global validity.
+
+### Joint background and constrained perturbations
+
+Use Hc for the Hubble rate here, never for the article deficit field,
+v=phi_dot, X=v^2/2, and D=K_X+2XK_XX+6g Hc v+6g^2 X^2/P. Then
+
+~~~text
+rho=2XK_X-K+6g Hc v X,   pressure=K-2gX phi_ddot,
+J=v K_X+6g Hc X,         d(a^3 J)/dt=0,
+3P Hc^2=rho,             2P Hc_dot=-(rho+pressure).
+
+phi_ddot=[-3Hc v K_X-9g Hc^2 v^2
+          +3g v^4(K_X+3g Hc v)/(2P)]/D,
+Hc_dot=-X(K_X+3g Hc v-g phi_ddot)/P.
+~~~
+
+These evolve geometry and medium together. Their common origin is
+the reduced action -3P a a_dot^2/N+a^3 N K(v^2/(2N^2))
++g a^2 a_dot v^3/N^3, after one boundary integration.
+The independent lapse variation gives Friedmann, the scalar momentum
+gives a^3 J, and scale-factor variation gives the pressure equation.
+
+For this homogeneous branch the full linear scalar lapse and shift
+constraints, rather than only their short-wave limit, are eliminated.
+The executable retains the baseline spatial-gradient term and verifies
+the spatial/time integration-by-parts identity for the mixed term,
+including the resulting Fs=(1/a)d_t(a P^2/Theta)-P. These checks
+specialize the cited quadratic Horndeski action; they are not a new
+derivation of that general action from a RefG microscopic theory.
+Define
+
+~~~text
+Theta=P Hc-g v X,
+Sigma=XK_X+2X^2 K_XX+12g Hc v X-3P Hc^2,
+Gs=P^2 Sigma/Theta^2+3P=P^2 X D/Theta^2,
+Fs=P^2(Hc/Theta-Theta_dot/Theta^2)-P.
+~~~
+
+The reduced scalar action has coefficients Gs for time derivatives and
+Fs for spatial gradients. Both must be positive; c_s^2=Fs/Gs<=1 is
+the adopted matter-cone gate. Tensor coefficients are Gt=Ft=P>0,
+so c_T^2=1. In the exact ordinary vacuum branch psi_O=0, its canonical
+perturbations add no linear background source and retain their own
+ordinary scalar sector. Nonzero oscillons need a new coupled test.
+
+At the declared initial state all equations hold exactly:
+
+~~~text
+X=1/2, Hc=v=P=g=1, K=-4, K_X=-4, K_XX=1,
+phi_ddot=1/3, Hc_dot=2/3, rho+pressure=-4/3,
+Theta=1/2, Gs=9, Fs=1/3, c_s^2=1/27, c_T^2=1.
+~~~
+
+Thus negative null convergence and positive scalar/tensor principal
+energies coexist in this new derivative-coupled model. The old
+algebraic-medium identity does not apply to its different action.
+Dropping the cubic term destroys the witness's Friedmann constraint;
+using the unbraided stability formula also fails the exact control.
+
+Constant phi gives X=0,K=0,J=0 and an exact EH+S_O branch. Around it
+K_X(0)=1 supplies a canonical scalar quadratic term, while braiding
+starts beyond quadratic order. This establishes that branch and its
+linear vacuum limit, not a healthy interpolation to the active state.
+
+### Finite-interval check and actual stopping boundaries
+
+The selected interval is dimensionless t in [-0.001,0.001]. Three RK4
+steps in each direction and independent DOP853 integrations give:
+
+| Quantity over sampled validation interval | Result |
+|---|---:|
+| Gs | 8.0102695156 to 9.8891642018 |
+| Fs | 0.2094557230 to 0.5016010720 |
+| c_s^2 | 0.0211803261 to 0.0626197497 |
+| rho+pressure | -1.3711681808 to -1.3066821436 |
+| Minimum D; minimum Theta | 4.0046677977; 0.4998172909 |
+| Maximum Friedmann residual | 1.25e-13 |
+| Maximum conserved-current drift | 1.16e-13 |
+| Largest common-time refinement difference | 2.89e-15 |
+| Largest DOP853/RK4 state difference | 8.89e-16 |
+
+The differences are roundoff-dominated; no convergence order is claimed.
+An independently implemented JavaScript RK4 agrees with these bounds.
+Strict exact inequalities at the initial point imply an open local
+interval by continuity on the regular ODE branch. The quoted finite
+interval is numerically sampled, not interval-arithmetic certified.
+
+All 60 checks pass, including the direct normalized-mixing expansion
+and null metric variation, action variations, lapse/shift reduction,
+boundary identities, two negative controls, matched refinement grids,
+independent integration, conservation bounds and unchanged dependencies.
+Previous diagnostic modes also pass unchanged: joint-response/focusing
+27/27, source completeness 17/17, centre response 50/50, closure
+selection 54/54 and full static source balance 63/63. Their successful
+verification retains their original exclusions and scope, not a new
+physical success for any previously rejected candidate.
+
+The wider probes fail and remain failures. Backward continuation first
+records Fs<0 at t=-0.003500 on both finer grids (last passing fine
+sample -0.003495). Forward continuation first records c_s^2>1 at
+t=0.004235 on the finest grid, after the last passing sample 0.004230;
+the coarser first failure is 0.004240. Gradient instability and speed
+excess are different failures. No global stability or connection to
+the GR branch is inferred by discarding these rejected samples.
+
+### Decision and next required physical test
+
+The derivative-coupling mechanism passes the targeted local
+negative-source/linear-health gate. This is a genuine new candidate
+result, while the chosen polynomial is unsuitable as an unrestricted
+global law. It is retained as an explicit benchmark, not installed in
+the existing collapse solver or official theory.
+
+Before a black-hole computation, the derivative branch needs a
+controlled inhomogeneous completion and a healthy connection to the
+ordinary exterior, including timelike/spacelike gradient transitions,
+the matter source and its local readout. Neither the current FLRW
+witness nor its exact GR branch supplies that connection. Generic
+global obstacles in Horndeski theories also remain relevant; a local
+witness does not circumvent [Kobayashi's nonsingular-cosmology theorem](https://arxiv.org/abs/1606.05831)
+under its stated global assumptions.
+
+The witness is a classical local calculation. With P=Lambda^2 and
+Hc=Lambda at its initial point, no separation from a physical UV cutoff
+has been established. Lambda fixes the displayed model units, not a
+measured validity band. Thus physical_EFT_band_known=false remains a
+separate limitation even though the classical principal coefficients
+pass. Neither the pressure/readout law nor nonzero-oscillon dynamics
+of the original RefG medium has been derived from this new prototype.
+
+Reproduce with `python -B verify_medium_health_horizon_diagnostic.py
+--derivative-medium-prototype-only` (one command). The verifier prints
+the exact checks, actual sampled bounds and both failed wider probes.
+`local_linear_health_and_NEC_violation=true`,
+`FLRW_lapse_shift_reduction_verified=true`,
+`original_five_field_reduction_derived=false`,
+`physical_EFT_band_known=false`,
+`healthy_branch_connection_proved=false`, `regular_black_hole=false`.
+All official files and both physical evolution solvers are unchanged.
