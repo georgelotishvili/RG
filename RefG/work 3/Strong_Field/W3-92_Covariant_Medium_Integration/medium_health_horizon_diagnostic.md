@@ -13,16 +13,30 @@ exponential exterior and selected additive constitutive truncations are
 candidate assumptions, not requirements imposed on every future action.
 The negative results below remain valid in their stated domains.
 
-Current completed calculation: Stage 22's same-continuum-initial-slice
-regular-gauge test of the Stage 19 n=4 aggregate. An origin quadrature
-defect was identified with an exact static control and repaired without
-changing the source equations. The corrected strong-flow evolution
-passes bulk AND origin gates through regular time T=9.4, central proper
-time 3.539321393. The original polar comparison covers proper time
-3.323808328; on that overlap the refined central density difference is
-0.03485%. Later regular-gauge samples fail the origin checks and are
-not physical endpoint results. No trapped horizon or singularity
-removal has been demonstrated.
+Current completed calculation: Stage 24's interior-curvature evolution
+of the same Stage 19 n=4 aggregate. All twenty-five registered accuracy
+gates pass through T=21.1, central proper time 3.998101565. From Stage
+23's accepted T=16.2 slice to this slice, central density grows by
+6.8135 and central Kretschmann by 48.7034. Future trapping persists,
+with positive lapse and spatial metric coefficient on the accepted
+fine-grid interval. The earlier gauge/source equations are unchanged.
+This is validated finite-time interior contraction and curvature growth;
+compression arrest and singularity removal remain unestablished.
+
+Stage 24 also identifies the relevant fixed-source restriction:
+the canonical scalar retains null convergence. With a noncompact
+Cauchy surface and closed future trapping in a smooth global evolution,
+Penrose's theorem gives future null incompleteness. A route to global
+regularity therefore requires a physically derived change to a relevant
+premise or a demonstrated limit of this effective sector. Continuing
+the same numerical gauge alone does not supply that change.
+
+Stage 22's independent fixed-lapse reference remains valid through its
+own T=9.4. The new cross-gauge comparison covers central proper time
+3.539306998; its refined central density difference is 0.1391%. The
+additional interval passes refinement, centre/bulk residuals and
+step/domain controls, but has no second-gauge reference beyond that
+overlap. Stage 22's later rejected samples stay rejected.
 
 Stage 21's verified polar-slice compression (R50 -49.03%, R90 -45.83%
 through polar T=20), Stage 20's weaker-flow compression/arrest/
@@ -4991,3 +5005,393 @@ four gates and nine controls. The old solver, original article and
 official monographs retain their starting hashes. Only this report,
 the existing population script and private idea.txt were changed;
 no result files, extra folders, ignore rules or publication were added.
+
+## Stage 23 — Regular central variables and a dynamical clock
+
+Preregistered 2026-09-10. One bounded decision: can the same initial
+aggregate be evolved past central proper time 3.539321393 with the
+Stage 22 origin and bulk accuracy requirements? The direct obstacle
+is loss of central resolution with the fixed-lapse areal evolution.
+Allowed files remain this report, the population script and idea.txt.
+Source/action, sextic parameters, initial phase, total charge and
+cosmological-background approximation stay fixed.
+
+Use mu=M/r^3 and ell=log(L), with the exact regular equations
+mu_T=L*[k*A*(abs(P)^2+abs(Phi)^2)+(A+r^2*k^2)*B],
+k_T=beta*k_r+L*[k^2+alpha*mu+alpha*pr-A*ell_r/r],
+B=S/r, A=1+r^2*(k^2-2alpha*mu), beta=L*r*k.
+The scalar charge-conserving pair is unchanged. Advective harmonic
+slicing is ell_T=beta*ell_r-L*K, K=3k+r*k_r-alpha*r^2*B.
+The centre's proper time is evolved with the same RK4 stages,
+tau_T=L_c, rather than multiplying coordinate time by an initial lapse.
+This is a coordinate prescription, not an extra constitutive response.
+
+Controls before physical interpretation: algebraic equivalence,
+charge adjointness, Minkowski/static-core limits, regular initial
+mapping and clock integration. Schwarzschild PG is an instantaneous
+geometry control; its harmonic lapse evolves because K is nonzero.
+Use h=0.05,0.025,0.0125, R=32, T<=24, Courant factor 0.1;
+include a half-step fine run, R=48 middle run and two zero-flow controls.
+Fresh Stage 22 fixed-lapse references at h=0.0125,0.00625, T=9.4
+set the equal-central-proper-time comparison and reference accuracy.
+Reuse the 0.005 residual/observable tolerances, refinement requirement,
+mass/charge budgets and origin gates. Include gauge characteristic
+speed in the Courant bound. Extension requires a passing prefix beyond
+tau=3.549321393; a later coordinate time alone is insufficient.
+
+If harmonic slicing fails that bounded extension test, one preregistered
+second choice is advective 1+log slicing, ell_T=beta*ell_r-2*K, with
+the same initial data and T<=24. Its gauge speed is L*sqrt(2A/L).
+Stop after a validated extension, a validated trapped-region crossing,
+or these bounded numerical failures. No parameter search, artificial
+restoring term or molecular model is authorized by this test.
+Numerical slicing conventions follow the Bona--Masso family; see
+[Baumgarte and de Oliveira (2022)](https://arxiv.org/abs/2201.08857).
+
+The coarse harmonic pilot reached F<-0.02 at T=16.25. It is a candidate,
+pending the full controls. Before the refined suite, the trapping
+classification is made explicit: theta_out=2(sqrt(A)-v)/r and
+theta_in=-2(sqrt(A)+v)/r must both be negative. All five strong runs
+must have F_min<-0.005 on a validated common slice, with at least four
+trapped grid points on the finest grid. This distinguishes future
+trapping from F<0 alone and is numerical horizon evidence, not a
+global event-horizon or singularity-completeness test. The old inherited
+metric residual is an alternate spatial-operator check; the new
+regularized metric identity uses the actual evolved mu/k derivatives.
+
+### Collocated-gauge rejection and staggered repair
+
+The full collocated run on source
+`43e815b7ec148bd5407fbcdd51e6eb7d4b05583b6e40a6cffed50a546b412718`
+fails the extension test. Coarse/middle candidates at T=16.25 are
+unvalidated: fine strong flow hits the numerical guard at T=9.16,
+and the zero-flow fine control fails at T=8.0525. Only T<=2.1 passes
+all prefix checks. Refinement makes the late origin error worse.
+
+The isolated linear gauge subsystem explains a specific numerical
+defect. For twenty cells, its exact rational characteristic polynomial
+has a growing root 0.0564834-1.0501833i at h=1; frozen and even outer
+closures retain positive real parts. Growth scales as 1/h for a fixed
+cell count. Larger floating-point eigenproblems are ill-conditioned,
+so their precise apparent growth rates are not used as evidence.
+
+The correction retains harmonic slicing and stores v=r*k on radial
+faces, with v(0)=0, while ell remains cell-centred. It uses
+v_T=beta*v_r+alpha*L*r*(mu+pr)-L*A*ell_r and
+K=Div(v)-alpha*r*S. The face gradient and cell divergence obey
+Wc*D=-G^T*Wf with Wc=cell volumes and Wf=r_face^2*h on internal faces.
+Thus the flat linear gauge pair conserves positive discrete energy
+up to boundary flux. The actual exterior uses a second-order
+extrapolating closure and must separately pass the R=48 domain test;
+the closed-boundary energy identity is not asserted for that closure.
+
+The ten cheap corrected controls pass on source
+`4d033234d0f17078b0790570c45b269dd6738dcb9f84f81927521aa5e2ab71fe`:
+vacuum, exact clock, mass identity, quadratic face gradient, linear
+radial divergence, weighted adjointness and result-validator tests.
+The weighted-adjoint residual is 6.98e-15. The same T<=24/refinement/
+origin/reference contract now tests this identified discretization
+repair; the second lapse family is reserved for failure of the
+corrected harmonic formulation, not used to conceal the linear defect.
+
+### Corrected harmonic suite: resolved future trapping
+
+Executed source SHA256:
+`e2fd0b51e8c64758a54b59e85a958b7789fbf3cf896e584e994d1b0670afa4d7`.
+Five strong-flow cases, two zero-flow controls and two fresh fixed-lapse
+references completed using three parallel workers. The source and all
+pinned dependencies remained unchanged. All ten cheap controls pass.
+The fine strong-flow final sample is identical, field for field, to the
+earlier serial pilot on source `4d033234...`; the intervening change
+added parallel orchestration, not a new numerical RHS.
+
+All five strong-flow runs reach the registered F_min<-0.02 stopping
+condition at T=16.25. The common accepted prefix ends at T=16.2 on the
+preregistered 0.1-time search. All twenty gates pass there; the trapping
+classification is recomputed on that prefix, not borrowed from T=16.25.
+The two zero-flow controls complete T=24 and the references complete
+their fixed-lapse T=9.4. These times and radii are dimensionless model
+units, and equal coordinate times in different gauges are not equal events.
+
+| Fine-grid quantity | Initially | Accepted harmonic T=16.2 |
+|---|---:|---:|
+| Central proper time | 0 | 3.843043340 |
+| Central lapse | 0.376523552 | 0.053073578 |
+| Central scalar amplitude | 2.089277741 | 3.466415970 |
+| Central normal-frame density | 4.218606796 | 232.5496804 |
+| Minimum F=1-2alpha M/r | 0.537560657 | -0.016161943 |
+| Minimum A | 0.537560657 | 0.188996349 |
+| Mass R50 | 2.474452714 | 0.930059512 |
+| Mass R90 | 3.633850483 | 2.159086096 |
+
+At the minimum-F sphere, r=1.05625, the outgoing and ingoing expansions
+are -0.033293135 and -1.740465564. There are 22 future-trapped grid
+points on the fine grid. Interpolated marginal radii on this slice are
+0.931312019 and 1.208233480. Every strong-flow control has F_min<-0.005
+and both negative expansions; the fine run exceeds the four-point
+resolution requirement. Positive L and A leave the t-r metric
+determinant -L^2/A nonzero at F=0. These are numerically resolved
+future-trapped spheres and marginal spheres of the evolved slices,
+not a reconstruction of the global event horizon.
+
+Maximum accepted-prefix residuals and spatial refinement:
+
+| Residual | Fine | Fine/middle ratio |
+|---|---:|---:|
+| Hamiltonian | 9.850614e-5 | 0.25274 |
+| Alternate-operator metric evolution | 2.134945e-5 | 0.24383 |
+| Origin Hamiltonian | 2.880961e-4 | 0.25419 |
+| Origin isotropy | 9.463800e-4 | 0.25352 |
+| Regular central constraint | 2.082876e-4 | 0.25303 |
+| Actual-RHS regular metric identity | 7.868680e-5 | 0.25168 |
+
+Waveform refinement ratios lie between 0.2517 and 0.2559. The largest
+middle/fine normalized difference is 0.0057533 in central density;
+it passes the predeclared convergence-ratio criterion, not the
+alternative 0.005 absolute-difference criterion. No uniform sub-0.5%
+accuracy claim is made. The half-time-step difference is at most
+1.948e-11; R=32 and R=48 middle central/metric traces agree to recorded
+precision over this window. Fine charge drift is 3.553e-15, with zero
+recorded outer-mass drift. That mass is a finite-boundary ADM estimate;
+conservation alone does not replace the local constraints above.
+
+At equal central proper time, the fixed-lapse comparison covers
+tau<=3.539306998. Fine central amplitude/density differences are
+0.000127269 and 0.001390605, versus 0.000504344 and 0.005509882 on the
+middle pair. Reference accuracy residuals are 0.004853157 and
+0.001234273 for h=0.0125 and 0.00625. The additional 8.58% of central
+proper time has independent numerical controls, not an uncomputed
+cross-gauge comparison. Over the accepted prefix, zero-flow fine
+amplitude/density drift is 0.002306%/0.020017%, falling with refinement.
+
+The bounded Stage 23 decision is positive: the same retained source
+can be evolved through formation of a future-trapped region without
+the previous numerical breakdown. Harmonic slicing therefore passes;
+the reserved 1+log physical suite is not needed. The central density
+continues to rise, so this result is not compression arrest. Nor does
+a finite density at this slice establish a regular future interior.
+The next bounded physical question is the subsequent interior evolution
+and invariant curvature under the same source, with proper time and
+these accuracy controls retained. A coordinate slowdown alone cannot
+settle that endpoint. No new self-regulation law, cosmological forcing
+or microscopic particle-interaction model was inserted.
+
+Reproduction from this directory:
+`python population_assembly_initial_data.py --clock-checks --clock-staggered`
+returns 0 when the ten cheap controls pass.
+`python population_assembly_initial_data.py --clock-suite --clock-staggered`
+emits the complete raw samples, checks and accepted prefix to stdout.
+Its status is `CLOCK_PREFIX_EXTENDED_ENDPOINT_OPEN`, with
+`proper_time_extended=true` and `future_trapped_region_resolved=true`.
+It deliberately returns 1 because the full strong-field endpoint is
+open; that exit is not a failed numerical-prefix gate. Omitting
+`--clock-staggered` reproduces the rejected collocated diagnostic,
+not this accepted discretization. No additional result files are needed.
+
+## Stage 24 — Interior evolution and invariant curvature
+
+Preregistered 2026-09-10. One decision: does the same retained source
+continue its contraction after Stage 23's future-trapped slice, and
+what happens to invariant curvature on the numerically valid interval?
+The obstacle is that lapse slowdown and increasing density alone do
+not distinguish coordinate behavior from four-dimensional curvature.
+
+- CLAIM_ID: W92_INTERIOR_CURVATURE_V1; TYPE: NUMERICAL_EVIDENCE with
+  exact curvature-identity controls. The endpoint starts OPEN.
+- MODEL_VERSION/DEPENDENCIES: Stage 23 source e2fd0b51e8c64758a54b59e85a958b7789fbf3cf896e584e994d1b0670afa4d7,
+  unchanged Einstein--sextic action, alpha=.04, sextic=.25, n=4
+  aggregate, inward phase kappa=.1. All pinned dependencies retained.
+- ASSUMPTIONS/DOMAIN/CONVENTIONS: spherical, asymptotically flat
+  isolated-source approximation, signature -+++, G_ab=2alpha*T_ab,
+  harmonic staggered gauge, positive L and A. Cosmological forcing
+  remains absent. Finite grids approximate the asymptotic domain.
+- METHOD/FREEDOM_LEDGER: continue the same RK4 equations to T<=24,
+  with the earlier trapping stop disabled only in the new entrypoint.
+  Same h=.05,.025,.0125, R=32; half-step fine, R=48 middle, two
+  zero-flow controls and the two fixed-lapse references. A middle-grid
+  pilot first diagnoses the finite window. No source-parameter search.
+- OBSERVABLE_MAP: compute R, Ricci-square, Weyl-square and Kretschmann
+  from the Einstein source and spherical mass, with correct orthonormal
+  radial flux. Check their exact tensor contraction and flat,
+  Schwarzschild, constant-potential and radial-boost limits.
+- PASS_CONDITION/ERROR_BOUND/RESIDUAL: reuse all twenty Stage 23 gates.
+  Add finite curvature traces, curvature spatial convergence (normalized
+  RMS difference<.005 or refinement ratio<.6), step/domain differences
+  <.005, and proper-time extension beyond 3.853043340. Compare curvature
+  at equal central proper time where the fixed-lapse reference is valid.
+- FAIL_CONDITION/VALIDITY_HEALTH: nonfinite state, loss of positive A/L,
+  Courant>=.4 or failed local accuracy rejects the affected interval.
+  Stop at T=24 or the existing numerical guard; accept only the longest
+  passing sampled prefix. No excision, artificial dissipation or new
+  source is added to obtain a desired endpoint.
+- FALSIFIER/CROSSCHECK/BENCHMARK: failed exact contraction, boost,
+  known-geometry limits or refinement invalidates the curvature claim.
+  Stage 23 is the overlap benchmark. A finite curvature trace is not
+  a global completeness proof; the retained action's null convergence
+  is checked separately to constrain interpretation.
+- BRANCHES/CLOSURE_FLAGS: retained harmonic branch only;
+  interior_prefix_validated=false, curvature_extended=false,
+  singularity_resolution=false. Stop after the bounded decision.
+- FORWARD_MODEL/DATA_ROLE/IDENTIFIABILITY: N/A for observational
+  inference; no new data fit or observational confirmation is attempted.
+- PROVENANCE/FILES: code hash recorded at execution; full samples go
+  to stdout. Only the existing population script, this report and
+  private idea.txt may change. Official monographs remain unchanged.
+
+### Invariants, controls and the retained source's focusing condition
+
+The code normalization is G_ab=2alpha*T_ab, since its polar mass
+constraint is M_r=r^2*rho and F=1-2alpha*M/r. With mu=M/r^3 and
+orthonormal radial flux Jhat=sqrt(A)*S, define
+pt=A*(abs(P)^2-abs(phi_r)^2)/2-V. The source-based invariants are
+
+R=2alpha*(rho-pr-2pt),
+Ricci2=4alpha^2*(rho^2+pr^2+2pt^2-2Jhat^2),
+Weyl2=48alpha^2*[mu-(rho-pr+pt)/3]^2,
+Kretschmann=Weyl2+2Ricci2-R^2/3.
+
+The coordinate component S is not Jhat. Omitting the extra sqrt(A)
+would corrupt the scalar contraction. For numerical evaluation use
+z=A*(abs(P)^2-abs(phi_r)^2), I=Im(A*conj(P)*phi_r) and
+W=mu-z/6-V/3. Equivalent positive forms are
+Ricci2=4alpha^2*[(z-V)^2+3V^2+2I^2] and
+Kretschmann=48alpha^2*W^2+
+4alpha^2*[5(z-2V/5)^2/3+12V^2/5+4I^2].
+R=2alpha*(4V-z). These are on-shell reconstructions: the independent
+Einstein and centre residuals remain mandatory.
+
+The orthonormal Riemann blocks
+(R0101,R0202,R1212,R2323,R0212)=
+alpha*(rho-pr+2pt-2mu,pr+mu,rho-mu,2mu,Jhat)
+give an independent tensor contraction. Exact/special-case controls
+cover this contraction, Minkowski, Schwarzschild, constant-potential
+de Sitter, radial boosts and the equivalent positive scalar form.
+The result validator accepts its exact fixture and rejects nonfinite
+curvature, nonfinite reference curvature and a nonconvergent trace.
+The canonical radial null-contraction identity is checked symbolically.
+
+Smooth-centre reference curvature uses the independently evolved
+central rho and abs(phi), with mu=rho/3, pr=pt=rho-2V and zero flux.
+Production centre values extrapolate the first two cells. That signed
+estimator can give a small negative central Weyl-square when its exact
+regular-centre value is zero; the raw estimator is retained, not
+silently clipped. It is a truncation residual, not negative physical
+Weyl-square. The pointwise squared invariants use the positive forms.
+
+The retained canonical scalar has
+T_ab*l^a*l^b=abs(l^a*partial_a(phi))^2>=0 for every null vector l;
+radially rho+pr+/-2Jhat=A*abs(P+/-phi_r)^2. The sextic potential
+cancels from this identity. Consequently, binding energy and the
+dynamical clock preserve null convergence in this retained sector.
+Under a smooth global evolution with a noncompact Cauchy surface and
+a closed future-trapped surface, Penrose's theorem implies future
+null geodesic incompleteness. This conditional conclusion does not
+specify divergence of a curvature scalar. See
+[Penrose (1965)](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.14.57)
+and the explicit hypotheses in
+[Senovilla and Garfinkle, Theorem 2](https://arxiv.org/html/1410.5226).
+
+This constrains the next physical decision: an unchanged canonical
+sector with those global hypotheses cannot be promoted to a globally
+complete trapped black hole by further time-step or gauge changes.
+The finite-domain numerical test supplies evidence for the local
+trapped region and its subsequent curvature, not the theorem's full
+global premises. A full RefG completion would need a derived change
+to a relevant premise or a demonstrated boundary of this effective
+sector's validity. Neither is inserted in this finite continuation.
+
+At a smooth spherical centre, isotropy also gives the exact identity
+K_c=(4alpha^2/3)*[(rho_c+3p_c)^2+4rho_c^2],
+hence K_c>=16alpha^2*rho_c^2/3. Substitution of p_c=rho_c-2V into
+the positive scalar form has zero symbolic residual; the lower-bound
+remainder is 16alpha^2*(2rho_c-3V)^2/3. Thus unbounded central density
+would force unbounded K in this sector. The bound by itself does not
+assert monotonic K for every finite change of density and pressure.
+
+### Executed continuation and bounded decision
+
+Executed source SHA256:
+`df0d16c7715a2c3e3e02ec3487f2cad2860bf772e69983de6e2fb5af295af97d`.
+All eleven curvature/validator/null-source controls and all ten clock
+controls pass. Five strong-flow evolutions, two zero-flow evolutions
+and two fresh fixed-lapse references ran. Source and pinned dependencies
+remained unchanged. The middle-grid final sample exactly reproduces
+the serial pilot on source
+`c0457b7d2d343ca39bca151903004a698665c348e36e368ac785d312bc884771`.
+All shared fields of the new fine T=16.2 sample exactly reproduce the
+recorded Stage 23 endpoint. No RHS change was needed.
+
+The entire common interval through T=21.1 passes all twenty-five gates.
+It is the last complete common 0.1-time prefix available before the
+coarsest run stops. The following are dimensionless model quantities
+on the fine grid:
+
+| Quantity | Stage 23 slice, T=16.2 | Stage 24 slice, T=21.1 |
+|---|---:|---:|
+| Central proper time | 3.843043340 | 3.998101565 |
+| Central lapse | 0.053073578 | 0.016886256 |
+| Central density | 232.5496804 | 1584.467363 |
+| Central Ricci scalar | -16.95156069 | -128.6073604 |
+| Central Ricci-square | 767.5059771 | 37804.22317 |
+| Central Kretschmann | 1439.226846 | 70095.18389 |
+| Minimum F | -0.016161943 | -1.438045727 |
+| Minimum A | 0.188996349 | 0.011279396 |
+| Mass R50 | 0.930059512 | 0.425058505 |
+| Mass R90 | 2.159086096 | 0.841693255 |
+
+Intermediate fine central (density,Kretschmann) values are
+(470.960033,5929.096152) at T=18 and
+(1025.754286,28940.26976) at T=20. The accepted continuation adds
+4.035% in central proper time; it follows actual changing local clock
+rates. At T=21.1, both null expansions are negative at minimum F:
+-3.83201275 and -4.85138447. There are 132 future-trapped fine-grid
+points; marginal radii are approximately 0.18814416 and 1.83833402.
+
+Maximum accepted fine residuals (fine/middle ratio):
+Hamiltonian 0.001389652 (0.25962);
+alternate metric 0.000682581 (0.23617);
+origin Hamiltonian 0.000445651 (0.25823);
+origin isotropy 0.002588096 (0.26065);
+regular centre 0.000262704 (0.25022);
+actual-RHS metric 0.000319305 (0.25711).
+The finite-boundary mass is unchanged to recorded precision, charge
+drift is 3.553e-15 and the fine maximum Courant number is 0.09419.
+
+Curvature middle/fine normalized RMS differences range from 0.7704%
+to 1.9584%, with refinement ratios 0.2630--0.2743. These pass the
+predeclared convergence branch; they are not sub-0.5% precision.
+The largest curvature half-step difference is 7.987e-12. The R=48
+and R=32 middle traces agree to recorded precision. On the fixed-lapse
+proper-time overlap tau<=3.539306998, fine curvature differences
+(R,Ricci2,K) are (0.000882972,0.002196909,0.002156882), decreasing
+from (0.003495295,0.008650105,0.008493716) for the middle pair.
+Zero-flow density drift is at most 0.02002% on the fine accepted
+prefix; both zero-flow runs complete T=24.
+
+Every strong run eventually reaches the positive-face-A guard:
+coarse at approximately T=21.125, middle/domain at 22.010,
+fine at 23.0637 and fine half-step at 23.0644. The guard does not
+diagnose curvature infinity. Later individual samples lack the full
+common-grid validation and are not accepted physical endpoints.
+
+Decision: `interior_prefix_validated=true`,
+`curvature_extended=true`, `future_trapped_region_resolved=true`,
+`singularity_resolution=false`. Contraction and invariant curvature
+growth survive refinement after formation of the trapped region.
+This bounded continuation is complete. Its next physical follow-up
+is a source-level audit of the full RefG medium response: determine
+whether a derived term or validity boundary changes the relevant
+focusing/completeness premise while preserving the verified regimes.
+Repeated extension of this unchanged canonical solver is not, by
+itself, a route to a globally regular black hole.
+
+Reproduction: `python population_assembly_initial_data.py --interior-checks`
+returns 0 when its prerequisite controls pass.
+`python population_assembly_initial_data.py --interior-suite` emits raw
+samples and the accepted prefix, with status
+`INTERIOR_CURVATURE_EXTENDED_ENDPOINT_OPEN`. Its exit code is 1 because
+the physical endpoint remains open; the accepted-prefix gates pass.
+`--interior-pilot` is a diagnostic single run, not a refinement result.
+The legacy `--horizon-regular-checks` regression passes all twenty-two
+checks. Official monographs, the article and the base evolution solver
+retain their starting hashes. No extra result files or folders were added.

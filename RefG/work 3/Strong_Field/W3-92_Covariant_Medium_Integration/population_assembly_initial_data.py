@@ -1963,7 +1963,7 @@ def run_regular_suite(pilot=False):
         and all(c["status"]=="COMPLETED" for c in result["cases"].values())) else 1
 
 
-def regular_verdict(cases,refs,end):
+def regular_verdict(cases,refs,end,reference_key="local_mass_flux_relative_l2"):
     from scipy.interpolate import PchipInterpolator
     names=("coarse","middle","fine","half_step","domain")
     # Result validation must reject corrupt/shifted data, not just count rows.
@@ -1990,8 +1990,7 @@ def regular_verdict(cases,refs,end):
                 or not np.all(np.isfinite(list(cases[n]["matching"].values())))):
                 return dict(end=end,passed=False,gates={"finite_inputs":False})
         for h in ("0.0125","0.00625"):
-            trace=refs[h];flux=[s["local_mass_flux_relative_l2"] for s in trace
-                               if "local_mass_flux_relative_l2" in s]
+            trace=refs[h];flux=[s[reference_key] for s in trace if reference_key in s]
             if (len(trace)<2 or not flux or not np.all(np.isfinite(flux))
                 or not np.all(np.isfinite([[s[k] for k in
                     ("central_proper_time","central_amplitude","central_density")] for s in trace]))
@@ -2036,8 +2035,9 @@ def regular_verdict(cases,refs,end):
             cross[name][key]=float(max(abs(a-b))/max(max(abs(b)),1e-14))
     gates["cross_gauge"]=all(cross["fine"][k]<5e-3 and
         (cross["fine"][k]<1e-6 or cross["fine"][k]/max(cross["middle"][k],1e-14)<.6) for k in cross["fine"])
-    ref_residual={h:max(s.get("local_mass_flux_relative_l2",0.) for s in refs[h]) for h in refs}
-    gates["polar_reference_accuracy"]=ref_residual["0.00625"]<5e-3 and ref_residual["0.00625"]/max(ref_residual["0.0125"],1e-14)<.6
+    ref_residual={h:max(s.get(reference_key,0.) for s in refs[h]) for h in refs}
+    ref_gate="polar_reference_accuracy" if reference_key=="local_mass_flux_relative_l2" else "fixed_reference_accuracy"
+    gates[ref_gate]=ref_residual["0.00625"]<5e-3 and ref_residual["0.00625"]/max(ref_residual["0.0125"],1e-14)<.6
     zero={}
     for name in ("zero_middle","zero_fine"):
         trace=[s for s in cases[name]["samples"] if s["t"]<=end+1e-7]
@@ -2047,11 +2047,12 @@ def regular_verdict(cases,refs,end):
         budgets=budgets,residuals=residuals,convergence=dict(middle_fine=ef,ratios=ratios,half_step=et,domain=ed),
         cross_gauge=dict(proper_time_end=common_tau,
             covers_regular_prefix=bool(common_tau>=rows["fine"][-1]["central_proper_time"]-1e-7),
-            errors=cross,reference_flux_residual=ref_residual),zero_flow=zero,
+            errors=cross,reference_residual_kind=reference_key,
+            reference_residual=ref_residual),zero_flow=zero,
         first=rows["fine"][0],last=rows["fine"][-1])
 
 
-def regular_validation_controls():
+def regular_validation_controls(return_fixture=False):
     """Synthetic parser/verdict checks, not physical evolutions."""
     from copy import deepcopy
     names=("coarse","middle","fine","half_step","domain","zero_middle","zero_fine")
@@ -2066,6 +2067,7 @@ def regular_validation_controls():
         cases[n]=dict(samples=samples,matching={"field":0.})
     refs={h:[dict(s,local_mass_flux_relative_l2=res) for s in cases["fine"]["samples"]]
           for h,res in (("0.0125",.0004),("0.00625",.0001))}
+    if return_fixture:return cases,refs
     controls={"valid_fixture":regular_verdict(cases,refs,.2)["passed"]}
     mutations={
         "shifted_time":("t",.11), "nonfinite_field":("central_amplitude",float("nan")),
@@ -2118,6 +2120,527 @@ def regular_origin_controls(module):
 # END SAME-SLICE HORIZON-REGULAR HELPERS
 
 
+# BEGIN REGULAR CENTRAL VARIABLES / DYNAMICAL CLOCK
+CLOCK_PREVIOUS_SHA256="ee348a45a6c683674e328ba945f2c6dff4232693a97f96e9a67e8ef20e487730"
+CLOCK_TARGET_PROPER_TIME=3.549321393
+
+
+class CentralClockGrid:
+    """Same spherical system in (phi,P,mu,k,log L,tau_c); no source change."""
+    def __init__(self,module,radius,h,mode="harmonic"):
+        if mode not in ("harmonic","one_plus_log","frozen"):
+            raise ValueError("Unknown lapse prescription")
+        self.engine=regular_grid_factory(module)(radius,h)
+        self.r,self.h,self.radius=self.engine.r,h,radius
+        self.mode=mode
+    def cell_k(self,state):
+        return state[3].real
+    def unpack(self,state):
+        if state.shape!=(6,len(self.r)) or not np.all(np.isfinite(state)):
+            raise FloatingPointError("Invalid regular central state")
+        self.engine.lapse=np.exp(state[4].real)
+        self.engine.lapse_r=self.engine.derivative(self.engine.lapse)
+        self.engine.lapse_centre=float(np.exp((9*state[4,0].real-state[4,1].real)/8))
+        return np.array([state[0],state[1],self.r**3*state[2].real,self.cell_k(state)],complex)
+    def rhs(self,state):
+        raw=self.unpack(state);e=self.engine;g=e.geometry(raw);r=self.r
+        L=e.lapse;mu,k,ell=state[2].real,self.cell_k(state),state[4].real
+        f=2/L if self.mode=="one_plus_log" else np.ones_like(r)
+        gauge_speed=max(abs(g["beta"])+L*g["root"]*np.sqrt(f))
+        if e.time_step is not None:
+            e.maximum_courant=max(e.maximum_courant,e.time_step*gauge_speed/self.h)
+            if e.maximum_courant>=.4:
+                raise FloatingPointError("Dynamical-clock matter/gauge Courant bound exceeded")
+        old=e.rhs(raw);out=np.zeros_like(state);out[:2]=old[:2]
+        B=g["root"]*np.real(np.conjugate(state[1])*(g["gradient"]/r))
+        ell_r=e.derivative(ell);k_r=e.derivative(k)
+        out[2]=L*(k*g["A"]*(abs(state[1])**2+abs(g["gradient"])**2)
+                   +(g["A"]+r*r*k*k)*B)
+        out[3]=g["beta"]*k_r+L*(k*k+ALPHA*mu+ALPHA*g["pr"]-g["A"]*ell_r/r)
+        K=3*k+r*k_r-ALPHA*r*r*B
+        if self.mode!="frozen":out[4]=g["beta"]*ell_r-L*f*K
+        out[5]=e.lapse_centre
+        return out
+    def measure(self,state,t):
+        raw=self.unpack(state);e=self.engine;row=e.measure(raw,t)
+        rhs=self.rhs(state);g=e.geometry(raw);r=self.r;L=e.lapse
+        mu,k,ell=state[2].real,self.cell_k(state),state[4].real
+        B=g["S"]/r;H=k*k-2*ALPHA*mu
+        constraint=3*mu+r*e.derivative(mu)-g["rho"]-r*r*k*B
+        row["regular_centre_constraint"]=float(max(abs(constraint[:2]))/max(max(abs(g["rho"][:2])),1e-14))
+        terms=(2*k*self.cell_k(rhs),-2*ALPHA*rhs[2].real,
+               -L*k*(2*H+r*e.derivative(H)),
+               2*L*k*g["A"]*e.derivative(ell)/r,2*ALPHA*L*g["A"]*B)
+        active=r<=15.
+        scale=sum(abs(x) for x in terms)+ALPHA*L*(abs(g["rho"])+abs(g["pr"]))
+        row["regular_metric_residual"]=float(np.linalg.norm(sum(terms)[active])/max(np.linalg.norm(scale[active]),1e-14))
+        row["central_proper_time"]=float(state[5,0].real)
+        row["central_lapse"]=e.lapse_centre
+        row["minimum_lapse"]=float(min(L))
+        row["maximum_Courant"]=e.maximum_courant
+        j=int(np.argmin(g["F"]));theta_plus=2*(g["root"]-g["v"])/r
+        theta_minus=-2*(g["root"]+g["v"])/r
+        row["minimum_F_areal_radius"]=float(r[j])
+        row["outgoing_expansion_at_minimum_F"]=float(theta_plus[j])
+        row["ingoing_expansion_at_minimum_F"]=float(theta_minus[j])
+        row["future_trapped_points"]=int(np.sum((theta_plus<0)&(theta_minus<0)))
+        marginal=[]
+        for i in np.flatnonzero(g["F"][:-1]*g["F"][1:]<0):
+            weight=-g["F"][i]/(g["F"][i+1]-g["F"][i])
+            if (1-weight)*g["v"][i]+weight*g["v"][i+1]>0:
+                marginal.append(float(r[i]+weight*self.h))
+        row["future_marginal_radii"]=marginal
+        return row
+
+
+class StaggeredClockGrid(CentralClockGrid):
+    """Store v=r*k on radial faces; ell stays on cells. v(0)=0 by parity."""
+    def cell_k(self,state):
+        faces=np.r_[0.,state[3].real]
+        return (faces[:-1]+faces[1:])/(2*self.r)
+    def to_faces(self,x):
+        return np.r_[(x[:-1]+x[1:])/2,1.5*x[-1]-.5*x[-2]]
+    def face_gradient(self,x):
+        return np.r_[np.diff(x)/self.h,(2*x[-1]-3*x[-2]+x[-3])/self.h]
+    def divergence(self,v):
+        return np.diff(self.engine.edges**2*np.r_[0.,v])/self.engine.vol
+    def rhs(self,state):
+        out=super().rhs(state);raw=self.unpack(state);e=self.engine
+        g=e.geometry(raw);r=self.r;rf=e.edges[1:]
+        vf=state[3].real;ell=state[4].real;L=e.lapse
+        ellf=self.to_faces(ell);Lf=np.exp(ellf);muf=self.to_faces(state[2].real)
+        Af=1-2*ALPHA*rf*rf*muf+vf*vf
+        if np.min(Af)<=0 or not np.all(np.isfinite(Af)):
+            raise FloatingPointError("Staggered faces lost positive A")
+        f=2/L if self.mode=="one_plus_log" else np.ones_like(r)
+        ff=2/Lf if self.mode=="one_plus_log" else np.ones_like(rf)
+        if e.time_step is not None:
+            speed=max(abs(Lf*vf)+Lf*np.sqrt(Af*ff))
+            e.maximum_courant=max(e.maximum_courant,e.time_step*speed/self.h)
+            if e.maximum_courant>=.4:raise FloatingPointError("Staggered gauge Courant bound exceeded")
+        dv=np.r_[(np.r_[vf[1:],0.]-np.r_[0.,vf[:-1]])[:-1]/(2*self.h),
+                   (3*vf[-1]-4*vf[-2]+vf[-3])/(2*self.h)]
+        out[3]=Lf*vf*dv+ALPHA*Lf*rf*(muf+self.to_faces(g["pr"]))-Lf*Af*self.face_gradient(ell)
+        if self.mode!="frozen":
+            out[4]=g["beta"]*e.derivative(ell)-L*f*(self.divergence(vf)-ALPHA*r*g["S"])
+        return out
+
+
+def clock_initial_data(module,mod64,solution,h,radius,kappa,mode,staggered=False):
+    old,raw,matching=regular_initial_data(module,mod64,solution,h,radius,kappa)
+    factory=StaggeredClockGrid if staggered else CentralClockGrid
+    grid=factory(module,radius,h,mode)
+    state=np.zeros((6,len(grid.r)),complex)
+    state[:2]=raw[:2];state[2]=raw[2]/grid.r**3;state[3]=raw[3]
+    state[4]=np.log(old.lapse)
+    if staggered and max(abs(raw[3]))!=0:
+        raise ValueError("Staggered initializer requires the registered zero-k initial slice")
+    mapped=grid.unpack(state)
+    matching=dict(matching,regular_variable_map=float(max(abs(mapped-raw).ravel())),
+                  lapse_map=float(max(abs(grid.engine.lapse-old.lapse))))
+    return grid,state,matching
+
+
+def clock_rk4(grid,state,dt):
+    a=grid.rhs(state);b=grid.rhs(state+dt*a/2)
+    c=grid.rhs(state+dt*b/2);d=grid.rhs(state+dt*c)
+    return state+dt*(a+2*b+2*c+d)/6
+
+
+def clock_controls(module,staggered=False):
+    import sympy as sp
+    r,L,k,A,B,P2,D2=sp.symbols("r L k A B P2 D2",real=True)
+    mut=L*(k*A*(P2+D2)+(A+r*r*k*k)*B)
+    Mt=L*r*r*(r*k*A*(P2+D2)+(A+r*r*k*k)*r*B)
+    checks={"mass_equivalence":sp.simplify(r**3*mut-Mt)==0}
+    factory=StaggeredClockGrid if staggered else CentralClockGrid
+    grid=factory(module,4.,.1)
+    zero=np.zeros((6,len(grid.r)),complex)
+    rhs=grid.rhs(zero)
+    checks["vacuum"]=bool(max(abs(rhs[:5]).ravel())==0 and max(abs(rhs[5]-1))==0)
+    errors={}
+    # Exact contracting flat-slice constant-potential spacetime: k,mu fixed;
+    # only L and tau evolve. This independently tests the dynamical clock.
+    for mode in ("harmonic","one_plus_log"):
+        vals=[]
+        for dt in (.05,.025):
+            g=factory(module,4.,.1,mode);s=zero.copy()
+            kval=np.sqrt(2*ALPHA/9);L0=.7
+            s[0]=np.sqrt(2);s[2]=1/9;s[3]=kval;s[4]=np.log(L0)
+            if staggered:s[3]=kval*g.engine.edges[1:]
+            for _ in range(round(1/dt)):s=clock_rk4(g,s,dt)
+            lapse=L0/(1+3*kval*L0) if mode=="harmonic" else L0*np.exp(-6*kval)
+            tau=np.log1p(3*kval*L0)/(3*kval) if mode=="harmonic" else L0*(-np.expm1(-6*kval))/(6*kval)
+            vals.append(float(max(abs(np.exp(s[4,0].real)-lapse),abs(s[5,0].real-tau),
+                                      max(abs(s[2]-1/9)),max(abs(g.cell_k(s)-kval)))))
+        errors[mode]=vals
+        checks[mode+"_clock"]=vals[-1]<1e-8 and (vals[-1]<1e-12 or vals[-1]/max(vals[0],1e-30)<.2)
+    if staggered:
+        r=grid.r;rf=grid.engine.edges[1:];n=len(r);h=grid.h
+        checks["quadratic_face_gradient"]=max(abs(grid.face_gradient(r*r)-2*rf))<1e-11
+        checks["linear_radial_divergence"]=max(abs(grid.divergence(rf)-3))<1e-11
+        G=np.diff(np.eye(n),axis=0)/h
+        Wc=np.diag(grid.engine.vol);Wf=np.diag(rf[:-1]**2*h)
+        D=np.column_stack([grid.divergence(np.r_[np.eye(n-1)[:,j],0.]) for j in range(n-1)])
+        adjoint=float(np.linalg.norm(Wc@D+G.T@Wf))
+        checks["gauge_weighted_adjoint"]=adjoint<1e-11
+        errors["gauge_adjoint_residual"]=adjoint
+    from copy import deepcopy
+    cases,refs=regular_validation_controls(return_fixture=True)
+    for case in cases.values():
+        for s in case["samples"]:
+            s.update(regular_centre_constraint=s["hamiltonian_residual"],
+                regular_metric_residual=s["metric_evolution_residual"],future_trapped_points=0,
+                outgoing_expansion_at_minimum_F=1.,ingoing_expansion_at_minimum_F=-1.)
+    for trace in refs.values():
+        for s in trace:s["reference_accuracy_residual"]=s["local_mass_flux_relative_l2"]
+    checks["clock_verdict_fixture"]=clock_verdict(cases,refs,.2)["passed"]
+    for key in ("regular_centre_constraint","regular_metric_residual"):
+        bad=deepcopy(cases);bad["fine"]["samples"][2][key]=float("nan")
+        checks[key+"_nonfinite_rejected"]=not clock_verdict(bad,refs,.2)["passed"]
+    return dict(gates={k:bool(v) for k,v in checks.items()},clock_errors=errors)
+
+
+def clock_case(module,mod64,solution,h=.05,duration=24.,radius=32.,courant=.1,kappa=.1,mode="harmonic",staggered=False,interior=False):
+    grid,state,matching=clock_initial_data(module,mod64,solution,h,radius,kappa,mode,staggered)
+    steps=int(np.ceil(.05/(courant*h)));dt=.05/steps;grid.engine.time_step=dt
+    rows=[];t=0.;status="COMPLETED";reason=None
+    try:
+        rows.append(interior_measure(grid,state,t) if interior else grid.measure(state,t))
+        for j in range(round(duration/.05)):
+            for _ in range(steps):state=clock_rk4(grid,state,dt);t+=dt
+            rows.append(interior_measure(grid,state,t) if interior else grid.measure(state,t))
+            if not interior and rows[-1]["minimum_F"]<-.02:
+                status="TRAPPED_REGION_CANDIDATE";break
+    except Exception as error:
+        status="NUMERICAL_LIMIT";reason=f"{type(error).__name__}: {error}"
+    print(f"Clock {mode} h={h} kappa={kappa} R={radius}: {status}, t={t:.4f}",file=sys.stderr,flush=True)
+    return dict(h=h,radius=radius,courant=courant,dt=dt,kappa=kappa,mode=mode,staggered=staggered,duration=duration,
+                status=status,error=reason,matching=matching,samples=rows)
+
+
+def clock_verdict(cases,refs,end):
+    try:
+        required=("regular_centre_constraint","regular_metric_residual",
+            "future_trapped_points","outgoing_expansion_at_minimum_F","ingoing_expansion_at_minimum_F")
+        if not all(np.all(np.isfinite([[s[k] for k in required] for s in c["samples"] if s["t"]<=end+1e-7]))
+                   for c in cases.values()):
+            return dict(end=end,passed=False,gates={"clock_finite_inputs":False})
+    except (KeyError,TypeError,ValueError):
+        return dict(end=end,passed=False,gates={"clock_input_structure":False})
+    result=regular_verdict(cases,refs,end,reference_key="reference_accuracy_residual")
+    if not result.get("budgets"):return result
+    for key in ("regular_centre_constraint","regular_metric_residual"):
+        values={n:max(s[key] for s in cases[n]["samples"] if s["t"]<=end+1e-7) for n in ("middle","fine")}
+        a,b=values["middle"],values["fine"];ratio=b/max(a,1e-14)
+        result["gates"][key]=bool(np.isfinite(b) and b<.005 and (b<1e-6 or ratio<.6))
+        result["residuals"][key]=dict(middle=a,fine=b,ratio=ratio)
+    result["passed"]=all(result["gates"].values())
+    result["proper_time_extended"]=bool(result["passed"] and result["last"]["central_proper_time"]>CLOCK_TARGET_PROPER_TIME)
+    last={n:[s for s in cases[n]["samples"] if s["t"]<=end+1e-7][-1]
+          for n in ("coarse","middle","fine","half_step","domain")}
+    result["future_trapped_region_resolved"]=bool(result["passed"] and
+        last["fine"]["future_trapped_points"]>=4 and all(
+            s["minimum_F"]<-.005 and s["future_trapped_points"]>0 and
+            s["outgoing_expansion_at_minimum_F"]<0 and s["ingoing_expansion_at_minimum_F"]<0
+            for s in last.values()))
+    return result
+
+
+def clock_parallel_job(spec):
+    name,h,radius,courant,kappa,mode,staggered=spec
+    module,mod64,sol,_,_,_=aggregate_collapse_background()
+    if mode=="fixed":
+        return regular_case(module,mod64,sol,h=h,radius=radius,duration=9.4)
+    return clock_case(module,mod64,sol,h=h,radius=radius,courant=courant,
+                      kappa=kappa,mode=mode,staggered=staggered)
+
+
+def run_clock_suite(mode="harmonic",pilot=False,checks_only=False,staggered=False,pilot_h=.05):
+    result=dict(code_sha256=sha(__file__),previous_sha256=CLOCK_PREVIOUS_SHA256,mode=mode,staggered=staggered,cases={})
+    try:
+        module,mod64,sol,bg,pins,base=aggregate_collapse_background()
+        result.update(base_sha256=base,dependency_sha256=pins,controls=clock_controls(module,staggered))
+        if not all(result["controls"]["gates"].values()):
+            raise RuntimeError("Dynamical-clock control failed")
+        if not checks_only:
+            specs=[("coarse",pilot_h if pilot else .05,32.,.1,.1)]
+            if not pilot:
+                specs += [("middle",.025,32.,.1,.1),("fine",.0125,32.,.1,.1),
+                    ("half_step",.0125,32.,.05,.1),("domain",.025,48.,.1,.1),
+                    ("zero_middle",.025,32.,.1,0.),("zero_fine",.0125,32.,.1,0.)]
+            precomputed_refs={}
+            if staggered and not pilot:
+                from concurrent.futures import ProcessPoolExecutor
+                jobs=[(*s,mode,staggered) for s in specs]+[
+                    ("reference_"+str(h),h,32.,.1,.1,"fixed",False) for h in (.0125,.00625)]
+                with ProcessPoolExecutor(max_workers=3) as pool:
+                    for spec,value in zip(jobs,pool.map(clock_parallel_job,jobs)):
+                        name=spec[0]
+                        if name.startswith("reference_"):precomputed_refs[name[10:]]=value
+                        else:result["cases"][name]=value
+                result["parallel_workers"]=3
+            else:
+                for name,h,radius,courant,kappa in specs:
+                    result["cases"][name]=clock_case(module,mod64,sol,h=h,radius=radius,
+                                                   courant=courant,kappa=kappa,mode=mode,staggered=staggered)
+            if not pilot:
+                refs={}
+                for h in (.0125,.00625):
+                    reference=precomputed_refs[str(h)] if precomputed_refs else regular_case(module,mod64,sol,h=h,duration=9.4)
+                    if reference["status"]!="COMPLETED":raise RuntimeError("Fixed-lapse reference failed")
+                    rows=reference["samples"]
+                    for row in rows:
+                        row["reference_accuracy_residual"]=max(row[k] for k in (
+                            "hamiltonian_residual","metric_evolution_residual","origin_hamiltonian_residual","origin_isotropy_residual"))
+                    refs[str(h)]=rows
+                result["fixed_references"]=refs
+                last=min(c["samples"][-1]["t"] for c in result["cases"].values())
+                last_tenth=int(np.floor(10*last+1e-6))
+                result["last_common_interval"]=clock_verdict(result["cases"],refs,last_tenth/10)
+                result["validated_prefix"]=None
+                for j in range(last_tenth,0,-1):
+                    verdict=clock_verdict(result["cases"],refs,j/10)
+                    if verdict["passed"]:result["validated_prefix"]=verdict;break
+        result["source_unchanged"]=sha(__file__)==result["code_sha256"]
+        result["dependencies_unchanged"]=sha(HERE/"nonlinear_equilibrium_evolution.py")==base and all(sha(module.SF/p)==v for p,v in pins.items())
+        if not result["source_unchanged"] or not result["dependencies_unchanged"]:
+            raise RuntimeError("Dynamical-clock input/source changed during run")
+        result["status"]=("CLOCK_CONTROLS_PASSED" if checks_only else "CLOCK_PILOT_RECORDED" if pilot
+            else "CLOCK_PREFIX_EXTENDED_ENDPOINT_OPEN" if result["validated_prefix"] and result["validated_prefix"]["proper_time_extended"]
+            else "CLOCK_EXTENSION_OPEN")
+    except Exception as error:
+        result.update(status="DIAGNOSTIC_FAILED",error=f"{type(error).__name__}: {error}")
+    print(json.dumps(result,indent=2,allow_nan=False))
+    return 0 if checks_only and result["status"]=="CLOCK_CONTROLS_PASSED" else 1
+# END REGULAR CENTRAL VARIABLES / DYNAMICAL CLOCK
+
+
+# BEGIN INTERIOR CURVATURE DIAGNOSTIC
+INTERIOR_PREVIOUS_SHA256="e2fd0b51e8c64758a54b59e85a958b7789fbf3cf896e584e994d1b0670afa4d7"
+INTERIOR_TARGET_PROPER_TIME=3.853043340
+CURVATURE_KEYS=("central_Ricci_scalar","central_Ricci_square",
+                "central_Kretschmann","maximum_abs_Kretschmann")
+
+
+def spherical_curvature(mu,rho,pr,pt,normal_flux):
+    """On-shell invariants, -+++ and G_ab=2*ALPHA*T_ab; flux is orthonormal."""
+    R=2*ALPHA*(rho-pr-2*pt)
+    Ricci2=4*ALPHA**2*(rho*rho+pr*pr+2*pt*pt-2*normal_flux**2)
+    Weyl2=48*ALPHA**2*(mu-(rho-pr+pt)/3)**2
+    return dict(Ricci_scalar=R,Ricci_square=Ricci2,Weyl_square=Weyl2,
+                Kretschmann=Weyl2+2*Ricci2-R*R/3)
+
+
+def interior_measure(grid,state,t):
+    row=grid.measure(state,t);g=grid.engine.geometry(grid.unpack(state))
+    P=state[1];D=g["gradient"]
+    inv=scalar_curvature(state[2].real,g["A"],P,D,g["V"])
+    for key,values in inv.items():
+        if not np.all(np.isfinite(values)):
+            raise FloatingPointError("Nonfinite curvature: "+key)
+        # Signed extrapolation estimate: even a squared invariant can have
+        # a small negative O(h^4) estimate when its exact central value is zero.
+        row["central_"+key]=float((9*values[0]-values[1])/8)
+        row["maximum_abs_"+key]=float(max(abs(values)))
+    # Algebraically nonnegative canonical-scalar radial null contractions.
+    row["minimum_radial_null_source"]=float(min(np.minimum(
+        g["A"]*abs(P+D)**2,g["A"]*abs(P-D)**2)))
+    return row
+
+
+def scalar_curvature(mu,A,P,D,V):
+    """Equivalent scalar-specific sum-of-squares form reduces cancellation."""
+    z=A*(abs(P)**2-abs(D)**2);I=np.imag(A*np.conjugate(P)*D)
+    W=mu-z/6-V/3
+    return dict(Ricci_scalar=2*ALPHA*(4*V-z),
+        Ricci_square=4*ALPHA**2*((z-V)**2+3*V**2+2*I**2),
+        Weyl_square=48*ALPHA**2*W**2,
+        Kretschmann=48*ALPHA**2*W**2+4*ALPHA**2*(
+            5*(z-2*V/5)**2/3+12*V**2/5+4*I**2))
+
+
+def interior_controls():
+    import sympy as sp
+    mu,rho,pr,pt,j=sp.symbols("mu rho pr pt j",real=True)
+    a=sp.Rational(1,25)
+    R=2*a*(rho-pr-2*pt);Ricci2=4*a*a*(rho*rho+pr*pr+2*pt*pt-2*j*j)
+    W2=48*a*a*(mu-(rho-pr+pt)/3)**2
+    # Independently contract the six spherical orthonormal curvature blocks.
+    x=a*(rho-pr+2*pt)-2*a*mu;y=a*(pr+mu);z=a*(rho-mu);w=2*a*mu;b=a*j
+    contraction=4*(x*x+2*y*y+2*z*z+w*w-4*b*b)
+    checks={"spherical_tensor_contraction":sp.expand(contraction-W2-2*Ricci2+R*R/3)==0}
+    flat=spherical_curvature(0.,0.,0.,0.,0.)
+    checks["Minkowski"]=all(v==0 for v in flat.values())
+    vac=spherical_curvature(2.,0.,0.,0.,0.)
+    checks["Schwarzschild"]=abs(vac["Kretschmann"]-48*(ALPHA*2)**2)<1e-13
+    V=1/3;core=spherical_curvature(V/3,V,-V,-V,0.)
+    checks["constant_potential"]=max(abs(core["Ricci_scalar"]-8*ALPHA*V),
+        abs(core["Ricci_square"]-16*ALPHA**2*V*V),abs(core["Weyl_square"]),
+        abs(core["Kretschmann"]-32*ALPHA**2*V*V/3))<1e-13
+    # Radial Lorentz boost of a fixed tensor; angular sectional curvature
+    # and areal mass are boost invariant. This exposes a missing A in flux².
+    v=.37;c=1/np.sqrt(1-v*v);s=v*c
+    d,p,q,f=2.,.7,.2,.3
+    old=spherical_curvature(.5,d,p,q,f)
+    new=spherical_curvature(.5,c*c*d+2*c*s*f+s*s*p,
+        s*s*d+2*c*s*f+c*c*p,q,c*s*(d+p)+(c*c+s*s)*f)
+    checks["radial_boost"]=max(abs(new[k]-old[k]) for k in old)<1e-12
+    A=.3;P=1.2+.7j;D=.3-.4j;V=.2
+    X=A*abs(P)**2;Y=A*abs(D)**2
+    direct=spherical_curvature(.4,(X+Y)/2+V,(X+Y)/2-V,(X-Y)/2-V,A*np.real(np.conjugate(P)*D))
+    stable=scalar_curvature(.4,A,P,D,V)
+    checks["scalar_positive_form"]=max(abs(direct[k]-stable[k]) for k in direct)<1e-12
+    from copy import deepcopy
+    cases,refs=regular_validation_controls(return_fixture=True)
+    for case in cases.values():
+        for row in case["samples"]:
+            row.update(regular_centre_constraint=row["hamiltonian_residual"],
+                regular_metric_residual=row["metric_evolution_residual"],
+                future_trapped_points=0,outgoing_expansion_at_minimum_F=1.,
+                ingoing_expansion_at_minimum_F=-1.)
+            for key in CURVATURE_KEYS:row[key]=1+.1*row["central_proper_time"]
+    for trace in refs.values():
+        for row in trace:
+            row["reference_accuracy_residual"]=row["local_mass_flux_relative_l2"]
+            for key in CURVATURE_KEYS:row[key]=1+.1*row["central_proper_time"]
+    checks["curvature_validator_fixture"]=interior_verdict(cases,refs,.2)["passed"]
+    bad=deepcopy(cases);bad["fine"]["samples"][2]["central_Kretschmann"]=float("nan")
+    checks["nonfinite_curvature_rejected"]=not interior_verdict(bad,refs,.2)["passed"]
+    bad=deepcopy(cases)
+    for row in bad["fine"]["samples"]:row["central_Kretschmann"]*=2
+    checks["unconverged_curvature_rejected"]=not interior_verdict(bad,refs,.2)["passed"]
+    bad=deepcopy(refs);bad["0.00625"][1]["central_Kretschmann"]=float("nan")
+    checks["nonfinite_reference_curvature_rejected"]=not interior_verdict(cases,bad,.2)["passed"]
+    x1,x2,y1,y2=sp.symbols("x1 x2 y1 y2",real=True)
+    radial=x1*x1+x2*x2+y1*y1+y2*y2
+    dot=x1*y1+x2*y2
+    checks["canonical_radial_null_contraction"]=all(sp.expand(
+        radial+2*sgn*dot-(x1+sgn*y1)**2-(x2+sgn*y2)**2)==0 for sgn in (-1,1))
+    # Null convergence is independent of the potential:
+    # T_ab l^a l^b = |l^a partial_a phi|² for each null l.
+    return {k:bool(v) for k,v in checks.items()}
+
+
+def interior_verdict(cases,refs,end):
+    keys=CURVATURE_KEYS
+    try:
+        for case in cases.values():
+            data=[[s[k] for k in keys] for s in case["samples"] if s["t"]<=end+1e-7]
+            if not data or not np.all(np.isfinite(data)):
+                return dict(end=end,passed=False,gates={"curvature_finite":False})
+    except (KeyError,TypeError,ValueError):
+        return dict(end=end,passed=False,gates={"curvature_structure":False})
+    result=clock_verdict(cases,refs,end)
+    if not result.get("budgets"):return result
+    rows={n:[s for s in c["samples"] if s["t"]<=end+1e-7] for n,c in cases.items()}
+    def errors(a,b):
+        out={}
+        for key in keys:
+            x=np.array([s[key] for s in rows[a]]);y=np.array([s[key] for s in rows[b]])
+            out[key]=float(np.linalg.norm(x-y)/max(np.linalg.norm(y),1e-14))
+        return out
+    em,ef,et,ed=errors("coarse","middle"),errors("middle","fine"),errors("fine","half_step"),errors("middle","domain")
+    ratios={k:ef[k]/max(em[k],1e-14) for k in keys}
+    result["gates"].update(curvature_finite=True,
+        curvature_refinement=all(ef[k]<.005 or ratios[k]<.6 for k in keys),
+        curvature_step=max(et.values())<.005,curvature_domain=max(ed.values())<.005)
+    result["curvature_convergence"]=dict(middle_fine=ef,ratios=ratios,half_step=et,domain=ed)
+    from scipy.interpolate import PchipInterpolator
+    central_keys=keys[:3];cross={}
+    try:
+        upper=min(rows["middle"][-1]["central_proper_time"],rows["fine"][-1]["central_proper_time"],
+                  refs["0.0125"][-1]["central_proper_time"],refs["0.00625"][-1]["central_proper_time"])
+        tau=np.linspace(0,upper,161)
+        for name,h in (("middle","0.0125"),("fine","0.00625")):
+            cross[name]={}
+            for key in central_keys:
+                def mapped(trace):
+                    values=np.array([s[key] for s in trace])
+                    if not np.all(np.isfinite(values)):raise ValueError("Nonfinite reference curvature")
+                    return PchipInterpolator([s["central_proper_time"] for s in trace],values)(tau)
+                x,y=mapped(rows[name]),mapped(refs[h])
+                cross[name][key]=float(np.linalg.norm(x-y)/max(np.linalg.norm(y),1e-14))
+        result["gates"]["curvature_cross_gauge"]=all(cross["fine"][k]<.005 and (
+            cross["fine"][k]<1e-6 or cross["fine"][k]/max(cross["middle"][k],1e-14)<.6) for k in central_keys)
+        result["curvature_cross_gauge"]=dict(proper_time_end=upper,errors=cross)
+    except (KeyError,TypeError,ValueError):
+        result["gates"]["curvature_cross_gauge"]=False
+    result["passed"]=all(result["gates"].values())
+    result["interior_prefix_validated"]=result["passed"]
+    result["proper_time_extended"] &= result["passed"]
+    result["curvature_extended"]=bool(result["passed"] and result["last"]["central_proper_time"]>INTERIOR_TARGET_PROPER_TIME)
+    result["future_trapped_region_resolved"] &= result["passed"]
+    result["singularity_resolution"]=False
+    return result
+
+
+def interior_parallel_job(spec):
+    name,h,radius,courant,kappa=spec
+    module,mod64,sol,_,_,_=aggregate_collapse_background()
+    if name.startswith("reference_"):
+        reference=regular_case(module,mod64,sol,h=h,radius=radius,duration=9.4)
+        for row in reference["samples"]:
+            row["reference_accuracy_residual"]=max(row[k] for k in (
+                "hamiltonian_residual","metric_evolution_residual",
+                "origin_hamiltonian_residual","origin_isotropy_residual"))
+            # At a smooth spherical centre the gradient/flux and Weyl vanish.
+            # Reconstruct reference curvature from independent rho and |phi|.
+            s=row["central_amplitude"]**2;V=s/2-s*s/4+SEXTIC*s**3/6
+            rho=row["central_density"];p=rho-2*V
+            for key,value in spherical_curvature(rho/3,rho,p,p,0.).items():
+                row["central_"+key]=float(value)
+        return reference
+    return clock_case(module,mod64,sol,h=h,radius=radius,courant=courant,kappa=kappa,
+                      staggered=True,interior=True)
+
+
+def run_interior_suite(pilot=False,checks_only=False,pilot_h=.025):
+    result=dict(code_sha256=sha(__file__),previous_sha256=INTERIOR_PREVIOUS_SHA256,cases={})
+    try:
+        module,mod64,sol,bg,pins,base=aggregate_collapse_background()
+        result.update(base_sha256=base,dependency_sha256=pins,
+            controls=interior_controls(),clock_controls=clock_controls(module,True))
+        if not all(result["controls"].values()) or not all(result["clock_controls"]["gates"].values()):
+            raise RuntimeError("Interior prerequisite control failed")
+        if not checks_only:
+            if pilot:
+                result["cases"]["pilot"]=clock_case(module,mod64,sol,h=pilot_h,staggered=True,interior=True)
+            else:
+                from concurrent.futures import ProcessPoolExecutor
+                jobs=[("coarse",.05,32.,.1,.1),("middle",.025,32.,.1,.1),
+                    ("fine",.0125,32.,.1,.1),("half_step",.0125,32.,.05,.1),
+                    ("domain",.025,48.,.1,.1),("zero_middle",.025,32.,.1,0.),
+                    ("zero_fine",.0125,32.,.1,0.),("reference_0.0125",.0125,32.,.1,.1),
+                    ("reference_0.00625",.00625,32.,.1,.1)]
+                refs={}
+                with ProcessPoolExecutor(max_workers=3) as pool:
+                    for spec,value in zip(jobs,pool.map(interior_parallel_job,jobs)):
+                        if spec[0].startswith("reference_"):
+                            if value["status"]!="COMPLETED":raise RuntimeError("Fixed-lapse reference failed")
+                            refs[spec[0][10:]]=value["samples"]
+                        else:result["cases"][spec[0]]=value
+                result["fixed_references"]=refs
+                last=min(c["samples"][-1]["t"] for c in result["cases"].values())
+                tenth=int(np.floor(10*last+1e-6));result["validated_prefix"]=None
+                result["last_common_interval"]=interior_verdict(result["cases"],refs,tenth/10)
+                for i in range(tenth,0,-1):
+                    value=interior_verdict(result["cases"],refs,i/10)
+                    if value["passed"]:result["validated_prefix"]=value;break
+        result["source_unchanged"]=sha(__file__)==result["code_sha256"]
+        result["dependencies_unchanged"]=sha(HERE/"nonlinear_equilibrium_evolution.py")==base and all(sha(module.SF/p)==v for p,v in pins.items())
+        if not result["source_unchanged"] or not result["dependencies_unchanged"]:
+            raise RuntimeError("Interior source/dependency changed during run")
+        result["status"]=("INTERIOR_CONTROLS_PASSED" if checks_only else "INTERIOR_PILOT_RECORDED" if pilot
+            else "INTERIOR_CURVATURE_EXTENDED_ENDPOINT_OPEN" if result["validated_prefix"] and result["validated_prefix"]["curvature_extended"]
+            else "INTERIOR_EXTENSION_OPEN")
+    except Exception as error:
+        result.update(status="DIAGNOSTIC_FAILED",error=f"{type(error).__name__}: {error}")
+    print(json.dumps(result,indent=2,allow_nan=False))
+    return 0 if checks_only and result["status"]=="INTERIOR_CONTROLS_PASSED" else 1
+# END INTERIOR CURVATURE DIAGNOSTIC
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pilot", action="store_true")
@@ -2132,12 +2655,26 @@ def main():
     parser.add_argument("--horizon-regular-pilot", action="store_true")
     parser.add_argument("--horizon-regular-suite", action="store_true")
     parser.add_argument("--horizon-regular-checks", action="store_true")
+    parser.add_argument("--clock-suite", action="store_true")
+    parser.add_argument("--interior-suite", action="store_true")
+    parser.add_argument("--interior-pilot", action="store_true")
+    parser.add_argument("--interior-checks", action="store_true")
+    parser.add_argument("--interior-pilot-h", type=float, default=.025)
+    parser.add_argument("--clock-pilot", action="store_true")
+    parser.add_argument("--clock-checks", action="store_true")
+    parser.add_argument("--clock-mode", choices=("harmonic","one_plus_log"), default="harmonic")
+    parser.add_argument("--clock-staggered", action="store_true")
+    parser.add_argument("--clock-pilot-h", type=float, default=.05)
     parser.add_argument("--count", type=int, default=1)
     parser.add_argument("--separation", type=float, default=28.0)
     parser.add_argument("--h", type=float, default=0.5)
     parser.add_argument("--radius", type=float, default=32.0)
     parser.add_argument("--half-height", type=float, default=64.0)
     args = parser.parse_args()
+    if args.interior_suite or args.interior_pilot or args.interior_checks:
+        return run_interior_suite(args.interior_pilot,args.interior_checks,args.interior_pilot_h)
+    if args.clock_suite or args.clock_pilot or args.clock_checks:
+        return run_clock_suite(args.clock_mode,args.clock_pilot,args.clock_checks,args.clock_staggered,args.clock_pilot_h)
     if args.horizon_regular_checks:
         checks=dict(algebra=regular_algebra_controls(),validator=regular_validation_controls())
         spec=importlib.util.spec_from_file_location("regular_check_base",HERE/"nonlinear_equilibrium_evolution.py")
