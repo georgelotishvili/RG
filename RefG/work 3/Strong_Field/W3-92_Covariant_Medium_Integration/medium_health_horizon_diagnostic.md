@@ -13,7 +13,41 @@ exponential exterior and selected additive constitutive truncations are
 candidate assumptions, not requirements imposed on every future action.
 The negative results below remain valid in their stated domains.
 
-Current completed work: Stage 28 excludes the frozen Stage 27 witness's
+Latest candidate dynamics: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section 7, evolves the sourced stationary saturation candidate after a small
+inward energy-flux perturbation. The charge-weighted areal radius contracts
+by about 0.478%, then re-expands past its initial value on 0<=t<=32.
+The response survives three-grid, half-step and domain controls; all 85
+checks pass, independently rerun. No new action, restoring term or damping
+is added. This is finite-window compatibility with the retained scalar,
+not generic stability or a singularity-free black hole. The source mass
+is below this branch's black-hole threshold; the next collapse test must
+meet the mass/trapping conditions and use a horizon-crossing chart.
+
+Previous stationary source: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section 6, couples the retained canonical oscillon to the already-postulated
+spherical saturation action at fixed scalar charge. It gives a validated
+horizonless stationary continuation and a regular-centre curvature bound,
+with 63 checks. This is a distinct gravitational branch, not a selected
+five-field F or a solution of its Q Fbar+W-V condition. Full foundation
+pressure/readout matching, stability and a regular black hole remain open.
+Both intuitive monographs and all previous evolution engines are unchanged.
+
+Previous source bridge: [common_scale_centre_source.md](common_scale_centre_source.md),
+section 8, derives the exact lapse--deficit balance from the existing
+independent static equations and verifies the retained Einstein--scalar
+mass/source limit with 40 checks. The Q Fbar+Omega^2 chi^2/N^2-V balance
+is a necessary source condition, not a selected constitutive law or a
+full-medium regular object. Both monographs remain unchanged.
+
+Previous bounded audit: [common_scale_centre_source.md](common_scale_centre_source.md),
+section 7, distinguishes the existing reciprocal matter/geometry loops
+from the failed pure-medium centre. Its 13 exact checks show why adding
+time dependence alone does not release that centre's normalized-source
+lock. No new action or monograph amendment is made. Existing-code reruns
+and legacy monograph-hash failures are recorded separately in that section.
+
+Stage 28 excludes the frozen Stage 27 witness's
 regular homogeneous return to weak GR and the prototype's nontrivial
 static spherical scalar exterior with the registered flat-vacuum
 boundary. The stationary phi=q t+chi(r), q!=0, decaying-spatial-gradient
@@ -52,7 +86,7 @@ supply an accepted healthy full completion or a calibrated cutoff. Stage
 14 already recorded the static source distinction; Stage 25 extends its
 verification to time-dependent H and ties it to the actual evolution code.
 
-Latest completed evolution: Stage 24's interior-curvature evolution
+Latest original Einstein--scalar collapse evolution: Stage 24's interior-curvature evolution
 of the same Stage 19 n=4 aggregate. All twenty-five registered accuracy
 gates pass through T=21.1, central proper time 3.998101565. From Stage
 23's accepted T=16.2 slice to this slice, central density grows by
@@ -6239,3 +6273,52 @@ The source fraction q=m/M differs from the operational scale p, and M is
 ADM mass, not an oscillon inventory. The existing RefG action and monographs
 remain unchanged. Joining the full stress to RefG, controlling the reduced
 action's endpoint, formation and generic stability remain unresolved.
+
+## Sourced spherical saturation: action, contraction and joining test
+
+[spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md)
+and [verify_spherical_saturation_bridge.py](verify_spherical_saturation_bridge.py)
+develop the inverse candidate into a sourced spherical effective action.
+The published Hayward response is an explicit new gravitational postulate.
+Conserved macroscopic dust is counted once; its interior and vacuum exterior
+solve the same spherical equations. The derived surface contraction crosses
+the horizons, approaches zero only at infinite dust proper time, and has
+bounded curvature. The generalized mass constraint and no-shell spherical
+matching are checked directly. The final run passes 74/74 checks; the
+unchanged inverse-candidate verifier still passes 84/84.
+
+This closes a conditional matter/geometry construction, not the full RefG
+pressure–oscillon connection. Exact common static clock/rod scaling is
+incompatible with the chosen reciprocal-areal Hayward target. Dust density
+is unbounded at infinite proper time, while ADM mass remains constant in
+this non-radiating example. Global completeness, generic stability and a
+regular full-dimensional action extension remain unestablished. The
+minimal magnetic nonlinear-electrodynamic source alternative fails its
+explicit local gradient test. No previous solver, official monograph,
+private hypothesis file, or publication state was changed.
+
+## Source-first common-scale central test
+
+[common_scale_centre_source.md](common_scale_centre_source.md) and
+[verify_common_scale_centre_source.py](verify_common_scale_centre_source.py)
+derive the central source lock before selecting a geometry. For the
+original strictly static common-scale canonical-scalar/material branch,
+the first radial source and label equations require opposite signs of
+the cubic label coefficient under the nondegenerate positive-energy
+gate. A response-Hessian scan cannot repair that contradiction.
+
+A newly postulated response with the existing normalized clock-label
+operator gives an actual regular pure-medium central germ, independently
+varied equations, and positive leading short-wave central matter energy.
+Its finite-domain radial continuation is numerically checked.
+
+The subsequent same-action joining audit in that report's section 6
+rejects this candidate as a regular isolated-object completion. Its
+polynomial has no admissible stress-free constant-H vacuum; its radial
+principal-energy gate fails at x=3.4363520119362554, and a zero canonical
+scalar cannot emerge outside the chosen centre by regular continuation.
+A response-only fade also cannot preserve both the stated leading
+energy gate and the common-p beta=1 exterior. All 87 combined checks
+pass as verification of these scoped results, including the rejection.
+The local-centre identities remain valid; no full RefG no-go, monograph
+change or completed regular black hole is asserted.
