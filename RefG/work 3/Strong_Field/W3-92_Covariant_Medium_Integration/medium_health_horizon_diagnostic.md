@@ -6191,3 +6191,51 @@ function's AST hash is
 `RefG_theory_excluded=false`, `regular_black_hole=false`.
 Official monographs, root article and physical evolution solvers remain
 unchanged. No new file, folder, numerical collapse or publication.
+
+## Stage 29: nonzero ordinary source on the existing active background
+
+The bounded calculation is in [matter_medium_source_response.md](matter_medium_source_response.md)
+and [verify_matter_medium_source_response.py](verify_matter_medium_source_response.py).
+It preserves the Stage 27 action and changes the tested initial background
+from Stage 28's constant medium to the already registered active state.
+At fixed initial scale factor and medium shift charge, the addition of
+ordinary canonical-field density produces delta rho_medium = -delta rho_O/3
+to first order. Three finite initial-state checks confirm the partial
+compensation with two independent root algorithms. All 61 checks pass.
+
+The independent leading quasistatic spatial calculation gives equal linear
+clock/ruler potentials and G_eff/G_EH=4 at the original active witness.
+Its physical scale window remains unestablished. The full matter-coupled
+health problem and identification with the original RefG pressure remain
+open; no black-hole endpoint, saturation or same-action reduction of the
+five-field medium is inferred. Stage 28's stated exclusions remain valid.
+Both new files are Git-visible; no existing evolution solver was changed.
+
+The same package now includes the bounded pressure-map audit, invoked with
+--pressure-map-only (29/29 checks). It distinguishes homogeneous
+delta rho_medium=-delta rho_O/3 from the leading local spatial
+delta rho_medium=+3 delta rho_O. For positive P and A_eff, the latter
+adds B_mix^2/(2P A_eff) to the bare-Einstein source response. The linear
+clock/rod readout matches, while the direct energy-density/foundation-pressure
+identification fails the inherited homogeneous map. No new constitutive
+law is selected and no local self-regulation or singularity claim is closed.
+The original 61 source checks and earlier 42+41 checks remain passing.
+
+## Inverse construction: explicitly postulated finite response
+
+The author-authorized inverse candidate is recorded in
+[inverse_saturation_candidate.md](inverse_saturation_candidate.md) and
+[verify_inverse_saturation_candidate.py](verify_inverse_saturation_candidate.py).
+The new premise z=y(1-ell^2 z), with y=2M/r^3, selects W85's already known
+Hayward geometry as a collective response candidate. An exponential-source
+control instead retains divergent central curvature. The selected law
+has finite central curvature, the known two-horizon branch, finite radial
+freely falling tides, and an E=1 asymptotic inward geodesic. Its required
+total stress includes a negative-pressure core. The independent verifier
+passes 84/84 checks, including direct ingoing-coordinate Einstein/Riemann
+calculations and proper-time quadrature.
+
+The source fraction q=m/M differs from the operational scale p, and M is
+ADM mass, not an oscillon inventory. The existing RefG action and monographs
+remain unchanged. Joining the full stress to RefG, controlling the reduced
+action's endpoint, formation and generic stability remain unresolved.
