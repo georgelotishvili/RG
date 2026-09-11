@@ -550,7 +550,7 @@ def oscillon_checks(return_background=False):
     return result
 
 
-def dynamics_checks(pilot=False):
+def dynamics_checks(pilot=False, return_grid=False):
     """Frozen finite-window test; no new action or pressure/readout postulate."""
     import time
     source,ref,model,solution = oscillon_checks(return_background=True)
@@ -637,7 +637,7 @@ def dynamics_checks(pilot=False):
             return dict(N=B,sigma=sigma,c=B*sigma,mass=mass,mass_outer=outer,
                         sigma0=math.exp(-log_outer),gradient=grad,q=q)
 
-        def local_flux_check(self,state,eta=1e-6):
+        def local_flux_check(self,state,eta=1e-6,diagnostic_radius=15.0):
             rhs = self.rhs(state)
             geom = self.geometry(*state)
             mdot = (self.geometry(*(state+eta*rhs))["mass"]-
@@ -645,10 +645,10 @@ def dynamics_checks(pilot=False):
             coefficient = self.r**2*geom["sigma"]*geom["N"]**2
             target = coefficient*np.real(np.conjugate(state[1])*geom["gradient"])
             scale = coefficient*abs(state[1])*abs(geom["gradient"])
-            inside = self.r<=15
+            inside = self.r<=diagnostic_radius
             norm = lambda x: math.sqrt(float(np.sum(self.vol[inside]*x[inside]**2)))
             d4 = lambda x: (x[:-4]-8*x[1:-3]+8*x[3:-1]-x[4:])/(12*self.h)
-            region = self.r[2:-2]<=15
+            region = self.r[2:-2]<=diagnostic_radius
             square = abs(state[0])**2
             kinetic = abs(state[1])**2+abs(geom["gradient"])**2
             potential = square/2-square**2/4+square**3/24
@@ -661,6 +661,13 @@ def dynamics_checks(pilot=False):
                 mass_radial_constraint_relative_l2=ratio(d4(geom["mass"])-ms,ms),
                 lapse_radial_constraint_relative_l2=ratio(d4(np.log(geom["sigma"]))-ls,ls),
                 semidiscrete_charge_rate=qrate,directional_step=eta)
+
+    if return_grid:
+        if any(not c["passed"] for c in checks):
+            raise RuntimeError("Dynamic equation prerequisite failed")
+        return SaturationGrid,ref,dict(stationary_checks=source["checks"],
+            stationary_passed=source["passed"],source_pins=source["source_pins"],
+            exact_dynamic_checks=len(checks))
 
     # Independent directional derivative of the nonlinear ADM functional.
     hamiltonian = []
@@ -837,16 +844,969 @@ def dynamics_checks(pilot=False):
             generic_stability=False,damping_proved=False,black_hole_formation=False,singularity_removal=False))
 
 
+def supercritical_data_checks(return_data=False):
+    """One supercritical, initially untrapped charged packet; stdout only."""
+    from scipy.integrate import solve_ivp,simpson
+    from scipy.optimize import brentq
+    Grid,ref,prerequisite = dynamics_checks(return_grid=True)
+    alpha,ell = ref.ALPHA,2.0
+    rin,rout,centre,width = 20.0,40.0,30.0,10.0
+    wave_number,omega,velocity = 1.0,math.sqrt(2),1/math.sqrt(2)
+    critical = 3*math.sqrt(3)*ell/(4*alpha)
+    target,cap = 2*critical,2.2*critical
+    lower_B = 1-2*alpha*target/rin
+    checks = []
+    def test(name,condition,**evidence):
+        checks.append(dict(name=name,passed=bool(condition),**evidence))
+    def exact(name,expression):
+        residual = s.factor(s.simplify(expression))
+        test(name,residual==0,residual=str(residual))
+    rr,aa,ll,MM = s.symbols("r alpha ell M",positive=True)
+    qq = rr**3/(rr**3+2*aa*ll**2*MM)
+    BB = 1-2*aa*MM*qq/rr
+    critical_symbol = 3*s.sqrt(3)*ll/(4*aa)
+    polynomial = rr**3-2*aa*MM*rr**2+2*aa*ll**2*MM
+    exact("horizon_critical_double_root",polynomial.subs({MM:critical_symbol,rr:s.sqrt(3)*ll}))
+    exact("horizon_critical_stationary_root",s.diff(polynomial,rr).subs({MM:critical_symbol,rr:s.sqrt(3)*ll}))
+    f,amp,b,db,k,w,v = s.symbols("f a b db k omega v",real=True)
+    field,derivative,momentum = amp*b,amp*(db+s.I*k*b),amp*(v*db+s.I*w*b)
+    exact("packet_positive_charge",s.im(s.conjugate(field)*momentum)-w*amp**2*b*b)
+    exact("packet_inward_charge_current",s.im(s.conjugate(field)*derivative)-k*amp**2*b*b)
+    exact("packet_inward_energy_current",s.re(s.conjugate(momentum)*derivative)-amp**2*(v*db**2+w*k*b*b))
+    potential = f*f/2-f**4/4+f**6/24
+    exact("nonnegative_amplitude_source_force",s.diff(potential,f)-f*(1-f*f/2)**2)
+    exact("amplitude_variation_mass_coefficient",s.diff(BB,MM)+2*aa*qq*qq/rr)
+    test("analytic_initial_untrapped_bound",lower_B>0,bound=lower_B)
+    test("positive_shooting_trial_bound",1-2*alpha*cap/rin>0,bound=1-2*alpha*cap/rin)
+
+    def profile(radius):
+        x = (np.asarray(radius)-centre)/width
+        inside = abs(x)<1
+        safe = np.where(inside,1-x*x,1.0)
+        b = np.where(inside,np.exp(1-1/safe),0.0)
+        db = -2*x*b/(width*safe*safe)
+        return b,db
+
+    def coefficients(radius,amplitude):
+        b,db = profile(radius)
+        f = amplitude*b
+        unit_kinetic = (1+velocity**2)*db**2+(wave_number**2+omega**2)*b*b
+        kinetic = amplitude**2*unit_kinetic
+        V = f*f/2-f**4/4+f**6/24
+        return b,unit_kinetic,kinetic,V
+
+    def radial_solution(amplitude,tolerance=1e-12,max_step=0.05,stop_at_cap=False):
+        def rhs(radius,y):
+            M,L,Q,dM = y
+            b,unit_kinetic,kinetic,V = coefficients(radius,amplitude)
+            q = radius**3/(radius**3+2*alpha*ell*ell*M)
+            B = 1-2*alpha*M*q/radius
+            if B<=0 or not np.all(np.isfinite(y)):
+                raise FloatingPointError("Shooting left the registered untrapped branch")
+            Vf = amplitude*b*(1-(amplitude*b)**2/2)**2
+            return [radius**2*(B*kinetic/2+V),alpha*radius*q*q*kinetic,
+                    radius**2*omega*amplitude**2*b*b,
+                    -alpha*radius*q*q*kinetic*dM+radius**2*(B*amplitude*unit_kinetic+Vf*b)]
+        def cutoff(radius,y):
+            return y[0]-cap
+        cutoff.terminal,cutoff.direction = True,1
+        sol = solve_ivp(rhs,(rin,rout),[0.,0.,0.,0.],method="DOP853",rtol=tolerance,
+                        atol=tolerance*0.01,max_step=max_step,dense_output=True,
+                        events=cutoff if stop_at_cap else None)
+        if not sol.success:
+            raise RuntimeError(sol.message)
+        return sol
+
+    attempts = []
+    def mass_residual(amplitude):
+        if amplitude==0:
+            return -target
+        trial = radial_solution(amplitude,stop_at_cap=True)
+        mass = float(trial.y[0,-1])
+        attempts.append(dict(amplitude=float(amplitude),mass=mass,last_radius=float(trial.t[-1])))
+        return mass-target
+    upper = 0.05
+    for _ in range(8):
+        if mass_residual(upper)>0:
+            break
+        upper *= 2
+    else:
+        raise RuntimeError("Registered amplitude bracket exhausted")
+    amplitude = brentq(mass_residual,0,upper,xtol=1e-13,rtol=1e-13)
+    solution = radial_solution(amplitude)
+    loose = radial_solution(amplitude,tolerance=1e-10,max_step=0.1)
+    mass,log_total,charge,mass_derivative = (float(z) for z in solution.y[:,-1])
+    test("source_mass_target",abs(mass/target-1)<1e-9,error=abs(mass/target-1))
+    test("positive_charge_and_amplitude_derivative",charge>0 and mass_derivative>0,
+         charge=charge,dM_da=mass_derivative)
+    for index,name in ((0,"mass"),(1,"log_lapse"),(2,"charge")):
+        error = abs(loose.y[index,-1]-solution.y[index,-1])/max(abs(solution.y[index,-1]),1e-14)
+        test("ODE_tolerance_"+name,error<1e-8,error=float(error))
+
+    def continuum(radius):
+        clipped = np.clip(radius,rin,rout)
+        y = solution.sol(clipped)
+        M,L = y[0],y[1]
+        q = radius**3/(radius**3+2*alpha*ell*ell*M)
+        B = 1-2*alpha*M*q/radius
+        return dict(M=M,q=q,B=B,sigma=np.exp(L-log_total))
+
+    x = np.linspace(rin,rout,16001)
+    geom = continuum(x)
+    b,unit_S,S,V = coefficients(x,amplitude)
+    source_mass = float(simpson(x*x*(geom["B"]*S/2+V),x=x))
+    source_charge = float(simpson(x*x*omega*amplitude**2*b*b,x=x))
+    source_log = float(simpson(alpha*x*geom["q"]**2*S,x=x))
+    for name,value,reference in (("mass",source_mass,mass),("charge",source_charge,charge),("log_lapse",source_log,log_total)):
+        err = abs(value/reference-1)
+        test("independent_source_integral_"+name,err<1e-8,error=err)
+    sensitivity_step = amplitude*1e-4
+    numerical_derivative = (radial_solution(amplitude+sensitivity_step).y[0,-1]-
+                            radial_solution(amplitude-sensitivity_step).y[0,-1])/(2*sensitivity_step)
+    test("amplitude_sensitivity_crosscheck",abs(numerical_derivative/mass_derivative-1)<1e-7,
+         relative_error=float(abs(numerical_derivative/mass_derivative-1)))
+
+    def initial(grid,outward=False):
+        b,db = profile(grid.r)
+        phase = np.exp(1j*wave_number*grid.r)
+        state = np.array([amplitude*b*phase,amplitude*phase*(velocity*db+1j*omega*b)])
+        if outward:
+            state = np.array([np.conjugate(state[0]),-np.conjugate(state[1])])
+        return state
+
+    rows = []
+    for h in (0.1,0.05,0.025):
+        grid = Grid(60,h)
+        state = initial(grid)
+        geometry = grid.geometry(*state)
+        reference = continuum(grid.r)
+        Q = float(np.sum(grid.vol*np.imag(np.conjugate(state[0])*state[1])))
+        current_E = np.real(np.conjugate(state[1])*geometry["gradient"])
+        current_Q = np.imag(np.conjugate(state[0])*geometry["gradient"])
+        Mdot = grid.r**2*geometry["sigma"]*geometry["N"]**2*current_E
+        Qflux = -grid.r**2*geometry["c"]*current_Q
+        errors = dict(mass_profile=float(np.max(abs(geometry["mass"]-reference["M"]))/target),
+            radial_metric=float(np.max(abs(geometry["N"]/reference["B"]-1))),
+            lapse=float(np.max(abs(geometry["sigma"]/reference["sigma"]-1))),
+            charge=abs(Q/charge-1))
+        local = grid.local_flux_check(state,diagnostic_radius=50)
+        half = grid.local_flux_check(state,eta=5e-7,diagnostic_radius=50)
+        normalized_step_difference = abs(local["local_mass_flux_relative_l2"]-half["local_mass_flux_relative_l2"])
+        rho = geometry["N"]*(abs(state[1])**2+abs(geometry["gradient"])**2)/2+\
+              abs(state[0])**2/2-abs(state[0])**4/4+abs(state[0])**6/24
+        test(f"h{h}_positive_source_geometry",np.min(rho)>=0 and np.min(geometry["N"])>=lower_B-1e-4
+             and np.min(geometry["sigma"])>0 and np.min(geometry["q"])>0)
+        test(f"h{h}_inward_energy_and_charge",np.min(Mdot)>=-1e-12 and np.max(Mdot)>0
+             and np.max(Qflux)<=1e-12 and np.min(Qflux)<0)
+        # A centred stencil samples across the compact support boundary.
+        # Exact flatness applies to the resolved cavity away from that
+        # one-cell edge; separately retain and bound its tiny leakage.
+        cavity = grid.r<rin-2*h
+        edge_leakage = float(np.max(abs(geometry["mass"][grid.r<rin]))/target)
+        test(f"h{h}_regular_empty_centre",np.max(abs(geometry["mass"][cavity]))==0
+             and np.max(abs(geometry["N"][cavity]-1))==0 and edge_leakage<1e-12,
+             source_edge_fractional_mass=edge_leakage,cavity_radius=rin-2*h)
+        test(f"h{h}_fixed_point",grid.maximum_fixed_point_defect<2e-13)
+        test(f"h{h}_directional_step",normalized_step_difference<1e-6,error=normalized_step_difference)
+        reversed_geometry = grid.geometry(*initial(grid,outward=True))
+        reversed_Q = float(np.sum(grid.vol*np.imag(np.conjugate(initial(grid,True)[0])*initial(grid,True)[1])))
+        test(f"h{h}_opposite_flux_equal_geometry_charge",
+             max(np.max(abs(reversed_geometry[key]-geometry[key])) for key in ("mass","N","sigma"))<1e-10
+             and abs(reversed_Q-Q)<1e-10)
+        opposite = initial(grid,True)
+        test(f"h{h}_opposite_flux_sign",
+             np.max(abs(np.real(np.conjugate(opposite[1])*reversed_geometry["gradient"])+current_E))<1e-12
+             and np.max(abs(np.imag(np.conjugate(opposite[0])*reversed_geometry["gradient"])+current_Q))<1e-12)
+        row = dict(h=h,mass=float(geometry["mass_outer"]),charge=Q,
+            minimum_B=float(np.min(geometry["N"])),central_lapse=float(geometry["sigma0"]),
+            maximum_density=float(np.max(rho)),minimum_q=float(np.min(geometry["q"])),
+            maximum_inward_mass_rate=float(np.max(Mdot)),most_negative_outward_charge_flux=float(np.min(Qflux)),
+            charge_rms_areal=float(np.sqrt(np.sum(grid.vol*np.imag(np.conjugate(state[0])*state[1])*grid.r**2)/Q)),
+            errors=errors,local=local,fixed_point_defect=grid.maximum_fixed_point_defect)
+        rows.append(row)
+    for key in rows[-1]["errors"]:
+        values = [row["errors"][key] for row in rows]
+        test("grid_ODE_"+key,values[-1]<3e-4 and all(b<1e-7 or b<0.6*a for a,b in zip(values,values[1:])),errors=values)
+    for key in ("local_mass_flux_relative_l2","mass_radial_constraint_relative_l2","lapse_radial_constraint_relative_l2"):
+        values = [row["local"][key] for row in rows]
+        test("local_refinement_"+key,values[-1]<2e-3 and all(b<1e-7 or b<0.6*a for a,b in zip(values,values[1:])),errors=values)
+    domain_grid = Grid(80,0.025)
+    domain = domain_grid.geometry(*initial(domain_grid))
+    for key in ("N","sigma","mass"):
+        error = float(np.max(abs(domain[key][:len(grid.r)]-geometry[key]))/max(1,np.max(abs(geometry[key]))))
+        test("domain_"+key,error<1e-10,error=error)
+    zero_grid = Grid(60,0.1)
+    zeros = np.zeros(len(zero_grid.r),dtype=complex)
+    zero = zero_grid.geometry(zeros,zeros)
+    test("zero_field_flat_limit",np.all(zero["mass"]==0) and np.all(zero["N"]==1) and np.all(zero["sigma"]==1))
+    def positive_vacuum_roots(M):
+        roots = np.roots([1,-2*alpha*M,0,2*alpha*ell*ell*M])
+        return sorted(float(z.real) for z in roots if abs(z.imag)<1e-8 and z.real>0)
+    roots = positive_vacuum_roots(target)
+    test("subcritical_vacuum_control",len(positive_vacuum_roots(critical/2))==0)
+    test("supercritical_vacuum_control",len(roots)==2 and max(roots)<rin)
+    test("potential_roots_are_not_initial_horizons",all(float(continuum(np.array([r]))["B"][0])==1 for r in roots))
+    failed = [c for c in checks if not c["passed"]]
+    result = dict(decision="SUPERCRITICAL_INWARD_DATA_READY" if not failed else "INITIAL_DATA_CHECK_FAILURE",
+        checks=len(checks),passed=len(checks)-len(failed),failed=failed,details=checks,
+        parameters=dict(alpha=alpha,ell=ell,rin=rin,rout=rout,amplitude=amplitude,k=wave_number,
+                        omega=omega,v=velocity,critical_mass=critical,target_mass=target,analytic_B_bound=lower_B),
+        continuum=dict(mass=mass,charge=charge,central_lapse=math.exp(-log_total),dM_da=mass_derivative,
+                       potential_vacuum_horizon_radii=roots),
+        shooting_trials=attempts,grids=rows,prerequisite=prerequisite,
+        code_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        engine_sha256=hashlib.sha256(Path(ref.__file__).read_bytes()).hexdigest(),
+        scope=dict(initial_data_ready=not failed,same_saturation_action=True,non_equilibrium_charged_packet=True,
+            equilibrium_oscillon_rescaled=False,black_hole_formation=False,singularity_removal=False,
+            full_RefG_pressure_join=False,phase_charge_is_particle_count=False,time_evolution_performed=False))
+    if return_data:
+        if failed:
+            raise RuntimeError("Supercritical source prerequisite failed")
+        return result,Grid,ref,initial
+    return result
+
+
+def origin_quartic_budget(snapshot,h):
+    """Leading flat-principal truncation estimate; not a full error bound."""
+    r = np.asarray(snapshot["r"][:3])
+    field = np.asarray(snapshot["phi_real"][:3])+1j*np.asarray(snapshot["phi_imag"][:3])
+    P = np.asarray(snapshot["P_real"][:3])+1j*np.asarray(snapshot["P_imag"][:3])
+    slopes = np.diff(field)/np.diff(r*r)
+    f4 = (slopes[1]-slopes[0])/(r[2]**2-r[0]**2)
+    P0 = (150*P[0]-25*P[1]+3*P[2])/128
+    coefficient = snapshot["central"]["three_point"]["L"]*h*h*float(np.real(np.conjugate(P0)*f4))
+    return dict(phi4_real=float(f4.real),phi4_imag=float(f4.imag),
+        predicted_central_mudot_defect=4*coefficient,
+        measured_central_mudot_defect=snapshot["central"]["three_point"]["mudot_defect"],
+        predicted_first_cell_constraint_rate=2*coefficient,
+        measured_first_cell_constraint_rate=snapshot["constraint_rate"][0])
+
+
+class RadialNodalPair:
+    """Fourth-order parity pair; Q_h=sum(h*r**2*Im(conj(psi)*P))."""
+    def __init__(self,r,h):
+        from scipy.sparse import coo_matrix
+        self.r,self.h = r,h
+        n = len(r)
+        def reflected(rows,offsets,weights,parity):
+            ii,jj,vv = [],[],[]
+            for offset,weight in zip(offsets,weights):
+                row = np.arange(rows)
+                col = row+offset
+                sign = np.ones(rows)
+                low,high = col<0,col>=n
+                col[low],col[high] = -col[low]-1,2*n-col[high]-1
+                sign[low|high] = parity
+                ii.extend(row); jj.extend(col); vv.extend(weight*sign)
+            return coo_matrix((vv,(ii,jj)),shape=(rows,n)).tocsr()
+        self.E = reflected(n,(-2,-1,1,2),np.array([1.,-8.,8.,-1.])/(12*h),1)
+        # Sixth-order staggered derivative is needed before division by r^2:
+        # fourth-order alone leaves a quartic centre defect.
+        self.G = reflected(n+1,(-3,-2,-1,0,1,2),
+                          np.array([-9.,125.,-2250.,2250.,-125.,9.])/(1920*h),1)
+        self.I = reflected(n+1,(-2,-1,0,1),np.array([-1.,9.,9.,-1.])/16,1)
+        self.ET,self.GT = self.E.T.tocsr(),self.G.T.tocsr()
+        self.face_weights = np.ones(n+1)
+        self.face_weights[[0,-1]] = .5
+        self.face_measure = self.face_weights*(np.arange(n+1)*h)**2
+        self.weights = h*r*r
+        absG = abs(self.G)
+        row_bound = (absG.T@(self.face_measure*(absG@(1/r))))/r
+        self.wave_frequency_bound = math.sqrt(float(max(row_bound)))
+        self.maximum_wave_RK_number = 0.
+
+    def wave(self,field,c):
+        cf = self.I@c
+        if not np.all(np.isfinite(cf)) or np.min(cf)<=0:
+            raise FloatingPointError("Nonpositive paired face wave coefficient")
+        return -(self.GT@(self.face_measure*cf*(self.G@field)))/self.r**2
+
+    def transport(self,field,P,beta):
+        first = beta*(self.E@field)
+        second = -(self.ET@(self.weights*beta*P))/self.weights
+        return first,second
+
+
+def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origin_controls=False,paired_origin=False):
+    """Same-action horizon-regular evolution; frozen finite-window decision."""
+    import time
+    hash_paths = tuple(Path(__file__).with_name(name) for name in
+        (Path(__file__).name,"population_assembly_initial_data.py","nonlinear_equilibrium_evolution.py"))
+    entry_hashes = {path.name:hashlib.sha256(path.read_bytes()).hexdigest() for path in hash_paths}
+    source,PolarGrid,ref,initial = supercritical_data_checks(return_data=True)
+    legacy = ref.load("saturation_staggered_reference",Path(__file__).with_name("population_assembly_initial_data.py"))
+    alpha,ell = ref.ALPHA,2.0
+    def relative_array_error(a,b):
+        a,b = np.asarray(a),np.asarray(b)
+        return float(np.max(abs(a-b))/max(np.max(abs(a)),1e-30))
+    checks = []
+    def test(name,condition,**evidence):
+        checks.append(dict(name=name,passed=bool(condition),**evidence))
+    def exact(name,expression):
+        residual = s.factor(s.simplify(expression))
+        test(name,residual==0,residual=str(residual))
+    r,M,k,kr,L,Lr,rho,p,S,a,le = s.symbols("r M k kr L Lr rho p S alpha ell",real=True)
+    q = r**3/(r**3+2*a*le**2*M)
+    z = 2*a*M*q/r**3
+    v = r*k
+    A = 1-r*r*z+v*v
+    Mr = r*r*(rho+v*S)
+    Mt = L*r*r*(v*(rho+p)+(A+v*v)*S)
+    kt = L*v*kr+L*(k*k+z*(1-3*le**2*z)/2+a*q*q*p)-A*Lr/r
+    Ar = s.diff(A,r)+s.diff(A,M)*Mr+s.diff(A,k)*kr
+    At = s.diff(A,M)*Mt+s.diff(A,k)*kt
+    exact("regular_metric_action_identity",At-L*v*Ar+2*v*A*Lr+2*a*q*q*L*r*A*S)
+    exact("regular_Einstein_k_limit",kt.subs(le,0)-(L*v*kr+L*(k*k+a*M/r**3+a*p)-A.subs(le,0)*Lr/r))
+    exact("null_expansion_product",(2*(s.sqrt(A)-v)/r)*(-2*(s.sqrt(A)+v)/r)+4*(1-r*r*z)/r**2)
+    # Action projections in an orthonormal orbit frame, beta=-2r/q^2.
+    C = z*(1-3*le**2*z)/2
+    J,pt = s.symbols("J pt",real=True)
+    Hnn,Hee,Hne = -r*(C+a*q*q*p),r*(C-a*q*q*rho),-r*a*q*q*J
+    beta,aa = -2*r/q**2,2*r*r*z*(1-3*le**2*z)/q**2
+    box = -Hnn+Hee
+    for name,expr in (("nn",beta*Hnn+aa/2+beta*box-2*a*r*r*rho),
+                      ("ee",beta*Hee-aa/2-beta*box-2*a*r*r*p),
+                      ("ne",beta*Hne-2*a*r*r*J)):
+        exact("orbit_action_"+name,expr)
+
+    class SaturationClock(legacy.StaggeredClockGrid):
+        """Retain parity/adjoint stencils; replace every gravity equation."""
+        def __init__(self,radius,h,length=ell):
+            super().__init__(ref,radius,h,"harmonic")
+            self.length = length
+            self.density_scale = 1.0
+            self.minimum_stage_A = self.minimum_stage_face_A = math.inf
+            self.minimum_stage_lapse = self.minimum_stage_q = math.inf
+            self.minimum_stage_mu = self.minimum_stage_u = math.inf
+            self.maximum_stage_q = 0.0
+            self.charge_weights = self.engine.vol
+
+        def field_derivative(self,field):
+            return self.engine.derivative(field)
+
+        def action_domain(self,mu,q,z):
+            u = self.length**2*z
+            self.minimum_stage_mu = min(self.minimum_stage_mu,float(np.min(mu)))
+            self.minimum_stage_u = min(self.minimum_stage_u,float(np.min(u)))
+            self.maximum_stage_q = max(self.maximum_stage_q,float(np.max(q)))
+            # The logarithmic action has 0<u<1 plus the checked u=0 limit.
+            # No clipping or negative-curvature action is introduced.
+            if self.length and np.min(u)<-100*np.finfo(float).eps:
+                raise FloatingPointError("NUMERICAL_ACTION_DOMAIN_LIMIT: resolved negative u")
+            if not np.all(np.isfinite(u)) or np.max(u)>=1:
+                raise FloatingPointError("NUMERICAL_ACTION_DOMAIN_LIMIT: nonfinite or saturated u")
+
+        def geometry(self,state):
+            if state.shape!=(6,len(self.r)) or not np.all(np.isfinite(state)):
+                raise FloatingPointError("Nonfinite saturation evolution state")
+            field,P = state[:2]
+            mu,k = state[2].real,self.cell_k(state)
+            logL = state[4].real
+            if np.max(abs(logL))>500:
+                raise FloatingPointError("Unresolved lapse exponential")
+            L = np.exp(logL)
+            q = 1/(1+2*alpha*self.length**2*mu)
+            z = 2*alpha*mu*q
+            v = self.r*k
+            F = 1-self.r**2*z
+            A = F+v*v
+            if any(not np.all(np.isfinite(x)) or np.min(x)<=0 for x in (A,q,L)):
+                raise FloatingPointError("Saturation cell left positive A,q,L chart")
+            self.action_domain(mu,q,z)
+            D = self.field_derivative(field)
+            square = abs(field)**2
+            V = square/2-square**2/4+square**3/24
+            root = np.sqrt(A)
+            rho = A*(abs(P)**2+abs(D)**2)/2+V
+            S = root*np.real(np.conjugate(P)*D)
+            if any(not np.all(np.isfinite(x)) for x in (D,V,rho,S)):
+                raise FloatingPointError("Nonfinite saturation scalar source")
+            return dict(A=A,F=F,L=L,q=q,z=z,v=v,k=k,root=root,D=D,V=V,rho=rho,
+                        p=rho-2*V,S=S,beta=L*v)
+
+        def rhs(self,state):
+            g = self.geometry(state)
+            e,r = self.engine,self.r
+            field,P = state[:2]
+            L,A,v,q = g["L"],g["A"],g["v"],g["q"]
+            c,beta = L*g["root"],g["beta"]
+            rf = e.edges[1:]
+            vf,logL = state[3].real,state[4].real
+            muf = self.to_faces(state[2].real)
+            qf = 1/(1+2*alpha*self.length**2*muf)
+            zf = 2*alpha*muf*qf
+            Af = 1-rf*rf*zf+vf*vf
+            Lf = np.exp(self.to_faces(logL))
+            if any(not np.all(np.isfinite(x)) or np.min(x)<=0 for x in (Af,qf,Lf)):
+                raise FloatingPointError("Saturation face left positive finite A,q,L chart")
+            self.action_domain(muf,qf,zf)
+            speed = max(np.max(abs(beta)+c),np.max(Lf*(abs(vf)+np.sqrt(Af))))
+            if e.time_step is not None:
+                e.maximum_courant = max(e.maximum_courant,e.time_step*speed/self.h)
+                if e.maximum_courant>=0.4:
+                    raise FloatingPointError("Saturation matter/gauge Courant bound exceeded")
+            self.minimum_stage_A = min(self.minimum_stage_A,float(np.min(A)))
+            self.minimum_stage_face_A = min(self.minimum_stage_face_A,float(np.min(Af)))
+            self.minimum_stage_lapse = min(self.minimum_stage_lapse,float(np.min(L)),float(np.min(Lf)))
+            self.minimum_stage_q = min(self.minimum_stage_q,float(np.min(q)),float(np.min(qf)))
+            # Same weighted-adjoint matter flux pair as the retained engine.
+            edge_beta = e.edges[1:-1]**2*(beta[:-1]+beta[1:])/2
+            advflux = np.zeros(len(r)+1,complex)
+            waveflux = advflux.copy()
+            advflux[1:-1] = edge_beta*(P[:-1]+P[1:])/2
+            face = edge_beta*np.diff(field)/2
+            advfield = np.zeros_like(field)
+            advfield[:-1] += face/e.vol[:-1]
+            advfield[1:] += face/e.vol[1:]
+            waveflux[1:-1] = e.edges[1:-1]**2*(c[:-1]+c[1:])/2*np.diff(field)/self.h
+            square = abs(field)**2
+            force = (1-square+square**2/4)*field
+            out = np.zeros_like(state)
+            out[0] = c*P+advfield
+            out[1] = np.diff(advflux+waveflux)/e.vol-L*force/g["root"]
+            out[2] = L*(g["k"]*A*(abs(P)**2+abs(g["D"])**2)+(A+v*v)*g["S"]/r)
+            dv = np.r_[(np.r_[vf[1:],0.]-np.r_[0.,vf[:-1]])[:-1]/(2*self.h),
+                       (3*vf[-1]-4*vf[-2]+vf[-3])/(2*self.h)]
+            out[3] = Lf*vf*dv+Lf*rf*(zf*(1-3*self.length**2*zf)/2+
+                        alpha*qf*qf*self.to_faces(g["p"]))-Lf*Af*self.face_gradient(logL)
+            out[4] = beta*e.derivative(logL)-L*(self.divergence(vf)-alpha*r*q*q*g["S"])
+            out[5] = np.exp((9*logL[0]-logL[1])/8)
+            if not np.all(np.isfinite(out)):
+                raise FloatingPointError("Nonfinite saturation evolution RHS")
+            return out
+
+        def measure(self,state,t):
+            g = self.geometry(state)
+            rhs = self.rhs(state)
+            e,r = self.engine,self.r
+            mu,k,L,q = state[2].real,g["k"],g["L"],g["q"]
+            M = r**3*mu
+            d4 = lambda x: (x[:-4]-8*x[1:-3]+8*x[3:-1]-x[4:])/(12*self.h)
+            active = r[2:-2]<=80
+            norm = lambda x: float(np.linalg.norm(x[active]))
+            mass_source = r*r*(g["rho"]+g["v"]*g["S"])
+            mass_error = norm(d4(M)-mass_source[2:-2])/max(norm(mass_source[2:-2]),1e-14)
+            H = k*k-g["z"]
+            Ht = 2*k*self.cell_k(rhs)-2*alpha*q*q*rhs[2].real
+            term0 = Ht[2:-2]
+            term1 = -L[2:-2]*k[2:-2]*(2*H[2:-2]+r[2:-2]*d4(H))
+            term2 = (2*L*k*g["A"])[2:-2]*d4(state[4].real)/r[2:-2]
+            term3 = (2*alpha*q*q*L*g["A"]*g["S"]/r)[2:-2]
+            scale = abs(term0)+abs(term1)+abs(term2)+abs(term3)+(
+                    alpha*L*(abs(g["rho"])+abs(g["p"])))[2:-2]
+            metric_error = norm(term0+term1+term2+term3)/max(norm(scale),1e-14)
+            origin = 3*mu+r*e.derivative(mu)-g["rho"]-g["v"]*g["S"]
+            origin_abs = float(max(abs(origin[:2])))
+            origin_scale = max(self.density_scale,float(max(abs(g["rho"][:2]))),1e-14)
+            weights = self.charge_weights*np.imag(np.conjugate(state[0])*state[1])
+            Q = float(np.sum(weights))
+            radius2 = float(np.sum(weights*r*r)/Q)
+            if Q<=0 or radius2<=0:
+                raise FloatingPointError("Charge-radius diagnostic left positive domain")
+            qrate = float(np.sum(self.charge_weights*np.imag(np.conjugate(rhs[0])*state[1]+
+                                              np.conjugate(state[0])*rhs[1])))
+            j = int(np.argmin(g["F"]))
+            theta_minus = -2*(g["root"]+g["v"])/r
+            # Direct expression also handles regions with negative shift.
+            theta_plus = 2*(g["root"]-g["v"])/r
+            safe = g["root"]+g["v"]>1e-8
+            theta_plus[safe] = 2*g["F"][safe]/(r[safe]*(g["root"]+g["v"])[safe])
+            trapped = (theta_plus<0)&(theta_minus<0)
+            longest,current = 0,0
+            for value in trapped:
+                current = current+1 if value else 0
+                longest = max(longest,current)
+            monotone = np.all(np.diff(M)>=-1e-9*max(abs(M[-1]),1.))
+            return dict(t=float(t),central_proper_time=float(state[5,0].real),
+                mass=float(M[-1]),charge=Q,charge_rms_areal=math.sqrt(radius2),
+                maximum_density=float(max(g["rho"])),central_density=float((9*g["rho"][0]-g["rho"][1])/8),
+                central_lapse=float(np.exp((9*state[4,0].real-state[4,1].real)/8)),
+                minimum_F=float(g["F"][j]),minimum_F_radius=float(r[j]),minimum_A=float(min(g["A"])),
+                minimum_q=float(min(q)),minimum_lapse=float(min(L)),
+                outgoing_expansion=float(theta_plus[j]),ingoing_expansion=float(theta_minus[j]),
+                trapped_cells=int(np.sum(trapped)),contiguous_trapped_cells=longest,
+                mass_R50=float(np.interp(0.5*M[-1],np.r_[0,M],np.r_[0,r])) if monotone else None,
+                radial_constraint=mass_error,regular_metric_residual=metric_error,
+                origin_constraint=origin_abs/origin_scale,origin_constraint_absolute=origin_abs,
+                origin_density_scale=origin_scale,origin_local_density=float(max(abs(g["rho"][:2]))),
+                relative_charge_rate=abs(qrate)/Q,
+                charge_legacy_volume=float(np.sum(e.vol*np.imag(np.conjugate(state[0])*state[1]))),
+                charge_nodal=float(np.sum(self.h*r*r*np.imag(np.conjugate(state[0])*state[1]))))
+
+        def origin_terms(self,state):
+            g = self.geometry(state)
+            rhs = self.rhs(state)
+            e,r = self.engine,self.r
+            field,P = state[:2]
+            mu = state[2].real
+            mudot = rhs[2].real
+            vdot = r*self.cell_k(rhs)
+            Adot = -2*alpha*r*r*g["q"]**2*mudot+2*g["v"]*vdot
+            D,Ddot = g["D"],self.field_derivative(rhs[0])
+            force = (1-abs(field)**2+abs(field)**4/4)*field
+            rhodot = Adot*(abs(P)**2+abs(D)**2)/2+g["A"]*np.real(
+                np.conjugate(P)*rhs[1]+np.conjugate(D)*Ddot)+np.real(np.conjugate(force)*rhs[0])
+            Sdot = Adot*np.real(np.conjugate(P)*D)/(2*g["root"])+g["root"]*np.real(
+                np.conjugate(rhs[1])*D+np.conjugate(P)*Ddot)
+            terms = dict(three_mu=3*mu,radial_mu=r*e.derivative(mu),minus_rho=-g["rho"],minus_vS=-g["v"]*g["S"])
+            rates = dict(three_mudot=3*mudot,radial_mudot=r*e.derivative(mudot),minus_rhodot=-rhodot,
+                         minus_vdotS=-vdot*g["S"],minus_vSdot=-g["v"]*Sdot)
+            return g,rhs,terms,rates
+
+        def origin_snapshot(self,state,t):
+            g,rhs,terms,rates = self.origin_terms(state)
+            e,r = self.engine,self.r
+            ext2 = lambda x:(9*x[0]-x[1])/8
+            ext3 = lambda x:(150*x[0]-25*x[1]+3*x[2])/128
+            central = {}
+            for name,ext in (("two_point",ext2),("three_point",ext3)):
+                f0,P0,mu0 = ext(state[0]),ext(state[1]),ext(state[2].real)
+                rho0 = abs(P0)**2/2+abs(f0)**2/2-abs(f0)**4/4+abs(f0)**6/24
+                force0 = (1-abs(f0)**2+abs(f0)**4/4)*f0
+                rhodot0 = float(np.real(np.conjugate(P0)*ext(rhs[1])+np.conjugate(force0)*ext(rhs[0])))
+                f2 = (-34*state[0,0]+39*state[0,1]-5*state[0,2])/(48*self.h**2)
+                k0 = (8*state[3,0].real-state[3,1].real)/(6*self.h)
+                L0 = math.exp(float(ext(state[4].real)))
+                expected = L0*(k0*abs(P0)**2+2*np.real(np.conjugate(P0)*f2))
+                mudot0 = float(ext(rhs[2].real))
+                central[name] = dict(mu=float(mu0),rho=float(rho0),constraint=float(3*mu0-rho0),
+                    source_extrapolation_constraint=float(3*mu0-ext(g["rho"])),
+                    mudot=mudot0,rhodot=rhodot0,constraint_rate=3*mudot0-rhodot0,
+                    continuum_mudot=float(expected),mudot_defect=float(mudot0-expected),
+                    rhodot_defect=float(rhodot0-3*expected),k=k0,L=L0)
+            C = sum(terms.values())
+            Cdot = sum(rates.values())
+            fixed = fixed_mass_audit(r,state[2].real,g["rho"]+g["v"]*g["S"])
+            take = lambda x:[float(y) for y in x[:8]]
+            snapshot = dict(t=t,r=take(r),constraint=take(C),constraint_rate=take(Cdot),
+                terms={key:take(value) for key,value in terms.items()},
+                rates={key:take(value) for key,value in rates.items()},central=central,fixed_radius=fixed,
+                phi_real=take(state[0].real),phi_imag=take(state[0].imag),P_real=take(state[1].real),P_imag=take(state[1].imag))
+            snapshot["leading_quartic_budget"] = origin_quartic_budget(snapshot,self.h)
+            return snapshot
+
+    class PairedSaturationClock(SaturationClock):
+        """Same continuum source/gauge with an adjoint nodal matter pair."""
+        def __init__(self,radius,h,length=ell):
+            super().__init__(radius,h,length)
+            self.pair = RadialNodalPair(self.r,h)
+            self.charge_weights = self.pair.weights
+
+        def field_derivative(self,field):
+            return self.pair.E@field
+
+        def rhs(self,state):
+            # Gravity still evolves by its own time equations, never a
+            # projection onto the radial or centre constraint.
+            out = super().rhs(state)
+            g = self.geometry(state)
+            field,P = state[:2]
+            if self.engine.time_step is not None:
+                cmax = max(float(max(g["L"]*g["root"])),float(max(self.pair.I@(g["L"]*g["root"]))))
+                number = self.engine.time_step*cmax*self.pair.wave_frequency_bound
+                self.pair.maximum_wave_RK_number = max(self.pair.maximum_wave_RK_number,number)
+                if number>=2.5:
+                    raise FloatingPointError("Paired frozen-wave RK4 bound exceeded")
+            advfield,advP = self.pair.transport(field,P,g["beta"])
+            force = (1-abs(field)**2+abs(field)**4/4)*field
+            out[0] = g["L"]*g["root"]*P+advfield
+            out[1] = self.pair.wave(field,g["L"]*g["root"])+advP-g["L"]*force/g["root"]
+            if not np.all(np.isfinite(out)):
+                raise FloatingPointError("Nonfinite paired saturation RHS")
+            return out
+
+    def fixed_mass_audit(r,mu,source):
+        from scipy.interpolate import CubicSpline
+        # Independent nodal reconstructions and exact polynomial quadratures.
+        # No centre/edge or source-density/mass identification is imposed.
+        n = int(np.searchsorted(r,.8))+4
+        x = np.r_[-r[:n][::-1],r[:n]]
+        cubic_mu = CubicSpline(x,np.r_[mu[:n][::-1],mu[:n]])
+        cubic_source = CubicSpline(x,np.r_[source[:n][::-1],source[:n]])
+        def linear_even(y,points):
+            out = np.interp(points**2,r[:n]**2,y[:n])
+            low = points<r[0]
+            out[low] = y[0]+(points[low]**2-r[0]**2)*(y[1]-y[0])/(r[1]**2-r[0]**2)
+            return out
+        nodes,weights = np.polynomial.legendre.leggauss(3)
+        result = []
+        for R in (.1,.2,.4):
+            breaks = np.r_[0.,r[r<R],R]
+            centres,widths = (breaks[1:]+breaks[:-1])/2,np.diff(breaks)/2
+            points = (centres[:,None]+widths[:,None]*nodes).ravel()
+            w = (widths[:,None]*weights).ravel()*points**2
+            mass_cubic = float(R**3*cubic_mu(R))
+            mass_linear = float(R**3*linear_even(mu,np.array([R]))[0])
+            int_cubic = float(np.sum(w*cubic_source(points)))
+            int_linear = float(np.sum(w*linear_even(source,points)))
+            result.append(dict(r=R,mass_cubic=mass_cubic,source_mass_cubic=int_cubic,
+                constraint_cubic=(mass_cubic-int_cubic)/R**3,
+                constraint_linear=(mass_linear-int_linear)/R**3,
+                quadrature_source_difference=abs(int_cubic-int_linear)/R**3))
+        return result
+
+    zero_grid = SaturationClock(4,.1)
+    zero = np.zeros((6,len(zero_grid.r)),complex)
+    zr = zero_grid.rhs(zero)
+    test("horizon_zero_field",np.max(abs(zr[:5]))==0 and np.max(abs(zr[5]-1))==0)
+    bad = zero.copy()
+    bad[2] = -1e-5
+    try:
+        zero_grid.rhs(bad)
+        rejected = False
+    except FloatingPointError:
+        rejected = True
+    test("negative_action_branch_rejected",rejected)
+    bad = zero.copy()
+    bad[4,-2],bad[4,-1] = 500,-500
+    with np.errstate(under="ignore",over="ignore",invalid="ignore"):
+        try:
+            zero_grid.rhs(bad)
+            rejected = False
+        except FloatingPointError:
+            rejected = True
+    test("nonpositive_face_lapse_rejected",rejected)
+    old = legacy.StaggeredClockGrid(ref,4,.1)
+    new = SaturationClock(4,.1,length=0)
+    state = zero.copy()
+    state[0] = .2*np.exp(-(new.r/2)**2)*(1+.1j)
+    state[1] = (.03+.12j)*np.exp(-(new.r/2)**2)
+    state[2] = .01*np.exp(-(new.r/3)**2)
+    state[3] = .01*new.engine.edges[1:]
+    state[4] = -.03*np.exp(-(new.r/2)**2)
+    discrepancy = float(np.max(abs(old.rhs(state)-new.rhs(state))))
+    test("horizon_full_Einstein_RHS_limit",discrepancy<1e-12,error=discrepancy)
+    kval = math.sqrt(2*alpha/(9+2*alpha*ell*ell))
+    core_errors = []
+    for dt in (.05,.025):
+        grid = SaturationClock(4,.1)
+        core = zero.copy()
+        core[0],core[2],core[3],core[4] = math.sqrt(2),1/9,kval*grid.engine.edges[1:],math.log(.7)
+        for _ in range(round(1/dt)):
+            core = legacy.clock_rk4(grid,core,dt)
+        lapse = .7/(1+3*kval*.7)
+        proper = math.log1p(3*kval*.7)/(3*kval)
+        error = float(max(np.max(abs(core[:2]-np.array([np.full(len(grid.r),math.sqrt(2)),np.zeros(len(grid.r))]))),
+            np.max(abs(core[2]-1/9)),np.max(abs(grid.cell_k(core)-kval)),
+            np.max(abs(np.exp(core[4].real)-lapse)),np.max(abs(core[5]-proper))))
+        core_errors.append(error)
+    test("saturated_core_harmonic_clock",core_errors[-1]<1e-8 and (core_errors[-1]<1e-12 or core_errors[-1]<.2*core_errors[0]),errors=core_errors)
+    if origin_audit:
+        test("origin_list_comparison_control",relative_array_error([1.,-2.],[1.,-2.])==0 and
+             abs(relative_array_error([1.,-2.],[1.,-1.])-.5)<1e-15)
+        polynomial_errors = []
+        for h in (.1,.05,.025):
+            grid = SaturationClock(4,h)
+            r = grid.r
+            src = 1+.2*r*r+.03*r**4
+            mu = 1/3+.04*r*r+.03*r**4/7
+            result = fixed_mass_audit(r,mu,src)
+            polynomial_errors.append(max(abs(row["constraint_cubic"]) for row in result))
+            C = 3*mu+r*grid.engine.derivative(mu)-src
+            expected = 4*(.03/7)*r[:2]**2*h*h
+            test("origin_even_polynomial_"+str(h),np.max(abs(C[:2]-expected))<1e-14)
+            # Off-shell isolated principal part, evaluated by the actual RHS.
+            # This does not project a collapse state or change its evolution.
+            manufactured = np.zeros((6,len(r)),complex)
+            manufactured[0],manufactured[1] = r**4,1.
+            out = grid.rhs(manufactured)
+            force = (1-r**8+r**16/4)*r**4
+            wave = (out[1]+force).real
+            mass_rate = 3*out[2].real+r*grid.engine.derivative(out[2].real)
+            wave_error = float(np.max(abs(wave[:2]-20*r[:2]**2-h*h*np.array([10.,78/7]))))
+            mass_error = float(np.max(abs(mass_rate[:2]-20*r[:2]**2-12*h*h)))
+            budget_error = float(np.max(abs((mass_rate-wave)[:2]-h*h*np.array([2.,6/7]))))
+            test("origin_quartic_production_operators_"+str(h),
+                 max(wave_error,mass_error,budget_error)<1e-12,
+                 wave_error=wave_error,mass_error=mass_error,budget_error=budget_error)
+        test("fixed_radius_polynomial_refinement",polynomial_errors[-1]<1e-6 and
+             polynomial_errors[-1]<.2*polynomial_errors[-2],errors=polynomial_errors)
+        grid = SaturationClock(4,.1)
+        g,rhs,terms,rates = grid.origin_terms(state)
+        eps = 1e-6
+        def C_at(y):
+            gg = grid.geometry(y)
+            return 3*y[2].real+grid.r*grid.engine.derivative(y[2].real)-gg["rho"]-gg["v"]*gg["S"]
+        fd = (C_at(state+eps*rhs)-C_at(state-eps*rhs))/(2*eps)
+        error = float(np.max(abs(fd[:8]-sum(rates.values())[:8])))
+        test("origin_constraint_rate_chain_rule",error<1e-8,error=error)
+    if paired_origin:
+        sixth_errors = []
+        for h in (.1,.05,.025):
+            grid = PairedSaturationClock(4,h)
+            r,pair = grid.r,grid.pair
+            manufactured = np.zeros((6,len(r)),complex)
+            manufactured[0],manufactured[1] = r**4,1.
+            out = grid.rhs(manufactured)
+            wave = pair.wave(r**4,np.ones_like(r))
+            mass_rate = 3*out[2].real+r*grid.engine.derivative(out[2].real)
+            error = float(np.max(abs((mass_rate-wave)[:2])))
+            poly = max(float(np.max(abs(pair.wave(r**power,np.ones_like(r))[:3]-
+                (np.zeros(3) if power==0 else power*(power+1)*r[:3]**(power-2)))))
+                for power in (0,2,4))
+            test("paired_centre_polynomial_"+str(h),max(error,poly)<1e-10,
+                 mass_wave_mismatch=error,polynomial_error=poly)
+            mixed_error = float(max(abs(pair.wave(r*r,1+.2*r*r)[:3]-(6+2*r[:3]**2))))
+            test("paired_variable_coefficient_"+str(h),mixed_error<1e-10,error=mixed_error)
+            sixth_errors.append(float(max(abs(pair.wave(r**6,np.ones_like(r))[:3]-42*r[:3]**4))))
+        test("paired_sixth_power_refinement",sixth_errors[-1]<.1*sixth_errors[-2] and
+             sixth_errors[-2]<.1*sixth_errors[0],errors=sixth_errors)
+        grid = PairedSaturationClock(4,.1)
+        r,pair = grid.r,grid.pair
+        rng = np.random.default_rng(92011)
+        field = rng.normal(size=len(r))+1j*rng.normal(size=len(r))
+        P = rng.normal(size=len(r))+1j*rng.normal(size=len(r))
+        beta = .02*r*np.exp(-r*r)
+        advfield,advP = pair.transport(field,P,beta)
+        wave = pair.wave(field,.7+.1*np.exp(-r*r))
+        terms = pair.weights*np.imag(np.conjugate(advfield)*P+np.conjugate(field)*(advP+wave))
+        error = float(abs(np.sum(terms))/max(np.sum(abs(terms)),1e-30))
+        test("paired_charge_adjoint_identity",error<1e-13,error=error)
+        spectra = []
+        for cf in (np.ones(len(r)+1),pair.I@(.7+.1*np.exp(-r*r)),
+                   pair.I@(.3+.7*r*r/(1+r*r)),np.where(np.arange(len(r)+1)==4,100.,1.)):
+            a = pair.face_measure*cf
+            base = -(pair.GT@pair.G.multiply(a[:,None])).toarray()
+            matrix = base/r[:,None]/r[None,:]
+            eigen = np.linalg.eigvalsh(matrix)
+            spectra.append(float(eigen[-1]/max(abs(eigen[0]),1)))
+        test("paired_wave_spectrum_controls",max(spectra)<1e-12 and np.min(pair.weights)>0,
+             largest_normalized_eigenvalues=spectra)
+        test("paired_wave_RK_bound",.1*grid.h*pair.wave_frequency_bound<2.5,
+             unit_speed_RK_number=.1*grid.h*pair.wave_frequency_bound)
+        manufactured = np.zeros((6,len(r)),complex)
+        manufactured[0] = .2*np.exp(-r*r)*(1+.2j)
+        manufactured[1] = (.05+.1j)*np.exp(-r*r)
+        manufactured[2] = .01*np.exp(-r*r/4)
+        manufactured[3] = .01*grid.engine.edges[1:]
+        manufactured[4] = -.03*np.exp(-r*r)
+        rhs = grid.rhs(manufactured)
+        qterms = pair.weights*np.imag(np.conjugate(rhs[0])*manufactured[1]+np.conjugate(manufactured[0])*rhs[1])
+        test("paired_full_RHS_charge",abs(float(np.sum(qterms)))<1e-12,
+             charge_rate=float(np.sum(qterms)))
+        g,rhs,terms,rates = grid.origin_terms(manufactured)
+        def paired_C(y):
+            gg = grid.geometry(y)
+            return 3*y[2].real+r*grid.engine.derivative(y[2].real)-gg["rho"]-gg["v"]*gg["S"]
+        eps = 1e-6
+        fd = (paired_C(manufactured+eps*rhs)-paired_C(manufactured-eps*rhs))/(2*eps)
+        error = float(np.max(abs(fd[:8]-sum(rates.values())[:8])))
+        test("paired_constraint_chain_rule",error<1e-8,error=error)
+    if any(not c["passed"] for c in checks):
+        failed = [c for c in checks if not c["passed"]]
+        return dict(decision="COLLAPSE_PREFLIGHT_FAILURE",checks=len(checks),passed=len(checks)-len(failed),
+                    failed=failed,details=checks)
+    if origin_controls:
+        test("unchanged_run_sources",all(hashlib.sha256(path.read_bytes()).hexdigest()==entry_hashes[path.name] for path in hash_paths))
+        failed = [c for c in checks if not c["passed"]]
+        return dict(decision=("PAIRED_ORIGIN_CONTROLS_ONLY" if paired_origin else "ORIGIN_CONTROLS_ONLY") if not failed else "ORIGIN_DIAGNOSTIC_CONTROL_FAILURE",
+            checks=len(checks),passed=len(checks)-len(failed),failed=failed,details=checks,
+            code_sha256=entry_hashes[Path(__file__).name],source_hashes=entry_hashes)
+
+    def run(h,duration=80.,radius=120.,courant=.1,event_stop=False):
+        start = time.perf_counter()
+        polar = PolarGrid(radius,h)
+        packet = initial(polar)
+        geometry = polar.geometry(*packet)
+        grid = (PairedSaturationClock if paired_origin else SaturationClock)(radius,h)
+        state = np.zeros((6,len(grid.r)),complex)
+        state[:2] = packet
+        state[2] = geometry["mass"]/grid.r**3
+        state[4] = np.log(geometry["sigma"]*np.sqrt(geometry["N"]))
+        grid.density_scale = float(max(grid.geometry(state)["rho"]))
+        steps = math.ceil(.25/(courant*h))
+        dt = .25/steps
+        grid.engine.time_step = dt
+        rows,status,error = [],"COMPLETED",None
+        snapshots = []
+        event_time = None
+        try:
+            rows.append(grid.measure(state,0))
+            for n in range(round(duration/.25)):
+                for _ in range(steps):
+                    state = legacy.clock_rk4(grid,state,dt)
+                t = (n+1)*.25
+                row = grid.measure(state,t)
+                rows.append(row)
+                if origin_audit and t in (27.5,27.75,28.):
+                    snapshots.append(grid.origin_snapshot(state,t))
+                if n%40==39:
+                    print(f"Saturation h={h} R={radius} t={t}: Fmin={row['minimum_F']:.6g}",file=sys.stderr,flush=True)
+                if event_stop and event_time is None and row["minimum_F"]<-.02 and row["trapped_cells"]>0:
+                    event_time = t
+                if event_stop and event_time is not None and t>=event_time+1:
+                    status = "TRAPPING_CANDIDATE"
+                    break
+        except (FloatingPointError,ValueError) as exc:
+            status,error = "NUMERICAL_LIMIT",str(exc)
+        print(f"Saturation h={h} R={radius}: {status}, last={rows[-1]['t'] if rows else 0}, {time.perf_counter()-start:.1f}s",file=sys.stderr,flush=True)
+        return dict(h=h,radius=radius,courant=courant,dt=dt,status=status,error=error,
+            elapsed_seconds=time.perf_counter()-start,samples=rows,origin_snapshots=snapshots,
+            stage_minimum_A=grid.minimum_stage_A,stage_minimum_face_A=grid.minimum_stage_face_A,
+            stage_minimum_lapse=grid.minimum_stage_lapse,stage_minimum_q=grid.minimum_stage_q,
+            stage_minimum_mu=grid.minimum_stage_mu,stage_minimum_u=grid.minimum_stage_u,
+            stage_maximum_q=grid.maximum_stage_q,
+            maximum_Courant=grid.engine.maximum_courant,
+            maximum_paired_wave_RK_number=grid.pair.maximum_wave_RK_number if paired_origin else None)
+
+    if origin_audit and not paired_origin:
+        cases = (dict(finer=run(.0125,28.)) if origin_finer else
+                 dict(coarse=run(.1,28.),middle=run(.05,28.),fine=run(.025,28.),half_step=run(.025,28.,courant=.05)))
+        for name,case in cases.items():
+            test("origin_replay_completed_"+name,case["status"]=="COMPLETED" and case["samples"][-1]["t"]==28.)
+        if not origin_finer:
+            expected = dict(middle=.00012779792090901636,fine=.00019595006468986798)
+            for name,target in expected.items():
+                actual = max(row["origin_constraint"] for row in cases[name]["samples"] if row["t"]<=27.75)
+                test("reproduce_original_origin_"+name,abs(actual-target)<1e-10,actual=actual,expected=target)
+            a,b = cases["fine"]["origin_snapshots"][1],cases["half_step"]["origin_snapshots"][1]
+            error = relative_array_error(a["constraint"][:2],b["constraint"][:2])
+            test("origin_time_step_control",error<1e-3,relative_error=error)
+        test("unchanged_run_sources",all(hashlib.sha256(path.read_bytes()).hexdigest()==entry_hashes[path.name] for path in hash_paths))
+        # Keep the requested transition records, not an extra generated dataset.
+        for case in cases.values():
+            case["samples"] = [row for row in case["samples"] if row["t"]==0 or row["t"]>=26.]
+        failed = [c for c in checks if not c["passed"]]
+        return dict(decision="ORIGIN_DIAGNOSTIC_COMPUTED" if not failed else "ORIGIN_DIAGNOSTIC_CONTROL_FAILURE",
+            checks=len(checks),passed=len(checks)-len(failed),failed=failed,details=checks,cases=cases,
+            code_sha256=entry_hashes[Path(__file__).name],source_hashes=entry_hashes,
+            scope=dict(changed_evolution_equations=False,changed_original_gate=False,resolved_trapping=False,singularity_removal=False))
+
+    pilot = run(.1,28.) if paired_origin else run(.1,event_stop=True)
+    if pilot_only:
+        test("unchanged_run_sources",all(hashlib.sha256(path.read_bytes()).hexdigest()==entry_hashes[path.name] for path in hash_paths))
+        failed = [c for c in checks if not c["passed"]]
+        return dict(decision="COLLAPSE_PILOT_ONLY",checks=len(checks),passed=len(checks)-len(failed),failed=failed,
+            details=checks,pilot=pilot,code_sha256=entry_hashes[Path(__file__).name],source_hashes=entry_hashes)
+    endpoint = 28. if paired_origin else pilot["samples"][-1]["t"]-(.5 if pilot["status"]=="NUMERICAL_LIMIT" else 0)
+    if endpoint<.25:
+        raise RuntimeError("No finite pilot interval to refine")
+    cases = dict(coarse=pilot,middle=run(.05,endpoint),fine=run(.025,endpoint),
+                 half_step=run(.025,endpoint,courant=.05),domain=run(.025,endpoint,radius=160))
+
+    def verdict(end,case_set=None):
+        gates,residuals,differences = {},{},{}
+        selected = {name:[row for row in case["samples"] if row["t"]<=end+1e-10]
+                    for name,case in (cases if case_set is None else case_set).items()}
+        if any(not rows or abs(rows[-1]["t"]-end)>1e-8 for rows in selected.values()):
+            return dict(passed=False,gates=dict(common_time=False),end=end,resolved_trapping=False)
+        required = ("t","mass","charge","radial_constraint","regular_metric_residual","origin_constraint",
+                    "minimum_F","maximum_density","charge_rms_areal","central_proper_time",
+                    "contiguous_trapped_cells","trapped_cells","outgoing_expansion","ingoing_expansion")
+        if any(not np.isfinite(row[key]) for rows in selected.values() for row in rows for key in required):
+            return dict(passed=False,gates=dict(finite_diagnostics=False),end=end,resolved_trapping=False)
+        for name,rows in selected.items():
+            gates[name+"_charge"] = max(abs(row["charge"]/rows[0]["charge"]-1) for row in rows)<1e-5
+            gates[name+"_mass"] = max(abs(row["mass"]/rows[0]["mass"]-1) for row in rows)<5e-3
+        for key in ("radial_constraint","regular_metric_residual","origin_constraint"):
+            middle = max(row[key] for row in selected["middle"])
+            fine = max(row[key] for row in selected["fine"])
+            gates[key] = fine<5e-3 and (fine<1e-6 or fine<.6*middle)
+            residuals[key] = dict(middle=middle,fine=fine)
+        for key in ("minimum_F","maximum_density","charge_rms_areal","central_proper_time"):
+            arrays = {name:np.array([row[key] for row in rows]) for name,rows in selected.items()}
+            scale = max(float(np.max(abs(arrays["fine"]))),1e-12)
+            normdiff = lambda a,b:float(np.max(abs(arrays[a]-arrays[b]))/scale)
+            cm,mf = normdiff("coarse","middle"),normdiff("middle","fine")
+            half,domain = normdiff("half_step","fine"),normdiff("domain","fine")
+            gates[key+"_refinement"] = mf<1e-4 or mf<.6*cm
+            gates[key+"_controls"] = max(half,domain)<1e-3
+            differences[key] = dict(coarse_middle=cm,middle_fine=mf,half_step=half,domain=domain)
+        resolved = False
+        if all(gates.values()) and min(len(x) for x in selected.values())>=2:
+            resolved = True
+            for offset in (-2,-1):
+                last = {name:rows[offset] for name,rows in selected.items()}
+                uncertainty = 3*max(abs(last["fine"]["minimum_F"]-last[name]["minimum_F"])
+                                     for name in ("middle","half_step","domain"))
+                resolved &= last["fine"]["contiguous_trapped_cells"]>=4 and all(
+                    row["minimum_F"]<-max(.005,uncertainty) and row["outgoing_expansion"]<0
+                    and row["ingoing_expansion"]<0 and row["trapped_cells"]>0 for row in last.values())
+        return dict(passed=bool(all(gates.values())),gates={k:bool(v) for k,v in gates.items()},
+                    end=end,residuals=residuals,differences=differences,resolved_trapping=bool(resolved))
+
+    def certify(end,case_set=None):
+        accepted,first_rejected,first_trapping = None,None,None
+        for stop in np.arange(.25,end+1e-9,.25):
+            current = verdict(float(stop),case_set)
+            if not current["passed"]:
+                first_rejected = current
+                break
+            accepted = current
+            if current["resolved_trapping"] and first_trapping is None:
+                first_trapping = current
+        return accepted,first_rejected,first_trapping
+
+    # Decision-only fixtures: no evolution and no change to physical budgets.
+    fixture_rows = []
+    for t,Fval in zip((0.,.25,.5,.75),(.7,-.02,-.02,.1)):
+        fixture_rows.append(dict(t=t,mass=1.,charge=1.,radial_constraint=1e-8,
+            regular_metric_residual=1e-8,origin_constraint=1e-8,minimum_F=Fval,
+            maximum_density=1.,charge_rms_areal=1.,central_proper_time=t,
+            contiguous_trapped_cells=4 if Fval<0 else 0,trapped_cells=4 if Fval<0 else 0,
+            outgoing_expansion=-1. if Fval<0 else 1.,ingoing_expansion=-1.))
+    fixture = {name:dict(samples=[dict(row) for row in fixture_rows]) for name in cases}
+    fa,fr,ft = certify(.75,fixture)
+    test("transient_trapping_certificate_retained",fa["end"]==.75 and fr is None and
+         ft is not None and ft["end"]==.5 and not fa["resolved_trapping"])
+    for key in ("radial_constraint","regular_metric_residual","origin_constraint","mass","charge"):
+        saved = fixture["fine"]["samples"][-1][key]
+        fixture["fine"]["samples"][-1][key] = float("nan")
+        test("nonfinite_"+key+"_rejected",not verdict(.75,fixture)["passed"])
+        fixture["fine"]["samples"][-1][key] = saved
+
+    terminal = verdict(endpoint)
+    accepted,first_rejected,first_trapping = certify(endpoint)
+    for name,condition in terminal.get("gates",{}).items():
+        test("terminal_"+name,condition)
+    sources_unchanged = all(hashlib.sha256(path.read_bytes()).hexdigest()==entry_hashes[path.name] for path in hash_paths)
+    test("unchanged_run_sources",sources_unchanged)
+    failed = [c for c in checks if not c["passed"]]
+    certification_valid = all(c["passed"] for c in checks if not c["name"].startswith("terminal_"))
+    trapping = first_trapping is not None and certification_valid
+    return dict(decision="INVALID_CERTIFICATION_CONTROLS" if not certification_valid else
+                ("PAIRED_ORIGIN_REPAIR_VALIDATED" if accepted is not None and accepted["end"]==28. else "PAIRED_ORIGIN_REPAIR_OPEN") if paired_origin else
+                "VALIDATED_FUTURE_TRAPPING" if trapping else
+                "VALIDATED_PRETRAPPING_PREFIX" if accepted else "UNRESOLVED_COLLAPSE",
+        checks=len(checks),passed=len(checks)-len(failed),failed=failed,details=checks,
+        pilot_end=endpoint,terminal=terminal,accepted_prefix=accepted,first_rejected=first_rejected,
+        first_trapping=first_trapping,cases=cases,
+        source_prerequisite=dict(checks=source["checks"],passed=source["passed"],parameters=source["parameters"]),
+        code_sha256=entry_hashes[Path(__file__).name],engine_sha256=entry_hashes[Path(legacy.__file__).name],
+        source_hashes=entry_hashes,
+        scope=dict(resolved_trapping=trapping,global_regularity=False,singularity_removal=False,
+                   full_RefG_pressure_join=False,same_saturation_action=True,
+                   paired_nodal_method=paired_origin,charge_quadrature="h*r^2" if paired_origin else "cell_volume"))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--verbose", action="store_true")
     parser.add_argument("--oscillon-source", action="store_true")
     parser.add_argument("--oscillon-dynamics", action="store_true")
     parser.add_argument("--dynamics-pilot", action="store_true")
+    parser.add_argument("--supercritical-data", action="store_true")
+    parser.add_argument("--saturation-collapse", action="store_true")
+    parser.add_argument("--collapse-pilot", action="store_true")
+    parser.add_argument("--origin-audit", action="store_true")
+    parser.add_argument("--origin-finer", action="store_true")
+    parser.add_argument("--origin-controls", action="store_true")
+    parser.add_argument("--paired-origin", action="store_true")
+    parser.add_argument("--paired-controls", action="store_true")
     args = parser.parse_args()
+    if (args.saturation_collapse or args.collapse_pilot or args.origin_audit or args.origin_finer or args.origin_controls or args.paired_origin or args.paired_controls) and (args.supercritical_data or args.oscillon_source or args.oscillon_dynamics or args.dynamics_pilot):
+        parser.error("Choose collapse or a previous stage")
+    if args.supercritical_data and (args.oscillon_source or args.oscillon_dynamics or args.dynamics_pilot):
+        parser.error("Choose initial data or the existing source/dynamics tests")
     if args.oscillon_source and (args.oscillon_dynamics or args.dynamics_pilot):
         parser.error("Choose stationary or dynamical checks")
-    result = (dynamics_checks(pilot=args.dynamics_pilot) if args.oscillon_dynamics or args.dynamics_pilot
+    result = (collapse_checks(pilot_only=args.collapse_pilot,
+                             origin_audit=args.origin_audit or args.origin_finer or args.origin_controls or args.paired_origin or args.paired_controls,
+                             origin_finer=args.origin_finer,origin_controls=args.origin_controls or args.paired_controls,
+                             paired_origin=args.paired_origin or args.paired_controls)
+              if args.saturation_collapse or args.collapse_pilot or args.origin_audit or args.origin_finer or args.origin_controls or args.paired_origin or args.paired_controls else
+              supercritical_data_checks() if args.supercritical_data else
+              dynamics_checks(pilot=args.dynamics_pilot) if args.oscillon_dynamics or args.dynamics_pilot
               else oscillon_checks() if args.oscillon_source else run_checks())
     if not args.verbose:
         result.pop("details")

@@ -721,6 +721,792 @@ contains all eleven trajectories, constraint diagnostics, refinements,
 source/engine hashes and the implementation hash. It does not silently
 discard failed cases.
 
+## 8. Supercritical inward source data
+
+### Frozen construction, 2026-09-12
+
+- CLAIM_ID / MODEL_VERSION: W92_SATURATION_SUPERCRITICAL_DATA_V1;
+  same spherical saturation and canonical sextic action as sections 6--7,
+  alpha=0.04, ell=2. CLAIM / TYPE: construct regular, initially untrapped,
+  inward charged-scalar Cauchy data with M_outer=2 M_critical. Conditional
+  source construction with exact identities and numerical evidence.
+- GOAL / STOP: remove the subcritical-mass obstruction of section 7.
+  Stop at a validated initial slice, or record its failed accuracy/existence
+  test. A separate evolution must determine trapping and the endpoint.
+- ASSUMPTIONS / DOMAIN / CONVENTIONS: polar-areal B>0, same time and scalar
+  conventions as section 7; r in [0,60], comparison domain [0,80]. A smooth
+  packet is supported on 20<r<40. Its cavity uses the already-declared
+  z=0 spherical-equation limit. Generic off-shell action regularity at z=0
+  is outside this construction.
+- FREEDOM_LEDGER: x=(r-30)/10; b=exp(1-1/(1-x^2)) for |x|<1 and zero
+  otherwise. Set k=1, omega=sqrt(2), v=1/sqrt(2), psi=a b exp(i k r),
+  Pi=a exp(i k r)[v b'+i omega b]. Only the initial-data amplitude a>0 is
+  normalized to M_outer=2 M_critical; the action has no new parameter.
+  These are free, non-equilibrium many-mode scalar data, with a nonzero
+  conserved phase charge, rather than a rescaled equilibrium oscillon.
+- METHOD / DEPENDENCIES: solve the same nonlinear mass and lapse
+  constraints with independent adaptive radial ODE integration, and
+  reproduce them with section 7's grid reconstruction. Use the analytic
+  shell derivative in the ODE and the grid derivative in reconstruction.
+  Amplitude shooting is monotonic on the positive-B branch. Stop shooting
+  trials at M=1.1 M_target to keep a uniform positive-B bracket.
+- PASS_CONDITION: nonzero positive phase charge, inward energy and charge
+  flux, regular centre, B>=1-2 alpha M_target/20>0, q,sigma>0; outer mass
+  matches target fractionally within 1e-9. Fixed-amplitude grid/ODE metric
+  and charge discrepancies at h=.025 are <3e-4 and improve from h=.1,.05
+  with successive ratios <0.6 unless already <1e-7. Local mass-flux and
+  radial-constraint errors are <2e-3 on the fine grid with the same
+  convergence rule. Their diagnostic radius is 50, enclosing the source.
+- ERROR_BOUND / CROSSCHECK: adaptive ODE relative tolerances 1e-10/1e-12,
+  max steps .1/.05; their mass/charge/lapse differences <1e-8; independent
+  source integrals <1e-8; opposite-flux data have the same initial geometry,
+  mass and charge. R=80 reconstruction changes core data by <1e-10.
+  Zero field and the subcritical/extremal/supercritical vacuum-root
+  classification are controls. Fixed-point tolerance remains unchanged.
+- FAIL_CONDITION / FALSIFIER / RESIDUAL: a finite-radius pole, negative B,
+  source/constraint mismatch or unmet numerical tolerance fails this
+  construction. A solver failure leaves its continuation unresolved.
+  Source normalization alone is not evidence for future black-hole formation.
+- VALIDITY_HEALTH / BRANCHES: positive-B canonical scalar initial value
+  domain, finite smooth stress and screened geometric response. Future
+  stability and horizon continuation require their own evolved tests.
+- OBSERVABLE_MAP: generalized mass, scalar phase charge, energy/charge
+  flux, areal mass/charge radii and metric coefficients on this initial
+  slice. OBSERVATION / FORWARD_MODEL / DATA_ROLE / IDENTIFIABILITY: N/A,
+  no detector data, fit, microscopic particle identification or uniqueness
+  inference. BENCHMARK: independent same-action ODE and zero-field limit.
+- CLOSURE_FLAGS: initial_data_ready=False until all checks pass;
+  black_hole_formation=False; singularity_removal=False;
+  full_RefG_pressure_join=False. PROVENANCE: code hash and numerical
+  evidence on stdout. FILES: this report, its existing verifier, W92 index.
+  Monographs, earlier source engines, private assumptions and Git rules
+  remain unchanged; no generated output files or external publication.
+
+### Source normalization and initial geometry
+
+The packet is an admissible non-equilibrium configuration of the same
+complex scalar. With D=psi_r, its phase charge density and inward currents
+are explicit:
+
+    Im(conj(psi)Pi) = omega a^2 b^2 > 0,
+    Im(conj(psi)D) = k a^2 b^2 > 0,
+    Re(conj(Pi)D) = a^2 [v (b')^2 + omega k b^2] > 0
+
+where the nonzero packet is supported. Thus both outward charge flux
+-r^2 sigma B Im(conj(psi)D) and outward energy flux -M_t are negative.
+The packet's v=1/sqrt(2) is an initial-data coefficient; it is distinct
+from any future metric shift. The choices omega^2=k^2+1 and v=k/omega
+give a flat, linear massive-wave reference. In the nonlinear curved
+initial slice the exact equations, not that flat dispersion relation,
+determine subsequent motion.
+
+With S=|Pi|^2+|D|^2=a^2 S_b, solve
+
+    M_r = r^2 (B S/2+V),
+    (log sigma)_r = alpha r q^2 S,
+    Q_r = r^2 omega a^2 b^2,
+    M(20)=Q(20)=0, sigma(40)=1.
+
+The interior has M=0, B=1 and constant sigma. Outside the packet, M is
+constant, sigma=1, and B is the same saturation vacuum exterior.
+All packet derivatives vanish at its boundaries, so the source joins
+smoothly without a distributional surface layer. The central limit is
+the existing flat branch of the reduced spherical equations.
+
+Only a is adjusted to the specified source mass. Its variational equation
+
+    (M_a)_r + alpha r q^2 S M_a
+      = r^2 [B a S_b + V_f b],   V_f=f(1-f^2/2)^2
+
+has a nonnegative source on B>0. This establishes monotonic amplitude
+shooting within the declared family. A finite-difference derivative of
+the independently solved mass verifies M_a numerically. The freely
+chosen target mass defines the experiment, rather than a successful
+future-collapse result.
+
+For the target mass, positive density and 0<=M(r)<=M_target imply
+
+    B=1-2 alpha M(r)q(r)/r
+      >=1-2 alpha M_target/20=0.4803847577
+
+throughout the packet and exterior, while B=1 in the cavity. The slice
+is initially untrapped despite its supercritical total mass. If that
+same total mass were subsequently enclosed within a sufficiently small
+radius, its vacuum polynomial would have two positive roots. At the
+present initial time those formal roots lie in the flat cavity and
+are not horizons of the actual source solution.
+
+### Numerical result and continuation boundary
+
+The normalized amplitude is a=0.0905332116650878. Independent radial
+integration gives
+
+    M_critical = 64.9519052838,
+    M_outer   = 129.9038105677,
+    Q         = 103.8976654496,
+    sigma(0)  = 0.7450827745,
+    dM_outer/da = 2492.41208509.
+
+These are dimensionless model quantities. The scalar phase charge has
+the same definition as in section 7. The formal vacuum radii for the
+total mass are 2.2610317497 and 9.9744830659, both below the packet's
+inner edge at 20, where the actual metric is flat up to its constant
+time normalization.
+
+The same amplitude is used on every grid, without grid-by-grid mass
+refitting:
+
+| h | Reconstructed outer mass | Maximum mass-profile error / M_target | Minimum B |
+|---|---:|---:|---:|
+| 0.1 | 129.7979280884 | 8.18e-4 | 0.72392757 |
+| 0.05 | 129.8773074860 | 2.05e-4 | 0.72375752 |
+| 0.025 | 129.8971827658 | 5.12e-5 | 0.72371578 |
+
+At h=.025, the metric-B and lapse relative errors against the ODE are
+1.94e-5 and 2.40e-5, and the scalar-charge error is 5.71e-8. The local
+mass-flux residual is 6.08e-5, while independent radial mass/lapse
+residuals are 3.98e-6 and 3.61e-6. Each of these discretization errors
+decreases approximately fourfold when h halves. The diagnostic radius
+50 contains the full matter support. The R=80 check gives the same
+reconstructed core geometry. ODE tolerance and independent quadrature
+differences are below 5e-15, which does not supersede the larger grid
+error budget.
+
+The maximum initial enclosed-mass growth rate is about 6.454 model
+units and the outward charge flux reaches -5.571. Reversing the packet
+with (psi,Pi)->(conj(psi),-conj(Pi)) reverses both currents while keeping
+its mass, charge and geometry unchanged. This checks the direction of
+transport without changing the source budget.
+
+The first implementation passed 51/53 checks. Its two failing tests
+required exactly zero discrete mass right up to the analytic inner
+support boundary. A centred derivative there samples the adjacent
+nonzero packet cell. The corrected exact-flat test covers r<20-2h;
+the separately retained inner-edge mass fractions are 9.72e-89,
+2.70e-175 and zero on the three grids, below a 1e-12 bound. The field,
+action, target mass, numerical solvers and accuracy thresholds remained
+unchanged. This records a stencil-domain correction rather than a
+physical change to the candidate.
+
+Outcome: SUPERCRITICAL_INWARD_DATA_READY, 53/53 checks. The concrete
+obstruction removed is the insufficient mass of section 7's small
+oscillon. This stage establishes an inward, source-consistent starting
+slice for collapse. Formation of a trapped region and the later
+regularity of that evolution remain to be calculated; the full
+foundation-pressure/readout match retains its earlier status.
+
+An independent read-only rerun reproduced 53/53 with the same code hash.
+The existing default, stationary and finite-window dynamics regressions
+also passed 74/74, 63/63 and 85/85 respectively. All response fields for
+both previous perturbation signs reproduced their earlier values exactly.
+The new grid-access option and diagnostic radius therefore preserve the
+previous dynamics. No monograph, private assumption file, Git rule or
+earlier evolution engine was edited.
+
+The next numerical implementation can reuse the accepted staggered
+general-areal framework in `population_assembly_initial_data.py`,
+particularly `StaggeredClockGrid` and `clock_rk4`. The same initial
+slice has spatial A=B, lapse L=sigma sqrt(B), zero angular metric-shift
+variable, and normalized scalar momentum P=Pi. Its gravity, source
+constraints and curvature diagnostics require the saturation-action
+expressions. The earlier Einstein-specific curvature substitutions
+and rejected collocated-clock extension are not the continuation
+equations for this candidate. The present polar-areal solver is used
+only to prepare the untrapped initial slice.
+
+Reproduce the data, convergence tables and failure ledger on stdout:
+
+    python -B verify_spherical_saturation_bridge.py --supercritical-data --verbose
+
+The implementation SHA-256 is
+`04e14056f0527e16cef5a5efa2d6857a4a7c0498a88bbf1b86f2b7459bbf59de`.
+No extra source data files are required: the profile, amplitude-selection
+rule and all constraints are contained in this existing verifier.
+
+## 9. Horizon-regular evolution of the supercritical source
+
+### Frozen bounded experiment, 2026-09-12
+
+CLAIM_ID: W92_SATURATION_COLLAPSE_V1. Evolve section 8's identical inward
+packet under the SAME spherical saturation and sextic action. The
+decision is whether a future-trapped region forms in a numerically
+validated finite interval. The model parameters, amplitude-selection
+rule and incoming phase are fixed. No material or gravitational law is
+added. This is a conditional dynamical test, not an observational fit.
+
+Use the existing staggered harmonic general-areal discretization, with
+its gravity explicitly replaced by the saturation equations. Store
+(psi,P,mu=M/r^3,v_faces,log L,tau_c). The spatial metric is
+A=1-r^2 z+v^2, z=2 alpha mu/(1+2 alpha ell^2 mu). Cell/face A, L and q
+must remain positive. Stop on a guard violation; retain all accepted
+and failed diagnostics. The zero-shift initial slice has A=B,
+L=sigma sqrt(B), P=Pi from section 8. Use the declared z=0 limit in the
+empty cavity. Generic action smoothness or stability outside this
+spherical domain is not a premise of the numerical decision.
+
+Preflight: exact action/constraint identities, zero field, ell=0 full-RHS
+agreement with the previous staggered engine, and the exact saturated
+constant-potential contracting core with a harmonic clock. Neither the
+old Einstein curvature formulas nor its collocated clock are inherited.
+
+Pilot: h=.1, R=120, Courant .1, sample every .25, maximum T=80. If
+F=1-r^2 z falls below -.02 with future trapping, continue one additional
+time unit and stop. On a numerical guard, stop at the last full sample.
+The full suite uses the pilot's terminal time (minus .5 if it hit a guard),
+with h=.1,.05,.025, fine half-step and fine R=160 controls. This is a
+predeclared stopping rule, not a selected late-time endpoint claim.
+
+Accuracy: charge drift <1e-5, outer-mass drift <5e-3; independent radial
+mass and regular-metric residuals <5e-3 on r<=80, with middle/fine ratio
+<.6 unless below 1e-6. The origin mass constraint uses a nonzero global
+source scale during the initially empty-cavity interval; its absolute
+residual and local source are also recorded. Do not divide by an empty
+centre's density. Waveform errors in minimum F, maximum density, charge
+RMS radius and central proper time must refine (ratio<.6 or error<1e-4),
+and time-step/domain errors must be <1e-3. All clocks and radial
+geometric observables use the same gauge and sampling for comparison.
+
+A trapped-region claim additionally requires at least four trapped fine
+cells, theta_+<0 and theta_-<0 in every resolution/control case on two
+successive samples, and negative F larger than three times the actual
+resolution/control differences (with minimum magnitude .005). If the
+terminal interval fails accuracy, report the maximal contiguous tested
+prefix and retain rejected later samples. A numerical limit does not
+decide the physical endpoint. This stage stops with validated trapping,
+validated finite-time evolution without trapping, or unresolved evolution.
+
+No detector data or uniqueness inference: FORWARD_MODEL/DATA_ROLE and
+observational IDENTIFIABILITY are N/A. Dependencies are sections 6--8 and
+the retained scalar/gauge finite-volume stencils. CROSSCHECK: independent
+symbolic action projections, Einstein/constant-core limits, grid/time/domain
+controls. CLOSURE_FLAGS start false for resolved_trapping, global_regularity,
+singularity_removal and full_RefG_pressure_join. Only resolved_trapping
+may be closed by this experiment. Residuals, code/source hashes and failed
+guards go to stdout and this report. Allowed edits are the existing
+verifier, this report and W92 index; old engines, monographs, private
+assumptions and Git rules remain unchanged.
+
+### Same-action horizon-regular equations
+
+Pre-certification audit: the initial nine preflight checks and coarse pilot
+passed, reaching F_min=-0.0741527 at t=51.75. The first refinement run was
+stopped by the operator while the fine grid was running, to incorporate
+independent review findings before issuing any certificate. This
+preliminary pilot is not used as a validated result. The final suite is
+rerun from its original initial data after these guard-only corrections:
+
+- latch a trapping event even if the region later disappears, and stop the
+  pilot exactly one time unit after its first qualifying event;
+- reject nonfinite diagnostic inputs and finite/positive-lapse violations
+  on cells and faces; test both failure paths with synthetic fixtures;
+- freeze verifier and both source-engine hashes at entry and verify them
+  unchanged at exit;
+- check the action's real branch at every cell/face RK stage. With
+  u=ell^2 z the allowed domain is 0<u<1 plus the checked u=0 vacuum limit.
+  A negative-u allowance of 100 machine epsilons covers only roundoff;
+  larger undershoot stops the run as NUMERICAL_ACTION_DOMAIN_LIMIT. Mu is
+  never clipped and no negative-curvature action is introduced. Record
+  minimum mu,u and maximum q, including the failed stage if there is one.
+
+The physical acceptance tolerances and equations remain frozen. For
+x=|psi|^2, V=x[(x-3)^2+3]/24 is nonnegative. The canonical source satisfies
+|J|<=rho, J=sqrt(A) S. Before trapping, |v|<sqrt(A), so
+M_r>=r^2 rho(1-|v|/sqrt(A))>=0. A resolved negative mass originating in a
+regular empty cavity would therefore be a numerical/domain error on this
+branch. After trapping the guard continues to enforce the established
+action domain, without assuming monotonicity of M(r).
+
+Use the general-areal metric
+
+    ds^2 = -L^2 dt^2 + (dr+L v dt)^2/A + r^2 dOmega^2,
+    mu=M/r^3, q=(1+2 alpha ell^2 mu)^(-1), z=2 alpha mu q,
+    F=1-r^2 z, A=F+v^2, k=v/r, P=n(psi)/sqrt(A), D=psi_r.
+
+Here v is the metric shift variable, not section 8's packet coefficient.
+For the same canonical complex scalar and sextic potential,
+
+    rho=A(|P|^2+|D|^2)/2+V, p=rho-2V,
+    S=sqrt(A) Re(conj(P) D), beta=L v.
+
+The spherical action projections and its conserved mass give
+
+    M_r = r^2 (rho+v S),
+    M_t = L r^2 [v(rho+p)+(A+v^2)S],
+    k_t = L v k_r + L[k^2+z(1-3 ell^2 z)/2+alpha q^2 p]-A L_r/r,
+    K^r_r = k+r k_r-alpha r q^2 S.
+
+The physical mass flux is not multiplied by q^2. The saturation factor
+belongs to the gravitational response, including both the pressure term
+and the mixed extrinsic-curvature constraint. The unchanged scalar and
+harmonic-clock equations are
+
+    psi_t = L sqrt(A) P + L v D,
+    P_t = r^(-2) partial_r[r^2 L(sqrt(A)D+vP)]-L V_force/sqrt(A),
+    (log L)_t = beta (log L)_r-L[div(v)-alpha r q^2 S],
+    (tau_c)_t = L_c.
+
+The implementation evolves v on radial faces. Face q and z are calculated
+from interpolated mu; the complete gravitational RHS is replaced, rather
+than merely substituting the metric into the old Einstein solver.
+An independent regular-metric identity is
+
+    A_t-L v A_r+2 v A L_r+2 alpha q^2 L r A S=0.
+
+Writing H=k^2-z=(A-1)/r^2 gives its centre-regular diagnostic without
+subtracting nearly equal metric coefficients. Its radial derivatives and
+the M_r constraint use a fourth-order diagnostic stencil, distinct from
+the evolution stencil. The initial empty cavity is normalized by the
+initial global density scale, or the actual local density once larger;
+the absolute origin error is retained too.
+
+The two radial null expansions are
+
+    theta_plus=2(sqrt(A)-v)/r,
+    theta_minus=-2(sqrt(A)+v)/r,
+    theta_plus theta_minus=-4 F/r^2.
+
+Both must be negative for future trapping. A negative F alone does not
+distinguish a future-trapped region from a past-trapped one. Neither a
+zero lapse nor the vacuum roots extrapolated inside the source are used
+as horizon evidence.
+
+The exact saturated constant-potential preflight has psi=sqrt(2), P=D=0,
+rho=1/3, p=-1/3, mu=1/9, A=1 and
+
+    k=sqrt[2 alpha/(9+2 alpha ell^2)],
+    L(t)=L0/(1+3 k L0 t), tau_c=log(1+3 k L0 t)/(3 k).
+
+It tests the saturation terms and the integrated clock simultaneously.
+It is a local analytic control, not the collapse packet's exterior.
+
+### Completed bounded result: accepted prefix and later trapping candidate
+
+**Decision: VALIDATED_PRETRAPPING_PREFIX, 0<=t<=27.5.** All five runs
+completed through t=51.75. The later solution contains a future-trapped
+region in every grid/control case, but the registered continuous-history
+certificate stops at an earlier origin-refinement failure. The numerical
+candidate is retained explicitly; resolved_trapping remains false.
+
+The first rejected prefix ends at t=27.75. Its normalized origin mass
+constraint is 1.27797920909e-4 on h=.05 and 1.95950064690e-4 on h=.025:
+the fine/middle ratio is 1.53328. Both absolute normalized errors are
+below .005, but the fine error exceeds 1e-6 and its ratio exceeds .6.
+Every other gate at that prefix passes. No threshold is relaxed and the
+later good interval does not erase this failed intermediate check.
+This stage identifies a local convergence limitation. Section 10 below
+identifies its dominant local spatial-error term.
+
+There are **39/39 passing preflight, terminal and implementation-control
+checks**, with zero failures in that list. That count is distinct from
+the continuous-prefix certificate: the complete t<=51.75 evolution has
+not passed the latter. The program returns both the accepted prefix and
+the first rejected prefix, alongside the terminal-only verdict.
+
+The following values are the **later, uncertified candidate at t=51.75**,
+in the same dimensionless model units used above:
+
+| Run | Outer mass | Minimum F | Consecutive trapped cells | Central proper time |
+|---|---:|---:|---:|---:|
+| h=.1, R=120 | 129.7979280884 | -0.0741527449 | 38 | 35.1393885168 |
+| h=.05, R=120 | 129.8773074860 | -0.0800260725 | 79 | 35.1112040252 |
+| h=.025, R=120 | 129.8971827658 | -0.0814830888 | 159 | 35.1041542045 |
+| Fine, half time step | 129.8971827658 | -0.0814830888 | 159 | 35.1041542045 |
+| Fine, R=160 | 129.8971827658 | -0.0814830888 | 159 | 35.1041542045 |
+
+At the fine minimum, r=7.0875, theta_plus=-0.02073655306 and
+theta_minus=-0.31289942405. The charge RMS radius is 5.6381372991,
+maximum density is 16.3746830482 and central lapse is 0.2341611488.
+The first negative-F sample is t=50 on the fine, half-step and enlarged
+domain grids, and t=50.25 on the other two. The earliest tiny negative
+sample alone is not the registered two-sample trapping certificate.
+
+The whole-window terminal diagnostics are:
+
+| Residual maximum on 0<=t<=51.75 | h=.05 | h=.025 |
+|---|---:|---:|
+| Radial mass constraint | 4.62492256e-3 | 1.16208160e-3 |
+| Regular metric identity | 8.17822951e-5 | 2.01364940e-5 |
+| Source-normalized origin constraint | 3.51600347e-3 | 7.86715419e-4 |
+
+The middle-to-fine versus coarse-to-middle waveform error ratios are
+0.24807 for minimum F, 0.25486 for maximum density, 0.25007 for charge
+RMS radius and 0.25013 for central proper time. The largest normalized
+half-step difference across those waveforms is 1.20e-10; the largest
+domain difference is 1.64e-15. These convergent late/full-window maxima
+coexist with the failed early prefix and cannot substitute for it.
+
+Outer mass is constant to the emitted precision in every run. Final
+relative charge drifts are -1.84e-10, -5.93e-12 and -1.97e-13 on the
+three grids, and -6.88e-15 in the half-step control. The zero outer
+scalar flux makes mass/charge checks necessary but insufficient alone;
+the enlarged-domain and local constraints are retained independently.
+All RK stages stay in the registered action/chart domain: minimum mu=u=0,
+maximum q=1; fine minimum q=0.3641357654, cell A=0.2650973242, face
+A=0.2650908410 and lapse=0.2310458871. Maximum Courant across the suite
+is 0.09350521. No action-domain or evolution guard was triggered.
+
+Independent read-only checks reproduce the pilot exactly (12/12,
+t=51.75, 38 trapped cells), plus the previous 74/74 base, 63/63 stationary,
+53/53 initial-data and 85/85 small-perturbation suites. The old radius
+responses are unchanged. The Einstein-RHS limit error is 1.73e-18; the
+saturated-core clock errors at dt=.05,.025 are 1.19e-11 and 7.34e-13.
+Two independent reviews confirmed the equations and the distinction
+between the terminal verdict and the broken continuous prefix.
+
+The verifier hash was recorded before launching the full run and remained
+unchanged through its end:
+`189a9d7fee09a14983d87ad09b9cfc72f5f614b197d6e9b68d3c2831a6ef2cba`.
+Retained staggered engine:
+`df0d16c7715a2c3e3e02ec3487f2cad2860bf772e69983de6e2fb5af295af97d`.
+Retained scalar engine:
+`2c310a3a600b2ced39333c14a208a2fcb97ed6178c6906e0a55366e35ab1e4ca`.
+Both intuitive monographs, the old engines, private assumptions and Git
+rules remain unchanged. No result files are generated.
+
+**Registered follow-up, completed in section 10:** diagnose only the t=27.5--28 origin transition,
+using the same action and thresholds. Record the absolute constraint,
+normalization/local density and its separate 3mu, r mu_r, -rho and -vS
+terms on the first two cells; compare half steps, an even-parity estimate
+at the common centre and an independently integrated mass constraint at
+fixed physical radii. The present first-two-cell norm samples different
+radii on different grids; test that effect explicitly. Add a finer grid
+only if these diagnostics cannot discriminate the cause. A short rerun
+through t=28 covers the first failure. Wavefront arrival, cancellation or stencil error
+are diagnostic possibilities, not established explanations. No new
+material law or longer collapse scan is called for before this check.
+
+Closure: same_action_source_evolution=true; validated_prefix_end=27.5;
+resolved_trapping=false; global_regularity=false; singularity_removal=false;
+full_RefG_pressure_join=false. This stage adds an evolved massive-source
+candidate and a precisely located certification obstacle.
+
+Reproduce the complete decision and all sampled diagnostics with:
+
+    python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py" --saturation-collapse --verbose
+
+## 10. Bounded diagnosis of the early origin-refinement failure
+
+Frozen before replay, 2026-09-12. CLAIM_ID: W92_SATURATION_ORIGIN_AUDIT_V1.
+Goal: identify the discrete cause of section 9's first failed origin gate,
+at t=27.75. The action, source, gauge, integration scheme and section 9
+acceptance thresholds remain unchanged. This is a numerical diagnosis,
+not a new physical model or a new trapping certificate.
+
+Replay only to t=28: h=.1,.05,.025 on R=120, plus the fine half-step
+control. Reproduce the recorded middle/fine normalized residuals within
+1e-10 absolute. Record both normalization and absolute errors, separate
+3mu, r Dmu, -rho, -vS terms, and their evolution rates at t=27.5,27.75,28.
+Compare the common-centre even-parity extrapolation and independent
+source-integrated mass at fixed radii .1,.2,.4. These are diagnostic
+crosschecks; none replaces the original first-two-cell gate. Synthetic
+even-polynomial checks audit the derivative and integrated constraint.
+Time-step agreement of the failing absolute residual must be within
+1e-3 relative before assigning the issue to spatial discretization.
+
+One finer h=.0125 replay is allowed only if the initial term/radius/time
+comparison cannot distinguish the origin of the failure. No longer
+collapse scan, new constitutive term, relaxed threshold or monograph
+change is authorized by this diagnostic. Stop with a demonstrated
+numerical cause and any directly justified, separately checked repair,
+or a precise unresolved numerical term. Physics/observational inference,
+DATA_ROLE, FORWARD_MODEL and IDENTIFIABILITY are N/A for this solver audit.
+Dependencies: sections 8--9 and their unchanged source engines. Allowed
+files: this report, its verifier and W92 index. Output goes to stdout;
+the report retains the conclusion, errors and hashes. Closure of trapping,
+global regularity, singularity removal and the full pressure join remains
+separate from diagnosis of this numerical gate.
+
+### Completed audit: identified leading spatial discrepancy
+
+**Decision: ORIGIN_LEADING_SPATIAL_DISCREPANCY_IDENTIFIED.** The mass-source
+and scalar wave operators have unequal leading spatial truncation errors
+at the regular centre. Their predicted mismatch quantitatively reproduces
+the measured local constraint-production rate. There is no missing
+leading centre factor or sign in the continuum equations. No evolution
+equation, acceptance threshold or physical postulate was changed.
+
+The four registered replays pass 25/25 controls and reproduce the original
+middle/fine origin residuals exactly. At t=27.75 the fine half-time-step
+relative difference of the first-two-cell absolute residual is
+1.4988792e-6, far below the registered 1e-3. Throughout the sampled
+transition, normalization remains the fixed initial global-density floor,
+not a switch to the local density. A three-point even extrapolation to
+the common r=0 point retains the error:
+
+| h | Original normalized origin error, t=27.75 | Common-centre C | Common-centre density |
+|---|---:|---:|---:|
+| .1 | 3.53098611e-5 | -6.27268626e-7 | 9.09234952e-5 |
+| .05 | 1.27797921e-4 | -2.07986456e-6 | 6.79501828e-4 |
+| .025 | 1.95950065e-4 | -3.15034064e-6 | 2.30847312e-3 |
+| .0125 | 1.03352917e-4 | -1.64636166e-6 | 3.39600458e-3 |
+
+Thus time integration, normalization and sampling different cell radii
+cannot account for the discrepancy alone. The incoming source profile
+itself still differs substantially between resolutions. Its uniform
+spatial convergence through this transition has not been established.
+
+For smooth even psi=psi0+psi2 r^2+psi4 r^4+..., the native derivative gives
+D_h psi/r=psi_r/r+4 psi4 h^2+O(h^4). Freeze the flat principal part,
+L=L0, v=0, with locally constant P. The first two cells then give
+
+    delta(mudot at r=0) = 4 L0 Re(conj(P0) psi4) h^2,
+    delta(Cdot)_first_two = L0 Re(conj(P0) psi4) h^2 [2, 6/7],
+    C = 3mu+r D_h mu-rho-vS.
+
+These are leading truncation terms, not corrections inserted into the
+physics. The actual production RHS, tested off shell with mu=v=logL=0,
+P=1 and psi=r^4, gives the scalar wave operator
+20r^2+h^2[10,78/7] and the differentiated mass operator
+20r^2+12h^2. Their difference is exactly h^2[2,6/7] up to roundoff
+(maximum absolute discrepancy below 2.3e-16 on three grids).
+Both operators approximate the same continuum identity, but their
+finite-grid errors differ.
+
+At t=27.75, h=.025, fitting psi4 and P0 from the existing first three
+nodes predicts the central mudot defect -3.48040650e-5; the measured
+discrete-minus-centre-continuum defect is -3.48167365e-5. The corresponding
+first-cell Cdot prediction is -1.74020325e-5 versus -1.71389166e-5 measured.
+The disagreements are about .04% and 1.6%, respectively. At h=.0125
+the same predictions are -6.82982307e-6 and -3.41491154e-6, versus measured
+-6.84246766e-6 and -3.41006218e-6. The latter disagreements are .19%
+and .15%. Nonflat terms, higher spatial coefficients and fitting errors
+are not set to zero in the actual evolution; this is a local leading
+error budget, not an exact decomposition of every accumulated error.
+The full semidiscrete chain-rule Cdot independently agrees with a
+directional finite difference to 5.74e-12.
+
+The independent fixed-radius constraint
+[R^3 mu(R)-integral_0^R r^2(rho+vS)dr]/R^3 remains nonzero away from the
+first cell. At R=.2,t=27.75 its cubic-reconstruction values are
+4.40251589e-7 on h=.025 and 3.67398090e-7 on h=.0125. The corresponding
+linear-in-r^2 values are 4.64996727e-7 and 3.67397718e-7. This crosscheck
+does not replace the gate; the two source reconstructions' difference
+is not a rigorous quadrature or total-error bound.
+
+The one authorized finer replay completes t=28 with 19/19 controls,
+without action-domain or chart failure. It improves the targeted error
+but does not repair the continuous-prefix certification:
+
+| t | Original origin norm, h=.025 | Same norm, h=.0125 | Finer/fine |
+|---|---:|---:|---:|
+| 27.5 | 4.01358504e-6 | 4.48541894e-6 | 1.11756 |
+| 27.75 | 1.95950065e-4 | 1.03352917e-4 | .52745 |
+| 28 | 5.67296702e-4 | 1.87485922e-4 | .33049 |
+
+In particular, the finer pair still fails the unchanged local refinement
+criterion at t=27.5. The audit retains transition samples, not a new
+whole-history certificate. It neither withdraws section 9's original
+accepted h=.05/.025 prefix nor upgrades its later trapping candidate.
+
+Both replay commands used unchanged verifier hash
+`78ac9ec249f2e9edaebd9144172f0c08341c44459d1c4f5f9c93feaa1ad76ddb`.
+After replay, the diagnostic-only quartic budget and short operator-test
+entry point were added. Their version is
+`bb7d435f8195193d5cf814b51e32e94539e0cb344731d9acea20c091783196ba`:
+21/21 short controls and the base 74/74 suite pass, independently rerun
+at this later hash. The new budget function also reproduces all twelve
+retained four-run snapshot estimates. The 12/12 pilot regression used
+the earlier 78ac9ec... hash and reproduced its prior numerical results;
+no frozen replay is claimed to have used the later diagnostic-only hash.
+The two source-engine hashes remain those in section 9.
+
+**Next bounded implementation:** make the central spatial mass balance
+and scalar flux discretization mutually consistent, preserving the
+retained charge balance and continuum equations. First require the
+quartic manufactured mismatch to vanish at leading order; then replay
+only through t=28 and apply the original constraints and time-step tests.
+Do not enforce mu=rho/3 after a time step, alter the normalization, or
+subtract the fitted error from reported residuals. No new matter law or
+longer collapse scan is justified before this paired-operator check.
+
+Closure: local_numerical_cause_identified=true; numerical_repair=false;
+resolved_trapping=false; global_regularity=false; singularity_removal=false;
+full_RefG_pressure_join=false. The monographs, private assumptions and Git
+rules are unchanged; no generated result files are left behind.
+
+Reproduce the short controls or the bounded replays:
+
+    python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py" --origin-controls --verbose
+    python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py" --origin-audit --verbose
+    python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py" --origin-finer --verbose
+
+The latter two now include the three new operator checks (28 and 22
+checks respectively if all pass), plus the snapshot quartic budget.
+This accounting change is not additional evolved physics.
+
+## 11. Paired spatial repair: registered short test
+
+CLAIM_ID: W92_PAIRED_ORIGIN_REPAIR_V1, registered 2026-09-12 before replay.
+Goal: remove section 10's leading centre mismatch and test the same
+massive-source evolution through t=28. Only this report, its verifier and
+the W92 diagnostic index may change. The old numerical branch, continuum
+action, source preparation, gauge and acceptance thresholds are retained.
+
+Candidate: a sixth-order staggered field gradient and its radial weighted
+adjoint in the wave operator, a fourth-order adjoint transport pair and a
+fourth-order physical field gradient in the mass source. This factorized
+wave operator has a nonpositive quadratic form for every positive face
+coefficient in its nodal-weighted inner product. The transformed-u fourth-order preliminary construction was
+replaced before evolution: its diagonal correction failed this general
+energy-sign requirement. No collapse results were used in that choice.
+Its exact discrete charge uses midpoint nodal weights h r^2; the old
+finite-volume weights h(r^2+h^2/12) remain in the reference branch.
+This quadrature change is declared before testing; both approximate the
+same continuum charge. The relative charge-drift threshold stays 1e-5.
+The original mass, origin, metric and waveform thresholds are unchanged.
+No state projection, fitted correction or new material parameter is used.
+
+First require constant/quadratic/quartic centre controls, cancellation of
+the leading manufactured mass/wave mismatch, the actual semidiscrete
+charge identity and finite positive kinetic weights. Check the symmetric
+wave spectrum on constant and smooth positive coefficient controls.
+Only then run h=.1,.05,.025, R=120, a fine half-step and R=160 control,
+all through t=28, retaining every sample from t=0. Apply section 9's
+continuous-prefix gate unchanged, with the declared charge quadrature.
+PASS requires the full t<=28 prefix and preflight/control gates. FAIL
+identifies a numerical limitation of this discretization, not a physical
+no-go. Stop at that decision; no longer collapse run or monograph export.
+Theoretical and observational closure flags remain separate. DATA_ROLE,
+FORWARD_MODEL and IDENTIFIABILITY are N/A for this numerical repair.
+
+### Discrete equations and scope
+
+Let W=diag(h r_i^2), V_f=diag(h w_f r_f^2), with endpoint face weights
+w_f=1/2 and interior weights 1. G is the sixth-order staggered derivative,
+E the fourth-order centred even-parity derivative, and c_f the four-point
+interpolation of c=L sqrt(A). The actual scalar operators are
+
+    G = [-9,125,-2250,2250,-125,9]/(1920h),
+    E = [1,-8,0,8,-1]/(12h),
+    I_face = [-1,9,9,-1]/16,
+    wave(psi) = -W^(-1) G^T V_f diag(c_f) G psi,
+    K psi = diag(beta) E psi,
+    psi_t = c P + K psi,
+    P_t = wave(psi) - W^(-1) K^T W P - L V_force/sqrt(A).
+
+Even reflection supplies the radial scalar boundary closure. Its outer
+boundary remains a closed computational boundary and is checked by the
+enlarged domain. With positive c_f, the exact weighted quadratic form is
+conj(psi)^T W wave(psi)=-sum(h w_f r_f^2 c_f |G psi|^2)<=0.
+The transport pair cancels in Qdot,
+and the real local potential contributes no imaginary charge source.
+These identities apply to the implemented matrices, including boundaries.
+The gauge keeps its original finite-volume denominator; replacing that
+denominator by W would spoil its exact linear radial-divergence control.
+Both charge quadratures are reported separately at every sampled time.
+
+The mass evolves by the original independent action equation using E psi
+in rho and S. Nothing sets the mass from a constraint residual. The
+original diagnostic derivative of mu, its normalization and the acceptance
+thresholds remain unchanged. The new wave/source pair is exact at the
+centre for the tested quadratic and quartic profiles; the sixth-power
+wave error decreases as h^4. This does not assign fourth-order accuracy
+to the entire evolution: the retained gravity/gauge scheme is second
+order, and the r^(-2)-weighted E-adjoint transport can also retain a
+second-order centre term. For beta=k r and P=P2 r^2, that transport's
+first-cell defect is -16 k P2 h^2. Its effect is subject to the original
+replay gates, not removed from the measured error.
+
+The additional frozen-wave RK bound is computed from an absolute-matrix
+upper bound on the symmetric wave operator's frequency, including the
+actual face/node wave coefficients. dt*omega_bound must remain below 2.5,
+inside RK4's imaginary-axis limit. This complements the retained Courant
+guard and the half-step experiment; it is not a theorem about the full
+time-dependent nonlinear evolution.
+
+The implemented preflight passes 33/33 checks, independently rerun.
+The three-grid quartic mass/wave mismatch is at most 2.71e-16; the
+variable-coefficient quadratic check is below 8e-15. The r^6 wave errors
+are .0084375, .00052734375 and .000032958984375 on h=.1,.05,.025,
+decreasing by 16 at each refinement. The normalized adjoint-charge
+residual is 1.44e-16 and the complete RHS charge rate is -1.30e-18.
+The symmetric wave sign also passes the deliberately sharp positive
+face-coefficient control. The unit-speed frozen-wave RK number is .272551.
+Independent base 74/74 and original-origin 21/21 regressions pass.
+The original gravity RHS, verdict and certify functions are unchanged
+at AST level. The replay version, frozen before evolution, is
+
+`8eb53c01c163a69636cfe88ea71ed23a792c13c8d52fb34c72b49a7f8b6d0613`.
+
+### Completed result: the full short prefix passes
+
+**Decision: PAIRED_ORIGIN_REPAIR_VALIDATED, 0<=t<=28.** All five runs
+complete 113 samples, including the initial slice. Every registered
+prefix from .25 through 28 passes; first_rejected=null. The 60/60
+preflight, terminal and decision-control checks pass as well. In
+particular, section 9's earlier t=27.75 certification obstacle is cleared
+by a changed numerical discretization with the same physical equations.
+
+| t | Origin norm, h=.05 | Origin norm, h=.025 | Fine/middle |
+|---|---:|---:|---:|
+| 27.5 | 1.42537878e-4 | 1.29663390e-5 | .09097 |
+| 27.75 | 8.17361046e-4 | 5.09026202e-5 | .06228 |
+| 28 | 9.92543241e-4 | 7.11463891e-5 | .07168 |
+
+The whole-window maximum radial mass constraints are 2.28856008e-4 and
+5.72550039e-5 (fine/middle .25018); the regular metric residuals are
+7.95834990e-7 and 3.90224329e-7 (.49033). The origin maxima are the
+t=28 values above. These meet the original fine error <.005 and
+(fine error <1e-6 or fine/middle <.6) condition at every sampled prefix.
+The coarse origin maximum is .01375454; the unchanged accuracy decision
+uses the middle/fine pair, not a claim that the coarse grid has the
+fine-grid accuracy. Individual old/new residuals need not decrease at
+every time and resolution; the improvement is the now-passing continuous
+refinement certificate.
+
+The normalization formula remains the initial/global or larger local
+density. Its initial value is recomputed with the selected physical
+gradient: .01463681618 on the middle grid and .01463652332 on the fine
+grid; neither is fitted to the residual. The fine first-two-cell
+absolute error at t=27.75 is 7.45037387e-7. Its half-step relative
+difference is 8.0281e-6, below the 1e-3 short-audit criterion.
+
+The waveform refinement ratios are .25016 (minimum F), .23825 (maximum
+density), .25142 (charge RMS radius) and .25080 (central proper time).
+The largest normalized half-step difference for these waveforms is
+6.50e-12; the largest enlarged-domain difference is 3.45e-16.
+The final dimensionless fine-grid state is
+
+    t=28, tau_c=20.8628329776, M_outer=129.8971827658,
+    F_min=.5511176546 at r=21.3875, Q_RMS_radius=16.8385894819,
+    rho_max=.05463524459, L_c=.7452667905, trapped_cells=0.
+
+Outer mass stays constant to emitted precision. Nodal relative charge
+drifts are -1.04e-10, -3.30e-12 and -1.07e-13 on the three grids,
+and -3.97e-15 for the half step. The initial legacy-volume/nodal charge
+differences are 9.14e-7, 2.29e-7 and 5.71e-8 relative, with second-order
+quadrature scaling. At t=28 the fine difference is 2.43e-7; its legacy
+charge drifts by 1.86e-7. Both readouts remain visible, and the selected
+nodal charge obeys the exact implemented semidiscrete identity.
+
+No chart, action or time-step guard triggers. The fine minimum cell/face
+A values are .5724291132/.5724303452, minimum lapse .7450985976 and
+minimum q .9951844168. The smallest recorded u is -1.05e-14 and the
+largest q is 1+1.07e-14, within the existing 100-machine-epsilon allowance
+at the zero-curvature action boundary; no value is clipped. Across
+all cases the maximum retained Courant number is .093506 and the
+maximum new frozen-wave RK number is .254849, below their respective
+.4 and 2.5 guards. The verifier and both source-engine hashes remain
+unchanged from launch to completion.
+
+Closure: paired_origin_repair=true; validated_prefix_end=28;
+same_saturation_action=true; resolved_trapping=false;
+global_regularity=false; singularity_removal=false;
+full_RefG_pressure_join=false. This short interval is entirely untrapped.
+Section 9's later trapping candidate belongs to the old discretization
+and must be recomputed with the repaired pair before promotion.
+
+**Next bounded step:** continue this verified numerical branch to the
+previously targeted trapping interval, applying the same prefix,
+two-null-expansion and refinement controls. This stage stops at t=28 as
+registered. Both monographs, the private-assumption folder, old engines
+and Git rules are unchanged. No generated result files are added.
+
+Reproduce:
+
+    python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py" --paired-controls --verbose
+    python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py" --paired-origin --verbose
+
 ## Reproduction and attribution
 
     python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py"

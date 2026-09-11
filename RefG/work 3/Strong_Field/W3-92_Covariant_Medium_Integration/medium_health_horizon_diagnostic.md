@@ -13,7 +13,49 @@ exponential exterior and selected additive constitutive truncations are
 candidate assumptions, not requirements imposed on every future action.
 The negative results below remain valid in their stated domains.
 
-Latest candidate dynamics: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+Latest numerical repair: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section 11, clears the early origin-convergence obstacle with a paired
+nodal matter discretization in the same saturation action. All five
+runs complete t=28, and every sampled prefix passes the unchanged
+acceptance thresholds: 60/60 controls, first_rejected=null. The t=27.75
+origin fine/middle ratio is .06228. A sixth-order staggered wave gradient
+and its adjoint remove the identified quartic mismatch; declared nodal
+charge weights remain distinct from the unchanged gauge volume weights.
+The repaired interval is untrapped. Next is continuation to the old
+trapping interval with this verified pair. Both monographs, old engines
+and Git rules remain unchanged.
+
+Previous massive-source evolution: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section 9, evolves section 8's packet in the same spherical saturation
+action with a staggered horizon-regular harmonic clock. All five runs
+reach t=51.75 and contain a later future-trapping candidate (fine F_min=
+-0.0814831; 159 contiguous trapped cells). The registered continuous
+certificate ends at t=27.5: at t=27.75 the origin residual fails its
+refinement ratio, despite small absolute normalized errors. The 39/39
+preflight/terminal/control checks do not repair that earlier prefix failure.
+Resolved trapping and singularity removal therefore remain unclosed.
+Section 10 completes the short origin audit: unequal leading spatial
+errors of the mass-source and scalar wave operators quantitatively
+explain the local constraint-production discrepancy. Time-step error,
+normalization switching and differing sampled radii are excluded as sole
+causes. The finer h=.0125 replay reduces the targeted t=27.75 error by
+about half, but still fails the unchanged refinement test at t=27.5.
+Section 11 completes the paired spatial repair through t=28. No new physical
+law, relaxed gate or singularity-removal claim is introduced. Both
+monographs and old engines remain unchanged; the short audit has
+25/25 four-run, 19/19 finer-run and 21/21 subsequent operator controls.
+
+Previous source preparation: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section 8, constructs an inward charged-scalar packet in the same saturation
+action with M=129.90381057=2 M_critical. Its mass and geometry are solved
+jointly; the initial slice is untrapped, with fine-grid B_min=0.723716.
+All 53 source, flux and convergence checks pass, independently rerun.
+This removes the insufficient-mass obstruction for the collapse experiment.
+Section 9 supplies the saturation-adapted horizon-regular evolution and
+its accepted numerical boundary. Both monographs and previous evolution
+engines remain unchanged.
+
+Previous candidate dynamics: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
 section 7, evolves the sourced stationary saturation candidate after a small
 inward energy-flux perturbation. The charge-weighted areal radius contracts
 by about 0.478%, then re-expands past its initial value on 0<=t<=32.
@@ -21,8 +63,8 @@ The response survives three-grid, half-step and domain controls; all 85
 checks pass, independently rerun. No new action, restoring term or damping
 is added. This is finite-window compatibility with the retained scalar,
 not generic stability or a singularity-free black hole. The source mass
-is below this branch's black-hole threshold; the next collapse test must
-meet the mass/trapping conditions and use a horizon-crossing chart.
+is below this branch's black-hole threshold. Section 8 supplies the new
+massive source data; section 9 records the horizon-regular evolution test.
 
 Previous stationary source: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
 section 6, couples the retained canonical oscillon to the already-postulated
