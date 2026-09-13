@@ -17,6 +17,96 @@ import sympy as s
 from scipy.integrate import solve_ivp
 
 
+def saturation_curvature(rho,pr,pt,J,z,alpha,ell):
+    """On-shell four-curvature of the same spherical action, in any orbit frame.
+
+    J=T(n,e), not the coordinate flux S. No division by the trapping
+    function occurs. Lorentzian contractions retain the negative flux term.
+    """
+    u = ell**2*z
+    q,b = 1-u,alpha*(1-u)**2
+    C = z*(1-3*u)/2
+    hnn,hee,hne = -(C+b*pr),C-b*rho,-b*J
+    box = -hnn+hee
+    hess2 = hnn**2+hee**2-2*hne**2
+    orbit = (2*z*(1-9*u+9*u**2)+2*b*(1-6*u)*(pr-rho)-4*b*pt
+             +8*alpha**2*ell**2*q**3*(rho*pr-J**2))
+    return dict(orbit_Ricci=orbit,Ricci_scalar=orbit+2*z-4*box,
+                Kretschmann=orbit**2+8*hess2+4*z**2,
+                hnn_over_r=hnn,hee_over_r=hee,hne_over_r=hne)
+
+
+def saturation_curvature_checks():
+    """Exact action, metric, frame and conditional smooth-centre crosschecks."""
+    checks = []
+    def exact(name,value,target=0):
+        residual = s.factor(s.cancel(value-target))
+        checks.append(dict(name="curvature_"+name,passed=residual==0,
+                           residual=str(residual)))
+    r,z,ell,a = s.symbols("r z ell alpha",positive=True)
+    rho,pr,pt,J = s.symbols("rho pr pt J",real=True)
+    u,q = ell**2*z,1-ell**2*z
+    c = saturation_curvature(rho,pr,pt,J,z,a,ell)
+    hnn,hee,hne = (c[k] for k in ("hnn_over_r","hee_over_r","hne_over_r"))
+    box,hess2 = r*(-hnn+hee),r*r*(hnn**2+hee**2-2*hne**2)
+    beta = -2*r/q**2
+    ar = 4*ell**2*r*z*z*(1+3*u)/q**3
+    br,bx = (-2+10*u)/q**3,4*ell**2/(r*q**3)
+    exact("angular_action",-beta*c["orbit_Ricci"]+ar+2*br*box
+          +2*bx*(box**2-hess2)+8*a*r*pt)
+    exact("Einstein_Ricci",c["Ricci_scalar"].subs(ell,0),2*a*(rho-pr-2*pt))
+    m = s.symbols("m",positive=True)
+    zs = 2*m/(r**3+2*m*ell**2)
+    f = 1-r*r*zs
+    vacuum = saturation_curvature(0,0,0,0,zs,a,ell)
+    exact("vacuum_orbit_direct_metric",vacuum["orbit_Ricci"],-s.diff(f,r,2))
+    exact("vacuum_Ricci_direct_metric",vacuum["Ricci_scalar"],
+          -s.diff(f,r,2)-4*s.diff(f,r)/r+2*(1-f)/r**2)
+    exact("vacuum_K_direct_metric",vacuum["Kretschmann"],
+          s.diff(f,r,2)**2+4*(s.diff(f,r)/r)**2+4*((1-f)/r**2)**2)
+    dust = saturation_curvature(3*z/(2*a*q),0,0,0,z,a,ell)
+    exact("FLRW_dust_Ricci",dust["Ricci_scalar"],3*z*(1+3*u))
+    exact("FLRW_dust_K",dust["Kretschmann"],3*z*z*((3*u-1)**2+4))
+    # Rational rapidity covers arbitrary finite boosts away from v=+/-1.
+    v = s.symbols("v",real=True)
+    ch,sh = (1+v*v)/(1-v*v),2*v/(1-v*v)
+    rb,pb = ch*ch*rho+2*ch*sh*J+sh*sh*pr,sh*sh*rho+2*ch*sh*J+ch*ch*pr
+    jb = ch*sh*(rho+pr)+(ch*ch+sh*sh)*J
+    boosted = saturation_curvature(rb,pb,pt,jb,z,a,ell)
+    for key in ("orbit_Ricci","Ricci_scalar","Kretschmann"):
+        exact("boost_"+key,boosted[key],c[key])
+    p = s.symbols("p",real=True)
+    centre = saturation_curvature(3*z/(2*a*q),p,p,0,z,a,ell)
+    X = z*(1-3*u)/2+a*q*q*p
+    exact("regular_centre_orbit",centre["orbit_Ricci"],-2*X)
+    exact("regular_centre_Ricci",centre["Ricci_scalar"],6*(z-X))
+    exact("regular_centre_K",centre["Kretschmann"],12*(X*X+z*z))
+    uu,w = s.symbols("u w",real=True)
+    x = uu*(1-3*uu+3*(1-uu)*w)/2
+    kd = 12*(x*x+uu*uu)
+    exact("centre_w_convex",s.diff(kd,w,2),54*uu*uu*(1-uu)**2)
+    km,kp = kd.subs(w,-1),kd.subs(w,1)
+    exact("centre_minus_endpoint",km,24*uu*uu)
+    exact("centre_plus_endpoint",kp,12*uu*uu*(9*uu*uu-12*uu+5))
+    exact("centre_plus_monotonic",s.diff(kp,uu),
+          24*uu*(18*(uu-s.Rational(1,2))**2+s.Rational(1,2)))
+    exact("centre_endpoint_bound",kp.subs(uu,1),24)
+    centre_checks = [item for item in checks if "centre_" in item["name"]]
+    checks.append(dict(name="curvature_conditional_centre_bound",
+        passed=all(item["passed"] for item in centre_checks),
+        evidence="Exact convexity and monotone endpoints give ell^4 K<=24 for "
+        "0<=u<=1, |p|<=rho, rho=3z/(2alpha q), and a smooth isotropic centre; "
+        "this does not establish persistence of centre regularity."))
+    flat = saturation_curvature(0,0,0,0,s.Integer(0),a,ell)
+    V = s.symbols("V",nonnegative=True)
+    zv = 2*a*V/(3+2*a*ell**2*V)
+    potential = saturation_curvature(V,-V,-V,0,zv,a,ell)
+    for key,target in (("orbit_Ricci",2*zv),("Ricci_scalar",12*zv),("Kretschmann",24*zv*zv)):
+        exact("flat_"+key,flat[key])
+        exact("constant_potential_"+key,potential[key],target)
+    return checks
+
+
 def run_checks():
     checks = []
 
@@ -1127,15 +1217,20 @@ class RadialNodalPair:
         return first,second
 
 
-def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origin_controls=False,paired_origin=False,paired_collapse=False):
+def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origin_controls=False,paired_origin=False,paired_collapse=False,paired_interior=False,curvature_controls=False):
     """Same-action horizon-regular evolution; frozen finite-window decision."""
     import time
+    paired_origin = paired_origin or paired_collapse or paired_interior or curvature_controls
+    origin_audit = origin_audit or paired_origin
+    origin_controls = origin_controls or curvature_controls
     hash_paths = tuple(Path(__file__).with_name(name) for name in
         (Path(__file__).name,"population_assembly_initial_data.py","nonlinear_equilibrium_evolution.py"))
     entry_hashes = {path.name:hashlib.sha256(path.read_bytes()).hexdigest() for path in hash_paths}
     source,PolarGrid,ref,initial = supercritical_data_checks(return_data=True)
     legacy = ref.load("saturation_staggered_reference",Path(__file__).with_name("population_assembly_initial_data.py"))
     alpha,ell = ref.ALPHA,2.0
+    curvature_waves = ('central_Ricci','central_Kretschmann','maximum_abs_Ricci','maximum_abs_Kretschmann')
+    curvature_errors = ('curvature_metric_R2_error','curvature_metric_Ricci_error','curvature_metric_K_error')
     def relative_array_error(a,b):
         a,b = np.asarray(a),np.asarray(b)
         return float(np.max(abs(a-b))/max(np.max(abs(a)),1e-30))
@@ -1180,6 +1275,7 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
             self.minimum_stage_mu = self.minimum_stage_u = math.inf
             self.maximum_stage_q = 0.0
             self.charge_weights = self.engine.vol
+            self.measure_curvature = False
 
         def field_derivative(self,field):
             return self.engine.derivative(field)
@@ -1275,6 +1371,86 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
                 raise FloatingPointError("Nonfinite saturation evolution RHS")
             return out
 
+        def diagnostic_derivative(self,values,odd=False):
+            # Fourth-order parity stencil; the outer four cells are excluded
+            # from curvature validation, not reflected as physical data.
+            ext = np.r_[(-1 if odd else 1)*values[:2][::-1],values]
+            out = np.empty_like(values)
+            out[:-2] = (ext[:-4]-8*ext[1:-3]+8*ext[3:-1]-ext[4:])/(12*self.h)
+            out[-2:] = np.gradient(values,self.h,edge_order=2)[-2:]
+            return out
+
+        def metric_curvature_parts(self,state,rhs=None):
+            g = self.geometry(state)
+            rhs = self.rhs(state) if rhs is None else rhs
+            r,L,A,k = self.r,g['L'],g['A'],g['k']
+            D = self.diagnostic_derivative
+            H = k*k-g['z']
+            Hr = D(H)
+            kt = self.cell_k(rhs)
+            Ht = 2*k*kt-2*alpha*g['q']**2*rhs[2].real
+            Ar,At = r*(2*H+r*Hr),r*r*Ht
+            logLr,vr = D(state[4].real),k+r*D(k)
+            acc = g['root']*logLr
+            Kg = vr+(At/L-g['v']*Ar)/(2*A)+g['v']*logLr
+            # These are geometric Hessian/r components, not source substitutes.
+            hnn = -kt/L+k*vr-A*logLr/r
+            hee = H+r*Hr/2-Kg*k
+            hne = r*(Ht/L-k*(2*H+r*Hr))/(2*g['root'])+acc*k
+            spatial_R2 = 2*(Kg*Kg+g['v']*D(Kg)-g['root']*D(acc,odd=True)-acc*acc)
+            return dict(g=g,Kg=Kg,hnn=hnn,hee=hee,hne=hne,spatial_R2=spatial_R2)
+
+        def curvature_readout(self,state,rhs=None):
+            parts = self.metric_curvature_parts(state,rhs)
+            g = parts['g']
+            rhs = self.rhs(state) if rhs is None else rhs
+            P = state[1]
+            pt = g['A']*(abs(P)**2-abs(g['D'])**2)/2-g['V']
+            curv = saturation_curvature(g['rho'],g['p'],pt,g['root']*g['S'],g['z'],alpha,self.length)
+            active = (self.r<=80)&(np.arange(len(self.r))<len(self.r)-4)
+            scale_R = max(float(np.max(abs(curv['Ricci_scalar'][active]))),self.length**-2)
+            scale_R2 = max(float(np.max(abs(curv['orbit_Ricci'][active]))),self.length**-2)
+            scale_K = max(float(np.max(abs(curv['Kretschmann'][active]))),self.length**-4)
+            # Off-trajectory directional probes evaluate the metric's second
+            # time derivative without changing any production state or guards.
+            saved = {key:value for key,value in vars(self).items()
+                     if key.startswith(('minimum_stage_','maximum_stage_'))}
+            saved_courant = self.engine.maximum_courant
+            saved_wave = self.pair.maximum_wave_RK_number
+            geometric = []
+            try:
+                for eps in (1e-4,5e-5):
+                    plus = self.metric_curvature_parts(state+eps*rhs)['Kg']
+                    minus = self.metric_curvature_parts(state-eps*rhs)['Kg']
+                    R2 = parts['spatial_R2']-(plus-minus)/(eps*g['L'])
+                    Ricci = R2+2*g['z']-4*(-parts['hnn']+parts['hee'])
+                    K = R2*R2+8*(parts['hnn']**2+parts['hee']**2-2*parts['hne']**2)+4*g['z']**2
+                    geometric.append((R2,Ricci,K))
+            except (FloatingPointError,ValueError) as exc:
+                raise FloatingPointError('CURVATURE_PROBE_LIMIT: '+str(exc)) from exc
+            finally:
+                for key,value in saved.items():
+                    setattr(self,key,value)
+                self.engine.maximum_courant = saved_courant
+                self.pair.maximum_wave_RK_number = saved_wave
+            if any(not np.all(np.isfinite(value[active])) for value in
+                   (*curv.values(),*geometric[0],*geometric[1])):
+                raise FloatingPointError('Nonfinite saturation curvature diagnostic')
+            ext0 = lambda x:float((9*x[0]-x[1])/8)
+            sup = lambda x:float(np.max(abs(x[active])))
+            trapped = active&(g['F']<0)&(g['v']>0)
+            out = dict(central_Ricci=ext0(curv['Ricci_scalar']),
+                central_Kretschmann=ext0(curv['Kretschmann']),
+                maximum_abs_Ricci=sup(curv['Ricci_scalar']),
+                maximum_abs_Kretschmann=sup(curv['Kretschmann']),
+                minimum_Kretschmann=float(np.min(curv['Kretschmann'][active])),
+                trapped_maximum_abs_Kretschmann=float(np.max(abs(curv['Kretschmann'][trapped]))) if np.any(trapped) else 0.,
+                curvature_metric_R2_error=sup(geometric[0][0]-curv['orbit_Ricci'])/scale_R2,
+                curvature_metric_Ricci_error=sup(geometric[0][1]-curv['Ricci_scalar'])/scale_R,
+                curvature_metric_K_error=sup(geometric[0][2]-curv['Kretschmann'])/scale_K,
+                curvature_time_probe_error=max(sup(a-b)/sc for a,b,sc in zip(geometric[0],geometric[1],(scale_R2,scale_R,scale_K))))
+            return out
+
         def measure(self,state,t):
             g = self.geometry(state)
             rhs = self.rhs(state)
@@ -1317,7 +1493,7 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
                 current = current+1 if value else 0
                 longest = max(longest,current)
             monotone = np.all(np.diff(M)>=-1e-9*max(abs(M[-1]),1.))
-            return dict(t=float(t),central_proper_time=float(state[5,0].real),
+            row = dict(t=float(t),central_proper_time=float(state[5,0].real),
                 mass=float(M[-1]),charge=Q,charge_rms_areal=math.sqrt(radius2),
                 maximum_density=float(max(g["rho"])),central_density=float((9*g["rho"][0]-g["rho"][1])/8),
                 central_lapse=float(np.exp((9*state[4,0].real-state[4,1].real)/8)),
@@ -1332,6 +1508,9 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
                 relative_charge_rate=abs(qrate)/Q,
                 charge_legacy_volume=float(np.sum(e.vol*np.imag(np.conjugate(state[0])*state[1]))),
                 charge_nodal=float(np.sum(self.h*r*r*np.imag(np.conjugate(state[0])*state[1]))))
+            if self.measure_curvature:
+                row.update(self.curvature_readout(state,rhs))
+            return row
 
         def origin_terms(self,state):
             g = self.geometry(state)
@@ -1592,6 +1771,34 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
         fd = (paired_C(manufactured+eps*rhs)-paired_C(manufactured-eps*rhs))/(2*eps)
         error = float(np.max(abs(fd[:8]-sum(rates.values())[:8])))
         test("paired_constraint_chain_rule",error<1e-8,error=error)
+    if paired_interior or curvature_controls:
+        checks.extend(saturation_curvature_checks())
+        errors = []
+        for h in (.1,.05,.025):
+            grid = PairedSaturationClock(4,h)
+            r = grid.r
+            k0 = math.sqrt(2*alpha/(9+2*alpha*ell**2))
+            state = np.zeros((6,len(r)),complex)
+            state[0],state[2],state[3],state[4] = math.sqrt(2),1/9,k0*grid.engine.edges[1:],math.log(.8)
+            row = grid.curvature_readout(state)
+            errors.append(max(abs(row['central_Ricci']-12*k0*k0),
+                              abs(row['central_Kretschmann']-24*k0**4)))
+            test('curvature_constant_core_'+str(h),errors[-1]<1e-10 and
+                 max(row[key] for key in ('curvature_metric_R2_error','curvature_metric_Ricci_error','curvature_metric_K_error','curvature_time_probe_error'))<1e-7,
+                 readout=row)
+            # Direct static Hayward metric in a horizon-regular flat-slice chart.
+            mass = source['parameters']['target_mass']
+            rf = grid.engine.edges[1:]
+            state[:] = 0
+            state[2] = mass/r**3
+            state[3] = rf*np.sqrt(2*alpha*mass/(rf**3+2*alpha*ell**2*mass))
+            parts = grid.metric_curvature_parts(state,np.zeros_like(state))
+            vacuum = saturation_curvature(0.,0.,0.,0.,parts['g']['z'],alpha,ell)
+            active = (r>=.5)&(r<=3.)
+            error = float(np.max(abs((parts['spatial_R2']-vacuum['orbit_Ricci'])[active])))
+            test('curvature_static_metric_'+str(h),error<.01,error=error)
+            errors.append(error)
+        test('curvature_static_metric_refines',errors[-1]<.6*errors[-3] and errors[-3]<.6*errors[-5],errors=errors[1::2])
     if any(not c["passed"] for c in checks):
         failed = [c for c in checks if not c["passed"]]
         return dict(decision="COLLAPSE_PREFLIGHT_FAILURE",checks=len(checks),passed=len(checks)-len(failed),
@@ -1599,7 +1806,7 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
     if origin_controls:
         test("unchanged_run_sources",all(hashlib.sha256(path.read_bytes()).hexdigest()==entry_hashes[path.name] for path in hash_paths))
         failed = [c for c in checks if not c["passed"]]
-        return dict(decision=("PAIRED_ORIGIN_CONTROLS_ONLY" if paired_origin else "ORIGIN_CONTROLS_ONLY") if not failed else "ORIGIN_DIAGNOSTIC_CONTROL_FAILURE",
+        return dict(decision=("SATURATION_CURVATURE_CONTROLS" if curvature_controls else "PAIRED_ORIGIN_CONTROLS_ONLY" if paired_origin else "ORIGIN_CONTROLS_ONLY") if not failed else "ORIGIN_DIAGNOSTIC_CONTROL_FAILURE",
             checks=len(checks),passed=len(checks)-len(failed),failed=failed,details=checks,
             code_sha256=entry_hashes[Path(__file__).name],source_hashes=entry_hashes)
 
@@ -1609,6 +1816,7 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
         packet = initial(polar)
         geometry = polar.geometry(*packet)
         grid = (PairedSaturationClock if paired_origin else SaturationClock)(radius,h)
+        grid.measure_curvature = paired_interior
         state = np.zeros((6,len(grid.r)),complex)
         state[:2] = packet
         state[2] = geometry["mass"]/grid.r**3
@@ -1672,7 +1880,7 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
             code_sha256=entry_hashes[Path(__file__).name],source_hashes=entry_hashes,
             scope=dict(changed_evolution_equations=False,changed_original_gate=False,resolved_trapping=False,singularity_removal=False))
 
-    paired_endpoint = 51.75 if paired_collapse else 28.
+    paired_endpoint = 60. if paired_interior else 51.75 if paired_collapse else 28.
     pilot = run(.1,paired_endpoint) if paired_origin else run(.1,event_stop=True)
     if pilot_only:
         test("unchanged_run_sources",all(hashlib.sha256(path.read_bytes()).hexdigest()==entry_hashes[path.name] for path in hash_paths))
@@ -1685,7 +1893,7 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
     cases = dict(coarse=pilot,middle=run(.05,endpoint),fine=run(.025,endpoint),
                  half_step=run(.025,endpoint,courant=.05),domain=run(.025,endpoint,radius=160))
 
-    def verdict(end,case_set=None):
+    def verdict(end,case_set=None,include_curvature=True):
         gates,residuals,differences = {},{},{}
         selected = {name:[row for row in case["samples"] if row["t"]<=end+1e-10]
                     for name,case in (cases if case_set is None else case_set).items()}
@@ -1694,19 +1902,26 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
         required = ("t","mass","charge","radial_constraint","regular_metric_residual","origin_constraint",
                     "minimum_F","maximum_density","charge_rms_areal","central_proper_time",
                     "contiguous_trapped_cells","trapped_cells","outgoing_expansion","ingoing_expansion")
-        if any(not np.isfinite(row[key]) for rows in selected.values() for row in rows for key in required):
+        extra_curvature = paired_interior and include_curvature
+        if extra_curvature:
+            required += curvature_waves+curvature_errors+('curvature_time_probe_error',)
+        if any(key not in row or not np.isfinite(row[key]) for rows in selected.values() for row in rows for key in required):
             return dict(passed=False,gates=dict(finite_diagnostics=False),end=end,resolved_trapping=False)
         for name,rows in selected.items():
             gates[name+"_charge"] = max(abs(row["charge"]/rows[0]["charge"]-1) for row in rows)<1e-5
             gates[name+"_mass"] = max(abs(row["mass"]/rows[0]["mass"]-1) for row in rows)<5e-3
-        for key in ("radial_constraint","regular_metric_residual","origin_constraint"):
+        for key in ("radial_constraint","regular_metric_residual","origin_constraint")+(curvature_errors if extra_curvature else ()):
             middle = max(row[key] for row in selected["middle"])
             fine = max(row[key] for row in selected["fine"])
             gates[key] = fine<5e-3 and (fine<1e-6 or fine<.6*middle)
             residuals[key] = dict(middle=middle,fine=fine)
-        for key in ("minimum_F","maximum_density","charge_rms_areal","central_proper_time"):
+        if extra_curvature:
+            gates['curvature_time_probe'] = max(row['curvature_time_probe_error'] for rows in selected.values() for row in rows)<1e-4
+        for key in ("minimum_F","maximum_density","charge_rms_areal","central_proper_time")+(curvature_waves if extra_curvature else ()):
             arrays = {name:np.array([row[key] for row in rows]) for name,rows in selected.items()}
             scale = max(float(np.max(abs(arrays["fine"]))),1e-12)
+            if extra_curvature and key in curvature_waves:
+                scale = max(scale,ell**(-4 if 'Kretschmann' in key else -2))
             normdiff = lambda a,b:float(np.max(abs(arrays[a]-arrays[b]))/scale)
             cm,mf = normdiff("coarse","middle"),normdiff("middle","fine")
             half,domain = normdiff("half_step","fine"),normdiff("domain","fine")
@@ -1726,10 +1941,10 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
         return dict(passed=bool(all(gates.values())),gates={k:bool(v) for k,v in gates.items()},
                     end=end,residuals=residuals,differences=differences,resolved_trapping=bool(resolved))
 
-    def certify(end,case_set=None):
+    def certify(end,case_set=None,include_curvature=True):
         accepted,first_rejected,first_trapping = None,None,None
         for stop in np.arange(.25,end+1e-9,.25):
-            current = verdict(float(stop),case_set)
+            current = verdict(float(stop),case_set,include_curvature)
             if not current["passed"]:
                 first_rejected = current
                 break
@@ -1747,6 +1962,11 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
             contiguous_trapped_cells=4 if Fval<0 else 0,trapped_cells=4 if Fval<0 else 0,
             outgoing_expansion=-1. if Fval<0 else 1.,ingoing_expansion=-1.))
     fixture = {name:dict(samples=[dict(row) for row in fixture_rows]) for name in cases}
+    if paired_interior:
+        for case in fixture.values():
+            for row in case['samples']:
+                row.update({key:1. for key in curvature_waves})
+                row.update({key:1e-8 for key in curvature_errors+('curvature_time_probe_error',)})
     fa,fr,ft = certify(.75,fixture)
     test("transient_trapping_certificate_retained",fa["end"]==.75 and fr is None and
          ft is not None and ft["end"]==.5 and not fa["resolved_trapping"])
@@ -1755,17 +1975,27 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
         fixture["fine"]["samples"][-1][key] = float("nan")
         test("nonfinite_"+key+"_rejected",not verdict(.75,fixture)["passed"])
         fixture["fine"]["samples"][-1][key] = saved
+    if paired_interior:
+        for key,value in [('central_Kretschmann',float('nan')),('curvature_metric_K_error',.1),
+                          ('curvature_time_probe_error',.01),('maximum_abs_Ricci',2.)]:
+            saved = fixture['fine']['samples'][-1][key]
+            fixture['fine']['samples'][-1][key] = value
+            test('curvature_fixture_rejects_'+key,not verdict(.75,fixture)['passed'] and verdict(.75,fixture,include_curvature=False)['passed'])
+            fixture['fine']['samples'][-1][key] = saved
 
     terminal = verdict(endpoint)
     accepted,first_rejected,first_trapping = certify(endpoint)
+    base_accepted,base_rejected,base_trapping = certify(endpoint,include_curvature=False) if paired_interior else (accepted,first_rejected,first_trapping)
     for name,condition in terminal.get("gates",{}).items():
         test("terminal_"+name,condition)
     sources_unchanged = all(hashlib.sha256(path.read_bytes()).hexdigest()==entry_hashes[path.name] for path in hash_paths)
     test("unchanged_run_sources",sources_unchanged)
     failed = [c for c in checks if not c["passed"]]
     certification_valid = all(c["passed"] for c in checks if not c["name"].startswith("terminal_"))
-    trapping = first_trapping is not None and certification_valid
+    trapping = base_trapping is not None and certification_valid
+    interior = bool(paired_interior and certification_valid and first_trapping is not None and accepted is not None and accepted['end']>51.75)
     return dict(decision="INVALID_CERTIFICATION_CONTROLS" if not certification_valid else
+                ("PAIRED_VALIDATED_POSTTRAPPING_CURVATURE" if interior else "PAIRED_CURVATURE_PREFIX_OPEN") if paired_interior else
                 ("PAIRED_VALIDATED_FUTURE_TRAPPING" if trapping else
                  "PAIRED_VALIDATED_PRETRAPPING_PREFIX" if accepted else "PAIRED_UNRESOLVED_COLLAPSE") if paired_collapse else
                 ("PAIRED_ORIGIN_REPAIR_VALIDATED" if accepted is not None and accepted["end"]==28. else "PAIRED_ORIGIN_REPAIR_OPEN") if paired_origin else
@@ -1774,10 +2004,12 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
         checks=len(checks),passed=len(checks)-len(failed),failed=failed,details=checks,
         pilot_end=endpoint,terminal=terminal,accepted_prefix=accepted,first_rejected=first_rejected,
         first_trapping=first_trapping,cases=cases,
+        base_evolution_certificate=dict(accepted=base_accepted,first_rejected=base_rejected,first_trapping=base_trapping) if paired_interior else None,
         source_prerequisite=dict(checks=source["checks"],passed=source["passed"],parameters=source["parameters"]),
         code_sha256=entry_hashes[Path(__file__).name],engine_sha256=entry_hashes[Path(legacy.__file__).name],
         source_hashes=entry_hashes,
         scope=dict(resolved_trapping=trapping,global_regularity=False,singularity_removal=False,
+                   posttrapping_curvature=interior,
                    full_RefG_pressure_join=False,same_saturation_action=True,
                    paired_nodal_method=paired_origin,charge_quadrature="h*r^2" if paired_origin else "cell_volume"))
 
@@ -1798,7 +2030,13 @@ def main():
     parser.add_argument("--paired-controls", action="store_true")
     parser.add_argument("--paired-collapse", action="store_true",
                         help="Replay the repaired pair through the fixed t=51.75 trapping window")
+    parser.add_argument('--paired-interior', action='store_true',help='Same-action curvature validation through fixed t=60')
+    parser.add_argument('--curvature-controls', action='store_true',help='Curvature algebra/metric preflight only')
     args = parser.parse_args()
+    if args.paired_interior or args.curvature_controls:
+        if args.paired_collapse or args.paired_origin or args.paired_controls or args.origin_audit or args.origin_finer or args.origin_controls or args.collapse_pilot or args.saturation_collapse or (args.paired_interior and args.curvature_controls):
+            parser.error('Choose the curvature stage on its own')
+        args.paired_origin = True
     if args.paired_collapse:
         if args.paired_origin or args.paired_controls or args.origin_audit or args.origin_finer or args.origin_controls or args.collapse_pilot or args.saturation_collapse:
             parser.error("Choose the paired collapse stage on its own")
@@ -1813,7 +2051,8 @@ def main():
                              origin_audit=args.origin_audit or args.origin_finer or args.origin_controls or args.paired_origin or args.paired_controls,
                              origin_finer=args.origin_finer,origin_controls=args.origin_controls or args.paired_controls,
                              paired_origin=args.paired_origin or args.paired_controls,
-                             paired_collapse=args.paired_collapse)
+                             paired_collapse=args.paired_collapse,
+                             paired_interior=args.paired_interior,curvature_controls=args.curvature_controls)
               if args.saturation_collapse or args.collapse_pilot or args.origin_audit or args.origin_finer or args.origin_controls or args.paired_origin or args.paired_controls else
               supercritical_data_checks() if args.supercritical_data else
               dynamics_checks(pilot=args.dynamics_pilot) if args.oscillon_dynamics or args.dynamics_pilot

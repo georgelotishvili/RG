@@ -13,7 +13,20 @@ exponential exterior and selected additive constitutive truncations are
 candidate assumptions, not requirements imposed on every future action.
 The negative results below remain valid in their stated domains.
 
-Latest paired collapse: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+Latest post-trapping curvature: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section 13 (2026-09-13), completes all five same-action runs through t=60.
+All 108/108 checks and 240 sampled prefixes pass; first_rejected=null.
+Direct metric and angular-action curvature agree within the registered
+norm budgets and improve with refinement. The fine terminal central
+K=.3808609421 and maximum cell abs(K)=.3837991496 on r<=80 are finite;
+the conditional smooth-centre bound is K<=24/ell^4=1.5. Future trapping
+persists, with F_min=-.39604344 and both null expansions negative.
+The packet is still contracting and peak curvature still increasing.
+This closes finite-window posttrapping_curvature; global regularity,
+singularity removal and the full RefG pressure/scale join remain open.
+Old engines, monographs and Git rules are unchanged.
+
+Previous paired collapse: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
 section 12, completes all five repaired-grid runs through t=51.75.
 All 207 sampled prefixes pass, first_rejected=null, and all 60/60
 controls pass. Resolved future trapping is first certified at t=50.5;
@@ -21,8 +34,9 @@ at t=51.75 the fine run has F_min=-.08199856 and 160 contiguous trapped
 cells, with both future null expansions negative. The whole-window
 radial, metric and origin fine/middle residual ratios are .25018,
 .27163 and .24718. The t=28 overlap reproduces section 11. The next
-physical target is post-trapping interior evolution and curvature in
-this same action. Global regularity, singularity removal and the full
+physical target at that stage was post-trapping interior evolution and
+curvature in this same action, now tested in section 13. Global regularity,
+singularity removal and the full
 RefG pressure/scale join remain unclosed. Old engines, monographs and
 Git rules are unchanged.
 

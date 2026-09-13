@@ -1650,6 +1650,221 @@ physical target is interior evolution and curvature after trapping in
 the same action; full RefG pressure/scale identification remains a
 separate unfinished connection. No monograph or publication claim changes.
 
+## 13. Post-trapping curvature: registered finite-window test
+
+CLAIM_ID: W92_PAIRED_INTERIOR_CURVATURE_V1, registered 2026-09-13 before
+the extended evolution. Goal: test finite, convergent interior curvature
+after section 12's resolved trapping, through the fixed endpoint t=60.
+The missing readout is the full dynamical curvature of this saturation
+action; Einstein-only source substitutions are unsuitable for that task.
+
+TYPE / MODEL_VERSION / ASSUMPTIONS: conditional numerical evidence for
+the same spherical action, canonical complex scalar, initial packet,
+harmonic gauge and repaired evolution operators of sections 8-12.
+DOMAIN / CONVENTIONS: dimensionless 0<=t<=60, the same positive A,L,q
+chart and allowed action branch, curvature diagnostics on r<=80 with
+the outer four grid cells excluded. Signed Lorentzian contractions are
+retained. FREEDOM_LEDGER: no new physical parameter, source, projection
+or smoothing. Only diagnostic readouts and the endpoint change.
+DEPENDENCIES: section 12's trapping certificate and section 11's paired
+discretization. BENCHMARK: reproduce the overlapping t=28 and t=51.75
+states and independently test the metric curvature below.
+
+METHOD / CROSSCHECK: rerun h=.1,.05,.025 at R=120 plus the same fine
+half-step and R=160 controls. Keep .25-spaced samples from the initial
+slice. Compute curvature both from the angular action equation and from
+the evolving metric. Exact vacuum, FLRW, Einstein, boost and regular-centre
+checks precede evolution; static metric and contracting constant-potential
+controls test the discrete reconstruction.
+
+RESIDUAL / ERROR_BOUND / VALIDITY_HEALTH: all section 12 evolution and
+trapping thresholds stay unchanged. Each new metric/action R2, R4 and
+K maximum discrepancy is normalized by the maximum action readout or
+the fixed dimensional floor ell^-2 (R2,R4), ell^-4 (K). Require fine
+error<.005 and (fine<1e-6 or fine/middle<.6), at every sampled prefix.
+The central and maximum-absolute R4,K waveforms use the existing
+refinement rule (middle/fine difference<1e-4 or decay ratio<.6), and
+half-step/domain differences<1e-3, with those same dimensional floors.
+The two metric-time probes eps=1e-4 and eps/2 must agree within 1e-4
+in all five runs. These fixed floors avoid normalization by an empty
+centre's vanishing initial curvature; they are not fitted to residuals.
+
+PASS_CONDITION: an unbroken accepted curvature prefix reaches beyond
+t=51.75 with a trapping certificate and all prerequisite/decision checks
+passing. Record its actual endpoint separately from completion of t=60.
+FAIL_CONDITION / FALSIFIER: a nonfinite curvature, failed refinement,
+metric/action disagreement or failed probe limits this new certificate;
+an evolution guard limits the underlying solution. Report first rejected
+and last accepted prefixes. A finite numerical failure does not identify
+a physical singularity. A separate base-evolution certificate is recomputed
+on retained samples; a curvature-only gate failure preserves trapping
+already certified there or in section 12. A probe exception stops this
+run before retaining its failing sample.
+BRANCHES: paired saturation branch only. OBSERVABLE_MAP: curvature
+scalars of the same physical metric, alongside existing masses, clocks,
+charge radius and null expansions. FORWARD_MODEL / DATA_ROLE /
+IDENTIFIABILITY: N/A; this is not an observational fit or uniqueness test.
+CLOSURE_FLAGS: only finite-window posttrapping_curvature may close;
+global_regularity, singularity_removal and full_RefG_pressure_join stay false.
+FILES: this report, its verifier and the W92 diagnostic index only.
+PROVENANCE: the verifier and both old engines are hashed at launch/exit;
+all numerical output is stdout. No new data-file collection is created.
+STOP: the five fixed-window runs and their decision, including a failed
+gate if encountered. Further interior extension is a separate stage.
+
+Preflight: 65/65 checks pass; the independent base regression passes
+74/74. The frozen continuation verifier SHA256 is
+`411bdbac4afe3aec3ac49e7c694f64e6e3b528355d2ffd6f9cb5752b6831be24`.
+
+### Dynamical curvature from the same action
+
+Let u=ell^2 z, q=1-u, b=alpha q^2 and C=z(1-3u)/2. The material
+components are rho,p_r,p_t,J in an orthonormal radial frame, with
+
+    p_t=A(|P|^2-|D|^2)/2-V, J=sqrt(A) S=A Re(conj(P)D),
+    d=2C+b(p_r-rho),
+    H=(C+b p_r)^2+(C-b rho)^2-2(b J)^2.
+
+The already-varied radius/angular equation gives
+
+    R2=2z(1-9u+9u^2)+2b(1-6u)(p_r-rho)-4b p_t
+       +8 alpha^2 ell^2 q^3(rho p_r-J^2),
+    R4=R2+2z-4d, K=R2^2+8H+4z^2.
+
+There is no division by the trapping function F in these readouts.
+The 25 exact checks include the original angular action equation, direct
+static Hayward curvature, dust FLRW curvature and arbitrary radial boosts.
+
+The independent metric reconstruction uses n=L^-1 partial_t-v partial_r,
+e=sqrt(A) partial_r, acceleration a=sqrt(A) partial_r(log L), and
+
+    Kg=v_r+(A_t/L-v A_r)/(2A)+v partial_r(log L),
+    R2_metric=2[Kg^2-n(Kg)-e(a)-a^2],
+    Hnn=-v_t/L+v v_r-A partial_r(log L),
+    Hee=A_r/2-Kg v, Hne=(A_t/L-v A_r)/(2sqrt(A))+v a.
+
+Use R4_metric=R2_metric+2z-4(-Hnn+Hee)/r and
+K_metric=R2_metric^2+8(Hnn^2+Hee^2-2Hne^2)/r^2+4z^2.
+The connection identity [n,e]=a n+Kg e fixes the curvature sign. A
+separate general-metric Christoffel calculation verifies all four
+geometric formulas. The shared z is the algebraic metric definition.
+A_t comes from the actual evolved mu,v RHS. The time derivative of Kg
+is obtained from centred directional probes of the metric expression;
+the probes save/restore production guard extrema and never advance or
+project the solution. Probe failure is separately labelled. Fourth-order
+even/odd parity derivatives and regular H=(A-1)/r^2=k^2-z avoid centre
+cancellation and incorrect reflection of odd fields.
+
+### Conditional dynamic-centre bound
+
+At a smooth isotropic centre, J=0, p_t=p_r=p and the mass constraint
+gives rho=3z/(2alpha q). The exact identities are
+
+    R2=-2(C+b p), R4=6[z-C-b p],
+    K_centre=12[(C+b p)^2+z^2].
+
+For the retained scalar V>=0 implies |p|<=rho. With w=p/rho in [-1,1],
+ell^4 K is convex in w. Its endpoint values are 24u^2 and
+12u^2(9u^2-12u+5), both at most 24 on 0<=u<=1. Therefore
+
+    K_centre <= 24/ell^4.
+
+This requires a smooth centre and its constraint, but no staticity.
+It supplies a conditional dynamic bound; preservation of centre
+regularity and off-centre curvature still require the evolution check.
+
+Reproduce:
+
+    python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py" --curvature-controls --verbose
+    python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py" --paired-interior --verbose
+
+### Completed result: finite post-trapping curvature through t=60
+
+The frozen five-run test returned `PAIRED_VALIDATED_POSTTRAPPING_CURVATURE`:
+108/108 checks pass. Each run completed 241 samples on 0<=t<=60;
+all 240 successive sampled prefixes pass, with first_rejected=null.
+The separately recomputed base-evolution certificate also reaches t=60.
+The first two-sample trapping certificate still ends at t=50.5, using
+the t=50.25 and t=50.5 samples.
+
+| Run | h | Outer radius | Final minimum F | Final central K |
+|---|---:|---:|---:|---:|
+| Coarse | .1 | 120 | -.39643516997 | .38104169092 |
+| Middle | .05 | 120 | -.39612408548 | .38090692893 |
+| Fine | .025 | 120 | -.39604343988 | .38086094209 |
+| Fine, half time step | .025 | 120 | -.39604343989 | .38086094209 |
+| Fine, enlarged domain | .025 | 160 | -.39604343988 | .38086094209 |
+
+The terminal fine minimum is at r=5.2125, with 275 trapped grid cells.
+At that minimum theta_plus=-.14260412093 and theta_minus=-.40886374620;
+their product agrees with -4F/r^2 to 6.94e-18. The stated radius locates
+the minimum of F, rather than a zero of F.
+
+| Fine-grid model time | Central proper time | Central lapse | Central K | Maximum cell abs(K), r<=80 |
+|---|---:|---:|---:|---:|
+| 50 | 34.6668645545 | .26401923207 | .29165854000 | .29165695037 |
+| 51.75 | 35.1018512886 | .23409474988 | .30825178520 | .30825167026 |
+| 54 | 35.5925819127 | .20341821030 | .32699521207 | .33023315635 |
+| 60 | 36.6362859755 | .14960062218 | .38086094209 | .38379914964 |
+
+The central readout is a parity extrapolation, tabulated separately from
+the cell maximum. At t=60 central R4=1.30182098385 and the cell maximum
+abs(R4)=1.30873194028. The sampled fine-history maxima of central K and
+the two absolute cell curvature readouts occur at this final time.
+The smooth-centre bound is 24/ell^4=1.5 for ell=2; the largest sampled
+central K is .38086094209. Its bound assumes the regular isotropic
+centre and mass constraint stated above.
+
+| Whole-prefix normalized metric/action discrepancy | Middle | Fine | Fine/middle |
+|---|---:|---:|---:|
+| R2 | .01159483840 | .00410160563 | .35374410 |
+| R4 | .00344027833 | .00112845286 | .32801208 |
+| K | .00655349998 | .00202017573 | .30825906 |
+
+These are maximum norm discrepancies with the registered dimensional
+floors, not pointwise relative errors. The accuracy gate applies to the
+fine result and its middle/fine decrease. Fine-grid radial, regular-metric
+and origin residual maxima are 5.72550039e-5, 3.35110029e-6 and
+3.51476348e-4. The four curvature-waveform middle/fine discrepancies
+(central R4, central K, maximum abs(R4), maximum abs(K)) are
+3.70864389e-4, 2.67034680e-4, 2.22557058e-4 and 1.46941215e-4;
+each satisfies the registered refinement-decrease rule. Across all
+eight monitored waveforms, the largest normalized half-step difference
+is 9.82482e-11 and the domain-control difference is 3.62426e-12.
+The largest two-time-probe discrepancy over all five runs is
+2.07607e-8, below the fixed 1e-4 threshold.
+
+All chart/action and production time-step guards pass. Fine stage minima
+are A=.1179909940, face A=.1179823487, L=.1373142901 and q=.3088361771.
+The maximum five-run Courant number is .093506 and the frozen-wave RK
+number is .254849. The roundoff allowance at u=0 is unchanged; the fine
+minimum is -1.05e-14, with no clipping. The maximum fine relative phase
+charge drift is 1.99e-13 (7.89e-15 at half step); outer mass remains
+129.8971827658 at emitted precision. At t=60 the charge RMS radius is
+3.59088044597 and maximum material density is 21.3140696056.
+
+The overlapping retained t=0,28,50,51.75 readouts reproduce the previous
+run exactly in emitted floating-point values: all 52 common numeric
+entries per case agree. Source and evolution equations are unchanged;
+the verifier and both old engines retain their launch hashes. Independent
+arithmetic verifies the null-expansion identity, refinement ratios and
+sample count. Preflight 65/65 and the base 74/74 regression pass.
+
+Closure: posttrapping_curvature=true; resolved_trapping=true;
+validated_prefix_end=60; first_certified_trapping=50.5;
+first_rejected=null; same_saturation_action=true;
+global_regularity=false; singularity_removal=false;
+full_RefG_pressure_join=false.
+
+This stage establishes finite, convergent curvature on the sampled
+post-trapping interval of the same postulated saturation action. The
+packet continues contracting and its peak curvature is still increasing
+at t=60. A global regularity result requires control of the centre's
+continued smoothness, off-centre curvature and causal continuation;
+the RefG pressure/scale identification remains a separate derivation.
+The registered five-run stage is complete; no further time extension
+or monograph change is included.
+
 ## Reproduction and attribution
 
     python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py"
@@ -1657,7 +1872,7 @@ separate unfinished connection. No monograph or publication claim changes.
 
 Results and numerical examples are emitted to stdout; no generated files.
 
-The final run passed 74/74 assumption-scoped checks. Independent read-only
+The base sourced-dust verifier passed 74/74 assumption-scoped checks. Independent read-only
 reruns confirmed the initial check suite; the old vacuum verifier also
 passed its unchanged 84/84 checks.
 The final verifier also checks the zero-curvature action boundary, both
