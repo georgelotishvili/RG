@@ -261,6 +261,144 @@ def source_concentration_checks():
                 source_hashes={Path(__file__).name:entry_hash})
 
 
+def source_budget_checks():
+    """Existing-action instantaneous normal-frame feedback, without evolution.
+
+    Directional differences test the on-shell curvature/source readouts along
+    the exact initial RHS. They are not later physical solution states.
+    """
+    entry_hash = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    prerequisite = source_concentration_checks()
+    checks = list(prerequisite['details'])
+    def exact(name,value,target=0):
+        residual = s.factor(s.cancel(value-target))
+        checks.append(dict(name='budget_'+name,passed=residual==0,residual=str(residual)))
+    def gate(name,condition,**evidence):
+        checks.append(dict(name='budget_'+name,passed=bool(condition),**evidence))
+    r,a,ell,z,rho,mu = s.symbols('r alpha ell z rho mu',positive=True)
+    acc,srad,Kg,k = s.symbols('acc srad Kg k',real=True)
+    pi = s.symbols('pi0 pi1',real=True)
+    chi = s.symbols('chi0 chi1',real=True)
+    epi = s.symbols('epi0 epi1',real=True)
+    echi = s.symbols('echi0 echi1',real=True)
+    force = s.symbols('force0 force1',real=True)
+    V = s.symbols('V',real=True)
+    PP,DD = sum(x*x for x in pi),sum(x*x for x in chi)
+    rr,pr,pt = (PP+DD)/2+V,(PP+DD)/2-V,(PP-DD)/2-V
+    J = sum(x*y for x,y in zip(pi,chi))
+    npi = [echi[i]+(acc+2*srad/r)*chi[i]+(Kg+2*k)*pi[i]-force[i] for i in range(2)]
+    nchi = [epi[i]+acc*pi[i]+Kg*chi[i] for i in range(2)]
+    nrho_KG = sum(pi[i]*npi[i]+chi[i]*nchi[i]+force[i]*pi[i] for i in range(2))
+    eJ = sum(epi[i]*chi[i]+pi[i]*echi[i] for i in range(2))
+    conservation = eJ+2*(acc+srad/r)*J+Kg*(rr+pr)+2*k*(rr+pt)
+    exact('canonical_energy_conservation',nrho_KG,conservation)
+    for component in range(2):
+        exact('potential_rate_cancellation_'+str(component),s.diff(nrho_KG,force[component]))
+    psi = s.symbols('psi0 psi1',real=True)
+    amplitude2 = sum(x*x for x in psi)
+    retained_V = amplitude2/2-amplitude2**2/4+amplitude2**3/24
+    vacuum = {x:0 for x in psi+chi}
+    exact('initial_potential_rate',sum(s.diff(retained_V,psi[i])*pi[i] for i in range(2)).subs(vacuum))
+    exact('initial_gradient_energy_rate',sum(chi[i]*nchi[i] for i in range(2)).subs(vacuum))
+    nJ = sum(npi[i]*chi[i]+pi[i]*nchi[i] for i in range(2))
+    exact('initial_PG_flux_rate',nJ.subs(vacuum).subs(acc,0),sum(pi[i]*epi[i] for i in range(2)))
+    M,v,A,S,pressure = s.symbols('M v A S pressure',real=True)
+    Mr = r*r*(rho+v*S)
+    Mt_over_L = r*r*(v*(rho+pressure)+(A+v*v)*S)
+    nmu = (Mt_over_L-v*Mr)/r**3+3*M*v/r**4
+    exact('normal_mass_budget',nmu,(v/r)*(3*M/r**3+pressure)+A*S/r)
+    qmu = 1/(1+2*a*ell*ell*mu)
+    mdot,rdot = s.symbols('nmu nrho',real=True)
+    exact('response_chain',s.diff(qmu,mu)*mdot,-2*a*ell*ell*qmu*qmu*mdot)
+    Emu = a*ell*ell*qmu**s.Rational(3,2)*rho
+    exact('weighted_source_chain',s.diff(Emu,mu)*mdot+s.diff(Emu,rho)*rdot,
+          a*ell*ell*qmu**s.Rational(3,2)*(rdot-3*a*ell*ell*qmu*rho*mdot))
+    u,q = ell*ell*z,1-ell*ell*z
+    kk = s.sqrt(z)
+    C = z*(1-3*u)/2
+    mus = z/(2*a*q)
+    Kpg = (-C+a*q*q*rho)/kk
+    gamma_rho = 2*(Kpg+2*kk)
+    gamma_feedback = -3*a*ell*ell*q*kk*(rho+3*mus)
+    gamma_E = s.Rational(3,2)*kk*(2-u)+a*rho*q*(2-5*u)/kk
+    exact('PG_density_positive',gamma_rho,3*kk*(1+u)+2*a*q*q*rho/kk)
+    exact('PG_source_feedback',gamma_rho+gamma_feedback,gamma_E)
+    turning = 3*z*(2-u)/(2*a*q*(5*u-2))
+    exact('PG_turning_threshold',gamma_E,-a*q*(5*u-2)/kk*(rho-turning))
+    pfield,vr = s.symbols('P vr',real=True)
+    exact('PG_direct_KG_density',pfield*((vr+2*kk)*pfield),2*(vr+2*kk)*(pfield*pfield/2))
+    pf,vf = s.Function('P')(r),s.Function('v')(r)
+    exact('PG_scalar_normal_transport',s.diff(r*r*vf*pf,r)/r**2-vf*s.diff(pf,r),
+          (s.diff(vf,r)+2*vf/r)*pf)
+    # At psi=D=0, V and its first normal rate vanish; pr=pt=rho and
+    # J=0. K has no term linear in J, so the two-variable tangent is exact.
+    kinetic = saturation_curvature(rho,rho,rho,0,z,a,ell)
+    KK = kinetic['Kretschmann']
+    EE = a*ell*ell*q**s.Rational(3,2)*rho
+    n_rho,n_z = rho*gamma_rho,2*a*q*q*kk*(rho+3*mus)
+    n_E = s.simplify(s.diff(EE,rho)*n_rho+s.diff(EE,z)*n_z)
+    n_K = s.diff(KK,rho)*n_rho+s.diff(KK,z)*n_z
+    exact('PG_curvature_rate_leading',s.Poly(s.expand(n_K),rho).coeff_monomial(rho**5),
+          256*a**5*ell**4*q**7*(2-5*u)/kk)
+    exact('PG_E_directional_chain',n_E,EE*gamma_E)
+    generic_pr,generic_pt,generic_J = s.symbols('pr pt J',real=True)
+    full = saturation_curvature(rho,generic_pr,generic_pt,generic_J,z,a,ell)
+    exact('kinetic_zero_flux_first_variation',s.diff(full['Kretschmann'],generic_J).subs(generic_J,0))
+    rates = s.lambdify((rho,z,a,ell),(gamma_rho,gamma_feedback,gamma_E,n_rho,n_z,n_E,n_K,turning),'numpy')
+    examples = []
+    for source_row in prerequisite['examples']:
+        density,aa,ll = source_row['rho'],.04,2.0
+        zz = source_row['u']/(ll*ll)
+        values = rates(density,zz,aa,ll)
+        gr,gf,ge,nr,nz,ne,nk,threshold = map(float,values)
+        escale = aa*ll*ll*(1-ll*ll*zz)**1.5*density
+        tag = str(source_row['width'])
+        directional = []
+        for step in (1e-6,5e-7):
+            rp,zp = density+step*nr,zz+step*nz
+            rm,zm = density-step*nr,zz-step*nz
+            qp,qm = 1-ll*ll*zp,1-ll*ll*zm
+            admissible = min(rp,rm,qp,qm)>0 and max(qp,qm)<1
+            if admissible:
+                kp = saturation_curvature(rp,rp,rp,0.,zp,aa,ll)['Kretschmann']
+                km = saturation_curvature(rm,rm,rm,0.,zm,aa,ll)['Kretschmann']
+                ep,em = aa*ll*ll*qp**1.5*rp,aa*ll*ll*qm**1.5*rm
+                dk,de = (kp-km)/(2*step),(ep-em)/(2*step)
+                errors = dict(K=abs(dk-nk)/max(1.,abs(nk)),E=abs(de-ne)/max(1.,abs(ne)))
+                finite = all(math.isfinite(value) for value in (dk,de,*errors.values()))
+            else:
+                dk=de=math.nan
+                errors=dict(K=math.inf,E=math.inf)
+                finite=False
+            gate('directional_'+tag+'_'+str(step),admissible and finite and max(errors.values())<1e-5,
+                 error=errors,step=step,admissible=admissible,
+                 interpretation='Centred readout derivative along the initial normal RHS; not time evolution')
+            directional.append(dict(step=step,nK_difference=float(dk),nE_difference=float(de),errors=errors))
+        gate('budget_balance_'+tag,abs(gr+gf-ge)<1e-12*max(1.,abs(gr),abs(gf)))
+        gate('threshold_equivalence_'+tag,(ge<0)==(density>threshold),u=source_row['u'])
+        gate('density_positive_'+tag,nr>0)
+        examples.append(dict(width=source_row['width'],rho=density,q=source_row['q'],u=source_row['u'],
+            E=escale,gamma_rho=gr,gamma_feedback=gf,gamma_E=ge,nrho=nr,nz=nz,nE=ne,nK=nk,
+            rho_turn=threshold,initial_weighted_source_decreasing=ge<0,initial_curvature_decreasing=nk<0,
+            directional_checks=directional))
+    end_hash = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    gate('source_unchanged',entry_hash==end_hash)
+    failed = [item['name'] for item in checks if not item['passed']]
+    feedback = not failed and len(examples)==4 and all(row['gamma_E']<0 for row in examples[-2:])
+    curvature_reduction = not failed and len(examples)==4 and all(row['nK']<0 for row in examples[-2:])
+    return dict(decision=('EXISTING_ACTION_INITIAL_FEEDBACK_VERIFIED' if feedback else
+                         'EXISTING_ACTION_BUDGET_VERIFIED' if not failed else 'SOURCE_BUDGET_CHECK_FAILURE'),
+        checks=len(checks),passed=len(checks)-len(failed),failed=failed,details=checks,examples=examples,
+        scope=dict(local_budget_derived=not failed,initial_feedback_demonstrated=feedback,
+            initial_curvature_reduction=curvature_reduction,persistent_regulation=False,
+            fixed_packet_continuation=False,
+            existing_action=True,modified_action=False,time_evolution_performed=False,
+            global_regularity=False,singularity_removal=False,stability=False,full_RefG_pressure_join=False,
+            derivative='n=L^-1 partial_t-v partial_r; normal proper direction, not fixed-r coordinate time',
+            interpretation='Instantaneous feedback on four distinct constrained kinetic slices; no later-time, uniform-cap or complete-collapse claim'),
+        source_hashes={Path(__file__).name:entry_hash})
+
+
 def run_checks():
     checks = []
 
@@ -1371,9 +1509,16 @@ class RadialNodalPair:
         return first,second
 
 
-def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origin_controls=False,paired_origin=False,paired_collapse=False,paired_interior=False,curvature_controls=False):
+def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origin_controls=False,paired_origin=False,paired_collapse=False,paired_interior=False,curvature_controls=False,feedback_evolution=False,feedback_controls=False,localization_case=None,localization_controls=False):
     """Same-action horizon-regular evolution; frozen finite-window decision."""
     import time
+    if localization_case not in (None,'fine','finer'):
+        raise ValueError('Unknown fixed curvature-localization case')
+    localization = localization_case is not None or localization_controls
+    feedback_evolution = feedback_evolution or localization_case is not None
+    feedback_controls = feedback_controls or localization_controls
+    paired_interior = paired_interior or feedback_evolution
+    curvature_controls = curvature_controls or feedback_controls
     paired_origin = paired_origin or paired_collapse or paired_interior or curvature_controls
     origin_audit = origin_audit or paired_origin
     origin_controls = origin_controls or curvature_controls
@@ -1385,6 +1530,7 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
     alpha,ell = ref.ALPHA,2.0
     curvature_waves = ('central_Ricci','central_Kretschmann','maximum_abs_Ricci','maximum_abs_Kretschmann')
     curvature_errors = ('curvature_metric_R2_error','curvature_metric_Ricci_error','curvature_metric_K_error')
+    feedback_waves = ('central_weighted_source','maximum_weighted_source','central_E_normal_rate')
     def relative_array_error(a,b):
         a,b = np.asarray(a),np.asarray(b)
         return float(np.max(abs(a-b))/max(np.max(abs(a)),1e-30))
@@ -1430,6 +1576,7 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
             self.maximum_stage_q = 0.0
             self.charge_weights = self.engine.vol
             self.measure_curvature = False
+            self.measure_feedback = False
 
         def field_derivative(self,field):
             return self.engine.derivative(field)
@@ -1534,11 +1681,11 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
             out[-2:] = np.gradient(values,self.h,edge_order=2)[-2:]
             return out
 
-        def metric_curvature_parts(self,state,rhs=None):
+        def metric_curvature_parts(self,state,rhs=None,derivative=None):
             g = self.geometry(state)
             rhs = self.rhs(state) if rhs is None else rhs
             r,L,A,k = self.r,g['L'],g['A'],g['k']
-            D = self.diagnostic_derivative
+            D = self.diagnostic_derivative if derivative is None else derivative
             H = k*k-g['z']
             Hr = D(H)
             kt = self.cell_k(rhs)
@@ -1605,6 +1752,182 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
                 curvature_time_probe_error=max(sup(a-b)/sc for a,b,sc in zip(geometric[0],geometric[1],(scale_R2,scale_R,scale_K))))
             return out
 
+        def diagnostic_derivative6(self,values,odd=False):
+            """Sixth-order parity derivative for readout controls only."""
+            values = np.asarray(values)
+            if len(values)<7 or self.h<=0:
+                raise ValueError('Sixth-order diagnostic needs seven cells and positive spacing')
+            ext = np.r_[(-1 if odd else 1)*values[:3][::-1],values]
+            out = np.empty_like(values,dtype=np.result_type(values,float))
+            out[:-3] = (-ext[:-6]+9*ext[1:-5]-45*ext[2:-4]+45*ext[4:-2]
+                        -9*ext[5:-1]+ext[6:])/(60*self.h)
+            out[-3:] = np.gradient(values,self.h,edge_order=2)[-3:]
+            return out
+
+        def curvature_localization_readout(self,state,rhs=None):
+            """Fixed-state metric-curvature error decomposition; no acceptance substitution.
+
+            D6 and the metric divergence form are independent readout controls.
+            K0 uses one action equation and is solely a constraint-error probe.
+            """
+            if self.length<=0:
+                raise ValueError('Curvature localization requires positive saturation length')
+            rhs = self.rhs(state) if rhs is None else rhs
+            r = self.r
+            active = (r<=80)&(np.arange(len(r))<len(r)-6)
+            if not np.any(active):
+                raise ValueError('No active curvature-localization cells')
+            derivatives = {'D4':self.diagnostic_derivative,'D6':self.diagnostic_derivative6}
+            parts = {name:self.metric_curvature_parts(state,rhs,derivative=deriv)
+                     for name,deriv in derivatives.items()}
+            g = parts['D4']['g']
+            L,A,v,q,root = g['L'],g['A'],g['v'],g['q'],g['root']
+            pt = A*(abs(state[1])**2-abs(g['D'])**2)/2-g['V']
+            action = saturation_curvature(g['rho'],g['p'],pt,root*g['S'],g['z'],alpha,self.length)['orbit_Ricci']
+            sup = lambda x:float(np.max(abs(x[active])))
+            scale = max(sup(action),self.length**-2)
+            At = r*r*(2*g['k']*self.cell_k(rhs)-2*alpha*q*q*rhs[2].real)
+            def k0(part,deriv):
+                gg = part['g']
+                return gg['k']+r*deriv(gg['k'])-alpha*r*gg['q']**2*gg['S']
+            saved = {key:value for key,value in vars(self).items()
+                     if key.startswith(('minimum_stage_','maximum_stage_'))}
+            saved_courant = self.engine.maximum_courant
+            saved_wave = self.pair.maximum_wave_RK_number
+            variants,kt_rates,k0_rates = {},{},{}
+            try:
+                for name,deriv in derivatives.items():
+                    base = parts[name]
+                    Kg = base['Kg']
+                    acc = root*deriv(state[4].real)
+                    variants[name+'_expanded'],variants[name+'_flux'] = [],[]
+                    kt_rates[name],k0_rates[name] = [],[]
+                    for eps in (1e-4,5e-5):
+                        plus = self.metric_curvature_parts(state+eps*rhs,derivative=deriv)
+                        minus = self.metric_curvature_parts(state-eps*rhs,derivative=deriv)
+                        Kt = (plus['Kg']-minus['Kg'])/(2*eps)
+                        K0t = (k0(plus,deriv)-k0(minus,deriv))/(2*eps)
+                        expanded = base['spatial_R2']-2*Kt/L
+                        flux = -2*root/L*(Kt/root-Kg*At/(2*A*root)
+                            +deriv(L*acc-L*v*Kg/root,odd=True))
+                        variants[name+'_expanded'].append(expanded)
+                        variants[name+'_flux'].append(flux)
+                        kt_rates[name].append(Kt)
+                        k0_rates[name].append(K0t)
+            except (FloatingPointError,ValueError) as exc:
+                raise FloatingPointError('CURVATURE_LOCALIZATION_PROBE_LIMIT: '+str(exc)) from exc
+            finally:
+                for key,value in saved.items():
+                    setattr(self,key,value)
+                self.engine.maximum_courant = saved_courant
+                self.pair.maximum_wave_RK_number = saved_wave
+            D = derivatives['D4']
+            Kg,K0 = parts['D4']['Kg'],k0(parts['D4'],D)
+            delta = Kg-K0
+            deltat = kt_rates['D4'][0]-k0_rates['D4'][0]
+            amplification = 2*(2*K0*delta+delta*delta-deltat/L+v*D(delta))
+            acc = root*D(state[4].real)
+            K0_curvature = 2*(K0*K0-k0_rates['D4'][0]/L+v*D(K0)-root*D(acc,odd=True)-acc*acc)
+            H = g['k']**2-g['z']
+            Ar = r*(2*H+r*D(H))
+            constraint = At/L-v*Ar+2*v*A*D(state[4].real)+2*alpha*q*q*r*A*g['S']
+            constraint_delta = constraint/(2*A)
+            terms = dict(extrinsic_square=2*Kg*Kg,time_derivative=-2*kt_rates['D4'][0]/L,
+                radial_advection=2*v*D(Kg),acceleration_derivative=-2*root*D(acc,odd=True),
+                acceleration_square=-2*acc*acc)
+            baseline = variants['D4_expanded'][0]
+            residual = baseline-action
+            remaining = residual-amplification
+            arrays = [action,At,Kg,K0,delta,deltat,amplification,K0_curvature,constraint_delta,remaining,
+                      *terms.values(),*(x for series in variants.values() for x in series)]
+            if any(not np.all(np.isfinite(value[active])) for value in arrays):
+                raise FloatingPointError('Nonfinite curvature-localization diagnostic')
+            ids = np.flatnonzero(active)
+            j = int(ids[np.argmax(abs(residual[active]))])
+            def local_row(index):
+                row_terms = {name:float(value[index]) for name,value in terms.items()}
+                local_scale = max(abs(float(action[index])),abs(float(baseline[index])),self.length**-2)
+                return dict(index=int(index),r=float(r[index]),action_R2=float(action[index]),
+                    metric_R2=float(baseline[index]),signed_residual=float(residual[index]),
+                    R2_terms=row_terms,cancellation_ratio=sum(abs(x) for x in row_terms.values())/local_scale,
+                    L=float(L[index]),A=float(A[index]),q=float(q[index]),
+                    constraint_delta=float(constraint_delta[index]),delta_K=float(delta[index]),
+                    constraint_amplification=float(amplification[index]),remaining_residual=float(remaining[index]),
+                    D6_metric_R2=float(variants['D6_expanded'][0][index]),
+                    flux_metric_R2=float(variants['D4_flux'][0][index]))
+            local_lo = max(int(ids[0]),j-3)
+            local_hi = min(int(ids[-1])+1,local_lo+7)
+            local_lo = max(int(ids[0]),local_hi-7)
+            local_indices = [i for i in range(local_lo,local_hi) if active[i]]
+            return dict(R2_scale=scale,
+                variant_errors={name:sup(values[0]-action)/scale for name,values in variants.items()},
+                D6_D4_sensitivity=sup(variants['D6_expanded'][0]-baseline)/scale,
+                flux_D4_sensitivity=sup(variants['D4_flux'][0]-baseline)/scale,
+                D6_flux_D6_sensitivity=sup(variants['D6_flux'][0]-variants['D6_expanded'][0])/scale,
+                time_probe_sensitivity={name:sup(values[0]-values[1])/scale for name,values in variants.items()},
+                constraint_amplification_norm=sup(amplification)/scale,
+                residual_after_constraint_subtraction=sup(remaining)/scale,
+                constraint_delta_identity_error=sup(delta-constraint_delta),
+                constraint_curvature_identity_error=sup(baseline-K0_curvature-amplification)/scale,
+                worst=local_row(j),local_rows=[local_row(i) for i in local_indices],
+                interpretation='Fixed-state readout controls only; K0 and constraint subtraction do not replace the independent metric gate')
+
+        def feedback_readout(self,state,rhs=None):
+            """Nonlogarithmic local-source budget along n=L^-1 dt-v dr.
+
+            The direct rate differentiates the actual semidiscrete RHS;
+            the three budget terms use the continuum energy/mass equations.
+            """
+            rhs = self.rhs(state) if rhs is None else rhs
+            parts = self.metric_curvature_parts(state,rhs)
+            g = parts['g']
+            r,L,A,v,q = self.r,g['L'],g['A'],g['v'],g['q']
+            deriv = self.diagnostic_derivative
+            field,P = state[:2]
+            mu = state[2].real
+            D,Ddot = g['D'],self.field_derivative(rhs[0])
+            vdot = r*self.cell_k(rhs)
+            Adot = -2*alpha*r*r*q*q*rhs[2].real+2*v*vdot
+            force = (1-abs(field)**2+abs(field)**4/4)*field
+            rhodot = Adot*(abs(P)**2+abs(D)**2)/2+A*np.real(
+                np.conjugate(P)*rhs[1]+np.conjugate(D)*Ddot)+np.real(np.conjugate(force)*rhs[0])
+            rho,pr = g['rho'],g['p']
+            pt = A*(abs(P)**2-abs(D)**2)/2-g['V']
+            J = g['root']*g['S']
+            pref = alpha*self.length**2*q**1.5
+            E = pref*rho
+            Et = pref*(rhodot-3*alpha*self.length**2*q*rho*rhs[2].real)
+            nE = Et/L-v*deriv(E)
+            nrho = rhodot/L-v*deriv(rho)
+            acc = g['root']*deriv(state[4].real)
+            flux = pref*(g['root']*deriv(J,odd=True)+2*(acc+g['root']/r)*J)
+            compression = pref*(parts['Kg']*(rho+pr)+2*g['k']*(rho+pt))
+            nmu = g['k']*(3*mu+pr)+A*g['S']/r
+            response = -pref*3*alpha*self.length**2*q*rho*nmu
+            budget = flux+compression+response
+            curv = saturation_curvature(rho,pr,pt,J,g['z'],alpha,self.length)
+            active = (r<=80)&(np.arange(len(r))<len(r)-4)
+            arrays = (E,Et,nE,nrho,rhodot,flux,compression,response,budget,
+                      rho,pr,pt,J,acc,parts['Kg'],nmu,curv['Kretschmann'])
+            if any(not np.all(np.isfinite(value[active])) for value in arrays):
+                raise FloatingPointError('Nonfinite local-source feedback diagnostic')
+            ids = np.flatnonzero(active)
+            j = int(ids[np.argmax(abs(curv['Kretschmann'][active]))])
+            trapped = active&(g['F']<0)&(v>0)
+            ext0 = lambda x:float((9*x[0]-x[1])/8)
+            sup = lambda x:float(np.max(abs(x[active])))
+            scale = max(sup(abs(flux)+abs(compression)+abs(response)),1/self.length)
+            return dict(feedback_budget_error=sup(nE-budget)/scale,
+                central_weighted_source=ext0(E),maximum_weighted_source=float(np.max(E[active])),
+                central_E_flux=ext0(flux),central_E_compression=ext0(compression),
+                central_E_response=ext0(response),central_E_normal_rate=ext0(nE),
+                central_density_normal_rate=ext0(nrho),
+                K_peak_radius=float(r[j]),K_peak_rho=float(rho[j]),K_peak_q=float(q[j]),
+                K_peak_E=float(E[j]),K_peak_E_flux=float(flux[j]),
+                K_peak_E_compression=float(compression[j]),K_peak_E_response=float(response[j]),
+                K_peak_E_normal_rate=float(nE[j]),K_peak_density_normal_rate=float(nrho[j]),
+                trapped_maximum_weighted_source=float(np.max(E[trapped])) if np.any(trapped) else 0.)
+
         def measure(self,state,t):
             g = self.geometry(state)
             rhs = self.rhs(state)
@@ -1664,6 +1987,8 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
                 charge_nodal=float(np.sum(self.h*r*r*np.imag(np.conjugate(state[0])*state[1]))))
             if self.measure_curvature:
                 row.update(self.curvature_readout(state,rhs))
+            if self.measure_feedback:
+                row.update(self.feedback_readout(state,rhs))
             return row
 
         def origin_terms(self,state):
@@ -1940,6 +2265,18 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
             test('curvature_constant_core_'+str(h),errors[-1]<1e-10 and
                  max(row[key] for key in ('curvature_metric_R2_error','curvature_metric_Ricci_error','curvature_metric_K_error','curvature_time_probe_error'))<1e-7,
                  readout=row)
+            if feedback_evolution or feedback_controls:
+                budget = grid.feedback_readout(state)
+                core_q = 1/(1+2*alpha*ell**2/9)
+                expected_E = alpha*ell**2*core_q**1.5/3
+                test('feedback_constant_core_'+str(h),
+                     budget['feedback_budget_error']<1e-10 and
+                     abs(budget['central_weighted_source']-expected_E)<1e-12 and
+                     max(abs(budget[key]) for key in ('central_E_flux','central_E_compression',
+                         'central_E_response','central_E_normal_rate'))<1e-10,readout=budget)
+                empty = grid.feedback_readout(np.zeros_like(state))
+                test('feedback_empty_'+str(h),max(abs(empty[key]) for key in
+                     ('feedback_budget_error',)+feedback_waves)<1e-12)
             # Direct static Hayward metric in a horizon-regular flat-slice chart.
             mass = source['parameters']['target_mass']
             rf = grid.engine.edges[1:]
@@ -1953,6 +2290,44 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
             test('curvature_static_metric_'+str(h),error<.01,error=error)
             errors.append(error)
         test('curvature_static_metric_refines',errors[-1]<.6*errors[-3] and errors[-3]<.6*errors[-5],errors=errors[1::2])
+    if localization:
+        flux_errors = []
+        for h in (.1,.05,.025):
+            grid = PairedSaturationClock(4,h)
+            r = grid.r
+            errors = []
+            for degree in range(7):
+                expected = np.zeros_like(r) if degree==0 else degree*r**(degree-1)
+                actual = grid.diagnostic_derivative6(r**degree,odd=bool(degree%2))
+                errors.append(float(np.max(abs(actual[:-6]-expected[:-6]))/max(np.max(abs(expected[:-6])),1.)))
+            test('localization_D6_parity_polynomials_'+str(h),max(errors)<1e-9,errors=errors)
+            state = np.zeros((6,len(r)),complex)
+            k0 = math.sqrt(2*alpha/(9+2*alpha*ell**2))
+            state[0],state[2],state[3],state[4] = math.sqrt(2),1/9,k0*grid.engine.edges[1:],math.log(.8)
+            rhs = grid.rhs(state)
+            saved = {key:value for key,value in vars(grid).items() if key.startswith(('minimum_stage_','maximum_stage_'))}
+            saved.update(Courant=grid.engine.maximum_courant,wave=grid.pair.maximum_wave_RK_number)
+            row = grid.curvature_localization_readout(state,rhs)
+            after = {key:value for key,value in vars(grid).items() if key.startswith(('minimum_stage_','maximum_stage_'))}
+            after.update(Courant=grid.engine.maximum_courant,wave=grid.pair.maximum_wave_RK_number)
+            test('localization_guard_restore_'+str(h),saved==after)
+            test('localization_core_metric_variants_'+str(h),max(row['variant_errors'].values())<1e-7,readout=row)
+            state[:] = 0
+            state[0] = .2*np.exp(-r*r)*(1+.2j)
+            state[1] = (.05+.1j)*np.exp(-r*r)
+            state[2] = .01*np.exp(-r*r/4)
+            state[3] = .01*grid.engine.edges[1:]
+            state[4] = -.03*np.exp(-r*r)
+            original_state = state.copy()
+            row = grid.curvature_localization_readout(state)
+            baseline = grid.curvature_readout(state)
+            test('localization_nontrivial_defect_'+str(h),row['constraint_amplification_norm']>1e-8 and np.array_equal(state,original_state),
+                 amplification=row['constraint_amplification_norm'])
+            test('localization_original_D4_'+str(h),abs(row['variant_errors']['D4_expanded']-baseline['curvature_metric_R2_error'])<1e-12)
+            test('localization_constraint_identities_'+str(h),max(row['constraint_delta_identity_error'],row['constraint_curvature_identity_error'])<1e-8)
+            test('localization_manufactured_probe_'+str(h),max(row['time_probe_sensitivity'].values())<1e-7)
+            flux_errors.append(row['flux_D4_sensitivity'])
+        test('localization_metric_divergence_refines',flux_errors[-1]<.2*flux_errors[-2] and flux_errors[-2]<.2*flux_errors[0],errors=flux_errors)
     if any(not c["passed"] for c in checks):
         failed = [c for c in checks if not c["passed"]]
         return dict(decision="COLLAPSE_PREFLIGHT_FAILURE",checks=len(checks),passed=len(checks)-len(failed),
@@ -1960,17 +2335,18 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
     if origin_controls:
         test("unchanged_run_sources",all(hashlib.sha256(path.read_bytes()).hexdigest()==entry_hashes[path.name] for path in hash_paths))
         failed = [c for c in checks if not c["passed"]]
-        return dict(decision=("SATURATION_CURVATURE_CONTROLS" if curvature_controls else "PAIRED_ORIGIN_CONTROLS_ONLY" if paired_origin else "ORIGIN_CONTROLS_ONLY") if not failed else "ORIGIN_DIAGNOSTIC_CONTROL_FAILURE",
+        return dict(decision=("SATURATION_LOCALIZATION_CONTROLS" if localization_controls else "SATURATION_FEEDBACK_CONTROLS" if feedback_controls else "SATURATION_CURVATURE_CONTROLS" if curvature_controls else "PAIRED_ORIGIN_CONTROLS_ONLY" if paired_origin else "ORIGIN_CONTROLS_ONLY") if not failed else "ORIGIN_DIAGNOSTIC_CONTROL_FAILURE",
             checks=len(checks),passed=len(checks)-len(failed),failed=failed,details=checks,
             code_sha256=entry_hashes[Path(__file__).name],source_hashes=entry_hashes)
 
-    def run(h,duration=80.,radius=120.,courant=.1,event_stop=False):
+    def run(h,duration=80.,radius=120.,courant=.1,event_stop=False,localize=False):
         start = time.perf_counter()
         polar = PolarGrid(radius,h)
         packet = initial(polar)
         geometry = polar.geometry(*packet)
         grid = (PairedSaturationClock if paired_origin else SaturationClock)(radius,h)
         grid.measure_curvature = paired_interior
+        grid.measure_feedback = feedback_evolution
         state = np.zeros((6,len(grid.r)),complex)
         state[:2] = packet
         state[2] = geometry["mass"]/grid.r**3
@@ -1981,6 +2357,7 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
         grid.engine.time_step = dt
         rows,status,error = [],"COMPLETED",None
         snapshots = []
+        localizations = []
         event_time = None
         try:
             rows.append(grid.measure(state,0))
@@ -1990,6 +2367,8 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
                 t = (n+1)*.25
                 row = grid.measure(state,t)
                 rows.append(row)
+                if localize and t in (62.5,62.75):
+                    localizations.append(dict(t=t,**grid.curvature_localization_readout(state)))
                 if origin_audit and t in (27.5,27.75,28.):
                     snapshots.append(grid.origin_snapshot(state,t))
                 if n%40==39:
@@ -2003,13 +2382,22 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
             status,error = "NUMERICAL_LIMIT",str(exc)
         print(f"Saturation h={h} R={radius}: {status}, last={rows[-1]['t'] if rows else 0}, {time.perf_counter()-start:.1f}s",file=sys.stderr,flush=True)
         return dict(h=h,radius=radius,courant=courant,dt=dt,status=status,error=error,
-            elapsed_seconds=time.perf_counter()-start,samples=rows,origin_snapshots=snapshots,
+            elapsed_seconds=time.perf_counter()-start,samples=rows,origin_snapshots=snapshots,curvature_localizations=localizations,
             stage_minimum_A=grid.minimum_stage_A,stage_minimum_face_A=grid.minimum_stage_face_A,
             stage_minimum_lapse=grid.minimum_stage_lapse,stage_minimum_q=grid.minimum_stage_q,
             stage_minimum_mu=grid.minimum_stage_mu,stage_minimum_u=grid.minimum_stage_u,
             stage_maximum_q=grid.maximum_stage_q,
             maximum_Courant=grid.engine.maximum_courant,
             maximum_paired_wave_RK_number=grid.pair.maximum_wave_RK_number if paired_origin else None)
+
+    if localization_case is not None:
+        case = run(.025 if localization_case=='fine' else .0125,62.75,localize=True)
+        test('localization_replay_completed',case['status']=='COMPLETED' and case['samples'][-1]['t']==62.75 and len(case['curvature_localizations'])==2)
+        test('unchanged_run_sources',all(hashlib.sha256(path.read_bytes()).hexdigest()==entry_hashes[path.name] for path in hash_paths))
+        failed = [c for c in checks if not c['passed']]
+        return dict(decision='CURVATURE_LOCALIZATION_REPLAY' if not failed else 'LOCALIZATION_REPLAY_FAILURE',
+            checks=len(checks),passed=len(checks)-len(failed),failed=failed,details=checks,
+            case=case,source_hashes=entry_hashes)
 
     if origin_audit and not paired_origin:
         cases = (dict(finer=run(.0125,28.)) if origin_finer else
@@ -2034,7 +2422,7 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
             code_sha256=entry_hashes[Path(__file__).name],source_hashes=entry_hashes,
             scope=dict(changed_evolution_equations=False,changed_original_gate=False,resolved_trapping=False,singularity_removal=False))
 
-    paired_endpoint = 60. if paired_interior else 51.75 if paired_collapse else 28.
+    paired_endpoint = 70. if feedback_evolution else 60. if paired_interior else 51.75 if paired_collapse else 28.
     pilot = run(.1,paired_endpoint) if paired_origin else run(.1,event_stop=True)
     if pilot_only:
         test("unchanged_run_sources",all(hashlib.sha256(path.read_bytes()).hexdigest()==entry_hashes[path.name] for path in hash_paths))
@@ -2047,7 +2435,7 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
     cases = dict(coarse=pilot,middle=run(.05,endpoint),fine=run(.025,endpoint),
                  half_step=run(.025,endpoint,courant=.05),domain=run(.025,endpoint,radius=160))
 
-    def verdict(end,case_set=None,include_curvature=True):
+    def verdict(end,case_set=None,include_curvature=True,include_feedback=True):
         gates,residuals,differences = {},{},{}
         selected = {name:[row for row in case["samples"] if row["t"]<=end+1e-10]
                     for name,case in (cases if case_set is None else case_set).items()}
@@ -2057,25 +2445,30 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
                     "minimum_F","maximum_density","charge_rms_areal","central_proper_time",
                     "contiguous_trapped_cells","trapped_cells","outgoing_expansion","ingoing_expansion")
         extra_curvature = paired_interior and include_curvature
+        extra_feedback = feedback_evolution and extra_curvature and include_feedback
         if extra_curvature:
             required += curvature_waves+curvature_errors+('curvature_time_probe_error',)
+        if extra_feedback:
+            required += feedback_waves+('feedback_budget_error',)
         if any(key not in row or not np.isfinite(row[key]) for rows in selected.values() for row in rows for key in required):
             return dict(passed=False,gates=dict(finite_diagnostics=False),end=end,resolved_trapping=False)
         for name,rows in selected.items():
             gates[name+"_charge"] = max(abs(row["charge"]/rows[0]["charge"]-1) for row in rows)<1e-5
             gates[name+"_mass"] = max(abs(row["mass"]/rows[0]["mass"]-1) for row in rows)<5e-3
-        for key in ("radial_constraint","regular_metric_residual","origin_constraint")+(curvature_errors if extra_curvature else ()):
+        for key in ("radial_constraint","regular_metric_residual","origin_constraint")+(curvature_errors if extra_curvature else ())+(('feedback_budget_error',) if extra_feedback else ()):
             middle = max(row[key] for row in selected["middle"])
             fine = max(row[key] for row in selected["fine"])
             gates[key] = fine<5e-3 and (fine<1e-6 or fine<.6*middle)
             residuals[key] = dict(middle=middle,fine=fine)
         if extra_curvature:
             gates['curvature_time_probe'] = max(row['curvature_time_probe_error'] for rows in selected.values() for row in rows)<1e-4
-        for key in ("minimum_F","maximum_density","charge_rms_areal","central_proper_time")+(curvature_waves if extra_curvature else ()):
+        for key in ("minimum_F","maximum_density","charge_rms_areal","central_proper_time")+(curvature_waves if extra_curvature else ())+(feedback_waves if extra_feedback else ()):
             arrays = {name:np.array([row[key] for row in rows]) for name,rows in selected.items()}
             scale = max(float(np.max(abs(arrays["fine"]))),1e-12)
             if extra_curvature and key in curvature_waves:
                 scale = max(scale,ell**(-4 if 'Kretschmann' in key else -2))
+            if extra_feedback and key in feedback_waves:
+                scale = max(scale,ell**-1 if key=='central_E_normal_rate' else 1.)
             normdiff = lambda a,b:float(np.max(abs(arrays[a]-arrays[b]))/scale)
             cm,mf = normdiff("coarse","middle"),normdiff("middle","fine")
             half,domain = normdiff("half_step","fine"),normdiff("domain","fine")
@@ -2095,10 +2488,10 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
         return dict(passed=bool(all(gates.values())),gates={k:bool(v) for k,v in gates.items()},
                     end=end,residuals=residuals,differences=differences,resolved_trapping=bool(resolved))
 
-    def certify(end,case_set=None,include_curvature=True):
+    def certify(end,case_set=None,include_curvature=True,include_feedback=True):
         accepted,first_rejected,first_trapping = None,None,None
         for stop in np.arange(.25,end+1e-9,.25):
-            current = verdict(float(stop),case_set,include_curvature)
+            current = verdict(float(stop),case_set,include_curvature,include_feedback)
             if not current["passed"]:
                 first_rejected = current
                 break
@@ -2121,6 +2514,9 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
             for row in case['samples']:
                 row.update({key:1. for key in curvature_waves})
                 row.update({key:1e-8 for key in curvature_errors+('curvature_time_probe_error',)})
+                if feedback_evolution:
+                    row.update({key:1. for key in feedback_waves})
+                    row['feedback_budget_error'] = 1e-8
     fa,fr,ft = certify(.75,fixture)
     test("transient_trapping_certificate_retained",fa["end"]==.75 and fr is None and
          ft is not None and ft["end"]==.5 and not fa["resolved_trapping"])
@@ -2137,8 +2533,30 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
             test('curvature_fixture_rejects_'+key,not verdict(.75,fixture)['passed'] and verdict(.75,fixture,include_curvature=False)['passed'])
             fixture['fine']['samples'][-1][key] = saved
 
+    if feedback_evolution:
+        for key,value in [('feedback_budget_error',.1),('central_E_normal_rate',float('nan'))]:
+            saved = fixture['fine']['samples'][-1][key]
+            fixture['fine']['samples'][-1][key] = value
+            test('feedback_fixture_rejects_'+key,not verdict(.75,fixture)['passed'] and
+                 verdict(.75,fixture,include_feedback=False)['passed'])
+            fixture['fine']['samples'][-1][key] = saved
+        test('feedback_incomplete_time_rejected',not verdict(1.,fixture)['passed'])
+        expected = dict(coarse=(-.39643516997,.38104169092),middle=(-.39612408548,.38090692893),
+                        fine=(-.39604343988,.38086094209),half_step=(-.39604343989,.38086094209),
+                        domain=(-.39604343988,.38086094209))
+        for name,(F60,K60) in expected.items():
+            old = next((row for row in cases[name]['samples'] if row['t']==60.),None)
+            test('feedback_reproduces_t60_'+name,old is not None and
+                 max(abs(old['minimum_F']-F60),abs(old['central_Kretschmann']-K60))<1e-9)
+        old = next((row for row in cases['fine']['samples'] if row['t']==60.),None)
+        fine_reference = dict(maximum_density=21.3140696056,charge_rms_areal=3.59088044597,
+            central_proper_time=36.6362859755,maximum_abs_Kretschmann=.38379914964)
+        test('feedback_reproduces_t60_fine_readouts',old is not None and
+             all(abs(old[key]-value)<1e-8 for key,value in fine_reference.items()))
+
     terminal = verdict(endpoint)
     accepted,first_rejected,first_trapping = certify(endpoint)
+    curvature_accepted,curvature_rejected,curvature_trapping = certify(endpoint,include_feedback=False) if feedback_evolution else (accepted,first_rejected,first_trapping)
     base_accepted,base_rejected,base_trapping = certify(endpoint,include_curvature=False) if paired_interior else (accepted,first_rejected,first_trapping)
     for name,condition in terminal.get("gates",{}).items():
         test("terminal_"+name,condition)
@@ -2147,8 +2565,25 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
     failed = [c for c in checks if not c["passed"]]
     certification_valid = all(c["passed"] for c in checks if not c["name"].startswith("terminal_"))
     trapping = base_trapping is not None and certification_valid
-    interior = bool(paired_interior and certification_valid and first_trapping is not None and accepted is not None and accepted['end']>51.75)
+    interior = bool(paired_interior and certification_valid and curvature_trapping is not None and curvature_accepted is not None and curvature_accepted['end']>51.75)
+    feedback_validated = bool(feedback_evolution and certification_valid and first_trapping is not None and accepted is not None and accepted['end']>60.)
+    trend = None
+    if feedback_validated:
+        end = accepted['end']
+        start = max(60.,end-1.)
+        changes = {}
+        for name,case in cases.items():
+            earlier = next(row for row in case['samples'] if row['t']==start)
+            later = next(row for row in case['samples'] if row['t']==end)
+            changes[name] = later['maximum_abs_Kretschmann']-earlier['maximum_abs_Kretschmann']
+        uncertainty = 3*max(abs(value-changes['fine']) for value in changes.values())
+        decrease = all(value<0 for value in changes.values()) and changes['fine'] < -uncertainty
+        increase = all(value>0 for value in changes.values()) and changes['fine'] > uncertainty
+        trend = dict(start=start,end=end,peak_curvature_changes=changes,three_times_control_spread=uncertainty,
+                     classification='decreasing' if decrease else 'increasing' if increase else 'unresolved_or_flat',
+                     interpretation='Maximum absolute curvature change over the last accepted model-time unit; not global stability')
     return dict(decision="INVALID_CERTIFICATION_CONTROLS" if not certification_valid else
+                ("PAIRED_VALIDATED_FEEDBACK_EVOLUTION" if feedback_validated else "PAIRED_FEEDBACK_PREFIX_OPEN") if feedback_evolution else
                 ("PAIRED_VALIDATED_POSTTRAPPING_CURVATURE" if interior else "PAIRED_CURVATURE_PREFIX_OPEN") if paired_interior else
                 ("PAIRED_VALIDATED_FUTURE_TRAPPING" if trapping else
                  "PAIRED_VALIDATED_PRETRAPPING_PREFIX" if accepted else "PAIRED_UNRESOLVED_COLLAPSE") if paired_collapse else
@@ -2159,13 +2594,79 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
         pilot_end=endpoint,terminal=terminal,accepted_prefix=accepted,first_rejected=first_rejected,
         first_trapping=first_trapping,cases=cases,
         base_evolution_certificate=dict(accepted=base_accepted,first_rejected=base_rejected,first_trapping=base_trapping) if paired_interior else None,
+        curvature_certificate=dict(accepted=curvature_accepted,first_rejected=curvature_rejected,first_trapping=curvature_trapping) if feedback_evolution else None,
+        peak_curvature_trend=trend,
         source_prerequisite=dict(checks=source["checks"],passed=source["passed"],parameters=source["parameters"]),
         code_sha256=entry_hashes[Path(__file__).name],engine_sha256=entry_hashes[Path(legacy.__file__).name],
         source_hashes=entry_hashes,
         scope=dict(resolved_trapping=trapping,global_regularity=False,singularity_removal=False,
+                   feedback_evolution=feedback_validated,persistent_regulation=False,
                    posttrapping_curvature=interior,
                    full_RefG_pressure_join=False,same_saturation_action=True,
                    paired_nodal_method=paired_origin,charge_quadrature="h*r^2" if paired_origin else "cell_volume"))
+
+
+def curvature_localization_checks():
+    """Two isolated fixed-window replays; stdout only, no threshold promotion."""
+    from concurrent.futures import ThreadPoolExecutor
+    import subprocess
+    import time
+    start = time.perf_counter()
+    preflight = collapse_checks(localization_controls=True)
+    if preflight['failed']:
+        return preflight
+    def worker(name):
+        command = [sys.executable,'-X','utf8','-B',str(Path(__file__).resolve()),'--localization-case',name]
+        process = subprocess.run(command,stdout=subprocess.PIPE,text=True,encoding='utf-8')
+        result = json.loads(process.stdout)
+        if process.returncode or result['failed']:
+            raise RuntimeError('Localization worker failed: '+name+' '+str(result.get('failed')))
+        return result
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        futures = {name:pool.submit(worker,name) for name in ('fine','finer')}
+        results = {name:future.result() for name,future in futures.items()}
+    checks = list(preflight['details'])
+    def test(name,condition,**evidence):
+        checks.append(dict(name=name,passed=bool(condition),**evidence))
+    for name,result in results.items():
+        test('localization_worker_'+name,result['passed']==result['checks'])
+        test('localization_hashes_'+name,result['source_hashes']==preflight['source_hashes'])
+    cases = {name:result['case'] for name,result in results.items()}
+    for t,expected in ((62.5,.004913400101441889),(62.75,.005154066711989016)):
+        row = next(row for row in cases['fine']['samples'] if row['t']==t)
+        test('localization_stage16_reproduction_'+str(t),abs(row['curvature_metric_R2_error']-expected)<1e-10,
+             actual=row['curvature_metric_R2_error'],expected=expected)
+    comparisons = []
+    for t in (62.5,62.75):
+        pair = {name:next(row for row in case['curvature_localizations'] if row['t']==t) for name,case in cases.items()}
+        errors = {name:row['variant_errors']['D4_expanded'] for name,row in pair.items()}
+        comparisons.append(dict(t=t,D4_error_finer_over_fine=errors['finer']/max(errors['fine'],1e-30),
+            same_state_sensitivity_over_D4_residual={name:dict(D6=row['D6_D4_sensitivity']/max(errors[name],1e-30),
+                divergence=row['flux_D4_sensitivity']/max(errors[name],1e-30),
+                after_constraint_subtraction=row['residual_after_constraint_subtraction']/max(errors[name],1e-30)) for name,row in pair.items()}))
+    error_keys = ('radial_constraint','regular_metric_residual','origin_constraint',
+                  'curvature_metric_R2_error','curvature_metric_Ricci_error','curvature_metric_K_error',
+                  'curvature_time_probe_error','feedback_budget_error')
+    for name,case in cases.items():
+        rows = case['samples']
+        test('localization_sampling_'+name,len(rows)==252 and all(abs(row['t']-.25*i)<1e-12 for i,row in enumerate(rows)))
+        test('localization_finite_diagnostics_'+name,all(np.isfinite(row[key]) for row in rows for key in error_keys))
+        rejected = next((row['t'] for row in rows if row['curvature_metric_R2_error']>=.005),None)
+        case['original_D4_absolute_gate'] = dict(ceiling=.005,first_rejected=rejected,
+            sampled_through=rows[-1]['t'],maximum=max(row['curvature_metric_R2_error'] for row in rows),
+            interpretation='Single-run absolute-error component only; not a replacement five-run certificate')
+        case['prefix_error_maxima'] = {key:max(row[key] for row in rows) for key in error_keys}
+        case['conservation'] = {key:max(abs(row[key]/rows[0][key]-1) for row in rows) for key in ('mass','charge')}
+        case['samples'] = [row for row in rows if row['t'] in (0.,60.,62.5,62.75)]
+        case.pop('origin_snapshots',None)
+    test('localization_sources_unchanged',all(hashlib.sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()==value
+        for name,value in preflight['source_hashes'].items()))
+    failed = [row for row in checks if not row['passed']]
+    return dict(decision='CURVATURE_LOCALIZATION_COMPUTED' if not failed else 'LOCALIZATION_CONTROL_FAILURE',
+        checks=len(checks),passed=len(checks)-len(failed),failed=failed,details=checks,
+        source_hashes=preflight['source_hashes'],elapsed_seconds=time.perf_counter()-start,cases=cases,comparisons=comparisons,
+        scope=dict(same_action=True,changed_RHS=False,changed_original_gate=False,
+            two_grid_diagnostic=True,five_run_certificate_extended=False,global_regularity=False,singularity_removal=False))
 
 
 def main():
@@ -2188,7 +2689,42 @@ def main():
     parser.add_argument('--curvature-controls', action='store_true',help='Curvature algebra/metric preflight only')
     parser.add_argument('--source-control', action='store_true',
                         help='Exact local-source bound and fixed-mass concentration test; no evolution')
+    parser.add_argument('--source-budget', action='store_true',
+                        help='Existing-action initial source-feedback and curvature-rate test; no evolution')
+    parser.add_argument('--feedback-evolution',action='store_true',help='Same-packet source-budget and curvature evolution through fixed t=70')
+    parser.add_argument('--feedback-controls',action='store_true',help='Source-budget readout preflight only; no collapse evolution')
+    parser.add_argument('--curvature-localization',action='store_true',help='Two same-action replays to t=62.75; localize independent R2 error')
+    parser.add_argument('--localization-controls',action='store_true',help='Fixed-state localization preflight; no collapse evolution')
+    parser.add_argument('--localization-case',choices=('fine','finer'),help='Isolated worker for the fixed curvature-localization stage')
     args = parser.parse_args()
+    if args.curvature_localization or args.localization_controls or args.localization_case:
+        modes = ('curvature_localization','localization_controls','localization_case')
+        if sum(bool(getattr(args,name)) for name in modes)!=1 or any(value for name,value in vars(args).items() if name not in modes+('verbose',)):
+            parser.error('Choose one localization mode on its own')
+        result = curvature_localization_checks() if args.curvature_localization else collapse_checks(
+            localization_case=args.localization_case,localization_controls=args.localization_controls)
+        if not args.verbose:
+            result.pop('details')
+        print(json.dumps(result,indent=2,allow_nan=False))
+        return int(bool(result['failed']))
+    if args.feedback_evolution or args.feedback_controls:
+        if (args.feedback_evolution and args.feedback_controls) or any(value for name,value in vars(args).items()
+                if name not in ('feedback_evolution','feedback_controls','verbose')):
+            parser.error('Choose the feedback stage on its own')
+        result = collapse_checks(feedback_evolution=args.feedback_evolution,feedback_controls=args.feedback_controls)
+        if not args.verbose:
+            result.pop('details')
+        print(json.dumps(result,indent=2,allow_nan=False))
+        return int(bool(result['failed']))
+    if args.source_budget:
+        if any(value for name,value in vars(args).items()
+               if name not in ('source_budget','verbose')):
+            parser.error('Choose the local-source budget stage on its own')
+        result = source_budget_checks()
+        if not args.verbose:
+            result.pop('details')
+        print(json.dumps(result, indent=2, allow_nan=False))
+        return int(bool(result['failed']))
     if args.source_control:
         if any(value for name,value in vars(args).items()
                if name not in ('source_control','verbose')):

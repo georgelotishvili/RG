@@ -13,16 +13,60 @@ exponential exterior and selected additive constitutive truncations are
 candidate assumptions, not requirements imposed on every future action.
 The negative results below remain valid in their stated domains.
 
-Latest local-source decision: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+Latest numerical-accuracy result: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section 17 (2026-09-14), passes 104/104 checks. Two unchanged-action
+replays stop at 62.75. Halving h from .025 to .0125 reduces the original
+R2 error from .00515407 to .00133836; its maximum is near r=2.96, not the
+centre. The finer original-D4 component passes every sampled time.
+Alternative readout stencils, time probes and term cancellation do not
+explain the main discrepancy; constraint subtraction increases its
+global norm. The result points to approximately second-order error in
+the evolved geometry/source state. The next bounded target is consistent
+metric transport and face/cell discretization at the same fixed times,
+without changing the physical action. The old five-run certificate
+remains at 62.5; singularity removal and the full RefG pressure join are
+still open. Preflight 93/93 and regressions 74/74 and 104/104 pass.
+
+Previous evolving-feedback result: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section 16 (2026-09-13). All five unchanged-packet runs complete t=70;
+the combined curvature/feedback certificate extends to t=62.5. At 62.75
+the independent orbit-curvature R2 error exceeds .005; base evolution
+remains certified through 70. Overall 128/130 checks pass, with only the
+full-window R2 and Kretschmann accuracy gates failing. The local feedback
+budget and its refinement/step/domain controls pass. On 60<=t<=62.5,
+central E decreases at every sampled time in all five runs while central
+density rises. At the off-centre curvature maximum, compression still
+exceeds flux and response reductions; maximum curvature continues rising.
+That R2 discrepancy motivated section 17's fixed-window diagnosis. Global
+regularity, singularity removal and the full RefG pressure join remain
+open. Preflight 71/71, prior source-budget 104/104 and base 74/74 pass.
+Evolution RHS, initial state, old engines, monographs and Git rules are unchanged.
+
+Previous instantaneous-feedback result: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section 15 (2026-09-13), passes 104/104 checks. The same action gives an
+exact local energy/response budget. In the two strongest of section 14's
+four fixed smooth kinetic slices, density initially rises while both
+weighted source E and Kretschmann curvature decrease along the future
+normal. At their common midpoint u=.4349645, the E-decrease threshold is
+rho>64.60647; curvature-rate signs are verified independently. Directional
+readout errors are at most 1.98e-9, against 1e-5. This establishes initial
+feedback without a new action. Persistence, the previous packet's further
+evolution, global regularity and the full RefG pressure/scale join remain
+open. The preceding universal-cap result did not establish the necessity
+of changing the action. Base 74/74, curvature 65/65 and source-control
+66/66 regressions pass; old engines, monographs and Git rules are unchanged.
+
+Previous local-source decision: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
 section 14 (2026-09-13), passes 66/66 standalone checks. A smooth
 fixed-total-mass canonical source family has fixed midpoint z and q,
 but increasing local density and curvature as its width decreases.
 Thus saturation of the enclosed-mass response alone supplies no
 universal off-centre curvature cap. An exact sufficient criterion is
 bounded E=alpha ell^2 q^(3/2) rho in the monitored orthonormal frame;
-the smooth-centre constraint already implies E_c^2<=1/3. Deriving
-local source feedback from the same action is the specific remaining
-RefG connection. This family consists of separate finite, regular
+the smooth-centre constraint already implies E_c^2<=1/3. The dynamical
+budget is now derived in section 15; controlling it along the fixed
+evolved packet and the full RefG connection remain separate tasks.
+This family consists of separate finite, regular
 initial slices, not a blow-up evolution of the previous packet.
 Base 74/74 and curvature controls 65/65 pass; previous evolution
 functions, engines, monographs and Git rules remain unchanged.

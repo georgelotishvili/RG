@@ -2041,20 +2041,551 @@ bounded_source_derived=false; fixed_packet_blowup=false;
 global_regularity=false; singularity_removal=false;
 full_RefG_pressure_join=false.
 
-The concrete missing link is local source feedback. The existing
-constitutive h(z) limits the enclosed-mass response, while its angular
-equation still depends on local pressure, gradients and the stress
-determinant. RefG's intuitive section 1.5 requires matter and environment
-to readjust together; identifying that mechanism with h(z) alone would
-omit this local condition. The E bound supplies an explicit sufficient
-target for a source-response law derived from the same action. Imposing
-a cap after evolution or renaming q as foundation pressure would not
-supply that derivation. The present test preserves the previous fixed
-packet results and completes the declared implication decision.
+The missing result is dynamical control of the local source along the
+evolved packet. The existing h(z) bounds the enclosed-mass response;
+its angular equation also depends on local pressure, gradients and
+the stress determinant. The E bound supplies one sufficient target,
+which may depend on the initial data. Section 14 tests a universal cap
+over different initial data and establishes neither finite-time blow-up
+of the fixed packet nor the necessity of changing its action. A modified
+source-response law is one possible route, while the existing dynamics
+must first be checked for feedback. RefG's intuitive section 1.5 calls
+for that joint matter/environment response; section 15 derives its
+actual local growth budget in the retained candidate. This correction
+narrows the earlier interpretation without changing any section 14
+equation, numerical result or counterexample.
 
 Reproduce without time evolution or generated files:
 
     python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py" --source-control --verbose
+
+## 15. Existing-action local feedback: a directional source test
+
+CLAIM_ID / MODEL_VERSION: W92_LOCAL_DYNAMIC_SOURCE_BUDGET_V1, 2026-09-13.
+GOAL: derive the local energy-growth and saturation-feedback balance
+from the retained action, then determine its initial sign in section
+14's four already-fixed smooth sources. This directly tests whether
+feedback is present before introducing a new constitutive law.
+TYPE / METHOD: exact conservation and field-equation identities, with
+bounded numerical evaluation of initial directional derivatives.
+ASSUMPTIONS / DOMAIN: the same canonical complex scalar, nonnegative
+sextic potential, spherical saturation action and positive A,L,q branch.
+Use its orthonormal normal n and outward radial vector e. Logarithmic
+rates are evaluated only where rho>0 and k>0; the full unlogged equation
+defines the other regular limits. No candidate P(X) replacement is adopted.
+FREEDOM_LEDGER / DATA_ROLE: unchanged alpha=.04, ell=2, M0=2M_critical,
+r0=3 and widths .5,.25,.125,.0625. These are the previous counterexample
+initial slices, not new fitted states or the earlier charged packet.
+There are no observations, parameter scans or time-evolution runs.
+DEPENDENCIES: sections 9, 13 and 14, plus the existing scalar equation;
+the intuitive section 1.5 identifies the intended reciprocal mechanism
+but supplies no additional equation. W69's potential-only response and
+the W92 amplitude-only coupling leave this zero-amplitude initial slice
+unchanged; neither is inserted as a substitute for its kinetic source.
+PASS / FALSIFIER: obtain zero exact residuals for energy conservation,
+mass transport, the q/E chain rules and the PG initial response.
+Evaluate both n(E) and n(Kretschmann), reporting the actual signs.
+An inconsistent conservation equation or directional derivative rejects
+the claimed response. Sign changes among the fixed examples are results,
+not reasons to alter them. No instantaneous sign closes a stability gate.
+CROSSCHECK / ERROR_BOUND: derive energy transport independently from
+the scalar equation; compare analytical E and curvature derivatives with
+centred directional probes eps=1e-6 and 5e-7, each with normalized error
+<1e-5. These probes check the readout derivative and do not advance a
+solution. Rerun the base, curvature and source-control regressions.
+CONVENTIONS / OBSERVABLE_MAP: n=(partial_t-Lv partial_r)/L is the
+normal proper-time derivative, not a fixed-radius coordinate derivative.
+J=T(n,e)=sqrt(A)S; positive outward energy flux has the opposite sign.
+VALIDITY / CLOSURE_FLAGS: initial_feedback_demonstrated and initial
+curvature_reduction are separate from persistent_regulation, stability,
+fixed_packet_continuation, global_regularity, singularity_removal and
+full_RefG_pressure_join. Weighted source E is a diagnostic, not P_F.
+FORWARD_MODEL / IDENTIFIABILITY: N/A; this is an internal dynamical test.
+PROVENANCE / FILES: only this report, its verifier and the W92 index.
+The previous verifier hash is
+`a59d1e5d48ce54c93d48ad4f8fbaec8e403d3aaa109a51099c5a01c99af82ff0`.
+STOP: finish the exact budget, four directional responses and independent
+checks. Neither a new action nor a further collapse interval is opened.
+
+### Action-derived local balance
+
+Write mu=M/r^3, u=ell^2 z, q=1-u and E=alpha ell^2 q^(3/2) rho.
+The mass-response relation is q=(1+2 alpha ell^2 mu)^(-1).
+Let k=v/r and K_r=K^r_r in the existing extrinsic-curvature convention,
+e=sqrt(A) partial_r and a=sqrt(A) partial_r ln L. Splitting the complex
+scalar into two real components, pi=n(psi) and chi=e(psi), its equation is
+
+    n(pi) = e(chi) + (a+2 sqrt(A)/r) chi + (K_r+2k) pi - grad_psi V,
+    n(chi) = e(pi) + a pi + K_r chi.
+
+Contracting with pi and chi, including n(V), yields the exact energy budget
+
+    n(rho) = e(J) + 2(a+sqrt(A)/r)J
+             + K_r(rho+p_r) + 2k(rho+p_t).
+
+The potential-force terms cancel in this balance. The radial and temporal
+mass equations give, after the normal-frame advective correction,
+
+    n(mu) = k(3mu+p_r) + A S/r,
+    n(q) = -2 alpha ell^2 q^2 n(mu),
+    n(E) = alpha ell^2 q^(3/2)
+           [n(rho) - 3 alpha ell^2 q rho n(mu)].
+
+The bracket separates increasing material energy density from the
+decreasing geometric response factor. Both are supplied by the retained
+action. E controls the sufficient curvature estimate of section 14;
+its decrease has a precise geometric meaning without identifying q
+with RefG's foundation pressure.
+
+### Response of the four fixed initial slices
+
+Section 14's smooth kinetic shells have A=L=1, psi=D=J=V=0 and
+p_r=p_t=rho on the initial slice. Their inward normal flow has k=sqrt(z)>0.
+With C=z(1-3u)/2, the constraint gives K_r=(-C+alpha q^2 rho)/k.
+The scalar equation directly yields n(P)=(partial_r v+2k)P and hence
+n(rho)=2rho(K_r+2k). The two competing logarithmic rates are therefore
+
+    Gamma_rho = n(ln rho) = 3k(1+u) + 2 alpha q^2 rho/k > 0,
+    Gamma_feedback = -3 alpha ell^2 q k(rho+3mu),
+    Gamma_E = n(ln E) = Gamma_rho + Gamma_feedback
+            = (3/2)k(2-u) + alpha q rho(2-5u)/k.
+
+For u>2/5, the weighted source initially decreases exactly when
+
+    rho > rho_turn = 3z(2-u) / [2 alpha q(5u-2)].
+
+The original, unchanged midpoint has u=.4349645173478661 and
+rho_turn=64.60647291443804. All rates below use the model units and
+the future normal proper-time derivative at that midpoint.
+Kretschmann curvature is denoted by Kcal, distinct from K_r.
+
+| Shell width | rho | n(rho) | n(ln E) | n(Kcal) |
+|---:|---:|---:|---:|---:|
+| .5 | 29.35537594 | 108.41741697 | +.4223854710 | +79.99025264 |
+| .25 | 58.71075189 | 350.32516147 | +.0706436712 | +439.22308913 |
+| .125 | 117.42150378 | 1234.61163307 | -.6328399285 | -33903.78325311 |
+| .0625 | 234.84300755 | 4605.06850669 | -2.0398071278 | -1965441.93975555 |
+
+In the two strongest concentrations the geometric feedback exceeds
+the density-growth term: local density increases while both E and
+Kretschmann curvature initially decrease.
+
+The curvature rates follow from the full on-shell expression in section
+14, not solely from the sufficient E estimate. At this initial slice,
+n(V)=n(|D|^2)=0 and the curvature's first J derivative vanishes at J=0.
+Thus its complete first variation reduces to
+
+    n(z) = 2 alpha q^2 k(rho+3mu),
+    n(Kcal) = (partial_rho Kcal_kin)n(rho)
+              + (partial_z Kcal_kin)n(z).
+
+At fixed z, the leading high-density term is exactly
+
+    n(Kcal) = [256 alpha^5 ell^4 q^7(2-5u)/sqrt(z)] rho^5
+              + O(rho^4).
+
+Its sign confirms the same initial curvature-reducing response for
+sufficiently concentrated kinetic PG data with u>2/5.
+
+### Verification and closure
+
+`--source-budget --verbose` passes **104/104** checks, including the
+66 section 14 prerequisites. The canonical energy balance was also
+derived independently from the scalar equation with the same action
+and conventions. Analytical E and curvature rates agree with centred
+directional readout probes at both registered step sizes; maximum
+normalized error is **1.98e-9**, below 1e-5. All probe states satisfy
+rho>0 and 0<q<1. The separate base, curvature and source-control
+regressions pass 74/74, 65/65 and 66/66, respectively.
+
+The result establishes an instantaneous local feedback in the existing
+candidate. The four rows are distinct initial slices. Flux starts to
+develop according to n(J)=partial_r rho on this PG slice, so the initial
+kinetic reduction supplies an initial derivative, not a closed trajectory.
+The earlier evolving packet and the full RefG pressure/scale connection
+remain separate targets. The next decisive physical question is whether
+this feedback controls curvature along that fixed packet after trapping.
+
+    local_budget_derived=true; initial_feedback_demonstrated=true;
+    initial_curvature_reduction=true; existing_action=true;
+    modified_action=false; time_evolution_performed=false;
+    persistent_regulation=false; fixed_packet_continuation=false;
+    stability=false; global_regularity=false;
+    singularity_removal=false; full_RefG_pressure_join=false.
+
+These local results correct section 14's earlier inference that the
+failure of a universal initial-data cap required a new constitutive law.
+The unchanged action already has the directional feedback just derived.
+
+Reproduce without time evolution or generated files:
+
+    python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py" --source-budget --verbose
+
+Tested verifier SHA-256:
+`13888ba6635fccfc9bad476a9649dd168a59d09e024066153f24e127c039eb14`.
+Only the new budget function and its isolated CLI entry were added;
+previous computational definitions and both population/evolution
+engines are unchanged. No monograph, Git rule or private-note file changed.
+
+## 16. Same-packet feedback during post-trapping evolution
+
+CLAIM_ID / MODEL_VERSION: W92_PAIRED_FEEDBACK_EVOLUTION_V1, 2026-09-13,
+registered before the new evolution. GOAL: test section 15's general
+local energy/response balance along the original collapsing packet and
+measure the actual curvature trend beyond t=60. The instantaneous
+kinetic-shell threshold is replaced by its full flux/compression/response
+budget, with no change to the action or matter dynamics.
+TYPE: conditional numerical evidence on a fixed finite interval.
+ASSUMPTIONS / DEPENDENCIES: sections 11-13's repaired paired discretization,
+canonical complex scalar, spherical saturation action, harmonic clock,
+initial packet and admissible positive A,L,q branch; section 15's exact
+local balance. The previous RefG pressure/scale join retains its status.
+DOMAIN / CONVENTIONS: 0<=t<=70, samples every .25, monitored r<=80 excluding
+the outer four cells. The derivative n=L^-1 partial_t-v partial_r is along
+the future normal; E=alpha ell^2 q^(3/2) rho and J=sqrt(A)S.
+FREEDOM_LEDGER: the five existing runs h=.1,.05,.025 at R=120, the fine
+half-step run and fine R=160 run. The endpoint is fixed at 70 before
+inspection; no automatic extension or retuned initial state is allowed.
+METHOD / CROSSCHECK: compute E_t analytically from the actual evolution
+RHS, subtract radial advection, and independently reconstruct n(E) from
+energy conservation and mass transport. Retain the existing independent
+metric/action curvature comparison and all previous evolution gates.
+ERROR_BOUND: normalize the n(E) discrepancy by the largest sum of absolute
+flux/compression/response contributions or the fixed dimensional floor
+ell^-1. Require fine error<.005 and (fine<1e-6 or fine/middle<.6) at every
+sampled prefix. Central E, maximum E and central n(E) use the existing
+waveform refinement and half-step/domain budgets, with fixed floors 1
+for E and ell^-1 for its rate. All section 13 tolerances remain unchanged.
+BENCHMARK: reproduce the recorded t=60 curvature, F, density, radius and
+central proper-time readouts; verify zero-field and constant-core budgets.
+PASS_CONDITION: all required gates pass on an unbroken prefix beyond 60.
+Report the accepted endpoint independently of completion of t=70.
+FAIL_CONDITION / FALSIFIER: the first failed constraint, convergence,
+curvature, budget or chart/time-step guard limits the corresponding
+certificate. Preserve a separate base/curvature certificate when only
+the new budget fails. Numerical failure alone does not identify a
+physical singularity. NaN and incomplete-time controls must be rejected.
+OBSERVABLE_MAP: central and maximum E, central proper time, full curvature
+histories, and the three local budget terms at the centre and at the
+sampled maximum-|K| location. A negative local n(E) and a declining
+maximum curvature are separate measurements. Curvature turning is a
+reported classification, not a requirement for regularity or a fitted
+stopping condition. FORWARD_MODEL / DATA_ROLE / IDENTIFIABILITY: N/A;
+there are no observations, fitted parameters or uniqueness claims.
+CLOSURE_FLAGS: finite-window feedback validation only; global regularity,
+singularity removal, persistent regulation and full RefG pressure join
+remain false. FILES: this report, its verifier and the W92 index only.
+PROVENANCE: source hashes at launch/exit; results to stdout. No generated
+dataset, monograph edit or Git-rule change. STOP: finish the five frozen
+runs and classify their accepted prefixes; do not open another interval.
+
+### Runtime balance and independent readout
+
+The nonlogarithmic budget used here applies to the complete evolving
+scalar source, including spatial gradients and potential energy. With
+f=alpha ell^2 q^(3/2) and a=sqrt(A) partial_r ln L, its three terms are
+
+    F_E = f [sqrt(A) partial_r J + 2(a+sqrt(A)/r)J],
+    C_E = f [K_r(rho+p_r) + 2k(rho+p_t)],
+    R_E = -3 alpha ell^2 q f rho [k(3mu+p_r)+A S/r],
+    n(E) = F_E + C_E + R_E.
+
+The direct check instead differentiates rho=A(|P|^2+|D|^2)/2+V
+using the actual evolution RHS, including A_t and D_t, then forms
+
+    E_t = f [rho_t - 3 alpha ell^2 q rho mu_t],
+    n(E)_RHS = E_t/L - v partial_r E.
+
+The two routes share the action and current numerical state, but use
+different energy-transport reconstructions. Their difference measures
+the discretized budget error; finite-difference product rules are not
+assumed exact. The fixed norm floor is 1/ell. The sum of the absolute
+three contributions supplies the other normalization scale, avoiding
+division by a nearly cancelling net rate. Odd radial parity is used
+for J. No logarithm or division by rho is needed near vacuum.
+
+The peak-location fields are descriptive: grid maxima can exchange
+locations. Central E, maximum E and central n(E) have the registered
+waveform controls. The final net change in maximum absolute curvature
+is evaluated over [max(60,t_accepted-1),t_accepted]; a resolved sign
+requires agreement of all five runs and a fine change larger than
+three times the largest control difference in that change. This is an
+interval trend, rather than a turning-point or stability certificate.
+
+Preflight: 71/71 feedback/curvature controls and 104/104 source-budget
+checks pass; the unchanged base regression passes 74/74. Three mixed-CLI
+negative controls are rejected. Frozen evolution verifier SHA-256:
+`06d27375a9496d003d9ed4f24d9b37cd09f69bf7b39c5cbc20fb353911a24143`.
+
+### Completed result: certified feedback and curvature through t=62.5
+
+All five runs complete 281 samples on 0<=t<=70 without a chart, action
+or production time-step stop. The unbroken combined feedback/curvature
+certificate reaches **t=62.5**; its first rejection is **t=62.75**.
+The independently retained base-evolution certificate reaches t=70,
+with no rejected prefix. Resolved future trapping is preserved, with
+the original first certificate at t=50.5.
+
+The driver returns `PAIRED_VALIDATED_FEEDBACK_EVOLUTION` for its accepted
+prefix and **128/130** checks overall. It exits with code 1 because the
+requested full t=70 interval fails two terminal curvature-accuracy gates:
+`curvature_metric_R2_error` and `curvature_metric_K_error`. The frozen
+tolerances are unchanged. All six t=60 regression checks, source-hash
+checks and synthetic rejection controls pass.
+
+| Whole-prefix normalized discrepancy | Fine at 62.5 | Fine at 62.75 | Fine at 70 | Required fine ceiling |
+|---|---:|---:|---:|---:|
+| Orbit R2, metric versus action | .00491340 | .00515407 | .02152305 | .005 |
+| Four-dimensional Ricci scalar | .00126357 | .00131976 | .00495170 | .005 |
+| Kretschmann scalar | .00248659 | .00259425 | .01090738 | .005 |
+| Local E growth budget | .00016028 | .00016309 | .00136327 | .005 |
+
+These are the registered normed discrepancies, not pointwise relative
+errors. At the first rejected sample the R2 fine/middle ratio is .25176:
+refinement still improves the reconstruction, while its absolute budget
+has been exceeded. The feedback budget's ratio is .06790 over the
+accepted prefix and .08364 over the full run. All feedback waveform,
+half-step and enlarged-domain gates pass even at the requested endpoint.
+
+### What the validated interval establishes
+
+The centre shows a sustained sampled decrease of weighted source E:
+n(E)<0 at all eleven samples from 60 through 62.5 in every run. Central
+material density increases between those endpoints. Both central and
+maximum curvature continue increasing.
+
+| Fine-grid quantity | t=60 | t=62.5 |
+|---|---:|---:|
+| Central proper time | 36.63628598 | 36.99040029 |
+| Central density | 20.87389476 | 21.68490523 |
+| Central weighted source E | .57622919 | .57530473 |
+| Central Kretschmann scalar | .38086094 | .39369754 |
+| Maximum cell abs(K), r<=80 | .38379915 | .40092857 |
+| Maximum weighted source E | .58530012 | .59009582 |
+| Radius of maximum cell abs(K) | .9375 | 1.0625 |
+| Minimum F | -.39604344 | -.45365565 |
+
+At the accepted endpoint the two locations have different balances:
+
+| Local proper-time contribution at t=62.5 | Centre | Curvature-maximum cell, r=1.0625 |
+|---|---:|---:|
+| Flux F_E | -.24295401 | -.21674399 |
+| Compression C_E | +.28724691 | +.30556073 |
+| Response R_E | -.04640225 | -.07333448 |
+| Sum of the three contributions | -.00210935 | +.01548226 |
+| Direct-RHS n(E) | -.00214503 | +.01548280 |
+| Direct-RHS n(rho) | +1.66763215 | +3.39047194 |
+
+The small sum/direct differences are retained as discretization errors.
+At both locations the response contribution is negative. Together with
+energy redistribution it exceeds compression at the centre; at the
+curvature maximum, compression still exceeds the two reducing terms.
+The peak-cell values describe the sampled location rather than a tracked
+material element. Their signs agree across all five runs at this time.
+
+Maximum absolute curvature rises by .00683549412 over the last accepted
+unit, 61.5<=t<=62.5. Every run gives a rise, and the registered three-times
+control-spread margin is .00019517934. Thus the accepted interval shows
+local weighted-source suppression but continued growth of peak curvature.
+The kinetic-shell sign of section 15 is consequently not a universal
+sign rule for the complete evolving packet.
+
+### Accuracy boundary and handoff
+
+The raw t=70 fine values are central K=.40703195 and maximum abs(K)=.46598712.
+They lie outside this stage's curvature certificate. The fine chart
+minima across the run remain positive (A=.04069048, q=.27121269,
+L=.08313606), and the base evolution continues to pass. These facts
+distinguish the curvature reconstruction's accuracy boundary from a
+singular physical endpoint or a failed local energy balance.
+
+The next bounded task is to locate the metric/action R2 discrepancy
+spatially at 62.5--62.75 and test the relevant derivative/resolution error
+on that fixed interval. This targets the first failed gate before any
+further time extension. The present result establishes the same-action
+feedback during finite evolution; global control and the full RefG
+pressure/scale derivation retain their separate status.
+
+    feedback_evolution=true; validated_feedback_curvature_end=62.5;
+    first_rejected=62.75; base_evolution_validated_end=70;
+    requested_end=70; completed_all_five_runs=true;
+    resolved_trapping=true; peak_curvature_trend=increasing;
+    persistent_regulation=false; global_regularity=false;
+    singularity_removal=false; full_RefG_pressure_join=false.
+
+Reproduce the fixed five-run stage (stdout only):
+
+    python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py" --feedback-evolution --verbose
+
+Preflight without collapse evolution:
+
+    python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py" --feedback-controls --verbose
+
+Only the budget readout, isolated stage controls and finite-window
+driver were extended. Both evolution RHS methods, initial packet,
+curvature formula, paired operators and legacy engines are unchanged;
+the frozen source hashes agree at launch and exit. No new file,
+monograph, private-note or Git-rule change is included.
+
+## 17. Fixed-window curvature-error localization
+
+### Contract frozen before the two replays
+
+This stage locates the first metric/action orbit-curvature discrepancy at
+t=62.5 and 62.75. It replays only h=.025 and h=.0125, R=120,
+Courant=.1, through t=62.75, with the original packet, saturation action,
+harmonic clock, gravity and paired-matter RHS unchanged. The stop is a
+localized numerical diagnosis; no later evolution window is authorized
+by this check. The files are this report, its existing verifier and the
+W92 diagnostic index. Results go to stdout without new datasets.
+
+At both fixed times, the same state supplies D4 and D6 metric
+reconstructions, the metric-only divergence form, and directional time
+probes epsilon=1e-4 and 5e-5. All use r<=80 (excluding the last six cells)
+and the original scale max(sup|R2_action|,ell^-2). The original D4
+absolute gate .005 remains the acceptance test. Variant reconstructions
+are diagnostics and cannot replace that gate after inspecting results.
+The original sampled diagnostics are retained every .25 time unit;
+this two-grid diagnostic does not replace the five-run certificate.
+
+The metric-only identity used to separate product-rule truncation is
+
+    R2 = -2 sqrt(A)/L [ d_t(Kg/sqrt(A))
+                       + d_r(L acc - L v Kg/sqrt(A)) ].
+
+The local audit records the maximum residual's radius, its five expanded
+curvature terms, their cancellation, lapse, A and q. It also isolates
+the constraint-amplified difference delta=Kg-(v_r-alpha*r*q^2*S):
+
+    R2[Kg]-R2[Kg-delta]
+      = 2 [2 (Kg-delta) delta + delta^2 - n(delta)].
+
+This last decomposition uses an action equation and is solely an error
+diagnostic. It is not an independent curvature certificate.
+
+Preflight requires parity/polynomial derivative controls, constant-core
+and manufactured metric identities, time-probe and guard-restoration
+checks. Nonfinite values or any preflight failure stop the replay.
+All source hashes must match launch and exit. Endpoint reproduction on
+h=.025 is checked against section 16 before interpreting the finer run.
+
+A substantial D4/D6 or expanded/divergence difference identifies readout
+sensitivity. Small same-state differences with improvement on the finer
+evolution grid identify accumulated spatial-discretization sensitivity.
+The term audit locates any constraint or cancellation amplification;
+convergence alone does not identify a unique defective stencil.
+Failure of the .005 gate is an accuracy limitation, not a physical
+singularity test. Full RefG pressure joining and global regularity retain
+their existing status.
+
+The preflight passes 93/93 checks, including a nonzero manufactured
+constraint defect and unchanged-state check. The frozen verifier SHA-256
+is `07d40adc7edff2e1c1d9d0676694acb1c6767ef7595e4ed0afd193508c74b85c`.
+The two engine hashes remain those recorded in section 16. A read-only
+AST comparison confirms the original initial-state factory, evolution
+RHS, geometry and paired operators are unchanged.
+
+Reproduce only this fixed-window diagnosis (two concurrent workers,
+stdout results and stderr progress; no generated files):
+
+    python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py" --curvature-localization
+
+Controls only:
+
+    python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py" --localization-controls
+
+### Result: localized finite-resolution error (2026-09-14)
+
+`CURVATURE_LOCALIZATION_COMPUTED`: 104/104 control and reproduction
+checks pass. Both runs complete all 252 samples through t=62.75.
+The h=.025 replay takes 372.604 s and h=.0125 takes 1498.706 s;
+the complete concurrent stage takes 1523.087 s. All three source hashes
+agree at preflight, worker entry and exit. The previous h=.025 R2
+errors at both target times reproduce exactly. Separate regressions
+pass 74/74 base and 104/104 source-budget checks.
+
+| t | Original D4 error, h=.025 | Original D4 error, h=.0125 | Finer/fine | Radius of maximum residual, fine / finer |
+|---|---:|---:|---:|---:|
+| 62.5 | .00491340010 | .00129042828 | .262634 | 2.98750 / 2.98125 |
+| 62.75 | .00515406671 | .00133836425 | .259672 | 2.96250 / 2.95625 |
+
+These are normalized sup errors, with the preregistered action-curvature
+scale (at 62.75: .3500968918 and .3502950397). The absolute residuals at
+the worst cells are respectively -.00180442274 and -.00046882236.
+The smooth local residual maximum lies near r=3, well away from both
+the centre and the outer numerical boundary. Refinement reduces the
+error by factors 3.81 and 3.85, corresponding to observed orders 1.929
+and 1.945. The finer run's original D4 absolute-error component passes
+at every sampled time through 62.75; the old h=.025 component first
+fails at 62.75, as before.
+
+The fixed-state controls at the first formerly rejected time separate
+the possible readout explanations:
+
+| Diagnostic at t=62.75 | h=.025 | h=.0125 |
+|---|---:|---:|
+| D4 expanded metric/action error | .00515406671 | .00133836425 |
+| D6 expanded metric/action error | .00512215901 | .00133874511 |
+| D4 divergence metric/action error | .00515382048 | .00133829391 |
+| D6 divergence metric/action error | .00512169669 | .00133873483 |
+| sup(D6-D4) / original error norm | .0471020 | .0120518 |
+| sup(divergence-D4) / original error norm | .00368347 | .000882404 |
+| Error after diagnostic constraint subtraction | .00616044931 | .00154497828 |
+
+Changing only the readout stencil leaves the original grid above .005.
+The divergence form has an even smaller effect. The directional-probe
+sensitivity over both times and grids is at most 7.23e-8. At the worst
+cells the sum of absolute R2 terms divided by the local curvature scale
+is only 1.62--1.64. Thus neither a missing time-derivative factor nor
+catastrophic floating-point cancellation explains this discrepancy.
+
+Constraint amplification contributes locally but its subtraction raises
+the global residual norm by 15--21 percent. It is not a repair for the
+independent curvature test. Both diagnostic decomposition identities
+have residuals below 4.3e-15. At the finer worst cell at 62.75,
+L=.13264178, A=.14056996 and q=.51163150; the amplified constraint
+difference in Kg is 9.43846e-6.
+
+The result points to approximately second-order finite-resolution error
+in the evolved geometry/source state, rather than the final curvature
+readout. The retained metric transport and face/cell mappings contain
+second-order operations. The paired matter derivative and independent
+readout already have higher-order controls. The two new runs co-refine
+h and the RK step; the spatial interpretation is also supported by
+section 16's half-step physical-waveform checks (at 62.75 the maximum-K
+change under that half step is 1.33e-12). This localizes the numerical
+problem without identifying one particular evolution stencil uniquely.
+
+### Physical readout and precise handoff
+
+On the finer grid the central weighted source decreases from .57625051
+at t=60 to .57527308 at 62.75, while maximum absolute K increases from
+.38378670 to .40265105. The finite-window feedback result therefore
+survives refinement with continued peak-curvature growth. Across the
+finer run, the minimum cell A, lapse and q are .08755401, .11817762 and
+.29802155. The maximum Courant number is .09134007 and the paired-wave
+RK number .24894723. Relative charge drift is 7.44e-15; the exterior
+mass readout is unchanged. The maximum feedback-budget error is
+4.00836e-5.
+
+The next bounded repair should target the retained metric transport and
+face/cell consistency, with parity, constant-core, mass/charge and action
+identities preserved. Its decision test is this same 62.5--62.75 window
+on the original h=.025 grid, against the finer reference above. Merely
+substituting the constraint-based curvature or repeatedly shrinking h
+does not resolve that implementation choice. No later time window or
+new physical action is opened in this stage.
+
+The two-grid diagnostic passes; the previous five-run curvature/feedback
+certificate remains at 62.5 because new finer step/domain controls were
+not run. Global regularity, singularity removal and the full RefG
+pressure/scale join retain their separate open status.
+
+    curvature_error_localized=true; original_grid_reproduced=true;
+    finer_D4_component_passes_through=62.75;
+    five_run_certificate_extended=false; changed_action=false;
+    changed_evolution_RHS=false; changed_original_threshold=false;
+    unique_defective_stencil_identified=false; singularity_removal=false.
 
 ## Reproduction and attribution
 
