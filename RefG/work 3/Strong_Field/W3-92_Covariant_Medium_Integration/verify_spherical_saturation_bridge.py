@@ -1127,7 +1127,7 @@ class RadialNodalPair:
         return first,second
 
 
-def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origin_controls=False,paired_origin=False):
+def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origin_controls=False,paired_origin=False,paired_collapse=False):
     """Same-action horizon-regular evolution; frozen finite-window decision."""
     import time
     hash_paths = tuple(Path(__file__).with_name(name) for name in
@@ -1672,13 +1672,14 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
             code_sha256=entry_hashes[Path(__file__).name],source_hashes=entry_hashes,
             scope=dict(changed_evolution_equations=False,changed_original_gate=False,resolved_trapping=False,singularity_removal=False))
 
-    pilot = run(.1,28.) if paired_origin else run(.1,event_stop=True)
+    paired_endpoint = 51.75 if paired_collapse else 28.
+    pilot = run(.1,paired_endpoint) if paired_origin else run(.1,event_stop=True)
     if pilot_only:
         test("unchanged_run_sources",all(hashlib.sha256(path.read_bytes()).hexdigest()==entry_hashes[path.name] for path in hash_paths))
         failed = [c for c in checks if not c["passed"]]
         return dict(decision="COLLAPSE_PILOT_ONLY",checks=len(checks),passed=len(checks)-len(failed),failed=failed,
             details=checks,pilot=pilot,code_sha256=entry_hashes[Path(__file__).name],source_hashes=entry_hashes)
-    endpoint = 28. if paired_origin else pilot["samples"][-1]["t"]-(.5 if pilot["status"]=="NUMERICAL_LIMIT" else 0)
+    endpoint = paired_endpoint if paired_origin else pilot["samples"][-1]["t"]-(.5 if pilot["status"]=="NUMERICAL_LIMIT" else 0)
     if endpoint<.25:
         raise RuntimeError("No finite pilot interval to refine")
     cases = dict(coarse=pilot,middle=run(.05,endpoint),fine=run(.025,endpoint),
@@ -1765,6 +1766,8 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
     certification_valid = all(c["passed"] for c in checks if not c["name"].startswith("terminal_"))
     trapping = first_trapping is not None and certification_valid
     return dict(decision="INVALID_CERTIFICATION_CONTROLS" if not certification_valid else
+                ("PAIRED_VALIDATED_FUTURE_TRAPPING" if trapping else
+                 "PAIRED_VALIDATED_PRETRAPPING_PREFIX" if accepted else "PAIRED_UNRESOLVED_COLLAPSE") if paired_collapse else
                 ("PAIRED_ORIGIN_REPAIR_VALIDATED" if accepted is not None and accepted["end"]==28. else "PAIRED_ORIGIN_REPAIR_OPEN") if paired_origin else
                 "VALIDATED_FUTURE_TRAPPING" if trapping else
                 "VALIDATED_PRETRAPPING_PREFIX" if accepted else "UNRESOLVED_COLLAPSE",
@@ -1793,7 +1796,13 @@ def main():
     parser.add_argument("--origin-controls", action="store_true")
     parser.add_argument("--paired-origin", action="store_true")
     parser.add_argument("--paired-controls", action="store_true")
+    parser.add_argument("--paired-collapse", action="store_true",
+                        help="Replay the repaired pair through the fixed t=51.75 trapping window")
     args = parser.parse_args()
+    if args.paired_collapse:
+        if args.paired_origin or args.paired_controls or args.origin_audit or args.origin_finer or args.origin_controls or args.collapse_pilot or args.saturation_collapse:
+            parser.error("Choose the paired collapse stage on its own")
+        args.paired_origin = True
     if (args.saturation_collapse or args.collapse_pilot or args.origin_audit or args.origin_finer or args.origin_controls or args.paired_origin or args.paired_controls) and (args.supercritical_data or args.oscillon_source or args.oscillon_dynamics or args.dynamics_pilot):
         parser.error("Choose collapse or a previous stage")
     if args.supercritical_data and (args.oscillon_source or args.oscillon_dynamics or args.dynamics_pilot):
@@ -1803,7 +1812,8 @@ def main():
     result = (collapse_checks(pilot_only=args.collapse_pilot,
                              origin_audit=args.origin_audit or args.origin_finer or args.origin_controls or args.paired_origin or args.paired_controls,
                              origin_finer=args.origin_finer,origin_controls=args.origin_controls or args.paired_controls,
-                             paired_origin=args.paired_origin or args.paired_controls)
+                             paired_origin=args.paired_origin or args.paired_controls,
+                             paired_collapse=args.paired_collapse)
               if args.saturation_collapse or args.collapse_pilot or args.origin_audit or args.origin_finer or args.origin_controls or args.paired_origin or args.paired_controls else
               supercritical_data_checks() if args.supercritical_data else
               dynamics_checks(pilot=args.dynamics_pilot) if args.oscillon_dynamics or args.dynamics_pilot

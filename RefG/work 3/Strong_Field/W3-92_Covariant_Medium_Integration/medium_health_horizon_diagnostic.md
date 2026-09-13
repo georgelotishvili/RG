@@ -13,7 +13,20 @@ exponential exterior and selected additive constitutive truncations are
 candidate assumptions, not requirements imposed on every future action.
 The negative results below remain valid in their stated domains.
 
-Latest numerical repair: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+Latest paired collapse: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section 12, completes all five repaired-grid runs through t=51.75.
+All 207 sampled prefixes pass, first_rejected=null, and all 60/60
+controls pass. Resolved future trapping is first certified at t=50.5;
+at t=51.75 the fine run has F_min=-.08199856 and 160 contiguous trapped
+cells, with both future null expansions negative. The whole-window
+radial, metric and origin fine/middle residual ratios are .25018,
+.27163 and .24718. The t=28 overlap reproduces section 11. The next
+physical target is post-trapping interior evolution and curvature in
+this same action. Global regularity, singularity removal and the full
+RefG pressure/scale join remain unclosed. Old engines, monographs and
+Git rules are unchanged.
+
+Previous numerical repair: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
 section 11, clears the early origin-convergence obstacle with a paired
 nodal matter discretization in the same saturation action. All five
 runs complete t=28, and every sampled prefix passes the unchanged

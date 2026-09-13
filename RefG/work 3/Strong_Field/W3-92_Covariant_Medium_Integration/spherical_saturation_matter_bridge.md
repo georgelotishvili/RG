@@ -1507,6 +1507,149 @@ Reproduce:
     python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py" --paired-controls --verbose
     python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py" --paired-origin --verbose
 
+## 12. Paired collapse continuation: registered trapping-window test
+
+CLAIM_ID: W92_PAIRED_COLLAPSE_WINDOW_V1; registered 2026-09-13 before
+the extended evolution. Goal: decide whether section 8's massive scalar
+packet produces resolved future trapping under section 11's repaired
+discretization. The immediate obstacle was the old early constraint
+failure; section 11 cleared that obstacle through t=28.
+
+TYPE: CONDITIONAL / NUMERICAL_EVIDENCE. MODEL_VERSION, ASSUMPTIONS and
+DEPENDENCIES: the same postulated spherical saturation action, canonical
+complex scalar, source preparation and harmonic gauge as sections 8-11.
+DOMAIN and CONVENTIONS: dimensionless 0<=t<=51.75, radial one-metric
+spherical evolution in the existing positive chart/action domain.
+FREEDOM_LEDGER: no new physical parameter, initial profile, projection,
+filter or fit; only the registered endpoint changes from 28 to 51.75.
+The new --paired-collapse option leaves --paired-origin at its old endpoint.
+
+METHOD / CROSSCHECK / BENCHMARK: recompute from the same initial slice
+on h=.1,.05,.025 with R=120, plus h=.025 at half time step and R=160.
+Retain all .25-spaced samples and apply the existing verdict/certify
+functions unchanged to every prefix. Use the repaired nodal charge
+weights while retaining the legacy-volume readout and gauge weights.
+Section 11's overlapping t<=28 interval is the reproducibility benchmark.
+RESIDUAL / ERROR_BOUND / VALIDITY_HEALTH: retain section 9's radial,
+origin and metric residual budgets, mass/charge conservation, waveform
+refinement and half-step/domain thresholds, plus section 11's positive
+wave-coefficient and RK guards. The preflight suite must pass first.
+
+PASS_CONDITION: all necessary certification controls pass and some
+continuously accepted prefix contains the existing two-successive-sample
+future-trapping certificate: both null expansions negative on all five
+runs, at least four contiguous fine-grid trapped cells, and every run's
+minimum F below the negative of the unchanged .005 floor or three times
+the inter-run F uncertainty, whichever is larger. The inherited waveform/residual tests also
+have to pass. This is sampled numerical evidence, not an event-horizon
+or global-completeness theorem.
+FAIL_CONDITION: no such accepted trapping certificate by the fixed
+endpoint. A failed prerequisite/certification control invalidates promotion;
+a later guard or terminal failure limits the validated interval while
+preserving any earlier valid trapping certificate. Report fixed-window
+completion, first rejected prefix, last accepted prefix and any later
+uncertified candidate separately.
+FALSIFIER: nonfinite state, action/chart exit or nonconvergent constraints
+invalidates numerical claims beyond that point; this alone does not
+reject the continuum physical mechanism. BRANCHES: this paired branch
+only; section 9's late old-grid candidate is not inherited.
+
+OBSERVABLE_MAP: F and both future null expansions from the evolved
+physical metric; conserved phase charge, outer mass, charge RMS areal
+radius, density and central proper time remain separately reported.
+FORWARD_MODEL, DATA_ROLE and IDENTIFIABILITY: N/A, no observational
+inference or parameter identification is performed in this numerical test.
+CLOSURE_FLAGS: resolved_trapping is computed from the certificate;
+global_regularity, singularity_removal and full_RefG_pressure_join stay false.
+FILES: only this report, verify_spherical_saturation_bridge.py and
+medium_health_horizon_diagnostic.md may change. Old engines, monographs,
+the private-assumption folder and Git rules remain unchanged.
+STOP: finish the five fixed-window runs and the stated decision. No new
+parameter family or interior-regularity extension belongs to this stage.
+PROVENANCE: code/source hashes are emitted and checked at run completion;
+results go to stdout, without adding generated data files.
+
+Preflight before the extended evolution: 33/33 checks pass.
+Continuation verifier SHA256:
+`3849c28a492dd5aba19f765ff6b2e2f2610b5fdfe4a5c5dfef7ec42f73448e12`.
+
+Reproduce:
+
+    python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py" --paired-collapse --verbose
+
+### Completed result: resolved future trapping in the paired branch
+
+**Decision: PAIRED_VALIDATED_FUTURE_TRAPPING.** All five runs complete
+t=51.75 with 208 samples each. All 207 sampled prefixes from .25 to
+51.75 pass the unchanged certificate; first_rejected=null. All 60/60
+preflight, terminal and decision controls pass. The first certified
+future-trapping pair ends at t=50.5. The earlier sign change at t=50
+has fine F_min=-.00121916 and is below the registered .005 magnitude
+floor, so it is retained only as the first numerical trapping sample.
+
+| Run | h | Outer R | Final F_min | Contiguous trapped cells |
+|---|---:|---:|---:|---:|
+| Coarse | .1 | 120 | -.08250984767 | 40 |
+| Middle | .05 | 120 | -.08211034576 | 80 |
+| Fine | .025 | 120 | -.08199855666 | 160 |
+| Fine, half time step | .025 | 120 | -.08199855667 | 160 |
+| Fine, enlarged domain | .025 | 160 | -.08199855666 | 160 |
+
+At the final fine-grid minimum, r=7.0875, the future null expansions
+are theta_plus=-.02086798009 and theta_minus=-.3128957338. Their product
+agrees with -4F/r^2 at emitted precision. Three times the largest
+fine/middle, half-step or domain F difference is .0003353673, below
+the .005 floor; every run's final negative F exceeds that floor in
+magnitude. These are resolved future trapped surfaces of the evolved
+metric, not a lapse-only or coordinate-slowing criterion.
+
+| Whole-prefix maximum residual | Middle | Fine | Fine/middle |
+|---|---:|---:|---:|
+| Radial mass constraint | 2.28856008e-4 | 5.72550039e-5 | .25018 |
+| Regular metric equation | 1.23371691e-5 | 3.35110029e-6 | .27163 |
+| First-two-cell origin constraint | 1.42194075e-3 | 3.51476348e-4 | .24718 |
+
+The waveform refinement ratios are .26266 (minimum F), .24078 (maximum
+density), .25312 (charge RMS radius) and .25039 (central proper time).
+Their normalized middle/fine differences are respectively 1.54777e-4,
+1.89045e-4, 3.85557e-5 and 5.67875e-5. The maximum normalized half-step
+difference is 3.62084e-11; the enlarged-domain maximum is 1.69387e-15.
+The coarse origin maximum remains .01375454; the unchanged residual
+accuracy decision uses the middle/fine pair.
+
+The final fine state, in the same dimensionless units, is
+
+    t=51.75, tau_c=35.1018512886, M_outer=129.8971827658,
+    Q_RMS_radius=5.63427922389, rho_max=16.3889881409,
+    L_c=.234094749876, F_min=-.081998556660, trapped_cells=160.
+
+The outer mass equals its initial value at emitted precision. Maximum
+relative nodal-charge drift is below 2.0e-13 on the fine grid and
+8.0e-15 at half step. These refer to the conserved phase charge. The
+fine t=28 radius, density, mass, lapse, proper time, F and origin residual
+reproduce section 11 to its reported precision, including
+F_min=.551117654554 and origin residual=7.11463890783e-5.
+
+All runs stay inside the implemented chart/action and time-step guards.
+Fine stage minima are A=.26493758, face A=.26493301, L=.23096239 and
+q=.36395737. The largest five-run Courant and frozen-wave RK numbers
+are .093506 and .254849, below .4 and 2.5. Tiny negative u values
+(fine minimum -1.05e-14) remain within the same 100-machine-epsilon
+zero-boundary allowance used in section 11; no clipping is applied.
+The verifier and both source-engine hashes match their launch hashes.
+Independent base 74/74 and paired-preflight 33/33 regressions also pass;
+an AST/decision audit confirms unchanged source, RHS, verdict and certify
+definitions. Only the CLI duration/routing and result label change.
+
+Closure: resolved_trapping=true; validated_prefix_end=51.75;
+first_certified_trapping=50.5; first_rejected=null;
+same_saturation_action=true; global_regularity=false;
+singularity_removal=false; full_RefG_pressure_join=false.
+This closes the repaired finite-window trapping test. Its direct next
+physical target is interior evolution and curvature after trapping in
+the same action; full RefG pressure/scale identification remains a
+separate unfinished connection. No monograph or publication claim changes.
+
 ## Reproduction and attribution
 
     python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py"
