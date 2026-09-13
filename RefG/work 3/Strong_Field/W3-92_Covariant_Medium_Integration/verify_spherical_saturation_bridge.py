@@ -1509,7 +1509,7 @@ class RadialNodalPair:
         return first,second
 
 
-def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origin_controls=False,paired_origin=False,paired_collapse=False,paired_interior=False,curvature_controls=False,feedback_evolution=False,feedback_controls=False,localization_case=None,localization_controls=False,metric_upgrade=False,metric_controls=False,metric_case=None,metric_case_results=None,positive_metric=None,source_domain=False):
+def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origin_controls=False,paired_origin=False,paired_collapse=False,paired_interior=False,curvature_controls=False,feedback_evolution=False,feedback_controls=False,localization_case=None,localization_controls=False,metric_upgrade=False,metric_controls=False,metric_case=None,metric_case_results=None,positive_metric=None,source_domain=False,late_metric=False):
     """Same-action horizon-regular evolution; frozen finite-window decision."""
     import time
     metric_specs = dict(coarse=(.1,120.,.1),middle=(.05,120.,.1),fine=(.025,120.,.1),
@@ -1519,10 +1519,12 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
     positive_mode = positive_metric is not None
     if source_domain and not positive_mode:
         raise ValueError('Source-domain reconstruction requires the positive-metric test ladder')
+    if late_metric and not (positive_mode and source_domain):
+        raise ValueError('Late metric continuation requires the source-domain reconstruction')
     if positive_metric in metric_specs:
         metric_case = positive_metric
     metric_controls = metric_controls or positive_metric=='controls'
-    metric_endpoint = 28. if positive_mode else 62.75
+    metric_endpoint = 62.75 if late_metric or not positive_mode else 28.
     if metric_case is not None and metric_case not in metric_specs:
         raise ValueError('Unknown metric-operator case')
     metric_mode = metric_upgrade or metric_controls or metric_case is not None or positive_mode
@@ -2887,7 +2889,8 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
                     localizations.append(dict(t=t,**grid.curvature_localization_readout(state)))
                 if origin_audit and t in (27.5,27.75,28.):
                     snapshots.append(grid.origin_snapshot(state,t))
-                if n%40==39:
+                progress_stride = 20 if late_metric else 40
+                if n%progress_stride==progress_stride-1:
                     print(f"Saturation h={h} R={radius} t={t}: Fmin={row['minimum_F']:.6g}",file=sys.stderr,flush=True)
                 if event_stop and event_time is None and row["minimum_F"]<-.02 and row["trapped_cells"]>0:
                     event_time = t
@@ -2920,6 +2923,8 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
     if metric_case is not None:
         h,radius,courant = metric_specs[metric_case]
         case = run(h,metric_endpoint,radius,courant)
+        if late_metric:
+            checks.append(metric_t28_replay_check(metric_case,case))
         test('metric_replay_completed',case['status']=='COMPLETED' and len(case['samples'])==1+round(metric_endpoint/.25) and
              all(abs(row['t']-.25*i)<1e-12 for i,row in enumerate(case['samples'])))
         test('unchanged_run_sources',all(hashlib.sha256(path.read_bytes()).hexdigest()==entry_hashes[path.name] for path in hash_paths))
@@ -3139,6 +3144,7 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
                      classification='decreasing' if decrease else 'increasing' if increase else 'unresolved_or_flat',
                      interpretation='Maximum absolute curvature change over the last accepted model-time unit; not global stability')
     return dict(decision="INVALID_CERTIFICATION_CONTROLS" if not certification_valid else
+                ("LATE_SOURCE_DOMAIN_PREFIX_VALIDATED" if not failed else "LATE_SOURCE_DOMAIN_PREFIX_OPEN") if late_metric else
                 ("POSITIVE_METRIC_PREFIX_VALIDATED" if not failed else "POSITIVE_METRIC_PREFIX_OPEN") if positive_mode else
                 ("METRIC_OPERATOR_REPAIR_VALIDATED" if not failed else "METRIC_OPERATOR_REPAIR_OPEN") if metric_mode else
                 ("PAIRED_VALIDATED_FEEDBACK_EVOLUTION" if feedback_validated else "PAIRED_FEEDBACK_PREFIX_OPEN") if feedback_evolution else
@@ -3314,6 +3320,24 @@ def metric_failed_workers(preflight,results):
         interpretation='All worker reports retained; missing/incomplete cases are not certified')
 
 
+def metric_t28_replay_check(name,case):
+    """Fixed section20 regression values; never used to evolve the fields."""
+    references = {
+        'coarse': (129.79792808840372, 0.5510110046164072, 0.05466925750514143, 20.87032249855816),
+        'middle': (129.87730748602644, 0.5510956141243419, 0.054641709402265246, 20.864327334848525),
+        'fine': (129.89718276577634, 0.5511170695662444, 0.05463538957720123, 20.86282622514792),
+        'half_step': (129.89718276577634, 0.5511170695660013, 0.05463538957754972, 20.86282622514558),
+        'domain': (129.89718276577634, 0.5511170695662444, 0.05463538957720123, 20.86282622514792),
+    }
+    keys = ('mass','minimum_F','maximum_density','central_proper_time')
+    expected = dict(zip(keys,references[name]))
+    row = next((row for row in case.get('samples',[]) if row.get('t')==28.),None)
+    errors = {key:abs(row[key]-value) for key,value in expected.items()} if row and all(key in row for key in keys) else {}
+    return dict(name='late_stage20_replay_'+name,
+        passed=bool(errors and all(math.isfinite(value) and value<=1e-10 for value in errors.values())),
+        absolute_tolerance=1e-10,errors=errors,expected=expected)
+
+
 def metric_reporting_checks():
     """In-memory failure-reporting fixtures; no worker or evolution is run."""
     import copy
@@ -3357,13 +3381,19 @@ def metric_reporting_checks():
     invalid_positive = copy.deepcopy(good)
     invalid_positive.update(scope=dict(positive_source_reconstruction_prefix=True),unmeasured=math.inf)
     test('nonfinite_positive_scope_cleared',metric_report_safe(invalid_positive)['scope']['positive_source_reconstruction_prefix'] is False)
+    replay_row = dict(t=28.,mass=129.89718276577634,minimum_F=.5511170695662444,
+                      maximum_density=.05463538957720123,central_proper_time=20.86282622514792)
+    test('late_stage20_replay_accepts',metric_t28_replay_check('fine',dict(samples=[replay_row]))['passed'])
+    test('late_stage20_replay_rejects_missing',not metric_t28_replay_check('fine',dict(samples=[]))['passed'])
+    test('late_stage20_replay_rejects_changed',not metric_t28_replay_check('fine',
+         dict(samples=[dict(replay_row,central_proper_time=replay_row['central_proper_time']+1e-8)]))['passed'])
     json.dumps(metric_report_safe(aggregate),allow_nan=False)
     failed = [item for item in checks if not item['passed']]
     return dict(decision='METRIC_REPORTING_CONTROLS' if not failed else 'METRIC_REPORTING_FAILURE',
         checks=len(checks),passed=len(checks)-len(failed),failed=failed,details=checks)
 
 
-def metric_upgrade_checks(positive=False,source_domain=False):
+def metric_upgrade_checks(positive=False,source_domain=False,late_metric=False):
     """Fixed five-case operator repair, with process-isolated grids and stdout."""
     from concurrent.futures import ThreadPoolExecutor
     import subprocess
@@ -3371,7 +3401,9 @@ def metric_upgrade_checks(positive=False,source_domain=False):
     start = time.perf_counter()
     if source_domain and not positive:
         raise ValueError('Source-domain reconstruction requires the positive-metric test ladder')
-    preflight = collapse_checks(positive_metric='controls',source_domain=source_domain) if positive else collapse_checks(metric_controls=True)
+    if late_metric and not (positive and source_domain):
+        raise ValueError('Late metric continuation requires the source-domain reconstruction')
+    preflight = collapse_checks(positive_metric='controls',source_domain=source_domain,late_metric=late_metric) if positive else collapse_checks(metric_controls=True)
     if preflight['failed']:
         return preflight
     def worker(name):
@@ -3380,6 +3412,21 @@ def metric_upgrade_checks(positive=False,source_domain=False):
                 '--positive-metric' if positive else '--metric-case',name]
             if source_domain:
                 command.append('--source-domain')
+            if late_metric:
+                import threading
+                command.append('--late-metric')
+                with subprocess.Popen(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,encoding='utf-8') as child:
+                    messages = []
+                    def progress():
+                        for line in child.stderr:
+                            messages.append(line)
+                            print('['+name+'] '+line,file=sys.stderr,end='',flush=True)
+                    reader = threading.Thread(target=progress,daemon=True)
+                    reader.start()
+                    output = child.stdout.read()
+                    returncode = child.wait()
+                    reader.join()
+                    return metric_worker_report(name,returncode,output,''.join(messages))
             process = subprocess.run(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,encoding='utf-8')
             if process.stderr:
                 print(process.stderr,file=sys.stderr,end='',flush=True)
@@ -3389,7 +3436,7 @@ def metric_upgrade_checks(positive=False,source_domain=False):
     results = {'coarse':worker('coarse')} if positive else {}
     failure = metric_failed_workers(preflight,results)
     if failure is not None:
-        failure['decision'] = 'POSITIVE_SOURCE_PILOT_FAILED'
+        failure['decision'] = 'LATE_SOURCE_DOMAIN_PILOT_FAILED' if late_metric else 'POSITIVE_SOURCE_PILOT_FAILED'
         failure['elapsed_seconds'] = time.perf_counter()-start
         return failure
     # The positive-source stage reaches further controls only after its pilot.
@@ -3404,7 +3451,7 @@ def metric_upgrade_checks(positive=False,source_domain=False):
     if failure is not None:
         failure['elapsed_seconds'] = time.perf_counter()-start
         return failure
-    result = (collapse_checks(positive_metric='aggregate',metric_case_results=results,source_domain=source_domain) if positive else
+    result = (collapse_checks(positive_metric='aggregate',metric_case_results=results,source_domain=source_domain,late_metric=late_metric) if positive else
               collapse_checks(metric_upgrade=True,metric_case_results=results))
     same_hash = result.get('source_hashes')==preflight['source_hashes']
     hash_check = dict(name='metric_preflight_production_hash',passed=same_hash)
@@ -3456,14 +3503,19 @@ def main():
                         help='Source-only face limiter: preflight or fixed t=28 pilot ladder')
     parser.add_argument('--source-domain',action='store_true',
                         help='With --positive-metric: use the existing source-domain tolerance instead of exact positivity')
+    parser.add_argument('--late-metric',action='store_true',
+                        help='With --positive-metric and --source-domain: extend the frozen five-case test to t=62.75')
     args = parser.parse_args()
+    if args.late_metric and not (args.positive_metric and args.source_domain):
+        parser.error('--late-metric requires --positive-metric and --source-domain')
     if args.source_domain and not args.positive_metric:
         parser.error('--source-domain requires --positive-metric')
     if args.positive_metric:
-        if any(value for name,value in vars(args).items() if name not in ('positive_metric','source_domain','verbose')):
+        if any(value for name,value in vars(args).items() if name not in ('positive_metric','source_domain','late_metric','verbose')):
             parser.error('Choose the source-positive metric mode on its own')
-        result = (metric_upgrade_checks(positive=True,source_domain=args.source_domain) if args.positive_metric=='pilot' else
-                  collapse_checks(positive_metric=args.positive_metric,source_domain=args.source_domain))
+        result = (metric_upgrade_checks(positive=True,source_domain=args.source_domain,late_metric=args.late_metric) if args.positive_metric=='pilot' else
+                  collapse_checks(positive_metric=args.positive_metric,source_domain=args.source_domain,late_metric=args.late_metric))
+        result['requested_endpoint'] = 62.75 if args.late_metric else 28.
         result['source_reconstruction'] = 'existing_domain_admissible_endpoint' if args.source_domain else 'exact_positive_zero_blend'
         result = metric_report_safe(result)
         if not args.verbose:

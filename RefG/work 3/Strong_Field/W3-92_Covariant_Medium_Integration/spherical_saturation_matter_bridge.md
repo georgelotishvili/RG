@@ -2937,6 +2937,143 @@ curvature/source gates through the previously problematic t=62.75,
 without changing physics or precision limits. That later replay has
 not been performed here.
 
+## 21. Frozen source-domain continuation through t=62.75
+
+### Contract before implementation and evolution
+
+The decision is whether the section 20 reconstruction carries the same
+packet through the previously problematic late interval with the original
+five-case curvature/source accuracy gates. Only the verifier, this report
+and W92 index may change. The action, packet, AdmissibleMetricClock,
+production equations, reconstruction, domain guards, time steps, radii
+and acceptance thresholds are frozen. The new `--late-metric` modifier
+requires both `--positive-metric` and `--source-domain` and selects only
+the endpoint 62.75; the existing t=28 commands retain their behavior.
+
+Run the same 168 controls and reporting/regression checks first. Then
+run the h=.1,R=120,C=.1 pilot to 62.75 with .25 samples. Stop this stage
+on pilot failure and preserve its actual exception/context and last
+sample. On pilot completion, run the h=.05,.025 cases, the h=.025,C=.05
+half-step case and h=.025,R=160 domain case to the same endpoint.
+Each completed case must reproduce section 20's t=28 mass, minimum F,
+maximum density and central proper time to absolute tolerance 1e-10.
+These are numerical regression data from the same packet, not new
+physical or observational fitting targets.
+
+Success requires all 252 samples per case and the original uninterrupted
+base/independent-curvature/feedback prefix gates through 62.75, together
+with unchanged source hashes. Retain the first rejected prefix and its
+actual failed gates on any accuracy failure. Trapping, posttrapping
+curvature and feedback flags retain their original dependency rules;
+global regularity, singularity removal and full RefG pressure join stay
+false. No additional stage18 precision threshold or substituted curvature
+readout is introduced. This stage ends with that bounded decision: no
+post-output retuning, new physical term or further time extension.
+
+The only execution/reporting addition is live, case-labelled progress
+for these longer workers; results remain stdout JSON and no generated
+files are created. The frozen verifier hash and control results are
+recorded before the replay.
+
+Pre-replay verifier SHA256:
+`369131e7fe9b24a147eaf94dbe1c599d3feb7742563f54588bbb3190ada6df22`.
+The late preflight passes 168/168 and the reporting/replay fixtures 22/22.
+Base, source-budget, legacy-localization and stage20 controls pass
+74/74, 104/104, 93/93 and 168/168. Independent read-only inspection
+confirms unchanged reconstruction/dynamics and thresholds, endpoint
+propagation, the t=28 regression values and the coarse-first stop rule.
+The imported engine hashes remain those recorded in section 20.
+
+### Result: the late independent-curvature prefix passes
+
+The command `--positive-metric pilot --source-domain --late-metric`
+returns `LATE_SOURCE_DOMAIN_PREFIX_VALIDATED`, **228/228**, exit 0.
+All five cases complete t=62.75 with 252 samples each. Every registered
+base, independent-curvature and feedback prefix passes; all three
+first-rejection fields are null. The first resolved trapping certificate
+is at t=50.5. Source hashes remain unchanged throughout. All twenty
+section20 t=28 replay differences (four quantities on five grids) are
+exactly zero at the emitted floating-point precision. Total elapsed
+time, including controls and aggregation, is 1273.156 s.
+
+| Case | h | Outer R | dt | Samples | Maximum normalized metric R2 error on the full prefix |
+|---|---:|---:|---:|---:|---:|
+| coarse | 0.1 | 120 | 0.01 | 252 | 9.43062188e-2 |
+| middle | 0.05 | 120 | 0.005 | 252 | 8.96522298e-3 |
+| fine | 0.025 | 120 | 0.0025 | 252 | 1.00170848e-3 |
+| half_step | 0.025 | 120 | 0.00125 | 252 | 1.00170709e-3 |
+| domain | 0.025 | 160 | 0.0025 | 252 | 1.00170848e-3 |
+
+The unchanged residual gate bounds the fine-grid error below .005 and
+requires improvement over the middle grid. The larger coarse and
+middle R2 values are retained as measured refinement data; an absolute
+.005 ceiling on each individual grid was never the acceptance rule.
+The fine/middle R2 ratio is 0.111732690.
+The fine prefix maxima for radial constraint, regular-metric residual,
+origin constraint, metric Ricci error, metric Kretschmann error and
+feedback-budget error are respectively
+`6.652832375883471e-5, 5.924001012895404e-7, 3.514580229916607e-4,
+8.768238598036993e-4, 2.403369590161289e-4, 1.608615509948713e-4`.
+
+At the previously problematic endpoint t=62.75, the h=.025 metric R2
+error is `0.0005996325239100663`. Section17's same-h,
+same-time original-method error was `.005154066711989016`: the endpoint
+error is lower by a factor 8.595376. This endpoint comparison is
+distinct from the new method's larger full-prefix maximum shown above.
+The saturation action and independent curvature readout are unchanged.
+
+Across all grids and sampled times, relative charge drift is at most
+1.8685886171709853e-10. The sampled outer total mass has zero reported
+drift on each grid; this finite-run observation does not assert exact
+universal conservation. The largest registered half-step and outer-domain
+discrepancies are 2.002103156005519e-9 and 1.7810010245299012e-11,
+using the original observable normalizations. The curvature time-probe
+error is at most 3.485985036892727e-8. Courant and paired-wave bounds
+remain below .09350520719087464 and .2548482275806726 respectively.
+The source-face correction retains the section20 extrema and at most
+three simultaneous replacements on coarse/middle or two on fine/control
+grids; no primary-state clipping or new floor has been applied.
+
+The final fine state has minimum F=-.4584434107681472, 284 contiguous
+trapped cells, negative outgoing and ingoing null expansions, maximum
+scalar density 22.68267894119321 and central proper time
+37.02387656501605. Its maximum absolute Kretschmann scalar is
+.4026469183541146; the central value is .39453693451423005. The
+minimum q over its evolved stages is .2980222980952612. These are
+finite, resolved quantities in this declared model and finite interval.
+
+### Physical reading and the next decision
+
+The existing curvature-controlling weighted density is
+`E=alpha*ell^2*q^(3/2)*rho`; it is distinct from total outer mass.
+At t=62.75 the fine-grid central normal rates are
+`n(rho)=+1.5521328655355988` and `n(E)=-.0020270216951075674`.
+The source weighting therefore weakens the central contribution while
+its material density grows. This sign pairing occurs on all five grids.
+At the curvature maximum r=1.0875, however, the fine result is
+`n(E)=+.017832769390740483` and `n(rho)=+3.515526256238848`.
+The location-dependent contrast is essential to the global question.
+
+The maximum absolute curvature still increases from t=61.75 to 62.75:
+the fine change is .006878783351028428, while three times the largest
+control spread is .00019833678234504326. All five changes are positive,
+so the registered trend classification is `increasing`. Local feedback
+is supported; a global arrest of curvature growth is not established.
+The accepted flags are finite-window trapping, posttrapping curvature,
+feedback evolution and the source-reconstruction prefix. Global
+regularity, singularity removal, persistent regulation and the full
+RefG pressure join remain false.
+
+This stage closes the late numerical-accuracy obstacle on its specified
+interval and ends here. The next finite-time decision is how the
+off-centre curvature growth changes under continued same-action
+compression, using the source budget at that maximum. A monotone
+approach to a finite limit is admissible; a turnover is not required
+for regularity. An all-time bound remains a separate mathematical
+result. Any later interval needs a separate bounded contract.
+No reconstruction retuning, new
+physical term, monograph edit, Git-rule edit or extra artifact was made.
+
 ## Reproduction and attribution
 
     python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py"

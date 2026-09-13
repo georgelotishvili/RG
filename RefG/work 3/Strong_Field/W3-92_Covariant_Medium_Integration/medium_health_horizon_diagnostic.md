@@ -13,7 +13,24 @@ exponential exterior and selected additive constitutive truncations are
 candidate assumptions, not requirements imposed on every future action.
 The negative results below remain valid in their stated domains.
 
-Latest source-domain validation: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+Latest late-time validation: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section 21 (2026-09-14). All five same-action source-domain runs reach
+t=62.75 with 252 samples each; **228/228** checks pass. The full base,
+independent-curvature and feedback prefixes pass, with resolved trapping
+from t=50.5. Every t=28 replay quantity reproduces section20 exactly.
+At t=62.75 the h=.025 normalized metric R2 error is .0005996325239100663,
+about 8.6 times smaller than the original method's same-h/time result;
+the new full-prefix maximum is .001001708475983576. No tolerance or
+physical equation changed. The fine final maximum absolute Kretschmann
+scalar is .4026469183541146. Central weighted source decreases while
+central density grows, but the off-centre peak source and maximum
+curvature still grow. Their evolution, including possible monotone
+saturation, is the next physical question. This finite-window result
+does not close all-time regularity, singularity removal or the full
+RefG pressure join. Reproduce with
+`--positive-metric pilot --source-domain --late-metric`.
+
+Previous source-domain validation: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
 section 20 (2026-09-14). Reconstructing source faces within the existing
 numerical domain passes **228/228** checks. All five fixed runs complete
 t=28 with 113 samples each; base, independent curvature and feedback
