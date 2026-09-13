@@ -13,7 +13,21 @@ exponential exterior and selected additive constitutive truncations are
 candidate assumptions, not requirements imposed on every future action.
 The negative results below remain valid in their stated domains.
 
-Latest post-trapping curvature: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+Latest local-source decision: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section 14 (2026-09-13), passes 66/66 standalone checks. A smooth
+fixed-total-mass canonical source family has fixed midpoint z and q,
+but increasing local density and curvature as its width decreases.
+Thus saturation of the enclosed-mass response alone supplies no
+universal off-centre curvature cap. An exact sufficient criterion is
+bounded E=alpha ell^2 q^(3/2) rho in the monitored orthonormal frame;
+the smooth-centre constraint already implies E_c^2<=1/3. Deriving
+local source feedback from the same action is the specific remaining
+RefG connection. This family consists of separate finite, regular
+initial slices, not a blow-up evolution of the previous packet.
+Base 74/74 and curvature controls 65/65 pass; previous evolution
+functions, engines, monographs and Git rules remain unchanged.
+
+Previous post-trapping curvature: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
 section 13 (2026-09-13), completes all five same-action runs through t=60.
 All 108/108 checks and 240 sampled prefixes pass; first_rejected=null.
 Direct metric and angular-action curvature agree within the registered

@@ -2,8 +2,11 @@
 
 **შედეგი მოკლედ:** მიღებულია პოსტულატურ გაჯერების კანონზე დაფუძნებული
 სფეროსიმეტრიული მოდელი, რომელშიც მატერიის შეკუმშვა და გარე ველი ერთი
-მოქმედებით ითვლება, ხოლო სიმრუდე სასრული რჩება. ეს უკვე წყაროს მქონე
-დინამიკური ამონახსნია. სრული RefG-მიერთება ჯერ ვერ ჩაითვლება მიღწეულად:
+მოქმედებით ითვლება. ერთგვაროვანი უწნევო წყაროს ამოხსნაში სიმრუდე
+შეზღუდულია; კანონიკური ველის კოლაფსში მისი სასრულობა გამოთვლილ
+მონაკვეთზეა შემოწმებული. §14 ადგენს, რომ თვითნებური ადგილობრივი წყაროს
+შემთხვევაში გაჯერება ამ ზღვარს ავტომატურად ვერ უზრუნველყოფს.
+სრული RefG-მიერთება ჯერ ვერ ჩაითვლება მიღწეულად:
 წნევა–ოსცილონის მასშტაბური კანონი ამ მოქმედებიდან გამოსაყვანია, ზუსტად
 ერთი სტატიკური საათი–სახაზავის ფაქტორი კი არჩეულ გეომეტრიასთან ვერ თავსდება.
 
@@ -1864,6 +1867,194 @@ continued smoothness, off-centre curvature and causal continuation;
 the RefG pressure/scale identification remains a separate derivation.
 The registered five-run stage is complete; no further time extension
 or monograph change is included.
+
+## 14. Does saturation control the full interior source?
+
+CLAIM_ID / MODEL_VERSION: W92_LOCAL_SOURCE_CONTROL_V1, 2026-09-13.
+GOAL: decide whether the bound 0<=ell^2 z<1 in the retained spherical
+action is sufficient for a source-independent bound on dynamical
+off-centre curvature. Section 13 supplies the exact curvature formula
+and finite-window numerical evidence; its smooth-centre hypothesis is
+not an assumption at every noncentral point.
+TYPE / METHOD: exact implication test, a conditional source bound and
+a smooth constrained initial-data counterexample family. No new action,
+matter coupling, physical parameter or time evolution is introduced.
+ASSUMPTIONS / DOMAIN: the same canonical complex scalar with V>=0,
+alpha>0, ell>0, positive q, one physical spherical metric and its radial
+mass and momentum constraints. Readouts use an orthonormal radial frame;
+the PG example uses the normal to its regular initial slice.
+FREEDOM_LEDGER: retain alpha=.04, ell=2, M0=2 M_critical;
+choose one shell midpoint r0=3 and widths 1/2,1/4,1/8,1/16 before
+the numerical crosscheck. Width labels separate initial data, not
+successive times of the section 13 packet.
+DEPENDENCIES: sections 9 and 13's sourced equations and exact curvature.
+PASS / FALSIFIER: verify the source inequalities, on-shell curvature
+reduction and initial constraints symbolically. A smooth fixed-total-mass
+family with fixed midpoint z and unbounded midpoint K refutes the
+source-independent implication; it leaves section 13's fixed-packet
+certificate intact. A nonzero constraint or curvature residual rejects
+the proposed counterexample. Failed checks leave the decision unresolved.
+ERROR_BOUND / CROSSCHECK: bump normalization at 40 and 60 decimal digits
+must agree to relative 1e-30; the analytic width limit determines
+unboundedness, while the four numerical examples check its readout.
+The sufficient source bound is proved by inequalities, not inferred
+from these four examples. Existing base and curvature controls are rerun.
+OBSERVABLE_MAP / VALIDITY: full metric curvature and local frame source;
+a bound in this frame is distinct from global causal continuation.
+DATA_ROLE / FORWARD_MODEL / IDENTIFIABILITY: N/A; no observations, fit
+or physical uniqueness claim. The shell is neutral scalar initial data,
+not a stationary oscillon or a model of particle composition.
+CLOSURE_FLAGS: record local_source_criterion and the automatic-bound
+decision separately from fixed_packet_blowup, global_regularity,
+singularity_removal and full_RefG_pressure_join.
+PROVENANCE / FILES: this report, its existing verifier and the W92 index;
+all numerical output remains stdout. Baseline verifier SHA256:
+`411bdbac4afe3aec3ac49e7c694f64e6e3b528355d2ffd6f9cb5752b6831be24`.
+STOP: complete this implication test and the precise remaining source
+condition. A new constitutive action or longer evolution is a separate
+stage. The intuitive monographs and previous evolution engines stay intact.
+
+### A sufficient local source bound
+
+Define E=alpha ell^2 q^(3/2) rho in the chosen orthonormal frame.
+This dimensionless diagnostic combines the local source with the
+gravitational response; it adds neither an energy component nor a
+constitutive equation. For X=A|P|^2, Y=A|D|^2 and V>=0, the retained
+canonical source obeys
+
+    rho=(X+Y)/2+V, p_r=(X+Y)/2-V, p_t=(X-Y)/2-V,
+    J^2<=XY, |p_r|,|p_t|,|J|<=rho.
+
+With Delta=rho p_r-J^2, the identities
+
+    rho^2-Delta=V(X+Y+2V)+J^2,
+    rho^2+Delta=(X^2+Y^2)/2+(XY-J^2)+V(X+Y)
+
+give |Delta|<=rho^2. In particular the angular curvature equation
+contains 8 alpha^2 ell^2 q^3 Delta as well as linear source terms.
+Let B(E)=5/2+24E+8E^2. The exact source inequalities imply
+
+    |ell^2 R2| <= B(E),
+    |ell^2 R4| <= B(E)+10+8E,
+    |ell^4 K| <= B(E)^2+16(1+E)^2+16E^2+4.
+
+For completeness, |u(1-3u)/2|<=1 and
+|2u(1-9u+9u^2)|<=5/2 on 0<=u<=1. The normalized Hessian components
+obey |ell^2 h_nn|,|ell^2 h_ee|<=1+E and |ell^2 h_ne|<=E.
+Here h_ab=R_;ab/R in the orthonormal radial frame, as in section 13.
+These component inequalities and the triangle inequality prove the
+displayed bounds. They are conservative sufficient bounds, not sharp
+predictions for the evolved packet.
+
+At a smooth centre the already-established mass constraint gives
+E_c=(3/2)u sqrt(1-u), with
+
+    1/3-E_c^2=(3u-2)^2(3u+1)/12>=0.
+
+Thus the centre automatically meets this sufficient source criterion.
+Away from the centre, the same radial constraint fixes an enclosed
+integral M; it does not equate the local rho to 3M/r^3.
+
+### Fixed-mass smooth-shell implication test
+
+Let b(x)=exp[-1/(1-x^2)] for |x|<1 and zero elsewhere,
+I=integral b(x)^2 dx, g=b^2/I and G(x)=integral_{-infinity}^x g(y)dy.
+For 0<w<r0 use the smooth initial data
+
+    M_w(r)=M0 G((r-r0)/w), rho_w=M_w'/r^2,
+    psi=D=0, P=sqrt(2rho_w), J=V=0, p_r=p_t=rho_w,
+    A=L=1, v=r sqrt(z), k=sqrt(z), F=1-r^2 z,
+    z=2alpha M_w/(r^3+2alpha ell^2 M_w).
+
+Using g=b^2/I makes P smooth at both shell edges. The central cavity
+is flat, each finite-width source is smooth, and the outer generalized
+mass is exactly M0. The same mass constraint reads M_w'=r^2 rho_w;
+the momentum constraint gives K^r_r=v_r. Differentiating z yields
+v v_r=-r C+alpha r q^2 rho_w, so the geometric radial Hessian agrees
+with the sourced equation. The regular-metric equation gives A_t=0
+on this slice; the k equation supplies its normal-normal component.
+These are dynamical initial data, with no static-support assumption.
+
+At r=r0 symmetry gives M_w=M0/2 for every width. Consequently z and q
+are fixed there while rho_w=M0 g(0)/(w r0^2). The full source curvature is
+
+    R2=2z(1-9u+9u^2)-4alpha q^2 rho_w
+       +8alpha^2 ell^2 q^3 rho_w^2,
+    K=R2^2+16C^2+16alpha^2 q^4 rho_w^2+4z^2,
+    limit_(w->0) w^4 K
+      =64alpha^4 ell^4 q^6 [M0 g(0)/r0^2]^4 > 0.
+
+The analytic limit tests a uniform cap across separate smooth sources
+of the same total mass. Every finite-width member has finite curvature;
+this family does not evolve the section 13 packet toward a singularity.
+
+### Completed source-control decision
+
+The standalone `--source-control` test passes 66/66 checks and returns
+`AUTOMATIC_INTERIOR_CURVATURE_CAP_EXCLUDED`. The analytic fixed-mass
+family disproves a universal off-centre curvature cap inferred solely
+from z saturation; the conditional local-source criterion passes.
+
+For M0=129.9038105677, r0=3, alpha=.04 and ell=2, every example has
+q=.565035482652, u=.434964517348 and F(r0)=.0213298359673. The PG
+spatial metric remains A=1 through both signs of F. The table evaluates
+the same midpoint of each distinct initial configuration:
+
+| Shell width w | Local rho(r0) | Weighted source E(r0) | ell^4 K(r0) |
+|---|---:|---:|---:|
+| .5 | 29.3553759443 | 1.99490037057 | 651.079124677 |
+| .25 | 58.7107518886 | 3.98980074114 | 13208.6432405 |
+| .125 | 117.421503777 | 7.97960148227 | 235166.871654 |
+| .0625 | 234.843007555 | 15.9592029645 | 3956553.33807 |
+
+The total mass and midpoint response stay fixed, while the local source
+grows as 1/w. The exact positive coefficient of w^-4 establishes the
+absence of a universal cap; the table is its finite numerical check.
+The full curvature remains finite in every listed configuration and
+satisfies the derived E-dependent bounds. The numeral 24 is the earlier
+smooth-centre bound for ell^4 K, with different local hypotheses.
+
+All initial-constraint and source-curvature symbolic residuals vanish.
+The mixed PG check independently combines the physical mass flux and k
+evolution to recover A_t=0. Independently, the scalar equation gives
+S_t=rho_r on this slice. Differentiating the extrinsic-curvature
+constraint in the metric readout then gives
+
+    R2_metric=-2[C+r C_r+b rho+r b_r rho], b=alpha q^2,
+    r z_r=2alpha q^2 rho-3zq.
+
+This reproduces the full kinetic R2, including its quadratic-density
+term, with zero symbolic residual in the same Python test. Omitting
+that term is detected by a negative control. The bump normalization
+relative discrepancy is 1.90626e-42; midpoint symmetry and total-mass
+quadratures also pass their registered accuracy tests.
+The base 74/74 and existing curvature preflight 65/65 regressions also
+pass. An AST comparison confirms that all previous computational
+functions are unchanged; only the new check function and CLI dispatch
+are added. Three incompatible CLI combinations are rejected with exit 2.
+Both old engine hashes remain unchanged. Tested verifier SHA256:
+`a59d1e5d48ce54c93d48ad4f8fbaec8e403d3aaa109a51099c5a01c99af82ff0`.
+
+Closure: local_source_criterion=true; automatic_uniform_cap_excluded=true;
+uniform_cap_from_saturation_alone=false; smooth_fixed_mass_family=true;
+bounded_source_derived=false; fixed_packet_blowup=false;
+global_regularity=false; singularity_removal=false;
+full_RefG_pressure_join=false.
+
+The concrete missing link is local source feedback. The existing
+constitutive h(z) limits the enclosed-mass response, while its angular
+equation still depends on local pressure, gradients and the stress
+determinant. RefG's intuitive section 1.5 requires matter and environment
+to readjust together; identifying that mechanism with h(z) alone would
+omit this local condition. The E bound supplies an explicit sufficient
+target for a source-response law derived from the same action. Imposing
+a cap after evolution or renaming q as foundation pressure would not
+supply that derivation. The present test preserves the previous fixed
+packet results and completes the declared implication decision.
+
+Reproduce without time evolution or generated files:
+
+    python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py" --source-control --verbose
 
 ## Reproduction and attribution
 

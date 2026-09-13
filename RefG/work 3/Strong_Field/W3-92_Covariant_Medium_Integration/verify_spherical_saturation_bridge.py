@@ -107,6 +107,160 @@ def saturation_curvature_checks():
     return checks
 
 
+def source_concentration_checks():
+    """Bounded source-cap decision: exact identities and a fixed-mass PG family.
+
+    These are distinct smooth constrained initial slices, with no time
+    evolution or inference about blow-up of the retained charged packet.
+    """
+    entry_hash = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    checks = list(saturation_curvature_checks())
+    def exact(name,value,target=0):
+        residual = s.factor(s.cancel(value-target))
+        checks.append(dict(name="concentration_"+name,passed=residual==0,
+                           residual=str(residual)))
+    def gate(name,condition,**evidence):
+        checks.append(dict(name="concentration_"+name,passed=bool(condition),**evidence))
+    r,z,a,ell = s.symbols("r z alpha ell",positive=True)
+    rho,pr,pt,J = s.symbols("rho pr pt J",real=True)
+    u,q = ell**2*z,1-ell**2*z
+    C,b = z*(1-3*u)/2,a*q*q
+    trace,det = pr-rho,rho*pr-J*J
+    curv = saturation_curvature(rho,pr,pt,J,z,a,ell)
+    hess = curv["hnn_over_r"]**2+curv["hee_over_r"]**2-2*curv["hne_over_r"]**2
+    exact("invariant_orbit_reduction",curv["orbit_Ricci"],
+          2*z*(1-9*u+9*u*u)+2*b*(1-6*u)*trace-4*b*pt+8*a*a*ell*ell*q**3*det)
+    exact("invariant_hessian_reduction",hess,2*C*C+2*C*b*trace+b*b*(trace*trace+2*det))
+    # Canonical scalar: X=|n psi|^2, Y=|e psi|^2, J=n psi dot e psi.
+    p0,p1,d0,d1 = s.symbols("p0 p1 d0 d1",real=True)
+    X,Y,j = p0*p0+p1*p1,d0*d0+d1*d1,p0*d0+p1*d1
+    V,y = s.symbols("V y",nonnegative=True)
+    kin = (X+Y)/2
+    rr,pp,tt = kin+V,kin-V,(X-Y)/2-V
+    delta = rr*pp-j*j
+    exact("canonical_gram_nonnegative",X*Y-j*j,(p0*d1-p1*d0)**2)
+    exact("canonical_potential_nonnegative",y/2-y*y/4+y**3/24,y*((y-3)**2+3)/24)
+    exact("canonical_pr_bounds_lower",rr-pp,2*V)
+    exact("canonical_pr_bounds_upper",rr+pp,X+Y)
+    exact("canonical_pt_bounds_lower",rr-tt,Y+2*V)
+    exact("canonical_pt_bounds_upper",rr+tt,X)
+    exact("canonical_flux_bound",rr*rr-j*j,(X-Y)**2/4+(p0*d1-p1*d0)**2+2*kin*V+V*V)
+    exact("canonical_det_upper",rr*rr-delta,V*(X+Y+2*V)+j*j)
+    exact("canonical_det_lower",rr*rr+delta,(X*X+Y*Y)/2+(X*Y-j*j)+V*(X+Y))
+    uu,E = s.symbols("u E",nonnegative=True)
+    cc = uu*(1-3*uu)/2
+    exact("bound_C_lower",cc+1,(1-uu)*(3*uu+2)/2)
+    exact("bound_C_upper",cc,s.Rational(1,24)-s.Rational(3,2)*(uu-s.Rational(1,6))**2)
+    exact("bound_vacuum_polynomial",1-9*uu+9*uu*uu,9*(uu-s.Rational(1,2))**2-s.Rational(5,4))
+    exact("bound_vacuum_polynomial_upper",1-(1-9*uu+9*uu*uu),9*uu*(1-uu))
+    qq = s.symbols("q",positive=True)
+    source_scale = a*ell**2*qq**s.Rational(3,2)*rho
+    exact("bound_linear_source_weight",a*ell**2*qq**2*rho,s.sqrt(qq)*source_scale)
+    exact("bound_quadratic_source_weight",a*a*ell**4*qq**3*rho*rho,source_scale**2)
+    exact("centre_source_scale",source_scale.subs({rho:3*z/(2*a*qq)}),
+          s.Rational(3,2)*ell**2*z*s.sqrt(qq))
+    exact("centre_source_scale_bound",s.Rational(1,3)-s.Rational(9,4)*uu**2*(1-uu),
+          (3*uu-2)**2*(3*uu+1)/12)
+    B = s.Rational(5,2)+24*E+8*E*E
+    bound_R,bound_K = B+10+8*E,B*B+16*(1+E)**2+16*E*E+4
+    proof_checks = [item for item in checks if item["name"].startswith("concentration_")]
+    gate("conditional_source_bounds",all(item["passed"] for item in proof_checks),
+         domain="0<=u<1, V>=0, canonical scalar, alpha>0, ell>0",
+         premise="E=alpha ell^2 q^(3/2) rho is bounded in the monitored orthonormal frame",
+         orbit_bound=str(B),Ricci_bound=str(bound_R),K_bound=str(bound_K),
+         argument="Canonical SOS identities give |pr|,|pt|,|J|<=rho and |det|<=rho^2. "
+         "With |ell^2 C|<=1, |1-6u|<=5, q<=1 and vacuum polynomial <=5/4 in magnitude, "
+         "triangle inequalities yield the displayed bounds. E bounded is a premise, not an action-derived result.")
+    e,m,vr,v = s.symbols("e m vr v",positive=True)
+    kinetic = saturation_curvature(e,e,e,0,z,a,ell)
+    exact("kinetic_orbit",kinetic["orbit_Ricci"],2*z*(1-9*u+9*u*u)-4*b*e+8*a*a*ell*ell*q**3*e*e)
+    exact("kinetic_hessian",kinetic["hnn_over_r"]**2+kinetic["hee_over_r"]**2,2*C*C+2*b*b*e*e)
+    leading = s.Poly(s.expand(kinetic["Kretschmann"]),e).coeff_monomial(e**4)
+    exact("kinetic_K_leading",leading,64*a**4*ell**4*q**6)
+    missing_term_orbit = kinetic['orbit_Ricci']-8*a*a*ell*ell*q**3*e*e
+    missing_term_K = kinetic['Kretschmann']-kinetic['orbit_Ricci']**2+missing_term_orbit**2
+    missing_leading = s.Poly(s.expand(missing_term_K),e).coeff_monomial(e**4)
+    gate('omitted_quadratic_source_detected',s.factor(leading-missing_leading)!=0,
+         coefficient_difference=str(s.factor(leading-missing_leading)))
+    # Flat PG slice A=L=1, v^2=r^2 z, psi=D=0, P=sqrt(2 rho).
+    zm = 2*a*m/(r**3+2*a*ell*ell*m)
+    qm,Cm = 1-ell*ell*zm,zm*(1-3*ell*ell*zm)/2
+    vv = r*r*zm
+    vvprime = s.diff(vv,r)+s.diff(vv,m)*r*r*e
+    exact("PG_radial_constraint",-vvprime/2,r*(Cm-a*qm*qm*e))
+    exact("PG_momentum_constraint",2*(vr-v/r)/r-2*(vr/r-v/r**2))
+    vt = r*(v*(vr/r-v/r**2)+(v/r)**2+C+b*e)
+    exact("PG_normal_action",-vt+v*vr,-r*(C+b*e))
+    Mt = 2*r*r*v*e
+    vt_pg = vvprime/2+r*(Cm+a*qm*qm*e)
+    At_pg = -r*r*s.diff(zm,m)*Mt+2*v*vt_pg
+    exact("PG_mixed_action",At_pg/2)
+    # Direct metric R2 from K^r_r=v_r-alpha*r*q^2*S and S_t=rho_r
+    # on this slice. Density derivatives cancel using the scalar equation.
+    zr = (2*a*q*q*e-3*z*q)/r
+    metric_orbit = -2*(C+r*s.diff(C,z)*zr+b*e+r*s.diff(b,z)*zr*e)
+    exact('PG_direct_metric_orbit',metric_orbit,kinetic['orbit_Ricci'])
+    gp,M0,width,r0 = s.symbols("g M0 width r0",positive=True)
+    peak_density = M0*gp/(width*r0*r0)
+    exact("fixed_mass_shell_density",r0*r0*peak_density,M0*gp/width)
+    positive_leading = 64*a**4*ell**4*qq**6
+    gate("positive_thin_shell_leading",positive_leading.is_positive,
+         coefficient=str(positive_leading),scope="K grows as width^-4 across distinct smooth initial slices")
+    def normalization(dps):
+        with mp.workdps(dps):
+            bump = lambda x: mp.exp(-2/(1-x*x)) if abs(x)<1 else mp.mpf(0)
+            integral = mp.quad(bump,[-1,0,1])
+            left = mp.quad(bump,[-1,0])/integral
+            return +integral,+left
+    I40,left40 = normalization(40)
+    I60,left60 = normalization(60)
+    examples = []
+    with mp.workdps(60):
+        relative = abs(I40-I60)/I60
+        gate("bump_normalization_precision",relative<mp.mpf("1e-30"),relative_error=float(relative))
+        gate("bump_midpoint_symmetry",abs(left40-mp.mpf('.5'))<mp.mpf('1e-35')
+             and abs(left60-mp.mpf('.5'))<mp.mpf('1e-55'),G_midpoint=float(left60))
+        aa,ll,rr0 = mp.mpf('.04'),mp.mpf(2),mp.mpf(3)
+        mass = 3*mp.sqrt(3)*ll/(2*aa)
+        g0 = mp.exp(-2)/I60
+        recovered = mass*mp.quad(lambda x:mp.exp(-2/(1-x*x))/I60 if abs(x)<1 else 0,[-1,0,1])
+        gate("shell_total_mass",abs(recovered-mass)/mass<mp.mpf('1e-55'),mass=float(mass))
+        zm = aa*mass/(rr0**3+aa*ll*ll*mass)
+        qm = 1-ll*ll*zm
+        for ww in (mp.mpf('.5'),mp.mpf('.25'),mp.mpf('.125'),mp.mpf('.0625')):
+            density = mass*g0/(ww*rr0*rr0)
+            values = saturation_curvature(density,density,density,mp.mpf(0),zm,aa,ll)
+            scaled_K = ll**4*values['Kretschmann']
+            escale = aa*ll*ll*qm**mp.mpf('1.5')*density
+            BB = mp.mpf('2.5')+24*escale+8*escale*escale
+            valid = all(mp.isfinite(value) for value in values.values()) and 0<qm<1
+            bound_ok = (abs(ll*ll*values['orbit_Ricci'])<=BB
+                        and abs(ll*ll*values['Ricci_scalar'])<=BB+10+8*escale
+                        and abs(scaled_K)<=BB*BB+16*(1+escale)**2+16*escale*escale+4)
+            row = dict(width=float(ww),mass=float(mass),q=float(qm),u=float(ll*ll*zm),
+                       rho=float(density),ell4_K=float(scaled_K),E=float(escale),
+                       F=float(1-rr0*rr0*zm),A=1.0,G_midpoint=.5)
+            examples.append(row)
+            gate("shell_width_"+str(float(ww)),valid and bound_ok,finite=bool(valid),conditional_bounds=bool(bound_ok))
+    gate("fixed_mass_and_response",len({row['mass'] for row in examples})==1
+         and len({row['q'] for row in examples})==1 and len({row['u'] for row in examples})==1)
+    gate("finite_counterexample_exceeds_centre_bound",any(row['ell4_K']>24 for row in examples),
+         scope="Generic off-centre cap excluded; the regular-centre theorem is unchanged")
+    end_hash = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    gate("source_unchanged",entry_hash==end_hash)
+    failed = [item['name'] for item in checks if not item['passed']]
+    return dict(decision="AUTOMATIC_INTERIOR_CURVATURE_CAP_EXCLUDED" if not failed else "SOURCE_CONCENTRATION_CHECK_FAILURE",
+                checks=len(checks),passed=len(checks)-len(failed),failed=failed,details=checks,examples=examples,
+                scope=dict(local_source_criterion=not failed,
+                    automatic_uniform_cap_excluded=not failed,
+                    uniform_cap_from_saturation_alone=False if not failed else None,
+                    smooth_fixed_mass_family=not failed,
+                    bounded_source_derived=False,fixed_packet_blowup=False,
+                    global_regularity=False,singularity_removal=False,full_RefG_pressure_join=False,
+                    interpretation='Conditional source bounds and a family of distinct smooth initial slices; no evolution or singularity formation claim'),
+                source_hashes={Path(__file__).name:entry_hash})
+
+
 def run_checks():
     checks = []
 
@@ -2032,7 +2186,18 @@ def main():
                         help="Replay the repaired pair through the fixed t=51.75 trapping window")
     parser.add_argument('--paired-interior', action='store_true',help='Same-action curvature validation through fixed t=60')
     parser.add_argument('--curvature-controls', action='store_true',help='Curvature algebra/metric preflight only')
+    parser.add_argument('--source-control', action='store_true',
+                        help='Exact local-source bound and fixed-mass concentration test; no evolution')
     args = parser.parse_args()
+    if args.source_control:
+        if any(value for name,value in vars(args).items()
+               if name not in ('source_control','verbose')):
+            parser.error('Choose the local-source control stage on its own')
+        result = source_concentration_checks()
+        if not args.verbose:
+            result.pop('details')
+        print(json.dumps(result, indent=2, allow_nan=False))
+        return int(bool(result['failed']))
     if args.paired_interior or args.curvature_controls:
         if args.paired_collapse or args.paired_origin or args.paired_controls or args.origin_audit or args.origin_finer or args.origin_controls or args.collapse_pilot or args.saturation_collapse or (args.paired_interior and args.curvature_controls):
             parser.error('Choose the curvature stage on its own')
