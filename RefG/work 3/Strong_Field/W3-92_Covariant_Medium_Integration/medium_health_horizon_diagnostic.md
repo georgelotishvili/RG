@@ -13,7 +13,56 @@ exponential exterior and selected additive constitutive truncations are
 candidate assumptions, not requirements imposed on every future action.
 The negative results below remain valid in their stated domains.
 
-Latest numerical-accuracy result: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+Latest source-domain validation: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section 20 (2026-09-14). Reconstructing source faces within the existing
+numerical domain passes **228/228** checks. All five fixed runs complete
+t=28 with 113 samples each; base, independent curvature and feedback
+gates accept the entire sampled prefix. The source equation, primary
+fields and original tolerances remain unchanged. The h=.025 maximum
+normalized R2 error is 2.540977261114574e-6; the largest registered
+half-step discrepancy is 2.002103156005519e-9. Sampled total mass has
+zero reported drift; charge drift is at most 1.038606978198686e-10.
+The fine final F minimum is .5511170695662444, so this new-method
+certificate is before trapping. Controls pass 168/168 and old modes
+retain their regression results. The next direct numerical test is
+the same reconstruction through t=62.75. No later replay, global
+regularity, singularity-removal or full RefG pressure-join closure
+is established here; the old t=62.5 certificate remains separate.
+Reproduce with `--positive-metric pilot --source-domain`.
+
+Previous source-face repair: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section 19 (2026-09-14). The source-only limiter repairs all three
+initial packets and passes 156/156 preflight checks. Its coarse pilot
+stops at RK substage 3 of the .09-to-.10 step, at r=20.2. The exact
+cause is a numerical-domain mismatch: the linear face mean is slightly
+negative but permitted by the existing tolerance, while the limiter
+requires that mean to be nonnegative and therefore retains an invalid
+high-order face value. The original guard correctly rejects it.
+The aggregate is 156/157; no further grids are launched. Failure
+location, primary values and probe/trajectory distinction are retained.
+The next numerical correction is reconstruction in the same registered
+admissible interval, with unchanged tolerance and physical equations.
+Reporting fixtures pass 19/19; old regressions pass 74/74, 104/104 and
+93/93. No new evolution certificate, full RefG join or singularity
+claim is closed; the old t=62.5 result and monographs are unchanged.
+
+Previous metric-operator trial: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section 18 (2026-09-14). The five-case higher-order metric package fails
+the fixed-window repair target: fine, half-step and enlarged-domain runs
+stop at 25.75; coarser runs stop at or before the first sampled step.
+An initial-data audit identifies the coarse cause exactly: the new
+negative-weight face interpolation turns positive source values near
+r=20.4 into mu=-1.04098647e-11, violating the unchanged action domain.
+The preceding 122/122 smooth/linear preflight missed this packet-edge
+case. Actual-packet admissibility is now a preflight requirement, and
+failed-worker reporting is repaired. The original attempt's aggregate
+JSON failed, so no aggregate pass count or fine-grid failure attribution
+is claimed. The tested numerical package is rejected; the old t=62.5
+certificate, saturation action and physical statuses remain unchanged.
+A future candidate needs positivity-preserving reconstruction before
+further evolution. No monograph or Git-rule changes were made.
+
+Previous numerical-accuracy result: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
 section 17 (2026-09-14), passes 104/104 checks. Two unchanged-action
 replays stop at 62.75. Halving h from .025 to .0125 reduces the original
 R2 error from .00515407 to .00133836; its maximum is near r=2.96, not the
@@ -21,9 +70,9 @@ centre. The finer original-D4 component passes every sampled time.
 Alternative readout stencils, time probes and term cancellation do not
 explain the main discrepancy; constraint subtraction increases its
 global norm. The result points to approximately second-order error in
-the evolved geometry/source state. The next bounded target is consistent
-metric transport and face/cell discretization at the same fixed times,
-without changing the physical action. The old five-run certificate
+the evolved geometry/source state. This motivated section 18's metric
+transport and face/cell trial at the same fixed times, without changing
+the physical action. The old five-run certificate
 remains at 62.5; singularity removal and the full RefG pressure join are
 still open. Preflight 93/93 and regressions 74/74 and 104/104 pass.
 

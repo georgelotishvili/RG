@@ -1509,14 +1509,28 @@ class RadialNodalPair:
         return first,second
 
 
-def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origin_controls=False,paired_origin=False,paired_collapse=False,paired_interior=False,curvature_controls=False,feedback_evolution=False,feedback_controls=False,localization_case=None,localization_controls=False):
+def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origin_controls=False,paired_origin=False,paired_collapse=False,paired_interior=False,curvature_controls=False,feedback_evolution=False,feedback_controls=False,localization_case=None,localization_controls=False,metric_upgrade=False,metric_controls=False,metric_case=None,metric_case_results=None,positive_metric=None,source_domain=False):
     """Same-action horizon-regular evolution; frozen finite-window decision."""
     import time
+    metric_specs = dict(coarse=(.1,120.,.1),middle=(.05,120.,.1),fine=(.025,120.,.1),
+                        half_step=(.025,120.,.05),domain=(.025,160.,.1))
+    if positive_metric not in (None,'controls','aggregate',*metric_specs):
+        raise ValueError('Unknown source-positive metric case')
+    positive_mode = positive_metric is not None
+    if source_domain and not positive_mode:
+        raise ValueError('Source-domain reconstruction requires the positive-metric test ladder')
+    if positive_metric in metric_specs:
+        metric_case = positive_metric
+    metric_controls = metric_controls or positive_metric=='controls'
+    metric_endpoint = 28. if positive_mode else 62.75
+    if metric_case is not None and metric_case not in metric_specs:
+        raise ValueError('Unknown metric-operator case')
+    metric_mode = metric_upgrade or metric_controls or metric_case is not None or positive_mode
     if localization_case not in (None,'fine','finer'):
         raise ValueError('Unknown fixed curvature-localization case')
-    localization = localization_case is not None or localization_controls
-    feedback_evolution = feedback_evolution or localization_case is not None
-    feedback_controls = feedback_controls or localization_controls
+    localization = localization_case is not None or localization_controls or metric_mode
+    feedback_evolution = feedback_evolution or localization_case is not None or metric_upgrade or metric_case is not None or positive_metric=='aggregate'
+    feedback_controls = feedback_controls or localization_controls or metric_controls
     paired_interior = paired_interior or feedback_evolution
     curvature_controls = curvature_controls or feedback_controls
     paired_origin = paired_origin or paired_collapse or paired_interior or curvature_controls
@@ -1581,6 +1595,9 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
         def field_derivative(self,field):
             return self.engine.derivative(field)
 
+        def source_to_faces(self,mu):
+            return self.to_faces(mu)
+
         def action_domain(self,mu,q,z):
             u = self.length**2*z
             self.minimum_stage_mu = min(self.minimum_stage_mu,float(np.min(mu)))
@@ -1629,7 +1646,7 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
             c,beta = L*g["root"],g["beta"]
             rf = e.edges[1:]
             vf,logL = state[3].real,state[4].real
-            muf = self.to_faces(state[2].real)
+            muf = self.source_to_faces(state[2].real)
             qf = 1/(1+2*alpha*self.length**2*muf)
             zf = 2*alpha*muf*qf
             Af = 1-rf*rf*zf+vf*vf
@@ -2073,6 +2090,199 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
                 raise FloatingPointError("Nonfinite paired saturation RHS")
             return out
 
+    class MetricUpgradeClock(PairedSaturationClock):
+        """Fourth-order centre-safe metric block; unchanged paired matter/action.
+
+        The outermost six cell/face rows retain the legacy numerical closure.
+        Interior gauge gradient/divergence form the existing weighted-adjoint
+        G6 pair. The fixed outer closure is not reflected through nonzero v(R).
+        """
+        metric_outer_rows = 6
+
+        def __init__(self,radius,h,length=ell):
+            super().__init__(radius,h,length)
+            if len(self.r)<8:
+                raise ValueError('Metric upgrade needs at least eight cells')
+
+        def cell_k(self,state):
+            out = legacy.StaggeredClockGrid.cell_k(self,state)
+            vf = np.r_[0.,state[3].real]
+            ext = np.r_[-vf[1],vf]
+            interpolated = (-ext[:-3]+9*ext[1:-2]+9*ext[2:-1]-ext[3:])/16
+            interior = len(self.r)-self.metric_outer_rows
+            out[:interior] = interpolated[:interior]/self.r[:interior]
+            return out
+
+        def to_faces(self,values):
+            out = legacy.StaggeredClockGrid.to_faces(self,values)
+            out[:-self.metric_outer_rows] = (self.pair.I@values)[1:-self.metric_outer_rows]
+            return out
+
+        def face_gradient(self,values):
+            out = legacy.StaggeredClockGrid.face_gradient(self,values)
+            out[:-self.metric_outer_rows] = (self.pair.G@values)[1:-self.metric_outer_rows]
+            return out
+
+        def divergence(self,velocity):
+            out = legacy.StaggeredClockGrid.divergence(self,velocity)
+            full_velocity = np.r_[0.,velocity]
+            adjoint = -(self.pair.GT@(self.pair.face_measure*full_velocity))/self.r**2
+            out[:-self.metric_outer_rows] = adjoint[:-self.metric_outer_rows]
+            return out
+
+        def metric_cell_derivative(self,values):
+            out = self.engine.derivative(values)
+            out[:-self.metric_outer_rows] = (self.pair.E@values)[:-self.metric_outer_rows]
+            return out
+
+        def face_velocity_derivative(self,velocity):
+            out = np.r_[(np.r_[velocity[1:],0.]-np.r_[0.,velocity[:-1]])[:-1]/(2*self.h),
+                (3*velocity[-1]-4*velocity[-2]+velocity[-3])/(2*self.h)]
+            ext = np.r_[-velocity[0],0.,velocity]
+            fourth = (ext[:-4]-8*ext[1:-3]+8*ext[3:-1]-ext[4:])/(12*self.h)
+            interior = len(self.r)-self.metric_outer_rows
+            out[:interior] = fourth[:interior]
+            return out
+
+        def rhs(self,state):
+            # super retains the scalar pair, physical mass law and all guards;
+            # its geometry calls use this class's metric reconstruction.
+            out = super().rhs(state)
+            g = self.geometry(state)
+            r,rf = self.r,self.engine.edges[1:]
+            vf,logL = state[3].real,state[4].real
+            muf = self.source_to_faces(state[2].real)
+            qf = 1/(1+2*alpha*self.length**2*muf)
+            zf = 2*alpha*muf*qf
+            Lf = np.exp(self.to_faces(logL))
+            Af = 1-rf*rf*zf+vf*vf
+            out[3] = (Lf*vf*self.face_velocity_derivative(vf)
+                +Lf*rf*(zf*(1-3*self.length**2*zf)/2+alpha*qf*qf*self.to_faces(g['p']))
+                -Lf*Af*self.face_gradient(logL))
+            out[4] = (g['beta']*self.metric_cell_derivative(logL)
+                -g['L']*(self.divergence(vf)-alpha*r*g['q']**2*g['S']))
+            if not np.all(np.isfinite(out)):
+                raise FloatingPointError('Nonfinite upgraded metric RHS')
+            return out
+
+    class PositiveMetricClock(MetricUpgradeClock):
+        """Limit reconstructed source faces, retaining the same primary state.
+
+        For nonnegative low-order L and negative high-order H, the maximal
+        admissible convex blend has theta=L/(L-H) and face value zero.
+        On admissible input this is exactly max(H,0), applied to source
+        reconstruction only; lapse and signed stresses keep their stencils.
+        """
+        def __init__(self,radius,h,length=ell):
+            super().__init__(radius,h,length)
+            self.maximum_stage_limited_faces = 0
+            self.minimum_stage_raw_source_face = math.inf
+            self.maximum_stage_source_face_change = 0.0
+            self.domain_failure = None
+
+        def source_to_faces(self,mu):
+            raw = self.to_faces(mu)
+            low = np.r_[(mu[:-1]+mu[1:])/2,mu[-1]]
+            limited = (raw<0)&(low>=0)
+            out = raw.copy()
+            # Evaluate the exact admissible endpoint without cancellation.
+            out[limited] = 0.0
+            self.maximum_stage_limited_faces = max(self.maximum_stage_limited_faces,int(np.sum(limited)))
+            self.minimum_stage_raw_source_face = min(self.minimum_stage_raw_source_face,float(np.min(raw)))
+            self.maximum_stage_source_face_change = max(self.maximum_stage_source_face_change,float(np.max(abs(out-raw))))
+            return out
+
+        def action_domain(self,mu,q,z):
+            try:
+                return super().action_domain(mu,q,z)
+            except FloatingPointError as exc:
+                import inspect
+                u = self.length**2*np.asarray(z)
+                if self.length and np.min(u)<-100*np.finfo(float).eps:
+                    j = int(np.argmin(u))
+                elif not np.all(np.isfinite(u)):
+                    j = int(np.flatnonzero(~np.isfinite(u))[0])
+                else:
+                    j = int(np.argmax(u))
+                stack = inspect.stack(context=0)
+                try:
+                    caller = stack[1].function if len(stack)>1 else 'unknown'
+                    site = 'cell' if caller=='geometry' else 'face' if caller=='rhs' else 'unknown'
+                    probe_steps = [float(frame.frame.f_locals['eps']) for frame in stack[1:]
+                                   if frame.function in ('curvature_readout','curvature_localization_readout')
+                                   and 'eps' in frame.frame.f_locals]
+                    rk_stages = [1+sum(name in frame.frame.f_locals for name in ('a','b','c'))
+                                 for frame in stack[1:] if frame.function=='clock_rk4']
+                    radius = float((self.r if site=='cell' else self.engine.edges[1:])[j]) if site!='unknown' else None
+                    value = lambda x:float(np.asarray(x)[j]) if np.isfinite(np.asarray(x)[j]) else str(np.asarray(x)[j])
+                    self.domain_failure = dict(error=str(exc),site=site,index=j,radius=radius,
+                        mu=value(mu),u=value(u),q=value(q),from_curvature_probe=bool(probe_steps),caller=caller,
+                        probe_eps=probe_steps[0] if probe_steps else None,
+                        rk_substage=rk_stages[0] if rk_stages else None)
+                    caller_state = stack[1].frame.f_locals.get('state') if len(stack)>1 else None
+                    if caller_state is not None and site in ('cell','face'):
+                        primary = caller_state[2].real
+                        left,right = (j-2,j+3) if site=='cell' else (j-1,j+3)
+                        self.domain_failure['nearby_primary_mu'] = [
+                            dict(index=i,radius=float(self.r[i]),mu=float(primary[i]))
+                            for i in range(max(0,left),min(len(primary),right))]
+                        if site=='face':
+                            self.domain_failure['raw_source_face'] = value(self.to_faces(primary))
+                            low = (primary[j]+primary[j+1])/2 if j<len(primary)-1 else primary[-1]
+                            self.domain_failure['low_order_source_face'] = float(low)
+                finally:
+                    del stack
+                raise
+
+    class AdmissibleMetricClock(PositiveMetricClock):
+        """Keep accepted source faces; reconstruct rejected negative-u faces.
+
+        H is retained exactly whenever it is numerically admissible. A
+        finite H on the positive-q branch with u below the existing guard
+        uses the adjacent mean L only when L passes that same domain test.
+        The physical state, signed stresses and original guards are intact.
+        """
+        def __init__(self,radius,h,length=ell):
+            super().__init__(radius,h,length)
+            self.maximum_stage_domain_fallback_faces = 0
+
+        def source_domain_values(self,mu):
+            """Use the production order q, then z, then u, including ell=0."""
+            mu = np.asarray(mu)
+            with np.errstate(divide='ignore',invalid='ignore',over='ignore'):
+                q = 1/(1+2*alpha*self.length**2*mu)
+                z = 2*alpha*mu*q
+                u = self.length**2*z
+            return q,z,u
+
+        def source_domain_accepts(self,mu):
+            """Scalar bool or elementwise mask for the existing source domain."""
+            q,z,u = self.source_domain_values(mu)
+            accepted = (np.isfinite(mu)&np.isfinite(q)&np.isfinite(z)&np.isfinite(u)
+                        &(q>0)&(u<1))
+            if self.length:
+                accepted = accepted&(u>=-100*np.finfo(float).eps)
+            return bool(accepted) if np.ndim(accepted)==0 else accepted
+
+        def source_to_faces(self,mu):
+            raw = self.to_faces(mu)
+            low = np.r_[(mu[:-1]+mu[1:])/2,mu[-1]]
+            q,z,u = self.source_domain_values(raw)
+            trigger = (np.isfinite(raw)&np.isfinite(q)&np.isfinite(z)&np.isfinite(u)
+                       &(q>0)&(u<-100*np.finfo(float).eps))
+            if not self.length:
+                trigger = np.zeros_like(trigger,dtype=bool)
+            replaced = trigger&self.source_domain_accepts(low)
+            out = raw.copy()
+            out[replaced] = low[replaced]
+            count = int(np.sum(replaced))
+            change = float(np.max(abs(out[replaced]-raw[replaced]))) if count else 0.0
+            self.maximum_stage_limited_faces = max(self.maximum_stage_limited_faces,count)
+            self.maximum_stage_domain_fallback_faces = max(self.maximum_stage_domain_fallback_faces,count)
+            self.minimum_stage_raw_source_face = min(self.minimum_stage_raw_source_face,float(np.min(raw)))
+            self.maximum_stage_source_face_change = max(self.maximum_stage_source_face_change,change)
+            return out
+
     def fixed_mass_audit(r,mu,source):
         from scipy.interpolate import CubicSpline
         # Independent nodal reconstructions and exact polynomial quadratures.
@@ -2328,14 +2538,310 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
             test('localization_manufactured_probe_'+str(h),max(row['time_probe_sensitivity'].values())<1e-7)
             flux_errors.append(row['flux_D4_sensitivity'])
         test('localization_metric_divergence_refines',flux_errors[-1]<.2*flux_errors[-2] and flux_errors[-2]<.2*flux_errors[0],errors=flux_errors)
+    if metric_mode:
+        metric_factory = AdmissibleMetricClock if source_domain else PositiveMetricClock if positive_mode else MetricUpgradeClock
+        manufactured_errors = []
+        for h in (.1,.05,.025):
+            grid = metric_factory(4,h)
+            r,rf = grid.r,grid.engine.edges[1:]
+            inside = slice(None,-9)
+            state = np.zeros((6,len(r)),complex)
+            polynomial_errors = []
+            for degree in (1,3):
+                state[3] = rf**degree
+                polynomial_errors.extend((float(max(abs(grid.cell_k(state)[inside]-r[inside]**(degree-1)))),
+                    float(max(abs(grid.divergence(rf**degree)[inside]-(degree+2)*r[inside]**(degree-1)))),
+                    float(max(abs(grid.face_velocity_derivative(rf**degree)[inside]-degree*rf[inside]**(degree-1))))))
+            polynomial_errors.extend((float(max(abs(grid.to_faces(r*r)[inside]-rf[inside]**2))),
+                float(max(abs(grid.face_gradient(r**4)[inside]-4*rf[inside]**3))),
+                float(max(abs(grid.metric_cell_derivative(r**4)[inside]-4*r[inside]**3)))))
+            test('metric_polynomial_centre_'+str(h),max(polynomial_errors)<1e-9,errors=polynomial_errors)
+            old = PairedSaturationClock(4,h)
+            boundary_errors = [float(max(abs(getattr(grid,key)(r*r)[-6:]-getattr(old,key)(r*r)[-6:])))
+                for key in ('to_faces','face_gradient')]
+            boundary_errors.append(float(max(abs(grid.divergence(rf**3)[-6:]-old.divergence(rf**3)[-6:]))))
+            test('metric_legacy_outer_closure_'+str(h),max(boundary_errors)==0.)
+            rng = np.random.default_rng(9218)
+            x,vf = rng.normal(size=(2,len(r)))
+            x[-9:],vf[-9:] = 0.,0.
+            terms = (h*r*r*x*grid.divergence(vf),h*grid.pair.face_measure[1:]*grid.face_gradient(x)*vf)
+            adjoint_error = abs(sum(float(np.sum(x)) for x in terms))/max(sum(float(np.sum(abs(x))) for x in terms),1e-30)
+            test('metric_compact_gauge_adjoint_'+str(h),adjoint_error<1e-13,error=adjoint_error)
+            state[:] = 0
+            k0 = math.sqrt(2*alpha/(9+2*alpha*ell**2))
+            state[0],state[2],state[3],state[4] = math.sqrt(2),1/9,k0*rf,math.log(.7)
+            row = grid.curvature_readout(state)
+            budget = grid.feedback_readout(state)
+            test('metric_constant_core_readout_'+str(h),max(row[key] for key in curvature_errors)<1e-7 and budget['feedback_budget_error']<1e-10)
+            for _ in range(40):
+                state = legacy.clock_rk4(grid,state,.025)
+            core_error = max(float(max(abs(grid.cell_k(state)-k0))),
+                abs(float(np.exp(state[4,0].real))-.7/(1+3*k0*.7)),
+                abs(float(state[5,0].real)-math.log1p(3*k0*.7)/(3*k0)))
+            test('metric_constant_core_clock_'+str(h),core_error<1e-8,error=core_error)
+            def analytic(x):
+                field = .2*(1+.2j)*np.exp(-x*x)
+                P = (.05+.1j)*np.exp(-x*x)
+                grad = -2*x*field
+                mu = .01*np.exp(-x*x/4)
+                v = .01*x+.002*x**3
+                logL = -.03*np.exp(-x*x)
+                q = 1/(1+2*alpha*ell**2*mu)
+                z = 2*alpha*mu*q
+                A = 1-x*x*z+v*v
+                V = abs(field)**2/2-abs(field)**4/4+abs(field)**6/24
+                p = A*(abs(P)**2+abs(grad)**2)/2-V
+                S = np.sqrt(A)*np.real(np.conjugate(P)*grad)
+                L = np.exp(logL)
+                logLr = .06*x*np.exp(-x*x)
+                vt = L*v*(.01+.006*x*x)+L*x*(z*(1-3*ell**2*z)/2+alpha*q*q*p)-L*A*logLr
+                lt = L*v*logLr-L*(.03+.01*x*x-alpha*x*q*q*S)
+                mut = L*((v/x)*A*(abs(P)**2+abs(grad)**2)+(A+v*v)*S/x)
+                return field,P,mu,v,logL,vt,lt,mut
+            field,P,mu,v,logL,vt,lt,mut = analytic(r)
+            face_v,face_vt = analytic(rf)[3],analytic(rf)[5]
+            state[:] = 0
+            state[0],state[1],state[2],state[3],state[4] = field,P,mu,face_v,logL
+            rhs = grid.rhs(state)
+            active = r<2
+            error = max(float(max(abs(rhs[2].real[active]-mut[active]))),
+                float(max(abs(rhs[3].real[active]-face_vt[active]))),float(max(abs(rhs[4].real[active]-lt[active]))))
+            manufactured_errors.append(error)
+            charge = float(np.sum(grid.pair.weights*np.imag(np.conjugate(rhs[0])*state[1]+np.conjugate(state[0])*rhs[1])))
+            test('metric_paired_charge_preserved_'+str(h),abs(charge)<1e-12,charge_rate=charge)
+            if positive_mode:
+                baseline = MetricUpgradeClock(4,h).rhs(state.copy())
+                test('positive_inactive_full_RHS_unchanged_'+str(h),np.array_equal(rhs,baseline))
+        test('metric_manufactured_RHS_refines',manufactured_errors[-1]<.2*manufactured_errors[-2] and
+             manufactured_errors[-2]<.2*manufactured_errors[0],errors=manufactured_errors)
+        for h in (.1,.05):
+            energies = {}
+            for tag,factory in (('legacy',PairedSaturationClock),('upgraded',metric_factory)):
+                grid = factory(4,h)
+                r,rf = grid.r,grid.engine.edges[1:]
+                eye = np.eye(len(r))
+                G = np.column_stack([grid.face_gradient(row) for row in eye])
+                D = np.column_stack([grid.divergence(row) for row in eye])
+                chain = max(float(max(abs(G@np.ones(len(r))))),float(max(abs(G@(r*r)-2*rf))),float(max(abs(D@rf-3))))
+                test('metric_gauge_zero_chain_'+tag+'_'+str(h),chain<1e-9,error=chain)
+                eigen = np.linalg.eigvals(D@G)*h*h
+                order = np.argsort(abs(eigen))
+                small,bulk = eigen[order[:2]],eigen[order[2:]]
+                test('metric_gauge_nonzero_spectrum_'+tag+'_'+str(h),max(abs(small))<1e-6 and
+                     max(bulk.real)<1e-8 and max(abs(bulk.imag))<1e-8,
+                     zero_sector=[[float(x.real),float(x.imag)] for x in small],largest_bulk_real=float(max(bulk.real)))
+                pulse = np.zeros(len(r))
+                pulse[r<1] = np.exp(-1/(1-r[r<1]**2))
+                y = np.array([pulse,np.zeros(len(r))])
+                def linear_rhs(y):
+                    return np.array([-D@y[1],-G@y[0]])
+                def energy(y):
+                    return float(h*np.sum(r*r*y[0]**2+grid.pair.face_measure[1:]*y[1]**2))
+                initial_energy,largest,at_two = energy(y),1.,None
+                dt = .1*h
+                for step in range(round(4/dt)):
+                    a0 = linear_rhs(y); b0 = linear_rhs(y+dt*a0/2)
+                    c0 = linear_rhs(y+dt*b0/2); d0 = linear_rhs(y+dt*c0)
+                    y = y+dt*(a0+2*b0+2*c0+d0)/6
+                    ratio = energy(y)/initial_energy
+                    largest = max(largest,ratio)
+                    if step+1==round(2/dt):
+                        at_two = ratio
+                energies[tag] = dict(maximum=largest,at_two=at_two,finite=bool(np.all(np.isfinite(y))))
+            test('metric_linear_boundary_response_'+str(h),all(x['finite'] for x in energies.values()) and
+                 energies['upgraded']['maximum']<=1.05*energies['legacy']['maximum'] and abs(energies['upgraded']['at_two']-1)<1e-5,
+                 energies=energies)
+        if positive_mode:
+            smooth_errors = []
+            for h in (.1,.05,.025):
+                grid = metric_factory(4,h)
+                r,rf = grid.r,grid.engine.edges[1:]
+                mu = 2+np.exp(-r*r)
+                before = mu.copy()
+                face = grid.source_to_faces(mu)
+                active = rf<2
+                smooth_errors.append(float(max(abs(face[active]-(2+np.exp(-rf[active]**2))))))
+                test('positive_smooth_raw_and_state_'+str(h),np.array_equal(face,grid.to_faces(mu)) and np.array_equal(mu,before))
+                zero = np.zeros_like(r)
+                test('positive_empty_cavity_'+str(h),np.array_equal(grid.source_to_faces(zero),zero))
+                steep = zero.copy(); steep[len(r)//2:] = 1.; steep[-2:] = (5.,1.)
+                old_steep = steep.copy()
+                selected,raw = grid.source_to_faces(steep),grid.to_faces(steep)
+                test('positive_steep_and_outer_face_'+str(h),min(selected)>=0 and raw[-1]<0 and
+                     selected[-1]==(1 if source_domain else 0) and np.array_equal(steep,old_steep) and np.array_equal(selected[raw>=0],raw[raw>=0]))
+                signed = np.sin(2*r)-.3
+                test('positive_signed_interpolation_unchanged_'+str(h),
+                     np.array_equal(grid.to_faces(signed),MetricUpgradeClock(4,h).to_faces(signed)))
+                bad = np.zeros((6,len(r)),complex); bad[2] = .01; bad[2,3] = -.001
+                rejected = False
+                try:
+                    grid.rhs(bad)
+                except FloatingPointError as exc:
+                    rejected = 'resolved negative u' in str(exc)
+                test('positive_negative_cell_still_rejected_'+str(h),rejected and grid.domain_failure['site']=='cell' and
+                     grid.domain_failure['index']==3 and bad[2,3]==-.001)
+                bad[2,3] = complex(float('nan'),0)
+                rejected = False
+                try:
+                    grid.rhs(bad)
+                except FloatingPointError as exc:
+                    rejected = 'Nonfinite saturation evolution state' in str(exc)
+                test('positive_nonfinite_cell_still_rejected_'+str(h),rejected)
+            test('positive_smooth_fourth_order',smooth_errors[1]<.2*smooth_errors[0] and
+                 smooth_errors[2]<.2*smooth_errors[1],errors=smooth_errors)
+        if source_domain:
+            domain_grid = AdmissibleMetricClock(24.,.1)
+            strict_grid = PositiveMetricClock(24.,.1)
+            guard_grid = SaturationClock(4.,.1)
+            def original_source_guard(value):
+                values = np.asarray([value],dtype=float)
+                with np.errstate(divide='ignore',invalid='ignore',over='ignore'):
+                    q0 = 1/(1+2*alpha*ell**2*values)
+                    z0 = 2*alpha*values*q0
+                # These checks are made before action_domain in production.
+                if not np.all(np.isfinite(values)) or not np.all(np.isfinite(q0)) or np.min(q0)<=0:
+                    return False
+                try:
+                    guard_grid.action_domain(values,q0,z0)
+                except FloatingPointError:
+                    return False
+                return True
+            primary = np.zeros_like(domain_grid.r)
+            primary[200:204] = (1.165691706620534e-19,-4.378100645570907e-17,
+                               -1.3239812564870792e-15,1.1123380066336225e-12)
+            saved_primary = primary.copy()
+            j = 201
+            raw = domain_grid.to_faces(primary)
+            selected = domain_grid.source_to_faces(primary)
+            strict = strict_grid.source_to_faces(primary)
+            low = float((primary[j]+primary[j+1])/2)
+            test('source_domain_saved_RK3_stencil',abs(raw[j]-(-7.029049897307989e-14))<1e-28 and
+                 abs(low-(-6.838811314713941e-16))<1e-30 and strict[j]==raw[j] and selected[j]==low and
+                 not original_source_guard(strict[j]) and original_source_guard(selected[j]) and
+                 all(original_source_guard(x) for x in primary[200:204]),
+                 raw=float(raw[j]),low=low,selected=float(selected[j]),strict=float(strict[j]))
+            test('source_domain_saved_primary_unchanged',np.array_equal(primary,saved_primary))
+            tiny = np.full_like(primary,-1e-16)
+            tiny_raw = domain_grid.to_faces(tiny)
+            test('source_domain_accepted_negative_retained',
+                 np.array_equal(domain_grid.source_to_faces(tiny),tiny_raw) and
+                 all(original_source_guard(x) for x in tiny_raw))
+            invalid = np.full_like(primary,-1e-10)
+            invalid_raw = domain_grid.to_faces(invalid)
+            test('source_domain_two_invalid_endpoints_unrepaired',
+                 np.array_equal(domain_grid.source_to_faces(invalid),invalid_raw) and
+                 not original_source_guard(float(invalid_raw[j])))
+            edge = np.zeros_like(primary)
+            edge[-2:] = (1e-12,-1e-16)
+            edge_before = edge.copy()
+            edge_raw,edge_selected = domain_grid.to_faces(edge),domain_grid.source_to_faces(edge)
+            test('source_domain_outer_accepted_endpoint',not original_source_guard(float(edge_raw[-1])) and
+                 edge_selected[-1]==edge[-1] and original_source_guard(float(edge_selected[-1])) and
+                 np.array_equal(edge,edge_before),raw=float(edge_raw[-1]),selected=float(edge_selected[-1]))
+            delta = 100*np.finfo(float).eps
+            boundary = -delta/(2*alpha*ell**2*(1+delta))
+            neighbours = [boundary]
+            for direction in (-math.inf,math.inf):
+                value = boundary
+                for _ in range(8):
+                    value = np.nextafter(value,direction)
+                    neighbours.append(float(value))
+            actual = [original_source_guard(x) for x in neighbours]
+            predicted = [domain_grid.source_domain_accepts(x) for x in neighbours]
+            test('source_domain_guard_boundary_order',actual==predicted and any(actual) and not all(actual),
+                 values=neighbours,accepted=actual)
+            # Adversarial interpolation inputs test guard preservation, not
+            # admissibility of a physical primary state.
+            for tag,donor in (('nonfinite_nan',math.nan),('nonfinite_inf',math.inf),
+                              ('wrong_q',100.),('saturated_u',-1.6e21)):
+                bad_source = np.zeros_like(primary)
+                bad_source[200] = donor
+                before_source = bad_source.copy()
+                with np.errstate(divide='ignore',invalid='ignore',over='ignore'):
+                    bad_raw = domain_grid.to_faces(bad_source)
+                    bad_selected = domain_grid.source_to_faces(bad_source)
+                same = bool(np.isnan(bad_raw[j]) and np.isnan(bad_selected[j])) or bad_raw[j]==bad_selected[j]
+                test('source_domain_'+tag+'_not_repaired',same and
+                     not original_source_guard(float(bad_raw[j])) and
+                     not domain_grid.source_domain_accepts(float(bad_raw[j])) and
+                     np.array_equal(bad_source,before_source,equal_nan=True))
+            flat_limit = AdmissibleMetricClock(4.,.1,length=0.)
+            flat_source = np.zeros_like(flat_limit.r)
+            flat_source[10] = 1.
+            flat_raw = flat_limit.to_faces(flat_source)
+            test('source_domain_Einstein_limit_inactive',np.min(flat_raw)<0 and
+                 np.array_equal(flat_limit.source_to_faces(flat_source),flat_raw) and
+                 flat_limit.maximum_stage_domain_fallback_faces==0)
+            bad_state = np.zeros((6,len(domain_grid.r)),complex)
+            bad_state[2,3] = -.001
+            before_state = bad_state.copy()
+            rejected = False
+            try:
+                domain_grid.rhs(bad_state)
+            except FloatingPointError as exc:
+                rejected = 'resolved negative u' in str(exc)
+            test('source_domain_negative_primary_still_rejected',rejected and
+                 domain_grid.domain_failure['site']=='cell' and domain_grid.domain_failure['index']==3 and
+                 np.array_equal(bad_state,before_state))
+        # Post-production admissibility audit: test the actual packet before
+        # authorizing any new metric replay. This leaves all action guards fixed.
+        for h in (.1,.05,.025):
+            polar = PolarGrid(120.,h)
+            packet = initial(polar)
+            initial_geometry = polar.geometry(*packet)
+            grid = metric_factory(120.,h)
+            state = np.zeros((6,len(grid.r)),complex)
+            state[:2] = packet
+            state[2] = initial_geometry['mass']/grid.r**3
+            state[4] = np.log(initial_geometry['sigma']*np.sqrt(initial_geometry['N']))
+            mu = state[2].real
+            muf = grid.source_to_faces(mu)
+            old_muf = legacy.StaggeredClockGrid.to_faces(grid,mu)
+            face = int(np.argmin(muf))
+            error = None
+            try:
+                grid.rhs(state)
+            except (FloatingPointError,ValueError) as exc:
+                error = str(exc)
+            test('metric_initial_packet_admissibility_'+str(h),error is None,
+                 error=error,minimum_cell_mu=float(min(mu)),minimum_face_mu=float(muf[face]),
+                 minimum_legacy_face_mu=float(min(old_muf)),minimum_face_radius=float(grid.engine.edges[face+1]),
+                 minimum_u=grid.minimum_stage_u)
+            if positive_mode and error is None:
+                original_state = state.copy()
+                grid.measure_curvature = grid.measure_feedback = True
+                grid.density_scale = float(max(grid.geometry(state)['rho']))
+                row,error = None,None
+                try:
+                    rhs = grid.rhs(state)
+                    stats = lambda:{key:value for key,value in vars(grid).items() if key in
+                        ('maximum_stage_limited_faces','minimum_stage_raw_source_face','maximum_stage_source_face_change','maximum_stage_domain_fallback_faces')}
+                    before_stats = stats()
+                    row = grid.curvature_readout(state,rhs)
+                    restored = stats()==before_stats
+                    if source_domain:
+                        grid.curvature_localization_readout(state)
+                        restored = restored and stats()==before_stats
+                    baseline_rhs = PairedSaturationClock(120.,h).rhs(state.copy())
+                    # Active face limiting changes only the selected metric force;
+                    # the source/matter rows are checked against the old engine at
+                    # this zero-shift slice, where their input geometries coincide.
+                    rows_unchanged = np.array_equal(rhs[[0,1,2,5]],baseline_rhs[[0,1,2,5]])
+                except (FloatingPointError,ValueError) as exc:
+                    error = str(exc); restored = rows_unchanged = False
+                test('positive_packet_curvature_probe_'+str(h),error is None and row['curvature_time_probe_error']<1e-4,
+                     error=error,readout=row,domain_failure=grid.domain_failure)
+                test('positive_packet_state_and_source_'+str(h),np.array_equal(state,original_state) and rows_unchanged)
+                test('positive_probe_limiter_stats_restored_'+str(h),restored)
     if any(not c["passed"] for c in checks):
         failed = [c for c in checks if not c["passed"]]
-        return dict(decision="COLLAPSE_PREFLIGHT_FAILURE",checks=len(checks),passed=len(checks)-len(failed),
-                    failed=failed,details=checks)
+        return dict(decision="METRIC_OPERATOR_PREFLIGHT_FAILURE" if metric_mode else "COLLAPSE_PREFLIGHT_FAILURE",
+                    checks=len(checks),passed=len(checks)-len(failed),failed=failed,details=checks,
+                    code_sha256=entry_hashes[Path(__file__).name],source_hashes=entry_hashes)
     if origin_controls:
         test("unchanged_run_sources",all(hashlib.sha256(path.read_bytes()).hexdigest()==entry_hashes[path.name] for path in hash_paths))
         failed = [c for c in checks if not c["passed"]]
-        return dict(decision=("SATURATION_LOCALIZATION_CONTROLS" if localization_controls else "SATURATION_FEEDBACK_CONTROLS" if feedback_controls else "SATURATION_CURVATURE_CONTROLS" if curvature_controls else "PAIRED_ORIGIN_CONTROLS_ONLY" if paired_origin else "ORIGIN_CONTROLS_ONLY") if not failed else "ORIGIN_DIAGNOSTIC_CONTROL_FAILURE",
+        return dict(decision=("SATURATION_METRIC_OPERATOR_CONTROLS" if metric_controls else "SATURATION_LOCALIZATION_CONTROLS" if localization_controls else "SATURATION_FEEDBACK_CONTROLS" if feedback_controls else "SATURATION_CURVATURE_CONTROLS" if curvature_controls else "PAIRED_ORIGIN_CONTROLS_ONLY" if paired_origin else "ORIGIN_CONTROLS_ONLY") if not failed else "ORIGIN_DIAGNOSTIC_CONTROL_FAILURE",
             checks=len(checks),passed=len(checks)-len(failed),failed=failed,details=checks,
             code_sha256=entry_hashes[Path(__file__).name],source_hashes=entry_hashes)
 
@@ -2344,7 +2850,8 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
         polar = PolarGrid(radius,h)
         packet = initial(polar)
         geometry = polar.geometry(*packet)
-        grid = (PairedSaturationClock if paired_origin else SaturationClock)(radius,h)
+        grid = (metric_factory if metric_mode else PairedSaturationClock if paired_origin else SaturationClock)(radius,h)
+        localize = localize or (metric_mode and not positive_mode and h==.025 and radius==120 and courant==.1)
         grid.measure_curvature = paired_interior
         grid.measure_feedback = feedback_evolution
         state = np.zeros((6,len(grid.r)),complex)
@@ -2359,12 +2866,21 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
         snapshots = []
         localizations = []
         event_time = None
+        failure_context = None
+        phase,attempted_time,state_time = 'initial_readout',0.,0.
         try:
             rows.append(grid.measure(state,0))
             for n in range(round(duration/.25)):
-                for _ in range(steps):
+                for substep in range(steps):
+                    phase,attempted_time = 'evolution',n*.25+(substep+1)*dt
+                    if positive_mode:
+                        grid.domain_failure = None
                     state = legacy.clock_rk4(grid,state,dt)
+                    state_time = attempted_time
                 t = (n+1)*.25
+                phase,attempted_time = 'readout',t
+                if positive_mode:
+                    grid.domain_failure = None
                 row = grid.measure(state,t)
                 rows.append(row)
                 if localize and t in (62.5,62.75):
@@ -2380,15 +2896,36 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
                     break
         except (FloatingPointError,ValueError) as exc:
             status,error = "NUMERICAL_LIMIT",str(exc)
+            if positive_mode:
+                import traceback
+                frames = traceback.extract_tb(exc.__traceback__)
+                failure_context = dict(phase=phase,attempted_time=attempted_time,
+                    last_accepted_RK_time=state_time,last_sample_time=rows[-1]['t'] if rows else None,
+                    domain=getattr(grid,'domain_failure',None),
+                    raising_location=dict(function=frames[-1].name,line=frames[-1].lineno,
+                                          file=Path(frames[-1].filename).name))
         print(f"Saturation h={h} R={radius}: {status}, last={rows[-1]['t'] if rows else 0}, {time.perf_counter()-start:.1f}s",file=sys.stderr,flush=True)
         return dict(h=h,radius=radius,courant=courant,dt=dt,status=status,error=error,
             elapsed_seconds=time.perf_counter()-start,samples=rows,origin_snapshots=snapshots,curvature_localizations=localizations,
+            failure_context=failure_context,
+            source_face_limiter=({key:value for key,value in vars(grid).items() if key in
+                ('maximum_stage_limited_faces','minimum_stage_raw_source_face','maximum_stage_source_face_change','maximum_stage_domain_fallback_faces')} if positive_mode else None),
             stage_minimum_A=grid.minimum_stage_A,stage_minimum_face_A=grid.minimum_stage_face_A,
             stage_minimum_lapse=grid.minimum_stage_lapse,stage_minimum_q=grid.minimum_stage_q,
             stage_minimum_mu=grid.minimum_stage_mu,stage_minimum_u=grid.minimum_stage_u,
             stage_maximum_q=grid.maximum_stage_q,
             maximum_Courant=grid.engine.maximum_courant,
             maximum_paired_wave_RK_number=grid.pair.maximum_wave_RK_number if paired_origin else None)
+
+    if metric_case is not None:
+        h,radius,courant = metric_specs[metric_case]
+        case = run(h,metric_endpoint,radius,courant)
+        test('metric_replay_completed',case['status']=='COMPLETED' and len(case['samples'])==1+round(metric_endpoint/.25) and
+             all(abs(row['t']-.25*i)<1e-12 for i,row in enumerate(case['samples'])))
+        test('unchanged_run_sources',all(hashlib.sha256(path.read_bytes()).hexdigest()==entry_hashes[path.name] for path in hash_paths))
+        failed = [c for c in checks if not c['passed']]
+        return dict(decision='METRIC_OPERATOR_REPLAY' if not failed else 'METRIC_OPERATOR_REPLAY_FAILURE',
+            checks=len(checks),passed=len(checks)-len(failed),failed=failed,details=checks,case=case,source_hashes=entry_hashes)
 
     if localization_case is not None:
         case = run(.025 if localization_case=='fine' else .0125,62.75,localize=True)
@@ -2422,8 +2959,8 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
             code_sha256=entry_hashes[Path(__file__).name],source_hashes=entry_hashes,
             scope=dict(changed_evolution_equations=False,changed_original_gate=False,resolved_trapping=False,singularity_removal=False))
 
-    paired_endpoint = 70. if feedback_evolution else 60. if paired_interior else 51.75 if paired_collapse else 28.
-    pilot = run(.1,paired_endpoint) if paired_origin else run(.1,event_stop=True)
+    paired_endpoint = metric_endpoint if metric_mode else 70. if feedback_evolution else 60. if paired_interior else 51.75 if paired_collapse else 28.
+    pilot = metric_case_results['coarse']['case'] if metric_case_results is not None else run(.1,paired_endpoint) if paired_origin else run(.1,event_stop=True)
     if pilot_only:
         test("unchanged_run_sources",all(hashlib.sha256(path.read_bytes()).hexdigest()==entry_hashes[path.name] for path in hash_paths))
         failed = [c for c in checks if not c["passed"]]
@@ -2432,8 +2969,13 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
     endpoint = paired_endpoint if paired_origin else pilot["samples"][-1]["t"]-(.5 if pilot["status"]=="NUMERICAL_LIMIT" else 0)
     if endpoint<.25:
         raise RuntimeError("No finite pilot interval to refine")
-    cases = dict(coarse=pilot,middle=run(.05,endpoint),fine=run(.025,endpoint),
-                 half_step=run(.025,endpoint,courant=.05),domain=run(.025,endpoint,radius=160))
+    cases = ({name:value['case'] for name,value in metric_case_results.items()} if metric_case_results is not None else
+             dict(coarse=pilot,middle=run(.05,endpoint),fine=run(.025,endpoint),
+                  half_step=run(.025,endpoint,courant=.05),domain=run(.025,endpoint,radius=160)))
+    if metric_case_results is not None:
+        for name,result in metric_case_results.items():
+            test('metric_worker_integrity_'+name,result['source_hashes']==entry_hashes and
+                 result['checks']==result['passed'] and result.get('process_exit_code')==0)
 
     def verdict(end,case_set=None,include_curvature=True,include_feedback=True):
         gates,residuals,differences = {},{},{}
@@ -2541,6 +3083,7 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
                  verdict(.75,fixture,include_feedback=False)['passed'])
             fixture['fine']['samples'][-1][key] = saved
         test('feedback_incomplete_time_rejected',not verdict(1.,fixture)['passed'])
+    if feedback_evolution and not metric_mode:
         expected = dict(coarse=(-.39643516997,.38104169092),middle=(-.39612408548,.38090692893),
                         fine=(-.39604343988,.38086094209),half_step=(-.39604343989,.38086094209),
                         domain=(-.39604343988,.38086094209))
@@ -2560,6 +3103,19 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
     base_accepted,base_rejected,base_trapping = certify(endpoint,include_curvature=False) if paired_interior else (accepted,first_rejected,first_trapping)
     for name,condition in terminal.get("gates",{}).items():
         test("terminal_"+name,condition)
+    metric_reference = None
+    if positive_mode:
+        test('terminal_positive_unbroken_prefix',accepted is not None and accepted['end']==metric_endpoint and first_rejected is None)
+    if metric_mode and not positive_mode:
+        reference = dict(maximum_abs_Kretschmann=.40265105260158157,minimum_F=-.4584361584059753,
+            maximum_density=22.682428840038963,central_proper_time=37.02380099012467,
+            central_weighted_source=.5752730800428267)
+        last = next((row for row in cases['fine']['samples'] if row['t']==62.75),None)
+        differences = {key:abs(last[key]-value)/max(abs(value),1.) for key,value in reference.items()} if last else {}
+        best_error = max(row['curvature_metric_R2_error'] for row in cases['fine']['samples'])
+        test('terminal_metric_upgrade_precision',last is not None and best_error<.0013383642549746441,error=best_error)
+        test('terminal_metric_upgrade_reference',last is not None and all(value<.001 for value in differences.values()),differences=differences)
+        metric_reference = dict(reference=reference,normalized_differences=differences,R2_error=best_error)
     sources_unchanged = all(hashlib.sha256(path.read_bytes()).hexdigest()==entry_hashes[path.name] for path in hash_paths)
     test("unchanged_run_sources",sources_unchanged)
     failed = [c for c in checks if not c["passed"]]
@@ -2583,6 +3139,8 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
                      classification='decreasing' if decrease else 'increasing' if increase else 'unresolved_or_flat',
                      interpretation='Maximum absolute curvature change over the last accepted model-time unit; not global stability')
     return dict(decision="INVALID_CERTIFICATION_CONTROLS" if not certification_valid else
+                ("POSITIVE_METRIC_PREFIX_VALIDATED" if not failed else "POSITIVE_METRIC_PREFIX_OPEN") if positive_mode else
+                ("METRIC_OPERATOR_REPAIR_VALIDATED" if not failed else "METRIC_OPERATOR_REPAIR_OPEN") if metric_mode else
                 ("PAIRED_VALIDATED_FEEDBACK_EVOLUTION" if feedback_validated else "PAIRED_FEEDBACK_PREFIX_OPEN") if feedback_evolution else
                 ("PAIRED_VALIDATED_POSTTRAPPING_CURVATURE" if interior else "PAIRED_CURVATURE_PREFIX_OPEN") if paired_interior else
                 ("PAIRED_VALIDATED_FUTURE_TRAPPING" if trapping else
@@ -2595,11 +3153,13 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
         first_trapping=first_trapping,cases=cases,
         base_evolution_certificate=dict(accepted=base_accepted,first_rejected=base_rejected,first_trapping=base_trapping) if paired_interior else None,
         curvature_certificate=dict(accepted=curvature_accepted,first_rejected=curvature_rejected,first_trapping=curvature_trapping) if feedback_evolution else None,
-        peak_curvature_trend=trend,
+        peak_curvature_trend=trend,metric_upgrade_reference=metric_reference,
         source_prerequisite=dict(checks=source["checks"],passed=source["passed"],parameters=source["parameters"]),
         code_sha256=entry_hashes[Path(__file__).name],engine_sha256=entry_hashes[Path(legacy.__file__).name],
         source_hashes=entry_hashes,
         scope=dict(resolved_trapping=trapping,global_regularity=False,singularity_removal=False,
+                   metric_operator_upgrade=bool(metric_mode and not positive_mode and not failed),
+                   positive_source_reconstruction_prefix=bool(positive_mode and not failed),
                    feedback_evolution=feedback_validated,persistent_regulation=False,
                    posttrapping_curvature=interior,
                    full_RefG_pressure_join=False,same_saturation_action=True,
@@ -2669,6 +3229,199 @@ def curvature_localization_checks():
             two_grid_diagnostic=True,five_run_certificate_extended=False,global_regularity=False,singularity_removal=False))
 
 
+def metric_report_safe(result):
+    """Strict JSON for failed reports; null never substitutes for a measured zero."""
+    missing = []
+    def clean(value,path):
+        if isinstance(value,(float,np.floating)) and not math.isfinite(value):
+            missing.append(dict(path=path,value='nan' if math.isnan(value) else '+inf' if value>0 else '-inf'))
+            return None
+        if isinstance(value,dict):
+            return {key:clean(item,path+'.'+str(key)) for key,item in value.items()}
+        if isinstance(value,(list,tuple)):
+            return [clean(item,path+'['+str(i)+']') for i,item in enumerate(value)]
+        return value
+    safe = clean(result,'$')
+    if not missing:
+        return result
+    safe['nonfinite_report_fields'] = missing
+    if not safe.get('failed'):
+        check = dict(name='metric_report_finite',passed=False)
+        safe['failed'] = [check]
+        safe.setdefault('details',[]).append(check)
+        safe['checks'] = safe.get('checks',0)+1
+        safe['decision'] = 'INVALID_METRIC_REPORT'
+        safe.setdefault('scope',{})['metric_operator_upgrade'] = False
+        safe['scope']['positive_source_reconstruction_prefix'] = False
+    return safe
+
+
+def metric_worker_report(name,returncode,stdout,stderr=''):
+    """Retain worker failures rather than aborting collection of other grids."""
+    try:
+        result = json.loads(stdout)
+        if not isinstance(result,dict):
+            raise ValueError('Worker JSON is not an object')
+        result = metric_report_safe(result)
+    except (ValueError,TypeError) as exc:
+        result = dict(worker_failure=str(exc),failed=[dict(name='worker_json_'+name,passed=False)])
+    result['process_exit_code'] = returncode
+    case = result.get('case')
+    if (returncode!=0 or not isinstance(result.get('checks'),int) or
+            not isinstance(result.get('failed'),list) or result.get('failed') or
+            result.get('checks')!=result.get('passed') or not isinstance(case,dict) or
+            case.get('status')!='COMPLETED' or not isinstance(case.get('samples'),list) or
+            not case['samples'] or not isinstance(result.get('source_hashes'),dict)):
+        result.setdefault('worker_failure','Nonzero exit, failed checks, or incomplete worker case')
+        result['worker'] = name
+        result['stdout_tail'],result['stderr_tail'] = stdout[-4000:],stderr[-4000:]
+    return result
+
+
+def metric_case_summary(case):
+    """Retain the last actual sample, including an empty/early-stopped case."""
+    case = dict(case)
+    rows = case.get('samples',[])
+    rows = rows if isinstance(rows,list) else []
+    finite = lambda value:isinstance(value,(int,float,np.integer,np.floating)) and math.isfinite(value)
+    keys = ('radial_constraint','regular_metric_residual','origin_constraint',
+            'curvature_metric_R2_error','curvature_metric_Ricci_error','curvature_metric_K_error',
+            'curvature_time_probe_error','feedback_budget_error')
+    case['sample_count'] = len(rows)
+    case['prefix_error_maxima'] = {key:max(row[key] for row in rows) if rows and
+        all(isinstance(row,dict) and finite(row.get(key)) for row in rows) else None for key in keys}
+    case['conservation'] = {key:max(abs(row[key]/rows[0][key]-1) for row in rows) if rows and
+        all(isinstance(row,dict) and finite(row.get(key)) for row in rows) and rows[0][key]!=0 else None
+        for key in ('mass','charge')}
+    case['samples'] = [row for i,row in enumerate(rows) if i==len(rows)-1 or
+        isinstance(row,dict) and row.get('t') in (0.,28.,50.5,60.,62.,62.25,62.5,62.75)]
+    case.pop('origin_snapshots',None)
+    return case
+
+
+def metric_failed_workers(preflight,results):
+    if not any(result.get('worker_failure') for result in results.values()):
+        return None
+    checks = list(preflight.get('details',[]))
+    checks.extend(dict(name='metric_worker_available_'+name,passed=not bool(result.get('worker_failure')))
+                  for name,result in results.items())
+    failed = [item for item in checks if not item['passed']]
+    workers = {name:dict(result,case=metric_case_summary(result['case'])) if
+        isinstance(result.get('case'),dict) else result for name,result in results.items()}
+    return dict(decision='METRIC_WORKER_FAILURE',checks=len(checks),passed=len(checks)-len(failed),
+        failed=failed,details=checks,workers=workers,source_hashes=preflight.get('source_hashes'),
+        scope=dict(metric_operator_upgrade=False,positive_source_reconstruction_prefix=False,five_run_certificate_extended=False),
+        interpretation='All worker reports retained; missing/incomplete cases are not certified')
+
+
+def metric_reporting_checks():
+    """In-memory failure-reporting fixtures; no worker or evolution is run."""
+    import copy
+    checks = []
+    def test(name,value):
+        checks.append(dict(name=name,passed=bool(value)))
+    good = dict(checks=1,passed=1,failed=[],details=[],source_hashes={'fixture':'fixed'},
+        case=dict(status='COMPLETED',samples=[dict(t=0.),dict(t=62.75)]))
+    test('finite_success_unchanged',json.dumps(metric_report_safe(good))==json.dumps(good))
+    stopped = copy.deepcopy(good)
+    stopped.update(checks=2,failed=[dict(name='completed',passed=False)])
+    stopped['case'].update(status='NUMERICAL_LIMIT',error='original cause',stage_minimum_A=math.inf,
+                           samples=[dict(t=0.),dict(t=25.75)])
+    safe = metric_report_safe(stopped)
+    test('sentinel_tagged_null',safe['case']['stage_minimum_A'] is None and
+         safe['nonfinite_report_fields']==[dict(path='$.case.stage_minimum_A',value='+inf')])
+    test('original_failure_retained',safe['case']['error']=='original cause' and
+         safe['case']['status']=='NUMERICAL_LIMIT' and bool(safe['failed']))
+    json.dumps(safe,allow_nan=False)
+    for value,label in ((math.inf,'+inf'),(-math.inf,'-inf'),(math.nan,'nan')):
+        fixture = copy.deepcopy(good); fixture['nested'] = [value]
+        encoded = metric_report_safe(fixture)
+        test('nonfinite_success_rejected_'+label,bool(encoded['failed']) and encoded['nested']==[None])
+        json.dumps(encoded,allow_nan=False)
+    success = metric_worker_report('good',0,json.dumps(good))
+    test('successful_worker_unchanged',success==dict(good,process_exit_code=0))
+    for name,code,payload in (('empty',1,''),('malformed',0,'{'),('nonobject',0,'[]'),
+                              ('nonzero_exit',1,json.dumps(good)),('reported_failure',0,json.dumps(safe)),
+                              ('missing_case',0,json.dumps(dict(checks=1,passed=1,failed=[])))):
+        test('reject_'+name,bool(metric_worker_report(name,code,payload,'stderr retained')['worker_failure']))
+    empty = copy.deepcopy(good); empty['case']['samples'] = []
+    test('empty_case_rejected',bool(metric_worker_report('emptycase',0,json.dumps(empty))['worker_failure']))
+    mixed = dict(good=success,stopped=metric_worker_report('stopped',1,json.dumps(safe)),
+                 exception=metric_worker_report('exception',None,'','fixture OSError'))
+    aggregate = metric_failed_workers(dict(details=[]),mixed)
+    test('all_siblings_retained',set(aggregate['workers'])==set(mixed) and
+         aggregate['workers']['good']['case']['status']=='COMPLETED')
+    test('last_sample_retained',aggregate['workers']['stopped']['case']['samples'][-1]['t']==25.75)
+    test('empty_summary_safe',metric_case_summary(dict(samples=[]))['sample_count']==0)
+    test('successful_aggregate_path',metric_failed_workers(dict(details=[]),dict(good=success)) is None)
+    invalid_positive = copy.deepcopy(good)
+    invalid_positive.update(scope=dict(positive_source_reconstruction_prefix=True),unmeasured=math.inf)
+    test('nonfinite_positive_scope_cleared',metric_report_safe(invalid_positive)['scope']['positive_source_reconstruction_prefix'] is False)
+    json.dumps(metric_report_safe(aggregate),allow_nan=False)
+    failed = [item for item in checks if not item['passed']]
+    return dict(decision='METRIC_REPORTING_CONTROLS' if not failed else 'METRIC_REPORTING_FAILURE',
+        checks=len(checks),passed=len(checks)-len(failed),failed=failed,details=checks)
+
+
+def metric_upgrade_checks(positive=False,source_domain=False):
+    """Fixed five-case operator repair, with process-isolated grids and stdout."""
+    from concurrent.futures import ThreadPoolExecutor
+    import subprocess
+    import time
+    start = time.perf_counter()
+    if source_domain and not positive:
+        raise ValueError('Source-domain reconstruction requires the positive-metric test ladder')
+    preflight = collapse_checks(positive_metric='controls',source_domain=source_domain) if positive else collapse_checks(metric_controls=True)
+    if preflight['failed']:
+        return preflight
+    def worker(name):
+        try:
+            command = [sys.executable,'-X','utf8','-B',str(Path(__file__).resolve()),
+                '--positive-metric' if positive else '--metric-case',name]
+            if source_domain:
+                command.append('--source-domain')
+            process = subprocess.run(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,encoding='utf-8')
+            if process.stderr:
+                print(process.stderr,file=sys.stderr,end='',flush=True)
+            return metric_worker_report(name,process.returncode,process.stdout,process.stderr)
+        except Exception as exc:
+            return metric_worker_report(name,None,'',repr(exc))
+    results = {'coarse':worker('coarse')} if positive else {}
+    failure = metric_failed_workers(preflight,results)
+    if failure is not None:
+        failure['decision'] = 'POSITIVE_SOURCE_PILOT_FAILED'
+        failure['elapsed_seconds'] = time.perf_counter()-start
+        return failure
+    # The positive-source stage reaches further controls only after its pilot.
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        futures = {name:pool.submit(worker,name) for name in ('half_step','domain','fine','middle','coarse') if name not in results}
+        for name,future in futures.items():
+            try:
+                results[name] = future.result()
+            except Exception as exc:
+                results[name] = metric_worker_report(name,None,'',repr(exc))
+    failure = metric_failed_workers(preflight,results)
+    if failure is not None:
+        failure['elapsed_seconds'] = time.perf_counter()-start
+        return failure
+    result = (collapse_checks(positive_metric='aggregate',metric_case_results=results,source_domain=source_domain) if positive else
+              collapse_checks(metric_upgrade=True,metric_case_results=results))
+    same_hash = result.get('source_hashes')==preflight['source_hashes']
+    hash_check = dict(name='metric_preflight_production_hash',passed=same_hash)
+    result['details'].append(hash_check)
+    result['checks'] += 1
+    result['passed'] += int(same_hash)
+    if not same_hash:
+        result['failed'].append(hash_check)
+        result['decision'] = 'INVALID_METRIC_PRODUCTION_HASH'
+        result['scope']['metric_operator_upgrade'] = False
+        result['scope']['positive_source_reconstruction_prefix'] = False
+    for name,case in result.get('cases',{}).items():
+        result['cases'][name] = metric_case_summary(case)
+    result['elapsed_seconds'] = time.perf_counter()-start
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--verbose", action="store_true")
@@ -2696,7 +3449,37 @@ def main():
     parser.add_argument('--curvature-localization',action='store_true',help='Two same-action replays to t=62.75; localize independent R2 error')
     parser.add_argument('--localization-controls',action='store_true',help='Fixed-state localization preflight; no collapse evolution')
     parser.add_argument('--localization-case',choices=('fine','finer'),help='Isolated worker for the fixed curvature-localization stage')
+    parser.add_argument('--metric-upgrade',action='store_true',help='Five fixed-window higher-order metric-operator tests through t=62.75')
+    parser.add_argument('--metric-controls',action='store_true',help='Higher-order metric operator preflight only')
+    parser.add_argument('--metric-case',choices=('coarse','middle','fine','half_step','domain'),help='Isolated metric-operator replay worker')
+    parser.add_argument('--positive-metric',choices=('controls','pilot','coarse','middle','fine','half_step','domain'),
+                        help='Source-only face limiter: preflight or fixed t=28 pilot ladder')
+    parser.add_argument('--source-domain',action='store_true',
+                        help='With --positive-metric: use the existing source-domain tolerance instead of exact positivity')
     args = parser.parse_args()
+    if args.source_domain and not args.positive_metric:
+        parser.error('--source-domain requires --positive-metric')
+    if args.positive_metric:
+        if any(value for name,value in vars(args).items() if name not in ('positive_metric','source_domain','verbose')):
+            parser.error('Choose the source-positive metric mode on its own')
+        result = (metric_upgrade_checks(positive=True,source_domain=args.source_domain) if args.positive_metric=='pilot' else
+                  collapse_checks(positive_metric=args.positive_metric,source_domain=args.source_domain))
+        result['source_reconstruction'] = 'existing_domain_admissible_endpoint' if args.source_domain else 'exact_positive_zero_blend'
+        result = metric_report_safe(result)
+        if not args.verbose:
+            result.pop('details',None)
+        print(json.dumps(result,indent=2,allow_nan=False))
+        return int(bool(result['failed']))
+    if args.metric_upgrade or args.metric_controls or args.metric_case:
+        modes = ('metric_upgrade','metric_controls','metric_case')
+        if sum(bool(getattr(args,name)) for name in modes)!=1 or any(value for name,value in vars(args).items() if name not in modes+('verbose',)):
+            parser.error('Choose one metric-operator mode on its own')
+        result = metric_upgrade_checks() if args.metric_upgrade else collapse_checks(metric_case=args.metric_case,metric_controls=args.metric_controls)
+        result = metric_report_safe(result)
+        if not args.verbose:
+            result.pop('details',None)
+        print(json.dumps(result,indent=2,allow_nan=False))
+        return int(bool(result['failed']))
     if args.curvature_localization or args.localization_controls or args.localization_case:
         modes = ('curvature_localization','localization_controls','localization_case')
         if sum(bool(getattr(args,name)) for name in modes)!=1 or any(value for name,value in vars(args).items() if name not in modes+('verbose',)):

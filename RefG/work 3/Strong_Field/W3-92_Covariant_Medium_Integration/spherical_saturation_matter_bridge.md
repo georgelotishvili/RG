@@ -2587,6 +2587,356 @@ pressure/scale join retain their separate open status.
     changed_evolution_RHS=false; changed_original_threshold=false;
     unique_defective_stencil_identified=false; singularity_removal=false.
 
+## 18. Higher-order interior metric operators, fixed-window repair
+
+### Contract before nonlinear evolution
+
+The decision is whether a coherent upgrade of metric numerics resolves
+section 17's independent-curvature discrepancy on the original h=.025
+grid. This is a numerical implementation test of the same saturation
+action, harmonic clock and charged packet. The original solver remains
+available unchanged. Files are this report, its verifier and the W92
+index; output is stdout only. The stop remains t=62.75.
+
+The candidate uses fourth-order parity interpolation between metric
+faces and cells; the existing sixth-order staggered gradient and its
+nodal weighted-adjoint radial divergence; and fourth-order shift/lapse
+derivatives. The outermost six entries retain the original closure.
+Initial matter and the polar initial-geometry construction stay fixed.
+The latter retains second-order numerical ingredients, so an interior
+operator upgrade does not assert globally fourth-order evolution.
+
+Preflight requires even/odd polynomial and centre tests, compact-support
+gauge adjointness, unchanged paired-matter charge balance, constant-core
+clock/curvature tests, manufactured nonlinear metric-RHS convergence,
+and frozen gauge spectrum controls against the legacy boundary. The
+zero-Jordan chain G(1)=0, G(r^2)=2r, D(r)=3 is checked explicitly;
+near-zero eigenvalue splitting already present in the old open closure
+is separated from resolved nonzero-frequency instability. A four-unit
+linear pulse control additionally checks finite response and no more
+than five percent excess energy growth over the old closure. All must
+pass before the nonlinear packet is run.
+
+The five fixed cases are h=.1,.05,.025 at R=120, a half-time-step control
+at h=.025, and R=160 at h=.025. Courant=.1 except the .05 half-step
+control. Sampling is every .25 through 62.75. The same original D4
+curvature readout, .005 error ceilings, charge/mass, refinement,
+time-step and domain gates are used. Metric readout substitutions and
+constraint projection are excluded. Runs may execute in isolated
+parallel processes, with source hashes checked at entry and exit.
+
+The additional repair target is a fine-grid maximum R2 error below
+.0013383642549746441, section 17's twice-finer result. At 62.75,
+maximum |K|, minimum F, maximum density, central proper time and central
+weighted source must agree with that reference within normalized .001.
+Failure is retained as a bounded numerical result; thresholds and
+parameters are not retuned after production output. Neither a further
+time extension nor another finer-grid sequence is part of this stage.
+
+Pre-production freeze: verifier SHA256
+`d84043f818c88b7807879f5a146a064d6e23f61f6671227e8ff0d4dd005dad01`.
+The final-source metric preflight passed 122/122 checks; the unchanged
+base and source-budget suites passed 74/74 and 104/104. The two imported
+engine hashes remain those recorded in section 17. An independent
+code audit confirmed unchanged old solver classes, initial packet,
+paired-matter operators and original certification functions.
+
+### Result: the candidate fails its physical-domain reconstruction
+
+The frozen five-case attempt fails the registered repair target. Its
+preserved progress output records:
+
+| Case | Last completed sampled time | Evolution wall time (s) | Status |
+|---|---:|---:|---|
+| h=.1, R=120, C=.1 | No initial sample | 0.0 | NUMERICAL_LIMIT |
+| h=.05, R=120, C=.1 | 0 | 0.1 | NUMERICAL_LIMIT |
+| h=.025, R=120, C=.1 | 25.75 | 206.0 | NUMERICAL_LIMIT |
+| h=.025, R=120, C=.05 | 25.75 | 413.6 | NUMERICAL_LIMIT |
+| h=.025, R=160, C=.1 | 25.75 | 258.6 | NUMERICAL_LIMIT |
+
+The coarse worker's unmeasured guard minima remained infinite sentinels.
+Strict JSON serialization rejected them, and the coordinator then failed
+to parse that worker's empty output. Consequently this attempt has no
+aggregate check count or preserved detailed fine-grid failure state.
+The common stop time alone cannot identify the finer runs' cause.
+
+A same-source, immediate coarse replay recovers the exact exception:
+`NUMERICAL_ACTION_DOMAIN_LIMIT: resolved negative u`. A separate static
+initial-data audit (53/53 prerequisites) reproduces it without evolution.
+At r=20.4 the four positive cell values of mu are
+`(4.393865254777e-16, 2.644963433307e-13,
+1.747211351475e-11, 3.261868846568e-10)`.
+The new face interpolation `(-1,9,9,-1)/16` gives
+`mu_face=-1.040986470753603e-11`, whereas the original interpolation
+there gives `+8.868304929039301e-12`. The corresponding
+`u=-3.3311567064226263e-12` crosses the unchanged action-domain
+tolerance `-100*machine_epsilon=-2.220446049250313e-14`.
+The location is the packet's inner edge, well away from the centre and
+the outer closure. The negative interpolation coefficient supplies the
+identified defect; the underlying initial cell source remains nonnegative.
+
+| h | Minimum initial face mu | Radius | Initial negative-u gate |
+|---|---:|---:|---|
+| .1 | -1.040986470753603e-11 | 20.4 | Fails |
+| .05 | -3.745638311796453e-14 | 20.35 | Within tolerance |
+| .025 | -7.558037204236142e-18 | 20.275 | Within tolerance |
+
+This rejects the tested unrestricted interpolation package as an
+admissible repair for this packet. The smooth manufactured and linear
+preflight controls passed but missed the actual packet's near-vacuum
+edge. Initial-packet admissibility is therefore added to the preflight
+after this failed attempt. A failed-result reporting repair preserves
+nonfinite metadata explicitly and prevents one worker from discarding
+its siblings; neither change alters evolution equations or tolerances.
+
+The previous five-run certificate remains t=62.5. The unmodified
+saturation action, old solver results and physical interpretation keep
+their prior status. The next numerical candidate would need a
+positivity-preserving face reconstruction, tested first on this actual
+initial edge; later fine-grid failure attribution is still unmeasured.
+No new nonlinear replay, clipping rule, threshold change or further
+time extension is part of this completed stage. Global regularity and
+the full RefG pressure connection retain their existing open status.
+
+Post-failure verifier SHA256:
+`e9f51739fc48b17010fa521232e063550873b11aa3d56758700878b569bcf4b1`.
+The revised metric preflight reports 123/124, with the single failure
+`metric_initial_packet_admissibility_0.1`; it now blocks production
+before spawning workers. These are diagnostic results after the failed
+trial, not a reclassification of the frozen production run. Reporting
+fixtures pass 18/18; base and source-budget regressions pass 74/74 and
+104/104. AST comparison also confirms unchanged original solver classes,
+paired-matter operators, initial-data factory and certification functions.
+
+Reproduce the early rejection with `--metric-controls` or
+`--metric-upgrade` on the verifier (expected exit code 1).
+`metric_reporting_checks()` runs only the in-memory reporting fixtures.
+
+## 19. Source-only positivity repair and bounded replay
+
+### Contract before implementation and replay
+
+The target is to remove section 18's artificial negative face source
+without changing cell mass, the saturation action, matter equations,
+clock gauge, packet, domain tolerances or curvature acceptance tests.
+Only this report, the existing verifier and W92 index are in scope.
+The old numerical modes remain available; a default source-face hook
+is a behavior-preserving refactor used to isolate the new reconstruction.
+
+For the existing high-order face value H and the nonnegative adjacent
+mean L, use the maximal admissible convex blend: retain H when H>=0;
+for H<0, theta=L/(L-H) gives (1-theta)L+theta H=0. At L=0 use the
+zero endpoint. This is explicitly a face limiter (the positive part
+of H on admissible input), not a modification of evolved cell values.
+The outer face's low-order endpoint is the last cell value. If both
+reconstructions are negative they are left to the existing domain
+guard; resolved negative cell values are independently rejected.
+Generic interpolation of lapse and signed stresses stays unchanged.
+The high-order formula is retained wherever its raw face value is
+admissible; smooth profiles bounded away from zero retain fourth-order
+accuracy once resolved.
+
+Preflight requires the actual three initial packets; unchanged primary
+state, charge/mass update and signed interpolation; empty-cavity and
+outer-face controls; a resolved-negative-primary-state rejection;
+smooth positive fourth-order reconstruction; the existing manufactured,
+parity, gauge, curvature and directional-probe controls. Limiter
+statistics must not be contaminated by diagnostic trial states.
+
+After all preflight checks pass, run the h=.1,R=120,C=.1 pilot only
+through t=28, sampling every .25. If it cannot complete, retain its
+last sample, failing phase/time and exception and stop this stage.
+Action-domain failures additionally record the exact cell/face,
+radius, primary values, RK substage and diagnostic-probe origin;
+other guards retain their own message without an inferred location.
+If it completes, run h=.05,.025 plus the h=.025 half-step and R=160
+controls to the same endpoint, and apply the original five-case
+prefix gates. No t=62.75 precision claim or further time extension
+is sought here. A failure keeps its actual status; neither a new
+physical term nor a retuned tolerance is introduced after output.
+
+Pre-replay verifier SHA256:
+`ec7e3efc02ee7dd9e945028fe7cf43e29f5e99b386df55775b449345d720b5c4`.
+All 156 source-positive preflight checks and 19 reporting fixtures pass.
+Base, source-budget and legacy localization regressions pass 74/74,
+104/104 and 93/93. An independent AST audit confirms the old equations,
+initializer and certification gates, modulo the default delegation hook.
+
+### Result: initial repair passes; the pilot isolates a tolerance mismatch
+
+The source-face limiter repairs the initial packet on all three grids.
+Its smooth positive interpolation errors for h=.1,.05,.025 are
+`2.651805502873472e-5, 1.7323106571431879e-6, 1.0946325845750948e-7`.
+The initial curvature time-probe discrepancies are at most 2.76e-11;
+the primary state and initial source/matter update remain unchanged.
+
+The preregistered coarse pilot then stops, so the other four runs are
+not launched. The command returns `POSITIVE_SOURCE_PILOT_FAILED`,
+156/157 aggregate checks and exit code 1. Total elapsed time is 25.584 s
+including preflights; the evolution itself takes .094 s. The last
+accepted RK endpoint is t=.09 and the attempted step endpoint is .10.
+The failure is its third RK substage (nominal midpoint t=.095), at
+source face index 201, r=20.2. It is a true evolution-stage guard,
+not a directional curvature probe. The exception is
+`NUMERICAL_ACTION_DOMAIN_LIMIT: resolved negative u`.
+
+The retained values give the cause directly:
+
+| Quantity | Value |
+|---|---:|
+| Raw high-order face H | -7.029049897307989e-14 |
+| Low-order adjacent mean L | -6.838811314713941e-16 |
+| u(H) | -2.2492959671386072e-14 |
+| u(L) | -2.1884196207084617e-16 |
+| Existing negative-u limit | -2.220446049250313e-14 |
+
+For kappa=2 alpha ell^2=.32 and q>0, the same guard is exactly
+
+    u=kappa*mu/(1+kappa*mu) >= -delta
+    iff mu >= -delta/[kappa*(1+delta)],  delta=100*machine_epsilon.
+
+Its lower mu boundary is `-6.938893903907074e-14`. Every contributing
+cell and the linear face L satisfy it; H exceeds the allowed negative
+u magnitude by about 1.30 percent. The strict limiter predicate
+`H<0 and L>=0` is false because L is slightly negative. Consequently
+it leaves H unchanged despite having a numerically admissible linear
+endpoint. The negative outer coefficient on the positive cell at
+r=20.35 dominates the rejected reconstruction. The four primary values
+at r=(20.05,20.15,20.25,20.35) are
+`(1.165691706620534e-19, -4.378100645570907e-17,
+-1.3239812564870792e-15, 1.1123380066336225e-12)`.
+An independent static audit reproduces this classification exactly.
+These records establish tolerated numerical undershoot, without
+separating its roundoff and truncation contributions.
+
+Only the t=0 sample was completed; its zero sampled conservation drift
+is not an evolved conservation certificate. The physical-stage
+Courant and paired-wave maxima are .09135 and .24896, below their
+unchanged .4 and 2.5 guards. Failure metadata and the last sample are
+preserved in strict JSON. No new time prefix or singularity-removal
+claim is established; the old t=62.5 certificate retains its scope.
+
+The next bounded numerical correction is to make face reconstruction
+respect the already registered admissible interval, rather than mix
+an exact-sign predicate with a tolerance-based cell guard. That uses
+the same tolerance, source equation and primary data. This stage ends
+with the identified mismatch; the older fine-grid t=25.75 cause remains
+unattributed. Reproduce with `--positive-metric controls` (156/156,
+exit 0) or `--positive-metric pilot` (recorded failure, exit 1).
+
+## 20. Source-face reconstruction in the registered numerical domain
+
+### Contract before the nonlinear replay
+
+The bounded target is section 19's face-domain mismatch. Keep its
+coarse-first t=28 ladder, packet, action, primary variables, clock,
+signed-field interpolation, sampling and all original acceptance limits.
+Only the verifier, this report and W92 index are editable. The stage19
+class and command without the new modifier remain reproducible.
+
+The new `--source-domain` modifier of `--positive-metric` selects an
+isolated source-face reconstruction. Compute q, z and u in exactly the
+production floating-point order. Retain every admissible high-order H,
+including negative values within the existing 100-epsilon buffer.
+For finite H,q,z,u with q>0 and u below that buffer, select the adjacent
+mean L only when L satisfies the same original domain predicate. The
+outer L is the last cell value. All other H values remain subject to
+the original guards. No primary clipping, zero projection, floor or
+larger tolerance is introduced; ell=0 uses the raw reconstruction.
+
+Required controls are the saved four-cell RK3 failure, accepted negative
+values, both-endpoint failure, representable neighbours of the guard,
+nonfinite/wrong-branch/saturation rejection, ell=0, unchanged state and
+signed fields, smooth reconstruction order, the three actual initial
+packets, curvature probes and restoration of diagnostic-only statistics.
+The existing base, source-budget, localization and reporting regressions
+must also pass. Stage19 remains a historical numerical comparator.
+
+After preflight, run only h=.1,R=120,C=.1 through t=28 with .25 samples.
+On failure, retain the actual last sample, RK endpoint/substage when
+available, exception and raising location, and finish this stage. If
+the pilot completes, run h=.05,.025 plus the .025 half-step and R=160
+controls to t=28 and require the original uninterrupted five-case
+prefix gates. Completion of a worker alone is insufficient. This is
+a numerical-method validation on the existing action, with no new
+observational claim. Physics/source-join/global-regularity flags stay
+false; no later-time extension or second repair is authorized within
+this stage. The code hash is recorded after controls and before replay.
+
+Pre-replay verifier SHA256:
+`7ee5522ac8fd55b9c6a306ae3e2144921a52958ea73136c283ab854f39ec5586`.
+Controls pass 168/168, reporting fixtures 19/19, and base/source-budget/
+legacy-localization/stage19 controls 74/74, 104/104, 93/93 and 156/156.
+Independent AST and numerical audits agree on the ordered source-domain
+predicate, unchanged production equations, worker selector propagation
+and diagnostic-statistics restoration. Both imported engines retain
+their section 18 hashes. No nonlinear stage20 result has been used to
+choose the reconstruction, its endpoint or its acceptance thresholds.
+
+### Result: five-case source-domain prefix validated
+
+The command `--positive-metric pilot --source-domain` returns
+`POSITIVE_METRIC_PREFIX_VALIDATED`, **228/228**, exit 0. All five
+runs complete t=28 with 113 samples each. The base, curvature and
+feedback certificates accept every sampled prefix from .25 to 28;
+their first-rejection fields are null. Total elapsed time, including
+repeated controls and aggregation, is 582.978 s. The verifier and both
+engine hashes stay equal to the preregistered hashes throughout.
+
+| Case | h | Outer R | dt | Samples | Prefix maximum normalized metric R2 error |
+|---|---:|---:|---:|---:|---:|
+| coarse | 0.1 | 120 | 0.01 | 113 | 2.3594011e-4 |
+| middle | 0.05 | 120 | 0.005 | 113 | 2.9701348e-5 |
+| fine | 0.025 | 120 | 0.0025 | 113 | 2.5409773e-6 |
+| half_step | 0.025 | 120 | 0.00125 | 113 | 2.5409832e-6 |
+| domain | 0.025 | 160 | 0.0025 | 113 | 2.5409773e-6 |
+
+On h=.025, the prefix maxima are 5.725500394578196e-5 for the radial
+constraint, 6.392025999675537e-8 for the regular-metric residual,
+7.191970797697697e-5 for the origin constraint, 2.540510743066424e-6
+for metric Ricci error, 2.102205250156743e-8 for metric Kretschmann
+error and 1.525745148858032e-6 for the feedback-budget error. These
+are the existing verifier's normalized diagnostics. The coarse
+origin residual is .013770349395765512; the original gate applies
+its absolute bound to the fine result and requires refinement from
+the middle result (.000999391292412515). Those requirements pass.
+
+Across all sampled times and grids, the largest relative charge drift
+is 1.0386069781986862e-10. The sampled outer total mass is unchanged
+to the reported floating-point precision on each grid. The largest
+registered half-step discrepancy is 2.002103156005519e-9; the largest
+enlarged-domain discrepancy is 2.2967785307814103e-16, using each
+observable's original normalization. The largest curvature time-probe
+discrepancy is 4.0911575169277903e-10. Physical-stage Courant and paired
+wave maxima are .09350520719087464 and .2548482275806726, respectively,
+below the unchanged .4 and 2.5 guards.
+
+The actual-source correction is localized: its maximum simultaneous
+replacement count is three faces on coarse/middle and two on the fine
+and control grids. Counts are per reconstruction call, not total events.
+On the fine run the most negative raw face is -7.346034961246577e-12
+and the largest H-to-L change is 4.886594736875152e-11. Primary values
+are never clipped. Its minimum accepted u is -2.2193628367497117e-14,
+inside the original -2.220446049250313e-14 numerical buffer. Diagnostic
+trial states are excluded from these stage extrema.
+
+At t=28 the fine run has minimum F=.5511170695662444, maximum scalar
+density .05463538957720123 and central elapsed proper time
+20.86282622514792. The positive F and absent trapping certificate
+place this new-method check before the trapped region. The previous
+reconstruction obstacle is removed on this registered interval; the
+old stage18 fine-run exception still has no preserved direct diagnosis.
+The only new closure is the short source-reconstruction prefix.
+Global regularity, singularity removal, persistent regulation and the
+full RefG pressure join remain false. The old method's t=62.5 certificate
+retains its separate scope. No monograph or Git rules were changed.
+
+This bounded stage is complete. The next direct numerical decision is
+whether the same frozen reconstruction passes the five-case independent
+curvature/source gates through the previously problematic t=62.75,
+without changing physics or precision limits. That later replay has
+not been performed here.
+
 ## Reproduction and attribution
 
     python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py"
