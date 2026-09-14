@@ -13,7 +13,69 @@ exponential exterior and selected additive constitutive truncations are
 candidate assumptions, not requirements imposed on every future action.
 The negative results below remain valid in their stated domains.
 
-Latest local source/readout comparison:
+Latest conclusive dynamical test:
+[spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section37 (2026-09-14). The unchanged rational gravitational action admits
+an exact positive conserved ingoing null-fluid solution with bounded mass
+aspect m(v)=2-1/[4(1+v)] (ell=1). In the invariant annulus
+7/6<=r<=5/4, v>=24, its response remains q>1/4, yet a freely falling
+timelike observer encounters divergent parallel angular tidal curvature
+within remaining proper time<=1/3 in model units. Only1/100 additional
+geometric mass arrives after v=24. Exact field equations, source
+conservation, geodesics and rational comparison bounds establish this;
+no long-time numerical extrapolation is used. The Ricci and Kretschmann
+scalars remain bounded. The current screening mechanism therefore fails
+to guarantee nonsingularity in this declared gravity-plus-null-source
+class. The proof is an inner-horizon neighbourhood result, not formation
+from smooth-centre canonical initial data or rejection of full RefG.
+All54 new and452 previous tests pass **506/506**. The same annulus
+also contains a finite-affine null ray with divergent parallel curvature.
+The geometry and production scalar code have not been modified.
+
+Preceding connected readout/source decision:
+[spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section36. Existing W51/W52/W54/W67 already permit the full coframe;
+section35's globally reciprocal common-p condition was an additional
+diagnostic restriction, not a required strong-field law. The actual
+action-derived static relation is p_T=sigma*(1-s*p_L'/p_L).
+The neutral coherent stationary sextic source cannot fill a smooth
+nonextremal black hole in the stated harmonic class. A separate minimal
+healthy isentropic rho(n) cannot saturate as n grows without bound.
+These three decisions passed452/452 and motivated the actual dynamical
+test above; they do not erase the previous finite-time scalar evidence.
+
+Previous continuation and restricted global-readout decision:
+[spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section35 (2026-09-14). The section34 event passes the next diagonal
+metric/source coefficients and the leading mixed constraint's time
+derivative. An exact, unexpanded angular/radial identity then excludes
+extending this same zero-shift common-p metric to a standard isolated
+nonzero-mass end with the retained canonical source and the stated
+differentiated falloffs. Its nonnegative left side has a mass term of
+order s^-4, while its right side is only order s^-6. This is an analytic
+conditional incompatibility, not a numerical evolution failure.
+All36 new and378 preceding checks pass **414/414**. The local result
+does not include the scalar equation at order s^2 or prove PDE existence.
+The exclusion concerns the globally exact readout restriction, not the
+saturation action or full RefG. Do not extend a Taylor ladder or tune
+an exterior under that same restriction. Neither global singularity
+removal nor full RefG rejection is established. No intuitive file,
+action, potential or production evolution has changed.
+
+Previous dynamic common-readout test:
+[spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section34 (2026-09-14). Time-dependent common clock/rod scaling admits
+an exact compatible finite-order charged canonical central jet at u=3/4,
+beyond section33's static restriction. The common clock scale decreases,
+the conserved-charge and energy-rest flows contract locally, and the
+source, energy, phase-current and direct metric/curvature equations agree.
+All43 new and335 preceding checks pass **378/378**. This establishes
+central compatibility at one event, not an all-orders evolution,
+foundation-pressure derivation, stable interior or global regular black
+hole. The saturation action, canonical potential and production evolution
+are unchanged.
+
+Previous static local source/readout comparison:
 [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
 section33 (2026-09-14). The existing sourced regular-centre construction
 is retained. A new exact central-order comparison finds that the

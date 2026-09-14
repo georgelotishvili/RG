@@ -4,7 +4,7 @@ Run: python -X utf8 -B verify_saturation_completion_boundary.py --verbose
 Only stdout is written. No evolution or global initial-data family is solved.
 The topological focusing argument is an analytical conditional theorem; these
 symbolic checks verify its local field-equation premises, not that theorem.
-See spherical_saturation_matter_bridge.md, sections 24 through 33.
+See spherical_saturation_matter_bridge.md, sections 24 through 37.
 """
 import argparse
 import ast
@@ -15,6 +15,653 @@ import sys
 
 sys.dont_write_bytecode = True
 import sympy as s
+
+
+def null_tail_curvature_checks(exact, gate):
+    """Section37: exact null-fluid solution and rational ODE certificate."""
+    v,r,ell,alpha=s.symbols("v r ell alpha",positive=True)
+    m=s.Function("m")(v)
+    F=s.Function("f")(v,r)
+    coord=(v,r)
+    gamma=s.Matrix([[-F,1],[1,0]])
+    inverse=gamma.inv()
+    conn={}
+    for i in range(2):
+        for j in range(2):
+            for k in range(2):
+                conn[i,j,k]=s.simplify(sum(inverse[i,l]*(s.diff(gamma[l,k],coord[j])+s.diff(gamma[l,j],coord[k])-s.diff(gamma[j,k],coord[l]))/2 for l in range(2)))
+    hess=s.Matrix(2,2,lambda i,j:-conn[1,i,j])
+    box=sum(inverse[i,j]*hess[i,j] for i in range(2) for j in range(2))
+    hess_sq=sum(inverse[i,k]*inverse[j,l]*hess[i,j]*hess[k,l] for i in range(2) for j in range(2) for k in range(2) for l in range(2))
+    ric=s.Matrix(2,2,lambda i,j:sum(s.diff(conn[k,i,j],coord[k])-s.diff(conn[k,i,k],coord[j])+sum(conn[k,k,l]*conn[l,i,j]-conn[k,j,l]*conn[l,i,k] for l in range(2)) for k in range(2)))
+    R2=s.simplify(sum(inverse[i,j]*ric[i,j] for i in range(2) for j in range(2)))
+    exact("null_tail_direct_orbit_curvature",R2,-s.diff(F,r,2))
+    exact("null_tail_direct_box_radius",box,s.diff(F,r))
+    exact("null_tail_hessian_square",hess_sq,s.diff(F,r)**2/2)
+    f=1-2*m*r**2/(r**3+2*m*ell**2)
+    evaluate=lambda expr:s.factor(expr.subs(F,f).doit())
+    z=(1-f)/r**2
+    q=1-ell**2*z
+    Ao=2*r**2*z*(1-3*ell**2*z)/q**2
+    beta=-2*r/q**2
+    for i,j,name,target in ((0,0,"vv",2*s.diff(m,v)),(0,1,"vr",0),(1,1,"rr",0)):
+        E=beta*evaluate(hess[i,j])-(Ao/2+beta*evaluate(box))*evaluate(gamma[i,j])
+        exact("null_tail_original_orbit_"+name,E,target)
+    # Angular equation differentiated at fixed X before the background is inserted.
+    rr,X=s.symbols("areal X",real=True)
+    zz=(1-X)/rr**2
+    aa=2*rr**2*zz*(1-3*ell**2*zz)/(1-ell**2*zz)**2
+    bb=-2*rr/(1-ell**2*zz)**2
+    bg={rr:r,X:f}
+    angular=(-beta*evaluate(R2)+s.diff(aa,rr).subs(bg)+
+             2*s.diff(bb,rr).subs(bg)*evaluate(box)+
+             2*s.diff(bb,X).subs(bg)*evaluate(box**2-hess_sq))
+    exact("null_tail_original_angular",s.factor(angular),0)
+    exact("null_tail_generalized_mass",r**3*z/(2*q),m)
+    exact("null_tail_mass_equation",s.diff(r**3*z/(2*q),v),s.diff(m,v))
+    density=s.diff(m,v)/(alpha*r**2)
+    exact("null_tail_null_action_constraint",inverse[0,0],0)
+    exact("null_tail_source_conservation",s.diff(r**2*density,r)/r**2,0)
+    for i in range(2):
+        exact("null_tail_ingoing_affine_"+str(i),conn[i,1,1],0)
+    exact("null_tail_source_equation_normalization",2*alpha*r**2*density,2*s.diff(m,v))
+    K=s.symbols("kv",positive=True)
+    k=s.Matrix([K,F*K/2])
+    exact("null_tail_outgoing_null",(k.T*gamma*k)[0],0)
+    klog=-s.diff(F,r)/2
+    exact("null_tail_affine_v_equation",K**2*klog+sum(conn[0,i,j]*k[i]*k[j] for i in range(2) for j in range(2)),0)
+    r_accel=K**2*(s.diff(F,v)/2+s.diff(F,r)*F/4+F*klog/2)
+    exact("null_tail_affine_r_equation",r_accel+sum(conn[1,i,j]*k[i]*k[j] for i in range(2) for j in range(2)),0)
+    Rkk=-2*(k.T*hess*k)[0]/r
+    exact("null_tail_parallel_Ricci_geometry",Rkk,-s.diff(F,v)*K**2/r)
+    exact("null_tail_parallel_Ricci_source",evaluate(Rkk),2*q**2*s.diff(m,v)*K**2/r**2)
+    exact("null_tail_parallel_screen_tide",-r_accel/r,Rkk/2)
+    exact("null_tail_vacuum_flux_control",evaluate(Rkk).subs(s.diff(m,v),0),0)
+    R4=R2+2*(1-F)/r**2-4*box/r
+    Kretsch=R2**2+4*((1-F)/r**2)**2+8*hess_sq/r**2
+    exact("null_tail_Ricci_scalar",R4,-s.diff(F,r,2)-4*s.diff(F,r)/r+2*(1-F)/r**2)
+    exact("null_tail_Kretschmann",Kretsch,s.diff(F,r,2)**2+4*s.diff(F,r)**2/r**2+4*(1-F)**2/r**4)
+    exact("null_tail_Einstein_control",f.subs(ell,0),1-2*m/r)
+
+    # Exact invariant-rectangle proof, not a numerical integration.
+    mm=s.symbols("mass",positive=True)
+    fc=f.subs({ell:1,m:mm})
+    qc=q.subs({ell:1,m:mm})
+    lo,hi,mlo,mhi=s.Rational(7,6),s.Rational(5,4),s.Rational(199,100),s.S(2)
+    exact("null_tail_mass_monotonic_f",s.diff(fc,mm),-2*r**5/(r**3+2*mm)**2)
+    left=s.factor(fc.subs({r:lo,mm:mhi}))
+    right=s.factor(fc.subs({r:hi,mm:mlo}))
+    exact("null_tail_left_inward_value",left,s.Rational(31,1207))
+    exact("null_tail_right_inward_value",right,-s.Rational(457,9493))
+    gate("null_tail_invariant_rectangle_signs",bool(left>0 and right<0))
+    gate("null_tail_initial_radius_inside",bool(lo<s.Rational(6,5)<hi))
+    exact("null_tail_nonextremal_margin",mlo**2-s.Rational(27,16),s.Rational(56815,25000))
+    # Each numerator factor is positive; bound factors separately on the box.
+    rate=-s.diff(fc,r)/2
+    exact("null_tail_affine_growth_rate",rate,mm*r*(4*mm-r**3)/(r**3+2*mm)**2)
+    rate_low=s.factor(mlo*lo*(4*mlo-hi**3)/(hi**3+2*mhi)**2)
+    q_low=s.factor(lo**3/(hi**3+2*mhi))
+    exact("null_tail_rate_bound_independent",rate_low,s.Rational(107104984,272176875))
+    exact("null_tail_q_bound_independent",q_low,s.Rational(2744,10287))
+    gate("null_tail_uniform_positive_growth",bool(rate_low>s.Rational(3,8)))
+    gate("null_tail_response_away_from_zero",bool(q_low>s.Rational(1,4)))
+    gate("null_tail_box_denominator_positive",bool(lo**3+2*mlo>0 and lo>0))
+    tail=2-1/(4*(1+v))
+    exact("null_tail_initial_mass",tail.subs(v,24),mlo)
+    exact("null_tail_final_mass",s.limit(tail,v,s.oo),mhi)
+    exact("null_tail_remaining_finite_energy",mhi-tail.subs(v,24),s.Rational(1,100))
+    exact("null_tail_positive_flux",s.diff(tail,v),1/(4*(1+v)**2))
+    exact("null_tail_Ricci_prefactor_bound",2*s.Rational(1,4)**2*s.Rational(1,4)/hi**2,s.Rational(1,50))
+    lower=s.exp(3*(v-24)/4)/(50*(1+v)**2)
+    divergence_limit=s.limit(lower,v,s.oo)
+    gate("null_tail_parallel_curvature_diverges",divergence_limit==s.oo,
+         limit=str(divergence_limit))
+    exact("null_tail_affine_length_bound",s.integrate(s.exp(-3*(v-24)/8),(v,24,s.oo)),s.Rational(8,3))
+    # The same divergence is experienced by an affinely parametrized massive
+    # test observer; this is a geodesic, not a stationary accelerated frame.
+    U=s.Matrix([K,(F*K-1/K)/2])
+    exact("null_tail_timelike_norm",(U.T*gamma*U)[0],-1)
+    exact("null_tail_timelike_v_geodesic",K**2*klog+sum(conn[0,i,j]*U[i]*U[j] for i in range(2) for j in range(2)),0)
+    ur=(F*K-1/K)/2
+    ur_rate=s.diff(ur,v)*K+s.diff(ur,r)*ur+s.diff(ur,K)*K**2*klog
+    exact("null_tail_timelike_r_geodesic",ur_rate+sum(conn[1,i,j]*U[i]*U[j] for i in range(2) for j in range(2)),0)
+    tide=-(U.T*hess*U)[0]/r
+    exact("null_tail_timelike_screen_tide",tide,-s.diff(F,v)*K**2/(2*r)+s.diff(F,r)/(2*r))
+    exact("null_tail_timelike_source_tide",evaluate(tide),q**2*s.diff(m,v)*K**2/r**2+s.diff(f,r)/(2*r))
+    exact("null_tail_timelike_left_margin",left-s.Rational(1,64),s.Rational(777,77248))
+    gate("null_tail_timelike_interval_invariant",bool(left-s.Rational(1,64)>0 and right<0))
+    exact("null_tail_tidal_remainder_bound",1+s.diff(fc,r)/(2*r),r**3*(r**3+5*mm)/(r**3+2*mm)**2)
+    proper_time=s.integrate(s.exp(-3*(v-24)/8)/8,(v,24,s.oo))
+    exact("null_tail_timelike_proper_time_bound",proper_time,s.Rational(1,3))
+    tide_lower=s.Rational(16,25)*s.exp(3*(v-24)/4)/(1+v)**2-1
+    exact("null_tail_timelike_tidal_prefactor",s.Rational(1,4)**2*s.Rational(1,4)*64/hi**2,s.Rational(16,25))
+    gate("null_tail_timelike_tidal_divergence",s.limit(tide_lower,v,s.oo)==s.oo)
+    return dict(
+        decision="FINITE_MASS_CONSERVED_NULL_SOURCE_HAS_FINITE_AFFINE_PP_CURVATURE_BLOWUP",
+        source="New explicit null-fluid diagnostic action; unchanged rational gravity. Not the canonical-sextic packet.",
+        exact_solution="f=1-2m(v)r^2/(r^3+2m(v)ell^2), Tvv=m'(v)/(alpha*r^2), other orbit/angular stresses zero",
+        certificate=dict(ell=1,start_v=24,start_r="6/5",start_kv=1,r_interval=["7/6","5/4"],
+                         mass="2-1/[4(1+v)]",remaining_geometric_energy="1/100",
+                         q_lower="1/4",growth_lower="3/8",affine_remaining_upper="8/3",
+                         parallel_Ricci_lower="exp[3(v-24)/4]/[50(1+v)^2] -> infinity"),
+        timelike_certificate=dict(start_Uv=8,start_r="6/5",proper_time_remaining_upper="1/3",
+                                  angular_tidal_lower="(16/25)*exp[3(v-24)/4]/(1+v)^2-1 -> infinity"),
+        proof=["Smooth vector field and inward boundary signs preserve the compact radial interval for all finite v.",
+               "Uniform -f_r/2>=3/8 yields k^v>=exp[3(v-24)/8] and future affine length<=8/3.",
+               "q>1/4 and r<=5/4 turn exact Rkk into the divergent displayed lower bound.",
+               "R(k,e_theta,k,e_theta)=Rkk/2 for a parallel angular screen; no regular C2 extension along that geodesic.",
+               "Curvature scalars are rational smooth functions on the compact(r,m) box and stay bounded."],
+        scope="Actual dynamic counterexample in this gravity+positive conserved null sector, not a proof of canonical-packet blowup, formation from a regular centre, or full RefG rejection.",
+        evidence_type="Analytical ODE comparison proof with exact rational certificate; no sampled trajectory or observational fit.",
+        closure=dict(null_source_solution=False,finite_affine_pp_blowup=False,finite_proper_time_tidal_blowup=False,
+                     universal_null_source_regularization_excluded=False,fixed_scalar_packet_blowup=False,
+                     scalar_polynomial_blowup=False,full_RefG_rejected=False,global_singularity_removal=False))
+
+
+def full_coframe_source_decision_checks(exact, gate):
+    """Section36: exact readouts and premises of two analytical exclusions."""
+    r,m,ell,alpha = s.symbols("r m ell alpha", positive=True)
+    fvac = 1-2*m*r**2/(r**3+2*m*ell**2)
+    z = (1-fvac)/r**2
+    q = 1-ell**2*z
+    exact("readout_vacuum_generalized_mass",r**3*z/(2*q),m)
+    exact("readout_vacuum_mass_constraint",s.diff(r**3*z/(2*q),r),0)
+    exact("readout_Einstein_limit",fvac.subs(ell,0),1-2*m/r)
+    x = s.symbols("s",positive=True)
+    L = s.Function("pL")(x)
+    D = 1-x*s.diff(L,x)/L
+    R = x/L
+    exact("readout_radial_pullback",s.diff(R,x)**2/D**2,L**(-2))
+    exact("readout_angular_pullback",R**2,x**2/L**2)
+    # D>0 is the outward static branch; source clock factor is sigma*D.
+    sig,fp,rho,Pr = s.symbols("sigma fprime rho Pr",real=True)
+    exact("readout_clock_rod_speed",(sig*D)*L,sig*(L-x*s.diff(L,x)))
+    exact("readout_static_lapse_vacuum",(alpha*r*q**2*(rho+Pr)/fvac).subs({rho:0,Pr:0}),0)
+    # Solve, rather than prescribe, the four asymptotic spatial coefficients.
+    y = s.symbols("inverse_s",real=True)
+    coeffs = s.symbols("c1:5",real=True)
+    P = 1+sum(c*y**(i+1) for i,c in enumerate(coeffs))
+    diso = 1+y*s.diff(P,y)/P
+    fiso = 1-2*m*y*P/(1+2*m*ell**2*y**3*P**3)
+    residual = s.series(diso**2-fiso,y,0,5).removeO().expand()
+    solved = {}
+    for order,c in enumerate(coeffs,1):
+        eq=s.simplify(residual.coeff(y,order).subs(solved))
+        roots=s.solve(eq,c)
+        gate("readout_series_unique_order_"+str(order),len(roots)==1)
+        solved[c]=roots[0]
+    ps=s.expand(P.subs(solved))
+    pt=s.series(diso.subs(solved),y,0,5).removeO().expand()
+    expected_L=1-m*y+3*m**2*y**2/4-m**3*y**3/2+(5*m**4/16+m**2*ell**2/2)*y**4
+    expected_T=1-m*y+m**2*y**2/2-m**3*y**3/4+(m**4/8+2*m**2*ell**2)*y**4
+    exact("readout_independent_spatial_series",ps,expected_L)
+    exact("readout_independent_clock_series",pt,expected_T)
+    exact("readout_first_order_common",(pt-ps).coeff(y,1),0)
+    exact("readout_second_order_split",(pt-ps).expand().coeff(y,2),-m**2/4)
+    exact("readout_full_series_residual",residual.subs(solved),0)
+    exact("readout_PPN_temporal_order2",s.expand(pt**2).coeff(y,2),2*m**2)
+    exact("readout_PPN_spatial_order1",s.series(ps**(-2),y,0,2).removeO().coeff(y,1),2*m)
+    rh=s.symbols("rh",positive=True)
+    mh=rh**3/(2*(rh**2-ell**2))
+    exact("readout_horizon_root",fvac.subs({m:mh,r:rh},simultaneous=True),0)
+    exact("readout_horizon_derivative",s.diff(fvac,r).subs(r,rh).subs(m,mh),(rh**2-3*ell**2)/rh**3)
+    exact("readout_horizon_q",q.subs(r,rh).subs(m,mh),1-ell**2/rh**2)
+    exact("readout_centre_static_clock",s.limit(s.sqrt(fvac),r,0),1)
+    exact("readout_centre_response",s.limit(q,r,0),0)
+    # Recover old extra equality as a constraint, not as a field equation.
+    Z=s.symbols("zc",positive=True)
+    Q=1-ell**2*Z
+    nc=alpha*Q**2*(rho+Pr)/2-Z/2
+    required=s.solve((nc-Z/4).subs(rho,3*Z/(2*alpha*Q)),Pr)[0]
+    exact("readout_static_common_centre_recovery",required/(3*Z/(2*alpha*Q)),ell**2*Z/Q)
+
+    # Direct static orbit tensor in ingoing EF, before setting f=0.
+    f=s.Function("f")(r)
+    sigma=s.Function("sigma")(r)
+    coordinates=(s.symbols("v",real=True),r)
+    gamma=s.Matrix([[-sigma**2*f,sigma],[sigma,0]])
+    inverse=gamma.inv()
+    conn={}
+    for i in range(2):
+        for j in range(2):
+            for k in range(2):
+                conn[i,j,k]=s.simplify(sum(inverse[i,l]*(s.diff(gamma[l,k],coordinates[j])+s.diff(gamma[l,j],coordinates[k])-s.diff(gamma[j,k],coordinates[l]))/2 for l in range(2)))
+    box=-sum(inverse[i,j]*conn[1,i,j] for i in range(2) for j in range(2))
+    Ao,Beta=s.symbols("alpha_orbit beta",real=True)
+    Evv=-Beta*conn[1,0,0]-(Ao/2+Beta*box)*gamma[0,0]
+    exact("stationary_original_Evv",Evv,sigma**2*f*(Ao+Beta*s.diff(f,r))/2)
+    exact("stationary_horizon_Evv",s.factor(Evv).subs(f,0),0)
+    omega,A,B,Ar,Br,potential=s.symbols("omega A B Ar Br V",real=True)
+    kinetic=f*(Ar**2+Br**2)+2*omega*(B*Ar-A*Br)/sigma
+    Tvv=omega**2*(A*A+B*B)-gamma[0,0]*(kinetic/2+potential)
+    exact("stationary_horizon_source",Tvv.subs(f,0),omega**2*(A*A+B*B))
+    chi=s.symbols("chi",real=True)
+    V=chi**2/2-chi**4/4+chi**6/24
+    exact("stationary_potential_positive_derivative",s.diff(V,chi),chi*(1-chi**2/2)**2)
+    exact("stationary_nonvacuum_extremum",V.subs(chi,s.sqrt(2)),s.Rational(1,3))
+    F=s.Function("F")(r)
+    g=s.Function("g")(r)
+    vcoord=coordinates[0]
+    phase=s.exp(-s.I*omega*vcoord)
+    field=phase*F
+    divergence=sum(s.diff(sigma*r**2*inverse[i,j]*s.diff(field,coordinates[j]),coordinates[i]) for i in range(2) for j in range(2))/(sigma*r**2)-g*field
+    a=sigma*r**2*f
+    b=2*s.I*omega*r+sigma*r**2*g
+    radial=s.diff(a*s.diff(F,r),r)-2*s.I*omega*r**2*s.diff(F,r)-b*F
+    exact("stationary_direct_EF_KG",s.simplify(divergence/phase*sigma*r**2),radial)
+    mu=s.Function("mu")(r)
+    integrating=s.diff(mu*a*s.diff(F,r),r)-mu*b*F
+    exact("stationary_unit_phase_integrating_factor",integrating.subs(s.diff(mu,r),-2*s.I*omega*r**2*mu/a),mu*radial)
+    U,W=s.Function("U")(r),s.Function("W")(r)
+    norm=U**2+W**2
+    gw=(1-norm/2)**2
+    kgU=s.diff(a*s.diff(U,r),r)-sigma*r**2*gw*U
+    kgW=s.diff(a*s.diff(W,r),r)-sigma*r**2*gw*W
+    boundary=a*(U*s.diff(U,r)+W*s.diff(W,r))
+    density=a*(s.diff(U,r)**2+s.diff(W,r)**2)+sigma*r**2*norm*gw
+    exact("stationary_zero_frequency_integral_identity",U*kgU+W*kgW,s.diff(boundary,r)-density)
+    c_bound,b_bound=s.symbols("c_bound b_bound",positive=True)
+    exact("stationary_horizon_uniqueness_contraction",b_bound/c_bound*(c_bound/(2*b_bound)),s.Rational(1,2))
+
+    # Separate minimal-current candidate: its *local* rho(n), not ADM mass.
+    n,nstar,rhostar,m0=s.symbols("n nstar rhostar m0",positive=True)
+    cap=rhostar*n/(n+nstar)
+    cap_cs=s.simplify(n*s.diff(cap,n,2)/s.diff(cap,n))
+    exact("minimal_current_cap_sound_squared",cap_cs,-2*n/(n+nstar))
+    gate("minimal_current_cap_gradient_sign_fails",bool((-cap_cs).is_positive))
+    exact("minimal_current_cap_limit",s.limit(cap,n,s.oo),rhostar)
+    exact("minimal_current_linear_control",n*s.diff(m0*n,n,2)/s.diff(m0*n,n),0)
+    fn=s.Function("rho")(n)
+    pressure=n*s.diff(fn,n)-fn
+    exact("minimal_current_convexity_pressure_identity",s.diff(pressure,n),n*s.diff(fn,n,2))
+    paths=["Lagrangian_Formulation/Weak_Field_Closure/w3_51_weak_field_closure_contract.md",
+           "Lagrangian_Formulation/Full_1PN_Inheritance/w3_52_full_1pn_inheritance_contract.md",
+           "Lagrangian_Formulation/Relational_Coframe_TEGR_Phase_Source_Closure/w3_54_relational_coframe_tegr_phase_source_closure_contract.md",
+           "Strong_Field/W3-67_Foundation_Strong_Field_Response/w3_67_foundation_strong_field_response_preregistration.md"]
+    work3=Path(__file__).resolve().parents[2]
+    return dict(
+        decision="FULL_READOUT_RESTORED_STATIONARY_AND_MINIMAL_DENSITY_CAP_ROUTES_EXCLUDED",
+        resource_sha256={p:hashlib.sha256((work3/p).read_bytes()).hexdigest() for p in paths},
+        readout=dict(clock="pT=sigma*(1-s*pL_prime/pL)",spatial="pL=s/r",light="c_coord=c0*pT*pL",
+                     weak_split="pT-pL=-m^2/(4s^2)+O(s^-3)",source_lapse="sigma_prime/sigma=alpha*r*q^2*(rho+Pr)/f",
+                     scope="Static outward f>0 chart; horizon continuation uses the same metric in EF, not this chart."),
+        stationary_source=dict(
+            assumptions=["Neutral minimal canonical sextic, static spherical geometry and one real harmonic frequency",
+                         "Simple horizons, finite positive sigma_h and q_h>0; C1 regular scalar obeying KG",
+                         "omega=0: asymptotically flat decaying vacuum boundary; same stationary ansatz across connected interior"],
+            proof=["Evv_h=0 and Tvv_h=omega^2|Fh|^2 force Fh=0 when omega!=0.",
+                   "Unit-modulus integrating factor, |a|>=c|r-rh| and bounded b imply local C1 uniqueness from Fh=0 on both sides.",
+                   "omega=0: vanishing boundary plus positive exterior integral forces constant F; asymptotic vacuum selects F=0.",
+                   "Ordinary uniqueness propagates zero across regular intervals and further simple horizons."],
+            exclusions="Extremal, rotating, gauge-synchronized, nonminimal, nonsmooth and genuinely time-dependent matter are not classified.",
+            evidence_type="Analytical conditional theorem; CAS verifies its tensor/KG/integral premises, not global evolution."),
+        minimal_current=dict(
+            assumptions="Separate minimally coupled isentropic rho(n), n on unbounded interval, rho'>0 and c_s^2>=0.",
+            proof="rho''>=0 gives rho'(n)>=rho'(n0)>0, hence rho(n)>=rho(n0)+rho'(n0)*(n-n0), which is unbounded.",
+            scope="Excludes local energy saturation in this minimal current class; says nothing against a decreasing redshifted or binding-corrected ADM mass.",
+            rejected_example="rho=rhostar*n/(n+nstar), c_s^2=-2n/(n+nstar)<0; not adopted."),
+        closure=dict(full_readout_verified=False,stationary_source_excluded_in_domain=False,
+                     minimal_density_cap_excluded=False,foundation_pressure_join=False,
+                     global_singularity_removal=False,full_RefG_rejected=False))
+
+
+def common_readout_continuation_checks(exact, gate):
+    """Section35: one prolongation and an exact isolated-end decision."""
+    x = s.symbols("s", real=True)
+    c, g, v, v_real = s.symbols("p4 p2_tt phi2_t_imag phi2_t_real", real=True)
+    a,b,d,e,f = s.Rational(1,2),s.Rational(11,32),-s.Rational(1,16),s.Rational(1,192),-s.Rational(41,768)
+    A = s.sqrt(s.Rational(23,3))
+    phi2_im = 35/(6*A)
+    def trunc(expr):
+        poly = s.Poly(s.expand(expr), x)
+        return sum(poly.nth(k)*x**k for k in range(3))
+    def invpow(value, power):
+        v0, v2 = value.coeff(x,0), value.coeff(x,2)
+        return v0**(-power)-power*v2*v0**(-power-1)*x**2
+
+    p, pt, ptt = a+b*x**2, d+e*x**2, f+g*x**2
+    px_over_x, pxx, px_sq = 2*b+4*c*x**2,2*b+12*c*x**2,4*b*b*x*x
+    ip = {k:invpow(p,k) for k in (2,3,4)}
+    z = trunc(pt**2*ip[4]+2*p*px_over_x-px_sq)
+    un = trunc(-ptt*ip[3]+3*pt**2*ip[4]-p*px_over_x+px_sq)
+    ue = trunc(-p*px_over_x-p*pxx+px_sq-pt**2*ip[4])
+    une = (-2*e/a+4*d*b/a**2)*x
+    R2 = trunc(-2*p*pxx-2*px_sq-2*ptt*ip[3]+6*pt**2*ip[4])
+    q = 1-z
+    iq2, iq3 = invpow(q,2), invpow(q,3)
+    box, hess = -un+ue,trunc(un**2+ue**2-2*une**2)
+    rho_g = trunc((z*(1-3*z)-2*ue)*iq2/2)
+    pr_g = trunc((-2*un-z*(1-3*z))*iq2/2)
+    pt_g = trunc(-R2*iq2/4-z**2*(1+3*z)*iq3/2-
+                 (5*z-1)*box*iq3/2-(box**2-hess)*iq3)
+    # Actual unchanged scalar: phi=2+i*bphi*s^2, phi_t=i*A/2+(vr+i*v)*s^2.
+    W = trunc((A**2/4+A*v*x*x)*ip[2])
+    Xs = 4*a*a*phi2_im**2*x*x
+    V = s.Rational(2,3)  # V2=0, since the radial coefficient is purely imaginary
+    rho_m, pr_m, pt_m = trunc((W+Xs)/2+V),trunc((W+Xs)/2-V),trunc((W-Xs)/2-V)
+    for name, geom, matter in (("density",rho_g,rho_m),("radial",pr_g,pr_m),("angular",pt_g,pt_m)):
+        exact("prolongation_frozen_"+name,geom.coeff(x,0),matter.coeff(x,0))
+    equations = [s.expand(left-right).coeff(x,2)
+                 for left,right in ((rho_g,rho_m),(pr_g,pr_m),(pt_g,pt_m))]
+    matrix, rhs = s.linear_eq_to_matrix(equations,(c,g,v))
+    gate("prolongation_rank_three", matrix.rank()==3)
+    values = matrix.inv()*rhs
+    solution = dict(zip((c,g,v),map(s.simplify,values)))
+    for i,residual in enumerate(equations):
+        exact("prolongation_diagonal_residual_"+str(i),residual.subs(solution),0)
+    exact("prolongation_independent_p4",solution[c],s.Rational(16603,812544))
+    exact("prolongation_independent_p2_tt",solution[g],-s.Rational(392533,3250176))
+    exact("prolongation_independent_phi2_t",solution[v],12353*s.sqrt(69)/292008)
+    gate("prolongation_perturbed_coefficient_detected",
+         s.simplify(equations[0].subs({**solution,c:solution[c]+1}))!=0)
+    exact("prolongation_free_real_component",sum(s.diff(eq,v_real)**2 for eq in equations),0)
+    # Source square verifies directly that the real component is absent at this order.
+    direct_W = trunc((v_real**2*x**4+(A/2+v*x*x)**2)*ip[2])
+    exact("prolongation_actual_scalar_kinetic_series",direct_W,W)
+    eta = s.symbols("eta", real=True)
+    potential_norm = eta/2-eta**2/4+eta**3/24
+    exact("prolongation_potential_series",
+          trunc(potential_norm.subs(eta,4+phi2_im**2*x**4)),V)
+    exact("prolongation_independent_density_coefficient",rho_g.coeff(x,2),160*c-s.Rational(35,8))
+    exact("prolongation_independent_radial_coefficient",pr_g.coeff(x,2),736*c/3+128*g+s.Rational(1345,144))
+    exact("prolongation_independent_angular_coefficient",pt_g.coeff(x,2),1472*c/3+128*g-s.Rational(1,9))
+
+    # Propagate the leading mixed constraint with the frozen KG acceleration.
+    aa,bb,dd,ee,ff,j0 = s.symbols("a b d e f p0_ttt", real=True)
+    zg = dd**2/aa**4+4*aa*bb
+    qg = 1-zg
+    jx = (2*ee/aa-4*dd*bb/aa**2)/qg**2
+    base = {aa:a,bb:b,dd:d,ee:e,ff:f}
+    dt = lambda expr: (s.diff(expr,aa)*dd+s.diff(expr,bb)*ee+
+                      s.diff(expr,dd)*ff+s.diff(expr,ee)*g+s.diff(expr,ff)*j0)
+    dt_j_geometry = s.simplify(dt(jx).subs(base))
+    phi0_tt_imag = 3/(4*A)-A/16
+    dt_j_scalar = A*v+2*phi0_tt_imag*phi2_im
+    exact("prolongation_independent_mixed_time",dt_j_geometry,64*g+s.Rational(875,96))
+    exact("prolongation_mixed_constraint_propagates",
+          (dt_j_geometry-dt_j_scalar).subs(solution),0)
+    exact("prolongation_central_density_time",dt(3*zg/(2*qg)).subs(base),s.Rational(3,2))
+    un0 = -ff/aa**3+3*dd**2/aa**4-2*aa*bb
+    P0 = (-2*un0-zg*(1-3*zg))/(2*qg**2)
+    P0_time = s.simplify(dt(P0).subs(base))
+    jerk = s.solve(P0_time-s.Rational(3,2),j0)[0]
+    exact("prolongation_central_pressure_time",P0_time,128*j0-s.Rational(155,24))
+    exact("prolongation_central_jerk",jerk,s.Rational(191,3072))
+
+    # Unexpanded spatial identity: direct geometric and source derivations.
+    Z,U,Vv,Cc,Kk,Ric,alpha,ell = s.symbols("z Un Ue Une k R2 alpha ell", real=True)
+    Q = 1-ell**2*Z
+    rho_req = (Z*(1-3*ell**2*Z)-2*Vv)/(2*alpha*Q**2)
+    pr_req = (-2*U-Z*(1-3*ell**2*Z))/(2*alpha*Q**2)
+    Bx,Hx = -U+Vv,U**2+Vv**2-2*Cc**2
+    pt_req = -(2*Ric/Q**2+4*ell**2*Z**2*(1+3*ell**2*Z)/Q**3+
+               4*(5*ell**2*Z-1)*Bx/Q**3+
+               8*ell**2*(Bx**2-Hx)/Q**3)/(8*alpha)
+    exact("prolongation_common_metric_curvature_identity",
+          R2-2*(z+un+ue)+4*px_sq,0)
+    p_full, ps_full, pss_full, pt_full, ptt_full, radius = s.symbols(
+        "p ps pss pt ptt s", real=True)
+    z_full = pt_full**2/p_full**4+2*p_full*ps_full/radius-ps_full**2
+    un_full = -ptt_full/p_full**3+3*pt_full**2/p_full**4-p_full*ps_full/radius+ps_full**2
+    ue_full = -p_full*ps_full/radius-p_full*pss_full+ps_full**2-pt_full**2/p_full**4
+    R2_full = -2*p_full*pss_full-2*ps_full**2-2*ptt_full/p_full**3+6*pt_full**2/p_full**4
+    exact("full_common_metric_curvature_identity",
+          R2_full-2*(z_full+un_full+ue_full)+4*ps_full**2,0)
+    anisotropy = s.factor((alpha*Q**3*(pr_req-pt_req)+Q*Kk**2-
+                          2*ell**2*((Z-U)*(Z+Vv)+Cc**2)).subs(
+                              Ric,2*(Z+U+Vv)-4*Kk**2))
+    exact("full_common_angular_radial_identity",anisotropy,0)
+    RR,PP,JJ,Delta = s.symbols("rho Pr J Delta",real=True)
+    source_sub = {U:-Z*(1-3*ell**2*Z)/2-alpha*Q**2*PP,
+                  Vv:Z*(1-3*ell**2*Z)/2-alpha*Q**2*RR,
+                  Cc:-alpha*Q**2*JJ}
+    form1=(alpha*Q**3*Delta+Q*Kk**2-
+           2*ell**2*((Z-U)*(Z+Vv)+Cc**2)).subs(source_sub)
+    form2=(Kk**2+alpha*Q**2*Delta-
+           2*ell**2*Q*((3*Z/2+alpha*Q*PP)*(3*Z/2-alpha*Q*RR)+alpha**2*Q**2*JJ**2))
+    exact("full_common_source_identity",form1/Q,form2)
+    exact("full_common_Einstein_limit",form2.subs(ell,0),Kk**2+alpha*Delta)
+    # The full identity must also reproduce the solved finite jet.
+    identity_series=trunc(px_sq+q**2*(pr_m-pt_m)-
+                         2*q*((3*z/2+q*pr_m)*(3*z/2-q*rho_m)+q**2*(A*phi2_im*x)**2))
+    exact("prolongation_full_spatial_identity",identity_series.subs(solution),0)
+    exact("prolongation_independent_areal_density_coefficient",
+          (rho_m.coeff(x,2)*a*a).subs(solution),-s.Rational(28075,101568))
+
+    # Representative asymptotic series checks coefficients; the proof below
+    # uses stated big-O tails and positivity, not this representative alone.
+    y,m,aa2,tt2 = s.symbols("inverse_s m a2 t2",real=True)
+    p_inf=1-m*y+aa2*y**2
+    k_inf=-y**2*s.diff(p_inf,y)
+    H_inf=-tt2*y**2/p_inf**2
+    z_inf=H_inf**2+2*p_inf*k_inf*y-k_inf**2
+    z_series=s.series(z_inf,y,0,5).removeO().expand()
+    exact("isolated_end_z_leading",z_series.coeff(y,3),2*m)
+    exact("isolated_end_z_subleading",z_series.coeff(y,4),-4*aa2+tt2**2-3*m**2)
+    vacuum_rhs=9*ell**2*(1-ell**2*z_inf)*z_inf**2/2
+    exact("isolated_end_incompatible_leading_power",
+          s.limit((k_inf**2-vacuum_rhs)/y**4,y,0),m**2)
+    exact("isolated_end_response_faster_decay",s.limit(vacuum_rhs/y**6,y,0),18*ell**2*m**2)
+    exact("isolated_end_generalized_mass",s.limit(z_inf/(2*alpha*y**3*p_inf**3*(1-ell**2*z_inf)),y,0),m/alpha)
+    exact("isolated_end_flat_zero_mass_control",form2.subs({Kk:0,Z:0,RR:0,PP:0,JJ:0,Delta:0}),0)
+    gate("isolated_end_nonzero_mass_control",s.S(1)**2>0)
+    return dict(
+        decision="FIRST_CONTINUATION_PASSES_GLOBAL_EXACT_READOUT_ISOLATED_END_EXCLUDED",
+        local_coefficients={str(key):str(value) for key,value in solution.items()},
+        central_jerk=str(jerk),
+        local_scope="Diagonal metric/source equations through s^2 and leading mixed time propagation; KG only at central order from section34, not KG through s^2.",
+        free_data="Re(phi2_t) and uncomputed higher coefficients remain free; finite jet only.",
+        spatial_identity="k^2+alpha*q^2*(Pr-Pt)=2ell^2*q*((3z/2+alpha*q*Pr)*(3z/2-alpha*q*rho)+alpha^2*q^2*J^2)",
+        isolated_end=dict(
+            assumptions=["Exact zero-shift common-p metric imposed to spatial infinity",
+                         "Differentiated p=1-m/s+O(s^-2), p_t=O(s^-2), constant m!=0",
+                         "Fixed finite ell, alpha>0, rho,Pr,J=O(s^-3-epsilon), epsilon>0",
+                         "Canonical Pr-Pt=|e phi|^2>=0"],
+            proof="LHS>=m^2/s^4(1+o(1)), RHS=18ell^2*m^2/s^6+o(s^-6); incompatible.",
+            scope="Not inferred from finite energy alone; not an exclusion of other readouts or RefG."),
+        closure=dict(first_radial_compatibility=False,leading_momentum_propagation=False,
+                     full_spatial_identity=False,specified_isolated_extension_excluded=False,
+                     full_RefG_rejected=False,global_regular_black_hole=False))
+
+
+def dynamic_common_centre_checks(exact, gate):
+    """Section34: time-dependent central jets, not a global PDE solution."""
+    alpha, ell, z = s.symbols("alpha ell z", positive=True)
+    H, Hd, zs, zsd, zd, P, j1 = s.symbols("H Hd zs zsd zd P j1", real=True)
+    q = 1-ell**2*z
+    rho = 3*z/(2*alpha*q)
+    C = z*(1-3*ell**2*z)/2
+    T_geometry = -Hd-H**2+zs/2
+    Hd_source = -3*H**2/2+3*ell**2*z**2/2-alpha*q**2*P
+    exact("dynamic_centre_pressure_equation",
+          (T_geometry-C-alpha*q**2*P).subs({zs: z-H**2, Hd: Hd_source},
+                                             simultaneous=True), 0)
+    w = s.symbols("w", real=True)
+    required_w = (ell**2*z-H**2/z-2*Hd/(3*z))/q
+    exact("dynamic_centre_static_recovery",
+          required_w.subs({H: 0, Hd: 0}), ell**2*z/q)
+    exact("dynamic_centre_homogeneous_recovery",
+          Hd_source.subs(P, w*rho).subs(H**2, z),
+          -3*z*q*(1+w)/2)
+    H2 = -(zsd+3*H*zs)/4
+    current = -2*H2/(alpha*q**2)
+    rho_dot = s.diff(rho, z)*zd
+    conservation = rho_dot+3*H*(rho+P)-3*current
+    exact("dynamic_centre_mixed_energy_identity",
+          conservation.subs({zs: z-H**2, zsd: zd-2*H*Hd_source},
+                            simultaneous=True), 0)
+    exact("dynamic_centre_growth_from_flux",
+          s.solve(rho_dot+3*H*(rho+P)-3*j1, zd)[0],
+          2*alpha*q**2*(j1-H*(rho+P)))
+
+    # Independent coordinate differentiation of the time-dependent readout.
+    p0, p2, pt0, pt2, ptt0 = s.symbols("p0 p2 pt0 pt2 ptt0", real=True)
+    normal_H = -pt0/p0**2
+    normal_Hdot = -ptt0/p0**3+2*pt0**2/p0**4
+    spatial_z = 4*p0*p2
+    spatial_zdot = 4*(pt0*p2/p0+pt2)
+    H2_coordinate = -pt2+2*pt0*p2/p0
+    exact("dynamic_centre_mixed_coordinate_identity", H2_coordinate,
+          -(spatial_zdot+3*normal_H*spatial_z)/4)
+
+    # Rational event with nonzero phase charge and the unchanged sextic.
+    Hv, zv, zdv = s.Rational(1, 4), s.Rational(3, 4), s.Rational(1, 8)
+    chi = s.symbols("chi", real=True)
+    V = chi**2/2-chi**4/4+chi**6/24
+    A = s.sqrt(s.Rational(23, 3))
+    phi, Pi = s.S(2), s.I*A
+    kappa = s.I*35/(24*A)  # phi = phi0 + kappa*r^2 at the selected event
+    Vv = V.subs(chi, phi)
+    Wv = s.expand_complex(s.conjugate(Pi)*Pi)
+    rhov, Pv = s.simplify(Wv/2+Vv), s.simplify(Wv/2-Vv)
+    jv = s.simplify(s.re(s.conjugate(Pi)*2*kappa))
+    Hdv = s.simplify(Hd_source.subs({alpha: 1, ell: 1, z: zv, H: Hv, P: Pv}))
+    zsv = zv-Hv**2
+    zsdv = zdv-2*Hv*Hdv
+    exact("dynamic_witness_positive_potential", Vv, s.Rational(2, 3))
+    exact("dynamic_witness_density", rhov, s.Rational(9, 2))
+    exact("dynamic_witness_pressure", Pv, s.Rational(19, 6))
+    exact("dynamic_witness_inward_energy_flux", jv, s.Rational(35, 12))
+    exact("dynamic_witness_Hdot", Hdv, s.Rational(53, 96))
+    exact("dynamic_witness_spatial_z", zsv, s.Rational(11, 16))
+    exact("dynamic_witness_spatial_zdot", zsdv, -s.Rational(29, 192))
+    density_rate = rho_dot.subs({alpha: 1, ell: 1, z: zv, zd: zdv})
+    exact("dynamic_witness_density_rate", density_rate, 3)
+    exact("dynamic_witness_energy_conservation", density_rate+3*Hv*(rhov+Pv)-3*jv, 0)
+    # KG fixes Pi_dot from the same spatial source coefficient.
+    Pi_dot = s.simplify(6*kappa-3*Hv*Pi-s.diff(V, chi).subs(chi, phi))
+    exact("dynamic_witness_scalar_equation_rate", Pi_dot, -2+3*s.I/A)
+    scalar_density_rate = s.re(s.conjugate(Pi)*Pi_dot)+s.diff(V, chi).subs(chi, phi)*s.re(Pi)
+    exact("dynamic_witness_scalar_energy_rate", scalar_density_rate, density_rate)
+    charge = s.im(s.conjugate(phi)*Pi)
+    charge_rate = s.im(s.conjugate(Pi)*Pi+s.conjugate(phi)*Pi_dot)
+    phase_flux = s.im(s.conjugate(phi)*2*kappa)
+    exact("dynamic_witness_phase_charge", charge, 2*A)
+    exact("dynamic_witness_phase_conservation", charge_rate+3*Hv*charge-3*phase_flux, 0)
+    # Leading timelike energy-rest and charge-flow velocities in the normal frame.
+    # The source is locally contracting in areal radius even though H>0.
+    energy_velocity = -jv/(rhov+Pv)
+    charge_velocity = -phase_flux/charge
+    exact("dynamic_witness_energy_rest_velocity", energy_velocity, -s.Rational(35, 92))
+    exact("dynamic_witness_charge_velocity", charge_velocity, energy_velocity)
+    exact("dynamic_witness_charge_areal_contraction", Hv+charge_velocity, -s.Rational(3, 23))
+    exact("dynamic_witness_charge_flow_continuity", charge_rate/charge+3*(Hv+charge_velocity), 0)
+    gate("dynamic_witness_canonical_positive_state", bool(Wv > 0 and Vv > 0 and charge > 0))
+    gate("dynamic_witness_beyond_static_range", zv > s.Rational(1, 2))
+    gate("dynamic_witness_static_deletion_fails",
+         required_w.subs({ell: 1, z: zv, H: 0, Hd: 0}) != Pv/rhov)
+    gate("dynamic_witness_flux_deletion_fails",
+         density_rate+3*Hv*(rhov+Pv) != 0)
+    gate("dynamic_witness_inflow_exceeds_expansion_dilution",
+         jv > Hv*(rhov+Pv))
+
+    coordinate_values = {p0: s.Rational(1, 2), p2: s.Rational(11, 32),
+                         pt0: -s.Rational(1, 16), pt2: s.Rational(1, 192),
+                         ptt0: -s.Rational(41, 768)}
+    exact("dynamic_witness_clock_derivative", (pt0/p0).subs(coordinate_values), -s.Rational(1, 8))
+    exact("dynamic_witness_coordinate_H", normal_H.subs(coordinate_values), Hv)
+    exact("dynamic_witness_coordinate_Hdot", normal_Hdot.subs(coordinate_values), Hdv)
+    exact("dynamic_witness_coordinate_spatial_z", spatial_z.subs(coordinate_values), zsv)
+    exact("dynamic_witness_coordinate_spatial_zdot", spatial_zdot.subs(coordinate_values), zsdv)
+    exact("dynamic_witness_coordinate_H2", H2_coordinate.subs(coordinate_values), -s.Rational(35, 384))
+    gate("dynamic_witness_clock_decreases_grid_expands", bool(Hv > 0 and coordinate_values[pt0] < 0))
+
+    # Direct 2D Christoffel/orbit equations from a metric polynomial.
+    # All time derivatives are taken before setting t=0. The witness was
+    # selected using the source, but expected source identities are not
+    # substituted into the evaluated metric equations or curvature.
+    t, x = s.symbols("t x", real=True)
+    p = (coordinate_values[p0]+coordinate_values[pt0]*t+
+         coordinate_values[ptt0]*t**2/2+
+         (coordinate_values[p2]+coordinate_values[pt2]*t)*x**2)
+    gamma = s.diag(-p**2, p**(-2))
+    inverse = s.diag(-p**(-2), p**2)
+    coordinates = (t, x)
+    connection = {}
+    for a in range(2):
+        for b in range(2):
+            for c in range(2):
+                connection[a,b,c] = sum(inverse[a,d]*(
+                    s.diff(gamma[d,c], coordinates[b])+
+                    s.diff(gamma[d,b], coordinates[c])-
+                    s.diff(gamma[b,c], coordinates[d]))/2 for d in range(2))
+    radius = x/p
+    dr = [s.diff(radius, c) for c in coordinates]
+    Hess = s.Matrix(2, 2, lambda a,b: s.diff(dr[a], coordinates[b])-
+                    sum(connection[c,a,b]*dr[c] for c in range(2)))
+    box = sum(inverse[a,b]*Hess[a,b] for a in range(2) for b in range(2))
+    X = sum(inverse[a,b]*dr[a]*dr[b] for a in range(2) for b in range(2))
+    zm = s.cancel(((1-X)/radius**2).subs(t, 0))
+    rm = radius.subs(t, 0)
+    pm = p.subs(t, 0)
+    qm = 1-zm
+    Hess0, inv0, gamma0 = Hess.subs(t, 0), inverse.subs(t, 0), gamma.subs(t, 0)
+    box0 = box.subs(t, 0)
+    beta = -2*rm/qm**2
+    alpha_orbit = 2*rm**2*zm*(1-3*zm)/qm**2
+    central = lambda expression: s.limit(s.cancel(expression), x, 0)
+    # Each normalized factor has a finite limit. Take those limits before
+    # forming products; expanding their common denominator is unnecessary.
+    z_limit = central(zm)
+    beta_over_r = central(beta/rm)
+    alpha_over_r2 = central(alpha_orbit/rm**2)
+    box_over_r = central(box0/rm)
+    Hess_over_r = Hess0.applyfunc(lambda entry: central(entry/rm))
+    g_c, inv_c = gamma0.subs(x, 0), inv0.subs(x, 0)
+    E_over_r2 = (beta_over_r*Hess_over_r-
+                (alpha_over_r2/2+beta_over_r*box_over_r)*g_c)
+    exact("dynamic_direct_metric_z", z_limit, zv)
+    exact("dynamic_direct_orbit_density", E_over_r2[0,0]/(2*pm.subs(x, 0)**2), rhov)
+    exact("dynamic_direct_orbit_pressure", E_over_r2[1,1]*pm.subs(x, 0)**2/2, Pv)
+    exact("dynamic_direct_orbit_flux", beta_over_r*central(Hess0[0,1]/rm**2)/2, jv)
+    Ricci2 = s.zeros(2)
+    for a in range(2):
+        for b in range(2):
+            Ricci2[a,b] = sum(
+                s.diff(connection[c,a,b], coordinates[c])-
+                s.diff(connection[c,a,c], coordinates[b])+
+                sum(connection[c,c,d]*connection[d,a,b]-
+                    connection[c,b,d]*connection[d,a,c] for d in range(2))
+                for c in range(2))
+    R2 = sum(inverse[a,b]*Ricci2[a,b] for a in range(2) for b in range(2))
+    R2c = s.simplify(R2.subs({t: 0, x: 0}, simultaneous=True))
+    exact("dynamic_direct_orbit_curvature", R2c, s.Rational(13, 24))
+    Hess_sq_over_r2 = sum(inv_c[a,c]*inv_c[b,d]*Hess_over_r[a,b]*Hess_over_r[c,d]
+                         for a in range(2) for b in range(2) for c in range(2) for d in range(2))
+    Kc = R2c**2+8*Hess_sq_over_r2+4*z_limit**2
+    R4c = R2c+2*z_limit-4*box_over_r
+    exact("dynamic_direct_Kretschmann", Kc, s.Rational(1465, 192))
+    exact("dynamic_direct_Ricci", R4c, s.Rational(49, 8))
+    # Independent angular equation with partial derivatives at fixed X.
+    rr, xx = s.symbols("rr xx", real=True)
+    zz = (1-xx)/rr**2
+    aa = 2*rr**2*zz*(1-3*zz)/(1-zz)**2
+    bb = -2*rr/(1-zz)**2
+    parts = [s.diff(aa, rr), s.diff(bb, rr), s.diff(bb, xx)]
+    # Normalize each partial derivative at fixed X first, then use the
+    # independently computed central z. This avoids a giant rational sum.
+    z_temp = s.symbols("z_temp", real=True)
+    aR_over_r = s.simplify((parts[0]/rr).subs(xx, 1-rr**2*z_temp))
+    bR_c = s.simplify(parts[1].subs(xx, 1-rr**2*z_temp))
+    r_bX = s.simplify((rr*parts[2]).subs(xx, 1-rr**2*z_temp))
+    aR_over_r, bR_c, r_bX = [
+        s.limit(value, rr, 0).subs(z_temp, z_limit)
+        for value in (aR_over_r, bR_c, r_bX)]
+    angular_over_r = (-beta_over_r*R2c+aR_over_r+2*bR_c*box_over_r+
+                      2*r_bX*(box_over_r**2-Hess_sq_over_r2))
+    exact("dynamic_direct_angular_pressure", -angular_over_r/8, Pv)
+    return dict(
+        decision="TIME_DEPENDENT_CENTRAL_JET_COMPATIBLE",
+        scope="Leading centre diagonal equations, leading radial flux, scalar and phase equations at one event.",
+        witness=dict(u="3/4", q="1/4", clock="1/2", clock_proper_rate="-1/8",
+                     H="1/4", Hdot="53/96", zdot="1/8", rho="9/2",
+                     pressure="19/6", inward_energy_flux_coefficient="35/12",
+                     curvature="1465/192"),
+        interpretation="Decreasing common clock scale expands the normal grid; conserved-charge and energy-rest areal flows contract at leading order, raising central density.",
+        closure=dict(dynamic_central_compatibility=False,
+                     static_restriction_not_universal=False,
+                     foundation_pressure_join=False, all_orders_solution=False,
+                     global_regular_black_hole=False, perturbative_stability=False))
 
 
 def central_source_readout_checks(exact, gate):
@@ -1348,6 +1995,37 @@ def audit():
     central_readout["passed"] = sum(item["passed"] for item in readout_checks)
     for flag in ("central_comparison_verified", "common_readout_restriction_verified"):
         central_readout["closure"][flag] = all(item["passed"] for item in readout_checks)
+    before_dynamic = len(checks)
+    dynamic_centre = dynamic_common_centre_checks(exact, gate)
+    dynamic_checks = checks[before_dynamic:]
+    dynamic_centre["checks"] = len(dynamic_checks)
+    dynamic_centre["passed"] = sum(item["passed"] for item in dynamic_checks)
+    for flag in ("dynamic_central_compatibility", "static_restriction_not_universal"):
+        dynamic_centre["closure"][flag] = all(item["passed"] for item in dynamic_checks)
+    before_continuation = len(checks)
+    continuation = common_readout_continuation_checks(exact, gate)
+    continuation_checks = checks[before_continuation:]
+    continuation["checks"] = len(continuation_checks)
+    continuation["passed"] = sum(item["passed"] for item in continuation_checks)
+    for flag in ("first_radial_compatibility", "leading_momentum_propagation",
+                 "full_spatial_identity", "specified_isolated_extension_excluded"):
+        continuation["closure"][flag] = all(item["passed"] for item in continuation_checks)
+    before_full_readout = len(checks)
+    full_readout = full_coframe_source_decision_checks(exact, gate)
+    full_readout_checks = checks[before_full_readout:]
+    full_readout["checks"] = len(full_readout_checks)
+    full_readout["passed"] = sum(item["passed"] for item in full_readout_checks)
+    for flag in ("full_readout_verified", "stationary_source_excluded_in_domain",
+                 "minimal_density_cap_excluded"):
+        full_readout["closure"][flag] = all(item["passed"] for item in full_readout_checks)
+    before_null_tail = len(checks)
+    null_tail = null_tail_curvature_checks(exact, gate)
+    null_tail_checks = checks[before_null_tail:]
+    null_tail["checks"] = len(null_tail_checks)
+    null_tail["passed"] = sum(item["passed"] for item in null_tail_checks)
+    for flag in ("null_source_solution", "finite_affine_pp_blowup", "finite_proper_time_tidal_blowup",
+                 "universal_null_source_regularization_excluded"):
+        null_tail["closure"][flag] = all(item["passed"] for item in null_tail_checks)
     passed = sum(item["passed"] for item in checks)
     return dict(
         decision="COMPLETION_BOUNDARY_AND_HOMOGENEOUS_JOIN_VERIFIED" if passed == len(checks)
@@ -1365,6 +2043,10 @@ def audit():
         coupled_radial=coupled_radial,
         constant_density=constant_density,
         central_readout=central_readout,
+        dynamic_centre=dynamic_centre,
+        common_readout_continuation=continuation,
+        full_coframe_source_decision=full_readout,
+        null_tail_curvature=null_tail,
         local_witness=dict(
             scope="One smooth local source/geometry jet, not a global initial-data family.",
             finite_amplitude="Every finite P gives finite source, geometry and listed derivatives.",

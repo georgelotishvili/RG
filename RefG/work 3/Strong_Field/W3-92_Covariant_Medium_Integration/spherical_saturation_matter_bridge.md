@@ -4303,6 +4303,753 @@ stability remain unestablished. No additional time evolution was run.
 The intuitive monographs, speculative folder, Git rules and production
 evolution equations are unchanged.
 
+## 34. Time-dependent common readout and a canonical central source
+
+### Bounded verification contract (2026-09-14)
+
+CLAIM_ID: W3-92-SAT-DYNAMIC-COMMON-CENTRE-34.
+GOAL/CLAIM: decide whether the section33 static source restriction also
+holds for time-dependent common clock/rod scaling by checking a charged
+canonical central jet in its excluded static range.
+TYPE: exact local source/metric compatibility and negative-control test.
+MODEL_VERSION: unchanged spherical rational action and canonical sextic;
+p(t,s) is allowed time dependence, with zero shift, while the exact
+common metric ds^2=-p^2dt^2+p^(-2)(ds^2+s^2dOmega^2) is retained.
+ASSUMPTIONS/DOMAIN: p0>0, smooth isotropic centre, r=s/p, finite source,
+M(0)=0, alpha,ell>0, 0<u=ell^2 z<1. Statements concern retained central
+Taylor coefficients at one event, not an all-orders or global solution.
+CONVENTIONS: normal proper derivative dot=p0^(-1)partial_t, normal
+expansion H=-partial_t p0/p0^2, z_s=4p0 p2. J=T_01 is the covariant
+energy component; positive J corresponds to inward physical energy flux.
+FREEDOM_LEDGER: p0,H,z,zdot and central complex scalar data are local
+initial-jet choices, not fitted observables or a new constitutive law.
+DEPENDENCIES: sections1,13,33. H=Hdot=0 must recover section33.
+METHOD: direct orbit metric/curvature calculation and the original
+orbit field equations; independent central conservation and complex
+scalar equation; nonzero phase-current conservation.
+PASS_CONDITION: an exact local witness with pdot<0, u>1/2, positive
+canonical potential and finite curvature satisfies all retained central
+metric, source, scalar and flux equations. Its static or flux-deleted
+counterparts must fail their registered equations.
+FAIL_CONDITION/FALSIFIER: nonzero exact residual, wrong flux/time sign,
+or reliance on independent unconstrained source changes.
+RESIDUAL/ERROR_BOUND: exact symbolic central coefficients; metric/source
+diagonal equations at order r^0 after normalization, mixed equation
+through its leading order r, no error claim beyond these Taylor orders.
+VALIDITY_HEALTH: canonical positive kinetic energy and potential at the
+tested event; coupled PDE health, existence and stability remain separate.
+BRANCHES: static limit and zero-spatial-curvature homogeneous limit
+checked separately; no vacuum q=0 substitution or exterior join.
+OBSERVABLE_MAP: local clock p0, normal expansion, actual scalar stress,
+phase current and central curvature. q is not foundation pressure.
+FORWARD_MODEL/DATA_ROLE/IDENTIFIABILITY: N/A for observational inference;
+this is a local counterexample to extending the static restriction.
+BENCHMARK: static section33, homogeneous section2, canonical zero flux.
+CROSSCHECK: independent agent derivation; direct metric versus
+already-varied source equations; matter/phase continuity from the scalar.
+CLOSURE_FLAGS initially false: dynamic_central_compatibility,
+static_restriction_not_universal, foundation_pressure_join,
+all_orders_solution, global_regular_black_hole, perturbative_stability.
+PROVENANCE: exploratory central derivation and rational witness were
+specified before this verification; not a blind prediction.
+FILES: existing completion checker, this report and main diagnostic index.
+STOP: decide this local compatibility question, record the actual flux
+and expansion interpretation, and stop without a time-extension run or
+a new action.
+
+### Result: the dynamic common-readout central jet passes
+
+The independent central derivation gives
+
+    z=H^2+z_s, rho=3z/(2alpha q),
+    Hdot=-3H^2/2+3zu/2-alpha q^2 P,
+    P/rho=u/q-(2Hdot+3H^2)/(3zq),
+    J=j1 r+O(r^3),
+    j1=(z_sdot+3H z_s)/(2alpha q^2),
+    rhodot+3H(rho+P)=3j1.
+
+It reproduces section33 when H=Hdot=0. These temporal terms permit
+canonical central stresses in the formerly excluded static range.
+
+A specified charged canonical witness has alpha=ell=1, z=u=3/4,
+q=1/4, H=1/4, Hdot=53/96, zdot=1/8. At the event phi0=2,
+Pi=i sqrt(23/3), with spatial coefficient
+kappa=i35/[24 sqrt(23/3)] in phi=phi0+kappa r^2+O(r^4).
+The unchanged sextic gives V=2/3, rho=9/2, P=19/6. Its mixed
+energy coefficient is j1=35/12, and its scalar equation fixes
+Pi_dot=-2+3i/sqrt(23/3), giving rhodot=3. Energy and conserved
+phase-current continuity agree in an independent hand derivation.
+
+The common clock scale is p0=1/2 with proper derivative -1/8.
+The positive normal-grid expansion H=1/4 is distinct from material
+flow: both the energy-rest and charge-flow normal-frame velocities
+have leading coefficient -35/92, so their areal rate is
+u_flow(r)=-3r/23+O(r^3). The source therefore contracts locally
+while the common clock scale decreases. The expected central
+curvature is K=1465/192 and Ricci scalar is 49/8, both finite.
+The selected equality of qdot and p0dot is accidental; q and p0
+are distinct variables with different values at this event.
+
+The new function dynamic_common_centre_checks in the existing
+completion checker independently reconstructs the orbit metric,
+angular equation, scalar source and central curvature. All43 new
+checks and335 preceding checks pass: **378/378**, failed=[].
+The direct orbit density, radial pressure, leading mixed flux and
+angular pressure reproduce the specified canonical source. A separate
+agent independently derived the equations, audited the local-flow
+interpretation and reviewed the implementation.
+
+The first running verification was interrupted while forming an
+unnecessarily large rational expression. The final implementation
+takes the exact finite limits of normalized factors before their
+products; the action, witness and acceptance conditions are identical.
+The full successful checker hash is
+`74a02d77217cf5ea8918c72c6c4b13f09c9469d40fc551a6b7ffcd7c8f017e1d`.
+The production evolution retains hash
+`1a23833cd7bc907da7bdda32f26c8ced9ec866f298423a646fb4827f7ce40500`.
+Initial approval-service launch failures occurred before execution
+and supply no physical or numerical result.
+
+This resolves the question posed in section34: the particular static
+restriction of section33 is not a universal consequence of common
+clock/rod scaling. Time dependence and a conserved canonical source
+are locally compatible without a new action or negative potential.
+
+This is a finite-order central construction. An all-orders solution,
+propagation through an interior, the foundation-pressure derivation,
+horizon matching and dynamical stability are still separate tasks.
+The original production evolution and intuitive monographs are unchanged.
+
+## 35. First continuation and the full spatial compatibility condition
+
+### Bounded verification contract (2026-09-14)
+
+CLAIM_ID: W3-92-SAT-CENTRAL-PROLONGATION-35.
+GOAL: decide the section34 event's first nontrivial spatial and temporal
+compatibility, then use a full spatial identity to check whether the
+same globally imposed metric restriction can have a standard isolated
+finite-mass exterior. This replaces an unbounded Taylor-coefficient ladder.
+TYPE: exact finite-order compatibility and conditional asymptotic filter.
+MODEL_VERSION: unchanged common p(t,s), zero shift, canonical complex
+sextic and spherical rational action. General alpha,ell for the identity;
+alpha=ell=1 and all section34 lower jets fixed for the example.
+ASSUMPTIONS/DOMAIN: smooth even profiles, p0=1/2,q0=1/4 near the centre;
+0<q throughout any domain used in the full identity.
+CONVENTIONS: r=s/p, n=p^(-1)partial_t, e=p partial_s, k=e ln p=p_s.
+Un=Hess_nn(r)/r, Ue=Hess_ee(r)/r, Une=Hess_ne(r)/r;
+rho,Pr,Pt,J are the actual source in that orthonormal frame.
+FREEDOM_LEDGER: solve p4,p2_tt,Im(phi2_t), and the necessary p0_ttt.
+Re(phi2_t) remains free if absent from the retained equations.
+EXTERIOR ASSUMPTIONS: differentiated asymptotic expansion
+p=1-m/s+O(s^-2), p_s=m/s^2+O(s^-3), p_t=O(s^-2),
+fixed finite ell, and rho,Pr,J=O(s^-3-epsilon), epsilon>0.
+For canonical matter Pr-Pt>=0. These are a restricted isolated
+spatial-infinity class, not arbitrary time-dependent infinity.
+DEPENDENCIES: section34 event and KG; already-varied orbit/angular
+equations. Do not substitute an Einstein-effective tensor as extra matter.
+METHOD: derive compact equations before expansion; solve the finite
+coefficient system and check the t derivative of the leading mixed
+constraint; independently derive an exact unexpanded spatial identity
+and its exterior powers.
+PASS_CONDITION: finite coefficient solution with zero residual and
+correct constraint propagation. The exterior filter has its own outcome;
+passing local conditions does not preselect its result.
+FAIL_CONDITION/FALSIFIER: inconsistent coefficients, changed frozen
+lower data, nonzero identity residual, or a counterexample satisfying
+all stated exterior assumptions.
+RESIDUAL/ERROR_BOUND: normalized diagonal equations through s^2,
+mixed through s and its t derivative at the event. Exact spatial
+identity on q>0; explicit asymptotic remainders, no numerical error.
+VALIDITY_HEALTH: only local canonical signs; no full stability claim.
+BRANCHES: declare matrix rank/free data; the exterior statement
+excludes only the globally exact common-p branch with stated falloffs.
+OBSERVABLE_MAP: local clock/source/flow; m is the ADM mass parameter
+of this standard asymptotic conformal spatial metric, not q or p0.
+FORWARD_MODEL/DATA_ROLE/IDENTIFIABILITY: no observed data or fit;
+conditional mathematical compatibility, not unique physical origin.
+BENCHMARK/CROSSCHECK: section34, direct connection algebra,
+independent agent calculations, perturbed coefficients, ell->0 and
+zero-mass controls.
+CLOSURE_FLAGS initially false: first_radial_compatibility,
+leading_momentum_propagation, full_spatial_identity,
+specified_isolated_extension_excluded, full_RefG_rejected,
+global_regular_black_hole.
+PROVENANCE: compact geometric and independent coefficient derivations
+preceded runtime verification. An initial contract write failed at the
+approval service; this complete contract is not a blind prediction.
+FILES: existing completion checker, this report and main diagnostic index.
+STOP: decide these concrete compatibility questions; do not continue
+a Taylor ladder, tune an exterior profile or change the physical action.
+
+### Result: finite-order compatibility passes; the specified isolated end fails
+
+The three diagonal metric/source equations at order s^2 have rank three.
+With every section34 lower coefficient fixed, they give exactly
+
+\[
+p_4=\frac{16603}{812544},\qquad
+p_{2,tt}=-\frac{392533}{3250176},\qquad
+\operatorname{Im}\phi_{2,t}=\frac{12353\sqrt{69}}{292008}.
+\]
+
+For A=sqrt(23/3), the independently obtained geometric coefficients are
+
+\[
+\rho_2=160p_4-\frac{35}{8},\quad
+P_{r2}=\frac{736}{3}p_4+128p_{2,tt}+\frac{1345}{144},\quad
+P_{t2}=\frac{1472}{3}p_4+128p_{2,tt}-\frac19.
+\]
+
+They equal the unchanged scalar coefficients. Re(phi2_t) is absent at
+this order and remains free; it was not set to zero. The necessary time
+derivative of the leading mixed constraint is also compatible:
+
+\[
+(J_{1,t})_{\rm geometry}=64p_{2,tt}+\frac{875}{96},\qquad
+(J_{1,t})_{\rm scalar}=A\operatorname{Im}\phi_{2,t}+\frac{455}{1104}.
+\]
+
+Their difference vanishes. The central pressure's time derivative fixes
+p0_ttt=191/3072, and rho0_t=Pr0_t=3/2. The source acceleration is the
+section34 scalar-equation value, not an added adjustable acceleration.
+These results concern the diagonal equations through s^2 and the leading
+mixed constraint's time derivative at one event. The scalar equation
+through s^2, higher orders, finite-neighbourhood existence and stability
+are not established by this finite jet.
+
+The shorter global test does not depend on truncating that jet. Direct
+geometry gives
+
+\[
+R_2=2(z+U_n+U_e)-4k^2.
+\]
+
+Combining the independently varied angular and radial equations gives
+
+\[
+\alpha q^3(P_r-P_t)
+=-qk^2+2\ell^2[(z-U_n)(z+U_e)+U_{ne}^2].
+\]
+
+After substituting the orbit equations, the exact source condition is
+
+\[
+\boxed{\quad
+k^2+\alpha q^2(P_r-P_t)
+=2\ell^2q\left[
+\left(\frac{3z}{2}+\alpha qP_r\right)
+\left(\frac{3z}{2}-\alpha q\rho\right)
++\alpha^2q^2J^2\right].\quad}
+\]
+
+Here q=1-ell^2*z, k=p_s, and Pr-Pt=|e phi|^2>=0 for the retained
+canonical source. The identity follows from the unchanged action;
+no Einstein-effective stress tensor is added as another source.
+The code checks the generic unexpanded geometric identity, the angular
+subtraction, source substitution and the solved finite jet separately.
+The Einstein-limit control is k^2+alpha*|e phi|^2=0.
+
+Now impose the contract's isolated spatial end, with alpha>0, fixed
+finite ell, and constant nonzero mass parameter m:
+
+\[
+p=1-\frac{m}{s}+O(s^{-2}),\quad
+p_s=\frac{m}{s^2}+O(s^{-3}),\quad p_t=O(s^{-2}),\qquad
+\rho,P_r,J=O(s^{-3-\epsilon}),\quad\epsilon>0.
+\]
+
+The derivative falloffs are explicit assumptions, not inferred by
+differentiating an uncontrolled remainder. Finite total energy alone
+does not imply the pointwise source falloffs used here. They yield
+z=2m/s^3+O(s^-4), q->1, and therefore
+
+\[
+\mathrm{LHS}\ge\frac{m^2}{s^4}(1+o(1)),\qquad
+\mathrm{RHS}=\frac{18\ell^2m^2}{s^6}+o(s^{-6}).
+\]
+
+Multiplication by s^4 makes the contradiction explicit: the left side
+has positive limiting lower bound m^2, while the right side tends to
+zero. The exact common-p metric therefore has no such isolated
+nonzero-mass end with this canonical source and action. A representative
+series checks the leading and subleading z coefficients and the mass
+limit r^3*z/(2*alpha*q)->m/alpha; the proof uses the stated remainder
+bounds and positivity, not that representative alone.
+
+**Verified: 414/414 checks, including 36 new and all 378 previous checks.**
+Independent read-only derivations reproduce both the coefficient system
+and the full spatial identity; a separate review checked its code and
+claim boundaries. These are symbolic verification of the identities
+and coefficients plus the explicit asymptotic proof above, not 414
+independent physical predictions. The contract and exploratory
+derivations preceded runtime verification; this is not a blind test.
+
+**Decision.** Stop the globally exact common-p/canonical isolated-end
+route here. More central coefficients or longer integration cannot
+repair its asymptotic incompatibility. This does not reject local
+common scaling, the spherical saturation action, self-regulation, or
+full RefG, and it does not demonstrate a curvature blow-up. It also
+does not establish a nonsingular black hole. The next distinct question
+is the action-determined relation between clock and spatial metric
+coefficients when their global exact reciprocal identification is not
+imposed. Any connection of that relation to the foundation state must
+be derived or explicitly proposed, not silently declared equivalent.
+No new readout law, extra source, intuitive-file change or numerical
+evolution was introduced in this stage.
+
+## 36. Full-coframe readout and decisive source-completion tests
+
+### Connected verification contract (2026-09-14)
+
+CLAIM_ID: W92_FULL_READOUT_AND_SOURCE_DECISION_36.
+GOAL: resolve the section35 restriction against the existing formal theory,
+derive the selected action's actual clock/rod relation, then decide two
+short source-completion routes without stopping at a coordinate dictionary.
+TYPE: exact readout reconstruction, conditional stationary-source theorem,
+and a distinct conditional barotropic saturation theorem.
+MODEL_VERSION: unchanged rational spherical action, retained neutral
+canonical sextic V(chi)=chi^2/2-chi^4/4+chi^6/24. The last test considers
+an explicitly separate minimal conserved-current energy rho(n), not an
+unannounced replacement of that scalar or the W87 nonminimal action.
+ASSUMPTIONS/DOMAIN: readout on outward static f>0 branch, sigma>0,
+q=1-ell^2*z>0, finite ell and positive geometric mass m; asymptotically
+flat vacuum. Source theorem: one real harmonic frequency, static
+spherical metric, C1 horizon-regular scalar satisfying KG, simple regular
+horizons with q_h>0; zero-frequency field has the usual decaying vacuum
+tail. Barotropic test: n>0, rho C2, rho'>0 and c_s^2=n*rho''/rho'>=0
+throughout the density interval being claimed.
+CONVENTIONS: ds^2=-sigma^2*f*dt^2+dr^2/f+r^2*dOmega^2;
+p_T=sigma*sqrt(f), p_L=s/r, alpha=4piG, mu=r^3*z/(2q).
+The isotropic-coordinate factors are not defined as foundation pressure.
+FREEDOM_LEDGER: exterior m,ell and asymptotic clock/coordinate normalization;
+no free readout function fitted. Frequency is arbitrary real within its
+declared cases. No horizon cutoff, surface layer or central source added.
+DEPENDENCIES: W51 weak-field domain, W52 full-1PN component readouts,
+W54 complete coframe, W67/W71 scale separation; this report sections1,
+6,24,29,33,35. Einstein benchmarks remain limits, not substituted dynamics.
+METHOD: exact coordinate pullback plus original static mass/lapse equations;
+coefficient reconstruction through inverse-radius order4; original orbit
+E_vv and KG in ingoing EF coordinates; nonnegative integral and local
+horizon uniqueness; convexity implication for the separate current model.
+PASS_CONDITION: zero exact algebraic residuals; explicit analytical proofs
+with all boundary/regularity premises; recovery of established weak order.
+FAIL_CONDITION/FALSIFIER: wrong reconstruction or flux coefficient, a
+nonzero stationary solution satisfying every declared condition, or a
+bounded increasing convex rho on an unbounded density interval.
+RESIDUAL/ERROR_BOUND: exact identities and explicit O(s^-5) series;
+analytical comparison proofs are recorded separately from symbolic checks.
+VALIDITY_HEALTH: source theorem tests existence, not perturbative stability;
+current convexity is only a necessary local acoustic condition.
+BRANCHES: nonextremal stationary source; omega=0 and omega!=0 separately.
+Extremal, rotating, charged/synchronized, nonminimal and genuinely dynamic
+matter are outside that exclusion. The geometry's q=0 centre-domain issue
+is inherited unchanged and is not repaired by coordinates.
+OBSERVABLE_MAP: d tau=p_T dt, d ell=ds/p_L, c_coord=c0*p_T*p_L
+on the static chart; local c0 unchanged. ADM mass, local source energy and
+single-oscillon redshifted mass are different entries.
+FORWARD_MODEL/DATA_ROLE: N/A, no observational data or fitting in this test.
+IDENTIFIABILITY: readout determined by chosen action/geometry; no unique
+microscopic pressure interpretation follows from it.
+BENCHMARK/CROSSCHECK: independent exterior and horizon derivations,
+Schwarzschild ell=0, asymptotic and horizon limits, sqrt2 scalar extremum,
+linear-energy healthy control and an explicitly rejected rational density.
+CLOSURE_FLAGS initially false: full_readout_verified,
+stationary_source_excluded_in_domain, minimal_density_cap_excluded;
+foundation_pressure_join, global_singularity_removal, full_RefG_rejected.
+PROVENANCE: source audit and exploratory independent derivations precede
+this runtime verification; it is not a blind test. Preserve old414 checks.
+FILES: same completion checker, this report and main diagnostic index.
+STOP: complete all three connected decisions. Do not rerun another long
+collapse window, repeat a failed static shooting problem or silently
+choose a new constitutive law. The final result must identify which
+remaining physical equation, rather than another coordinate change,
+would be needed for a complete RefG nonsingularity claim.
+
+### Result: the full metric is recovered and two source routes are decided
+
+**452/452 checks pass: 38 new plus all414 previous checks.** The source
+and exterior derivations were independently reproduced and the resulting
+code reviewed separately. The analytical arguments below supply the
+existence exclusions; the symbolic tests check their algebraic premises.
+
+#### A. The extra common-p restriction is removed using existing theory
+
+The source audit identifies an earlier unnecessary restriction. W3-51's
+`Weak_Field_Closure/w3_51_weak_field_closure_contract.md:60` restricts the
+common-factor sourced calculation to g00 through u^2 and gij through u.
+W3-52's `Full_1PN_Inheritance/w3_52_full_1pn_inheritance_contract.md:99`
+already distinguishes exact clock and ruler coefficients. Both are under
+`RefG/work 3/Lagrangian_Formulation/`. W3-54 supplies the complete coframe,
+and `Strong_Field/W3-67_Foundation_Strong_Field_Response/` explicitly
+limits the weak common factor at lines50-65 of its preregistration.
+Section35 remains a valid exclusion of its additional global ansatz;
+that ansatz is not a necessary requirement of the established full
+RefG coframe. The source-file hashes are included in the checker output.
+
+For the retained action, the vacuum mass and lapse constraints give
+
+\[
+f=1-\frac{2mr^2}{r^3+2m\ell^2},\qquad \sigma=1.
+\]
+
+On the outward static branch, define s/r->1 at infinity and
+d ln(s)/dr=1/(r sqrt(f)). Then p_L=s/r and the exact relation is
+
+\[
+\boxed{p_T=\sigma\left(1-\frac{s p_L'}{p_L}\right)},\qquad
+\frac{\sigma'}{\sigma}=\frac{\alpha r q^2(\rho+P_r)}{f}.
+\]
+
+The prime in the first expression differentiates s; the second
+differentiates r. This is an action-determined one-metric relation.
+It introduces no freely fitted function. In particular,
+
+\[
+p_L=1-\frac m s+\frac{3m^2}{4s^2}+O(s^{-3}),\qquad
+p_T=1-\frac m s+\frac{m^2}{2s^2}+O(s^{-3}).
+\]
+
+The checker independently reconstructs both series through s^-4.
+Their leading common response and the established PPN orders are
+retained. The readouts are d tau=p_T dt, d ell=ds/p_L and
+c_coord=c0*p_T*p_L. Restoring their action-determined difference repairs
+the extra restriction, not the underlying physical action.
+
+Mass normalization is explicit: mu=r^3*z/(2q)=m, the earlier normalized
+M_code=mu/alpha, and M_physical=m/G=4pi*M_code when alpha=4piG.
+Thus section35's m/alpha limit and the present m are different units
+of the same asymptotic charge.
+
+At a simple outer horizon p_T->0 while p_L->s_h/r_h>0; dr/ds->0.
+The static isotropic chart ends there. The same geometry continues in
+ingoing EF coordinates. The extremal isotropic limit is different and
+is outside that simple-horizon statement. At the vacuum centre q->0
+while the infinity-normalized static clock sqrt(f)->1. Hence a
+foundation-pressure/oscillator law is still distinct from this coordinate
+reconstruction; section29's central variational-domain condition remains.
+
+#### B. The retained coherent stationary scalar cannot fill a regular simple-horizon black hole
+
+Use ds^2=-sigma^2*f*dv^2+2sigma*dv*dr+r^2*dOmega^2 and
+phi=exp(-i omega v) F(r), with F C1 at a simple regular horizon and C2
+on adjacent punctured intervals. Direct evaluation of the original
+rational-action tensor, with finite coefficients at q_h>0, gives
+
+\[
+E_{vv}=\frac{\sigma^2f}{2}(\alpha_{\rm orbit}+\beta f'),\qquad
+T_{vv}|_h=\omega^2|F_h|^2.
+\]
+
+For omega!=0 the field equation therefore requires F_h=0. The unchanged
+scalar equation is, with a=sigma*r^2*f and g=(1-|F|^2/2)^2,
+
+\[
+(aF')'-2i\omega r^2F'-(2i\omega r+\sigma r^2g)F=0.
+\]
+
+Set b=2i omega r+sigma*r^2*g and
+mu=exp[-integral(2i omega r^2/a)dr]. This integrating factor has unit
+modulus and (mu*a*F')'=mu*b*F. A simple horizon gives
+|a|>=c|r-r_h|; regular F makes b bounded, |b|<=B, and aF'->0.
+Integration from the horizon on either side gives
+|F'|<=(B/c) sup|F|. Since F_h=0, an interval epsilon<c/B obeys
+sup|F|<=(B epsilon/c) sup|F|, forcing F=0 there. Ordinary uniqueness
+propagates this result through connected regular intervals, with the
+same argument at further simple horizons. Analyticity is not assumed.
+
+For omega=0 the actual potential has
+V'(chi)=chi(1-chi^2/2)^2. Multiplication of KG by the complex conjugate
+field and exterior integration yields
+
+\[
+[\operatorname{Re}(F^*aF')]_{r_h}^{\infty}
+=\int_{r_h}^{\infty}\sigma r^2
+\left[f|F'|^2+|F|^2(1-|F|^2/2)^2\right]dr.
+\]
+
+The regular-horizon and decaying vacuum boundaries vanish. Positivity
+on f>0 forces a constant field. The alternative constant |F|=sqrt2
+has V=1/3 and fails the asymptotically flat vacuum boundary; F=0 is
+selected. The same horizon-uniqueness argument prevents an otherwise
+smooth, interior-only stationary field.
+
+This completes the specified stationary-source exclusion. A horizonless
+coherent star from section6 cannot be continued into a regular
+nonextremal black hole while keeping that same global harmonic/static
+ansatz. Genuinely dynamical matter remains a separate possibility;
+extremal, rotating, gauge-synchronized and nonminimal sources are outside
+this theorem. No Einstein field equation was used in the proof.
+
+#### C. Simply capping local energy fails the minimal healthy-current test
+
+A separate possible shortcut is a minimally coupled isentropic current
+whose local energy rho(n) saturates when its conserved number density
+n grows. On the standard positive-energy acoustic branch,
+
+\[
+\rho'>0,\qquad c_s^2=\frac{n\rho''}{\rho'}\ge0
+\quad\Longrightarrow\quad\rho''\ge0.
+\]
+
+Consequently, for n>=n0>0,
+
+\[
+\rho(n)\ge\rho(n_0)+\rho'(n_0)(n-n_0)\longrightarrow\infty.
+\]
+
+An increasing bounded local energy is incompatible with these assumptions
+on an unbounded density interval. The explicitly tested illustration
+rho=rho_star*n/(n+n_star) instead gives
+c_s^2=-2n/(n+n_star)<0, whereas the linear dust control gives zero.
+The saturating illustration is rejected and is not adopted. This test
+concerns local energy density; a binding-corrected ADM mass or a
+redshifted constituent mass is not rho(n) and is not constrained by
+this convexity argument.
+
+**Combined decision.** Use the already established complete coframe,
+not a globally locked weak-field scalar metric. For a matter-filled
+black hole, the retained coherent canonical source must be dynamically
+evolved; the static shooting shortcut is excluded. A stable minimal
+local-density cap cannot replace that evolution. The remaining physical
+task is a source-and-geometry evolution or a separately specified healthy
+medium response which controls the interior source and admits global
+continuation. None of these three tests supplies that missing dynamical
+estimate. The old finite-time numerical evidence is retained with its
+original domain. No intuition, potential, action, production evolution,
+Git rule or published claim was changed.
+
+## 37. A finite-mass dynamical inner-horizon counterexample
+
+### Contract before implementation and verification (2026-09-14)
+
+CLAIM_ID: W92_VAIDYA_PARALLEL_CURVATURE_37.
+GOAL: decide whether the same spherical rational response alone removes
+singularities for an ordinary conserved positive null source, using an
+actual time-dependent solution rather than a local jet or a longer replay.
+TYPE: exact sourced solution and analytical finite-affine curvature proof.
+MODEL_VERSION: same gravitational action, explicitly separate ingoing null
+fluid replacing the harmonic scalar for this diagnostic. Its covariant
+action is S_null=-1/2 integral sqrt(-g) xi*(grad V)^2, with xi>=0;
+variation imposes null gradient and conserved flux. It is not the fixed
+canonical-sextic initial packet or a derivation of RefG photon microphysics.
+ASSUMPTIONS/DOMAIN: ell>0, ingoing EF metric -f(v,r)dv^2+2dvdr+r^2dOmega^2,
+f=1-2m(v)r^2/(r^3+2m(v)ell^2), q>0, smooth increasing m(v).
+Concrete certificate ell=1, m(v)=2-1/[4(1+v)], v>=24,
+r in [7/6,5/4], outgoing geodesic r(24)=6/5, k^v(24)=1.
+CONVENTIONS: alpha=4piG; m is geometric generalized mass; signature -+++;
+T_vv=m'(v)/(alpha*r^2), all other orbit components and angular pressure0.
+FREEDOM_LEDGER: one explicit tail and affine normalization; no fitted
+profile, coordinate cutoff, altered response, second stream or bounce.
+DEPENDENCIES: original orbit/angular equations, generalized-mass balance,
+section28 vacuum horizon extension. Previous static bounds are controls,
+not a proof for the new time-dependent source.
+METHOD: direct EF Christoffel, orbit, angular and source-conservation
+checks; exact null-geodesic equation; rational inward-vector-field,
+q and connection bounds on an invariant rectangle; explicit divergence
+lower bound and finite-affine upper bound. No numerical trajectory is
+needed for the certificate.
+PASS_CONDITION: exact field/source residuals and all rectangle inequalities;
+the geodesic persists for every finite v, has finite future affine length,
+and R_ab*k^a*k^b diverges. This is a failure of universal regularity in
+the declared gravity-plus-null-source class, not a desired positive claim.
+FAIL_CONDITION/FALSIFIER: nonzero field/angular/conservation residual,
+failure of any invariant-region bound, nonaffine k, or a regular C2
+extension along that ray with bounded parallel curvature.
+RESIDUAL/ERROR_BOUND: exact symbolic algebra and rational bounds;
+analytical ODE existence/extension and comparison argument, no floating fit.
+VALIDITY_HEALTH: positive conserved null source, same local metric cone;
+q stays above1/4 and the calculation avoids the q=0 action boundary.
+BRANCHES: a nonextremal inner-horizon neighbourhood; not a smooth-centre
+formation simulation or a scalar-polynomial curvature blow-up assertion.
+OBSERVABLE_MAP: affine-parallel null contraction of Ricci, invariant under
+coordinate changes; fixed finite affine rescalings do not remove divergence.
+FORWARD_MODEL/DATA_ROLE: N/A, no observed-data fit or astronomical prediction.
+IDENTIFIABILITY: explicit counterexample to a universal mechanism in this
+source class; not classification of every source or rejection of full RefG.
+BENCHMARK/CROSSCHECK: constant-m vacuum gives zero null contraction;
+Einstein ell=0; direct angular equation; independent exact derivation and
+independent rational interval certificate.
+CLOSURE_FLAGS initially false: null_source_solution, finite_affine_pp_blowup,
+universal_null_source_regularization_excluded; fixed_scalar_packet_blowup,
+scalar_polynomial_blowup, full_RefG_rejected, global_singularity_removal.
+PROVENANCE: explicit solution and candidate rational bounds were derived
+exploratorily before these tests; no blind or observational prediction.
+FILES: same completion checker, report and diagnostic index only.
+STOP: complete this dynamical yes/no test and report its exact model scope;
+do not rebrand it as fixed-packet scalar failure or all-theory rejection.
+
+TIMELIKE ADDENDUM before its implementation: check the same solution and
+invariant annulus for a radial geodesic U^v(24)=8, r(24)=6/5,
+U^r=(f U^v-1/U^v)/2. Test the unit-timelike norm, both geodesic equations,
+the inward boundary signs with the added -1/(2(U^v)^2) term, proper-time
+remainder<=1/3 and the divergent parallel angular tidal component.
+This strengthens the physical readout of the same counterexample;
+the original null test has already passed495/495, so it is not blind.
+
+### Exact dynamical result and independent certificate
+
+**506/506 checks pass: 54 new plus all452 earlier checks.** An independent
+derivation reproduces the original field and source equations, rational
+interval bounds and both geodesic certificates. A separate adversarial
+review verifies the null argument and its scope. The final checker hash
+is `4cc848a6664fcc971e092747342a16f58e2b99e7fde2f570579ce06d3b86a750`.
+
+#### The source and metric solve the actual equations
+
+For the metric registered above, direct calculation gives
+
+\[
+R_{;vv}=(f_v-ff_r)/2,\quad R_{;vr}=f_r/2,\quad R_{;rr}=0,
+\qquad \Box r=f_r,\quad R_{;ab}R^{;ab}=f_r^2/2,\quad R_2=-f_{rr}.
+\]
+
+The original rational orbit equations give E_vv=2m'(v), E_vr=E_rr=0;
+the independently varied angular equation gives zero angular pressure.
+Thus T_vv=m'/(alpha*r^2), with all other listed stresses zero, is an
+exact source. The null-fluid action gives (grad V)^2=0 and
+div(xi grad V)=0. With V=v, xi=m'/(alpha*r^2)>0, conservation reduces
+to partial_r(r^2 xi)=0. The future ingoing vector -partial_r is affine.
+There is one positive source ledger and no added effective medium tensor.
+
+The mass aspect is mu=r^3*z/(2q)=m(v). It is an ingoing/generalized
+mass aspect, not a claim that the ADM mass of a closed complete system
+varies. The incoming energy after v=24 is finite: Delta m=1/100.
+
+#### The exact trajectory certificate
+
+On the rectangle r in [7/6,5/4], m in [199/100,2], f decreases with m.
+The boundary signs are
+
+\[
+f(7/6,2)=\frac{31}{1207}>0,\qquad
+f(5/4,199/100)=-\frac{457}{9493}<0.
+\]
+
+The outgoing null equation dr/dv=f/2 therefore preserves this annulus.
+Its vector field is smooth and bounded there, so the ray exists for
+every finite v>=24. Separately bounding positive factors gives
+
+\[
+-\frac{f_r}{2}
+=\frac{mr(4m-r^3)}{(r^3+2m)^2}
+\ge\frac{107104984}{272176875}>\frac38,\qquad
+q\ge\frac{2744}{10287}>\frac14.
+\]
+
+For affine normalization k^v(24)=1, the exact geodesic equation is
+d ln(k^v)/dv=-f_r/2. Hence
+
+\[
+k^v\ge e^{3(v-24)/8},\qquad
+\lambda_\infty-\lambda_{24}\le\int_{24}^{\infty}e^{-3(v-24)/8}dv=\frac83.
+\]
+
+The Ricci contraction follows independently from geometry and source:
+
+\[
+R_{kk}=-\frac{f_v}{r}(k^v)^2
+=\frac{2q^2m'}{r^2}(k^v)^2
+\ge\frac{e^{3(v-24)/4}}{50(1+v)^2}\longrightarrow+\infty.
+\]
+
+The unit angular vectors r^-1 partial_theta and
+(r sin(theta))^-1 partial_phi are parallel transported along the
+radial ray. Their tidal contraction is R(k,e_theta,k,e_theta)=R_kk/2.
+This is parallel-frame curvature divergence at a finite affine endpoint.
+
+#### A freely falling massive observer reaches the same obstruction
+
+Set U^v=K, U^r=(fK-1/K)/2, with K(24)=8 and r(24)=6/5. The checker
+verifies g(U,U)=-1 and both geodesic equations:
+
+\[
+\frac{dr}{dv}=\frac f2-\frac1{2K^2},\qquad
+\frac{d\ln K}{dv}=-\frac{f_r}{2}.
+\]
+
+The lower inward margin is 31/1207-1/64=777/77248>0; the upper
+boundary remains inward. Thus r remains in the same annulus and
+K>=8 exp[3(v-24)/8]. Its own remaining proper time obeys
+
+\[
+\tau_\infty-\tau_{24}\le\frac13.
+\]
+
+The angular unit vector is also parallel transported along this timelike
+geodesic. The observer's tidal component is
+
+\[
+\mathcal T=R(U,e_\theta,U,e_\theta)
+=-\frac{r''}{r}
+=\frac{q^2m'K^2}{r^2}+\frac{f_r}{2r}.
+\]
+
+For ell=1, exactly
+1+f_r/(2r)=r^3(r^3+5m)/(r^3+2m)^2>0. Therefore
+
+\[
+\boxed{\quad\mathcal T\ge
+\frac{16}{25}\frac{e^{3(v-24)/4}}{(1+v)^2}-1
+\longrightarrow+\infty.\quad}
+\]
+
+All times and curvatures here are in the declared ell=1 model units.
+The finite initial K=8 selects a particular freely falling observer;
+it is not an imposed force or a time-dependent change of frame.
+
+The limiting radius is the inner root of the m=2 metric. To see this,
+f(r,m(v))/2 converges uniformly on the annulus to f(r,2)/2, whose
+radial derivative is at most -3/8. Relative to its unique zero, the
+radius satisfies a contracting equation with a forcing tending to zero.
+For the timelike ray the extra forcing -1/(2K^2) tends exponentially
+to zero as well. Variation of constants gives convergence to that root.
+
+#### What this settles
+
+The explicitly checked Ricci and Kretschmann scalars are
+
+\[
+R_4=-f_{rr}-4f_r/r+2(1-f)/r^2,\qquad
+\mathcal K=f_{rr}^2+4f_r^2/r^2+4(1-f)^2/r^4.
+\]
+
+They stay bounded on the compact (r,m) rectangle. The freely falling
+tidal component nevertheless diverges, obstructing a regular C2
+continuation along that geodesic. A finite scalar curvature plot is
+therefore insufficient for this model's regularity claim. The physical
+reason is explicit: the ingoing flux decays only as (1+v)^-2, while
+its freely falling frequency factor grows exponentially. The screening
+q^2 stays bounded away from zero and cannot compensate that growth.
+
+The same comparison structure applies near any simple inner horizon
+of a finite nonextremal member: ell<r_-<sqrt(3)ell gives q_h>0 and
+-f_r(r_-)/2>0. A sufficiently small annulus and sufficiently late
+positive power-law tail supply the same positive lower bounds, with
+mass-dependent constants. The explicit rational certificate above is
+one fully reproduced member, not an astronomical fit.
+
+**Decision:** the selected rational screening action fails to guarantee
+nonsingularity for every allowed positive conserved null-source solution.
+This is an actual dynamical counterexample; infinite total mass, a
+q=0 domain crossing and a numerical failure are absent from its proof.
+The same-action vacuum inner-horizon extension in section28 is therefore
+not a regularity guarantee once this ingoing source is included.
+
+The exact scope is the specified null-fluid sector in the regular
+inner-horizon neighbourhood q>1/4. The proof does not construct collapse
+from globally smooth-centre data: extending this particular null source
+to r=0 would require separate treatment. It is also not a blow-up proof
+for the old canonical-sextic packet or a rejection of full RefG. Weaker
+C0/C1 extensions are not classified. These boundaries are retained in
+the machine-readable output.
+
+**Research consequence:** a complete RefG mechanism must also control
+the physical inner-horizon blueshift, or avoid that inner horizon through
+derived dynamics. A bounded central z, decreased external mass or a
+different coordinate readout alone does not meet that requirement.
+The present candidate is not certified as a nonsingular black hole;
+the negative regularity test above is complete in its declared class.
+
 ## Reproduction and attribution
 
     python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py"
