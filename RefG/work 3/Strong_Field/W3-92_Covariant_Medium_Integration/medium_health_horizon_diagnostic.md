@@ -13,7 +13,83 @@ exponential exterior and selected additive constitutive truncations are
 candidate assumptions, not requirements imposed on every future action.
 The negative results below remain valid in their stated domains.
 
-Latest late-time validation: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+Latest local source/readout comparison:
+[spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section33 (2026-09-14). The existing sourced regular-centre construction
+is retained. A new exact central-order comparison finds that the
+additional static common clock/rod readout requires
+P_c/rho_c=u/(1-u), where u=ell^2 z_c. The retained positive sextic
+therefore requires u<1/2 (q_c>1/2) at a nonzero scalar centre; it cannot
+reach the selected u->1 vacuum target with that extra restriction.
+This bounds the response q_c, not the clock normalization p0 or
+foundation pressure. Free-lapse central data provide a finite low-q
+control. The Hayward Einstein-effective tensor and its actual
+modified-action vacuum source are separately verified. All42 new and
+293 previous checks pass **335/335**. This is a local compatibility
+decision, not a new black-hole or stability result. No time extension
+or intuitive-file change was made.
+
+Previous completed analytic decision: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+sections24-32 (2026-09-14). The independent completion checker is reproduced
+at **293/293** checks. These include verified exclusions, not293 claims
+of singularity removal. The positive-screening spherical action retains
+the exact bounded-curvature matched dust solution and a regular local
+inner-horizon continuation. It does not supply a universal local-source
+curvature cap; future-null completeness with the stated global Cauchy
+and trapped-sphere premises is excluded. Its selected vacuum-centre
+variational/domain completion remains unspecified.
+
+The different W87 F(n)T/current join is now tested through the actual
+spherical action, both spin equations and the constrained radial operator.
+For inward density increase with Fp>0, positive mu gives a high-frequency
+radial instability; negative mu cannot provide a healthy regular continuum
+branch. The retained positive-dust equations also reject an open
+constant-density inward interval. Combining these results with section27
+excludes a complete, bounded-curvature, continuum-healthy, persistent
+inward KS core in the stated positive-slope density-only dust family,
+on the same W89 coframe/flat-spin branch and same patch throughout.
+The compact-density regularity assumptions on F and the continuum
+qualification remain essential. This does not exclude other spin
+branches, bounces, inhomogeneous or global extensions, nor the different
+spherical action. Neither global singularity removal in full RefG nor
+rejection of full RefG is established. No observational fit is claimed.
+
+Latest completed numerical decision: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section23 (2026-09-14). All five fixed-endpoint spatial-refinement runs
+complete70 with281 samples each: **237/237** checks pass. The unbroken
+base/curvature/feedback certificate reaches70, first_rejected=null, and
+resolved trapping starts at50.5. Halving h from.025 to.0125 reduces the
+maximum normalized R2 error from.005611957866 to.000376201094, with the
+unchanged .005 fine-grid threshold. The mapped old checkpoints reproduce
+exactly. The fine final max abs(K)=.466068868357 remains finite and growing.
+Its[69,70] mean growth exceeds the[61.75,62.75] baseline by.002644086978,
+above the registered .000116432057 comparison threshold. This is not
+monotonic acceleration: the[68,69] rate was larger than the final rate.
+Central response reduction and off-centre source growth coexist. No
+all-time bound or fixed-packet blow-up is established. The completed
+analytic decisions above, not another time extension, define the remaining
+source/global-completion limits. Reproduce with
+`--positive-metric pilot --source-domain --late-metric --late-end 70 --spatial-refine`.
+
+Previous curvature-growth test: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section 22 (2026-09-14). All five unchanged-action runs complete t=70
+with 281 samples each; **226/228** checks pass. The joint curvature
+and feedback prefix is accepted through69.5, extending section21's
+62.75 limit. The first rejected sample69.75 exceeds the unchanged .005
+fine-grid R2 error threshold (.005143821862437554); the base evolution
+still passes through70. Every registered complete growth window inside
+the joint certificate has increasing maximum absolute curvature.
+The baseline-to-last-window change of growth rate remains unresolved
+under the preregistered five-case spread test. The off-centre weighted
+source grows despite an active negative response term. Every t=62.75
+checkpoint value exactly reproduces section21. Global regularity,
+singularity removal, persistent regulation and the full RefG pressure
+join remain open. The next bounded numerical decision is spatial
+refinement of the late R2 mismatch at the same endpoint, rather than
+another time extension. Reproduce with
+`--positive-metric pilot --source-domain --late-metric --late-end 70`.
+
+Previous late-time validation: [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
 section 21 (2026-09-14). All five same-action source-domain runs reach
 t=62.75 with 252 samples each; **228/228** checks pass. The full base,
 independent-curvature and feedback prefixes pass, with resolved trapping

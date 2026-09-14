@@ -1509,11 +1509,19 @@ class RadialNodalPair:
         return first,second
 
 
-def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origin_controls=False,paired_origin=False,paired_collapse=False,paired_interior=False,curvature_controls=False,feedback_evolution=False,feedback_controls=False,localization_case=None,localization_controls=False,metric_upgrade=False,metric_controls=False,metric_case=None,metric_case_results=None,positive_metric=None,source_domain=False,late_metric=False):
+def metric_case_specs(spatial_refine=False,positive=False,source_domain=False,late_metric=False,late_end=62.75):
+    """Registered grid ladder only; this helper never changes the evolution."""
+    if spatial_refine and not (positive and source_domain and late_metric and late_end==70.):
+        raise ValueError('Spatial refinement requires positive-metric, source-domain, late-metric and late-end 70')
+    h = .0125 if spatial_refine else .025
+    return dict(coarse=(4*h,120.,.1),middle=(2*h,120.,.1),fine=(h,120.,.1),
+                half_step=(h,120.,.05),domain=(h,160.,.1))
+
+
+def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origin_controls=False,paired_origin=False,paired_collapse=False,paired_interior=False,curvature_controls=False,feedback_evolution=False,feedback_controls=False,localization_case=None,localization_controls=False,metric_upgrade=False,metric_controls=False,metric_case=None,metric_case_results=None,positive_metric=None,source_domain=False,late_metric=False,late_end=62.75,spatial_refine=False):
     """Same-action horizon-regular evolution; frozen finite-window decision."""
     import time
-    metric_specs = dict(coarse=(.1,120.,.1),middle=(.05,120.,.1),fine=(.025,120.,.1),
-                        half_step=(.025,120.,.05),domain=(.025,160.,.1))
+    metric_specs = metric_case_specs(spatial_refine,positive_metric is not None,source_domain,late_metric,late_end)
     if positive_metric not in (None,'controls','aggregate',*metric_specs):
         raise ValueError('Unknown source-positive metric case')
     positive_mode = positive_metric is not None
@@ -1521,10 +1529,12 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
         raise ValueError('Source-domain reconstruction requires the positive-metric test ladder')
     if late_metric and not (positive_mode and source_domain):
         raise ValueError('Late metric continuation requires the source-domain reconstruction')
+    if late_end not in (62.75,70.) or (late_end!=62.75 and not late_metric):
+        raise ValueError('Only registered late-metric endpoints 62.75 and 70 are supported')
     if positive_metric in metric_specs:
         metric_case = positive_metric
     metric_controls = metric_controls or positive_metric=='controls'
-    metric_endpoint = 62.75 if late_metric or not positive_mode else 28.
+    metric_endpoint = late_end if late_metric else 28. if positive_mode else 62.75
     if metric_case is not None and metric_case not in metric_specs:
         raise ValueError('Unknown metric-operator case')
     metric_mode = metric_upgrade or metric_controls or metric_case is not None or positive_mode
@@ -2787,7 +2797,7 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
                  np.array_equal(bad_state,before_state))
         # Post-production admissibility audit: test the actual packet before
         # authorizing any new metric replay. This leaves all action guards fixed.
-        for h in (.1,.05,.025):
+        for h in ((.1,.05,.025,.0125) if spatial_refine else (.1,.05,.025)):
             polar = PolarGrid(120.,h)
             packet = initial(polar)
             initial_geometry = polar.geometry(*packet)
@@ -2924,13 +2934,15 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
         h,radius,courant = metric_specs[metric_case]
         case = run(h,metric_endpoint,radius,courant)
         if late_metric:
-            checks.append(metric_t28_replay_check(metric_case,case))
+            checks.extend(metric_checkpoint_replays(metric_case,case,late_end,spatial_refine))
         test('metric_replay_completed',case['status']=='COMPLETED' and len(case['samples'])==1+round(metric_endpoint/.25) and
              all(abs(row['t']-.25*i)<1e-12 for i,row in enumerate(case['samples'])))
         test('unchanged_run_sources',all(hashlib.sha256(path.read_bytes()).hexdigest()==entry_hashes[path.name] for path in hash_paths))
         failed = [c for c in checks if not c['passed']]
         return dict(decision='METRIC_OPERATOR_REPLAY' if not failed else 'METRIC_OPERATOR_REPLAY_FAILURE',
-            checks=len(checks),passed=len(checks)-len(failed),failed=failed,details=checks,case=case,source_hashes=entry_hashes)
+            checks=len(checks),passed=len(checks)-len(failed),failed=failed,details=checks,case=case,source_hashes=entry_hashes,
+            spatial_refinement=spatial_refine,
+            checkpoint_overlap_reference=({'coarse':'middle','middle':'fine'}.get(metric_case) if spatial_refine else metric_case))
 
     if localization_case is not None:
         case = run(.025 if localization_case=='fine' else .0125,62.75,localize=True)
@@ -2981,6 +2993,9 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
         for name,result in metric_case_results.items():
             test('metric_worker_integrity_'+name,result['source_hashes']==entry_hashes and
                  result['checks']==result['passed'] and result.get('process_exit_code')==0)
+            if spatial_refine:
+                actual = tuple(result['case'].get(key) for key in ('h','radius','courant'))
+                test('spatial_worker_grid_'+name,actual==metric_specs[name],actual=actual,expected=metric_specs[name])
 
     def verdict(end,case_set=None,include_curvature=True,include_feedback=True):
         gates,residuals,differences = {},{},{}
@@ -3144,6 +3159,8 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
                      classification='decreasing' if decrease else 'increasing' if increase else 'unresolved_or_flat',
                      interpretation='Maximum absolute curvature change over the last accepted model-time unit; not global stability')
     return dict(decision="INVALID_CERTIFICATION_CONTROLS" if not certification_valid else
+                ("SPATIAL_REFINEMENT_PREFIX_VALIDATED" if not failed else "SPATIAL_REFINEMENT_PREFIX_OPEN") if spatial_refine else
+                ("CURVATURE_GROWTH_PREFIX_VALIDATED" if not failed else "CURVATURE_GROWTH_PREFIX_OPEN") if late_metric and late_end==70. else
                 ("LATE_SOURCE_DOMAIN_PREFIX_VALIDATED" if not failed else "LATE_SOURCE_DOMAIN_PREFIX_OPEN") if late_metric else
                 ("POSITIVE_METRIC_PREFIX_VALIDATED" if not failed else "POSITIVE_METRIC_PREFIX_OPEN") if positive_mode else
                 ("METRIC_OPERATOR_REPAIR_VALIDATED" if not failed else "METRIC_OPERATOR_REPAIR_OPEN") if metric_mode else
@@ -3156,10 +3173,13 @@ def collapse_checks(pilot_only=False,origin_audit=False,origin_finer=False,origi
                 "VALIDATED_PRETRAPPING_PREFIX" if accepted else "UNRESOLVED_COLLAPSE",
         checks=len(checks),passed=len(checks)-len(failed),failed=failed,details=checks,
         pilot_end=endpoint,terminal=terminal,accepted_prefix=accepted,first_rejected=first_rejected,
+        spatial_refinement=spatial_refine,grid_specifications=metric_specs if metric_mode else None,
         first_trapping=first_trapping,cases=cases,
         base_evolution_certificate=dict(accepted=base_accepted,first_rejected=base_rejected,first_trapping=base_trapping) if paired_interior else None,
         curvature_certificate=dict(accepted=curvature_accepted,first_rejected=curvature_rejected,first_trapping=curvature_trapping) if feedback_evolution else None,
         peak_curvature_trend=trend,metric_upgrade_reference=metric_reference,
+        growth_diagnostic=(metric_growth_diagnostic(cases,accepted['end'] if accepted and certification_valid else None)
+                           if late_metric and late_end==70. else None),
         source_prerequisite=dict(checks=source["checks"],passed=source["passed"],parameters=source["parameters"]),
         code_sha256=entry_hashes[Path(__file__).name],engine_sha256=entry_hashes[Path(legacy.__file__).name],
         source_hashes=entry_hashes,
@@ -3259,6 +3279,8 @@ def metric_report_safe(result):
         safe['decision'] = 'INVALID_METRIC_REPORT'
         safe.setdefault('scope',{})['metric_operator_upgrade'] = False
         safe['scope']['positive_source_reconstruction_prefix'] = False
+        if 'growth_diagnostic' in safe:
+            safe['growth_diagnostic'] = None
     return safe
 
 
@@ -3284,7 +3306,7 @@ def metric_worker_report(name,returncode,stdout,stderr=''):
     return result
 
 
-def metric_case_summary(case):
+def metric_case_summary(case,spatial_refine=False):
     """Retain the last actual sample, including an empty/early-stopped case."""
     case = dict(case)
     rows = case.get('samples',[])
@@ -3300,19 +3322,20 @@ def metric_case_summary(case):
         all(isinstance(row,dict) and finite(row.get(key)) for row in rows) and rows[0][key]!=0 else None
         for key in ('mass','charge')}
     case['samples'] = [row for i,row in enumerate(rows) if i==len(rows)-1 or
-        isinstance(row,dict) and row.get('t') in (0.,28.,50.5,60.,62.,62.25,62.5,62.75)]
+        isinstance(row,dict) and row.get('t') in ((0.,28.,50.5,60.,62.,62.25,62.5,62.75)+
+            ((69.,69.5,69.75,70.) if spatial_refine else ()))]
     case.pop('origin_snapshots',None)
     return case
 
 
-def metric_failed_workers(preflight,results):
+def metric_failed_workers(preflight,results,spatial_refine=False):
     if not any(result.get('worker_failure') for result in results.values()):
         return None
     checks = list(preflight.get('details',[]))
     checks.extend(dict(name='metric_worker_available_'+name,passed=not bool(result.get('worker_failure')))
                   for name,result in results.items())
     failed = [item for item in checks if not item['passed']]
-    workers = {name:dict(result,case=metric_case_summary(result['case'])) if
+    workers = {name:dict(result,case=metric_case_summary(result['case'],spatial_refine)) if
         isinstance(result.get('case'),dict) else result for name,result in results.items()}
     return dict(decision='METRIC_WORKER_FAILURE',checks=len(checks),passed=len(checks)-len(failed),
         failed=failed,details=checks,workers=workers,source_hashes=preflight.get('source_hashes'),
@@ -3336,6 +3359,87 @@ def metric_t28_replay_check(name,case):
     return dict(name='late_stage20_replay_'+name,
         passed=bool(errors and all(math.isfinite(value) and value<=1e-10 for value in errors.values())),
         absolute_tolerance=1e-10,errors=errors,expected=expected)
+
+
+def metric_t6275_replay_check(name,case):
+    """Section21 checkpoint is a regression target, never a dynamical input."""
+    references = {
+        'coarse': (129.79792808840372, -0.4587889232787359, 22.67563637546549, 37.02485642643705, 0.40250399134449455),
+        'middle': (129.87730748602644, -0.45851587118443393, 22.681796466414205, 37.024069437295765, 0.4026581266549858),
+        'fine': (129.89718276577634, -0.4584434107681472, 22.68267894119321, 37.02387656501605, 0.4026469183541146),
+        'half_step': (129.89718276577634, -0.4584434107702018, 22.682678941323456, 37.02387656495196, 0.4026469183556861),
+        'domain': (129.89718276577634, -0.4584434107681472, 22.68267894119321, 37.02387656501605, 0.4026469183541146),
+    }
+    keys = ('mass','minimum_F','maximum_density','central_proper_time','maximum_abs_Kretschmann')
+    expected = dict(zip(keys,references[name]))
+    row = next((row for row in case.get('samples',[]) if row.get('t')==62.75),None)
+    errors = {key:abs(row[key]-value) for key,value in expected.items()} if row and all(key in row for key in keys) else {}
+    return dict(name='growth_stage21_replay_'+name,
+        passed=bool(errors and all(math.isfinite(value) and value<=1e-10 for value in errors.values())),
+        absolute_tolerance=1e-10,errors=errors,expected=expected)
+
+
+def metric_checkpoint_replays(name,case,late_end,spatial_refine=False):
+    """Replay only identical historical grids; new resolutions have no exact target."""
+    reference = {'coarse':'middle','middle':'fine'}.get(name) if spatial_refine else name
+    if reference is None:
+        return []
+    tests = [metric_t28_replay_check(reference,case)]
+    if late_end==70.:
+        tests.append(metric_t6275_replay_check(reference,case))
+    if spatial_refine:
+        tests = [dict(item,name='spatial_'+name+'_'+item['name'],historical_case=reference) for item in tests]
+    return tests
+
+
+def metric_growth_diagnostic(cases,certified_end):
+    """Finite-window peak-growth evidence only inside the five-case certificate."""
+    names = ('coarse','middle','fine','half_step','domain')
+    out = dict(certified_through=certified_end,windows=[],snapshots=[],
+               rate_comparison=None,global_bound_established=False)
+    if certified_end is None or any(name not in cases for name in names):
+        out['status'] = 'NO_CERTIFIED_FIVE_CASE_PREFIX'
+        return out
+    lookup = {name:{row['t']:row for row in cases[name].get('samples',[]) if 't' in row} for name in names}
+    def classification(values):
+        spread = 3*max(abs(values[name]-values['fine']) for name in names)
+        label = ('positive' if all(value>0 for value in values.values()) and values['fine']>spread else
+                 'negative' if all(value<0 for value in values.values()) and -values['fine']>spread else
+                 'unresolved')
+        return dict(values=values,three_times_control_spread=spread,sign=label)
+    for start,end in ((61.75,62.75),*((float(t-1),float(t)) for t in range(64,71))):
+        if end>certified_end:
+            continue
+        pair = {name:(lookup[name].get(start),lookup[name].get(end)) for name in names}
+        if any(a is None or b is None or not all(isinstance(row.get('maximum_abs_Kretschmann'),(int,float)) and
+                    math.isfinite(row['maximum_abs_Kretschmann']) for row in (a,b)) for a,b in pair.values()):
+            out['status'] = 'MISSING_OR_NONFINITE_CERTIFIED_WINDOW'
+            return out
+        change = {name:(b['maximum_abs_Kretschmann']-a['maximum_abs_Kretschmann'])/(end-start)
+                  for name,(a,b) in pair.items()}
+        out['windows'].append(dict(start=start,end=end,**classification(change)))
+    if len(out['windows'])>1:
+        baseline,last = out['windows'][0],out['windows'][-1]
+        difference = {name:last['values'][name]-baseline['values'][name] for name in names}
+        comparison = classification(difference)
+        comparison.update(baseline=[baseline['start'],baseline['end']],later=[last['start'],last['end']])
+        comparison['interpretation'] = (
+            'positive_growth_slowing' if baseline['sign']==last['sign']=='positive' and comparison['sign']=='negative' else
+            'positive_growth_accelerating' if baseline['sign']==last['sign']=='positive' and comparison['sign']=='positive' else
+            'curvature_decreasing_in_later_window' if last['sign']=='negative' else 'unresolved_or_changed_sign')
+        out['rate_comparison'] = comparison
+    snapshot_keys = ('maximum_abs_Kretschmann','K_peak_radius','K_peak_rho','K_peak_q','K_peak_E',
+                     'K_peak_E_flux','K_peak_E_compression','K_peak_E_response','K_peak_E_normal_rate',
+                     'K_peak_density_normal_rate')
+    for t in (62.75,65.,67.5,70.):
+        if t>certified_end:
+            continue
+        rows = {name:lookup[name].get(t) for name in names}
+        if all(row is not None and all(key in row and math.isfinite(row[key]) for key in snapshot_keys) for row in rows.values()):
+            out['snapshots'].append(dict(t=t,cases={name:{key:row[key] for key in snapshot_keys} for name,row in rows.items()}))
+    out['status'] = 'CERTIFIED_FINITE_WINDOWS' if len(out['windows'])>1 else 'NO_POSTBASELINE_WINDOW_CERTIFIED'
+    out['interpretation'] = 'Kmax changes use model coordinate time; local n(E) at a moving peak is a distinct normal-frame diagnostic'
+    return out
 
 
 def metric_reporting_checks():
@@ -3387,23 +3491,78 @@ def metric_reporting_checks():
     test('late_stage20_replay_rejects_missing',not metric_t28_replay_check('fine',dict(samples=[]))['passed'])
     test('late_stage20_replay_rejects_changed',not metric_t28_replay_check('fine',
          dict(samples=[dict(replay_row,central_proper_time=replay_row['central_proper_time']+1e-8)]))['passed'])
+    late_row = dict(t=62.75,mass=129.89718276577634,minimum_F=-.4584434107681472,
+                    maximum_density=22.68267894119321,central_proper_time=37.02387656501605,
+                    maximum_abs_Kretschmann=.4026469183541146)
+    test('growth_stage21_replay_accepts',metric_t6275_replay_check('fine',dict(samples=[late_row]))['passed'])
+    test('growth_stage21_replay_rejects_changed',not metric_t6275_replay_check('fine',
+         dict(samples=[dict(late_row,maximum_abs_Kretschmann=.41)]))['passed'])
+    times = sorted({61.75,62.75,63.,64.,65.,66.,67.,68.,69.,70.})
+    fixture = {name:dict(samples=[dict(t=t,maximum_abs_Kretschmann=10+2*(t-61.75) if t<=62.75 else 12+(t-62.75))
+                                for t in times]) for name in ('coarse','middle','fine','half_step','domain')}
+    growing = metric_growth_diagnostic(fixture,70.)
+    test('growth_monotone_slowing_is_not_global_bound',growing['rate_comparison']['interpretation']=='positive_growth_slowing' and
+         all(w['sign']=='positive' for w in growing['windows']) and not growing['global_bound_established'])
+    restricted = metric_growth_diagnostic(fixture,62.75)
+    test('growth_excludes_uncertified_future',len(restricted['windows'])==1 and restricted['rate_comparison'] is None)
+    test('growth_requires_certificate',not metric_growth_diagnostic(fixture,None)['windows'])
+    uncertain = copy.deepcopy(fixture)
+    uncertain['coarse']['samples'][-1]['maximum_abs_Kretschmann'] += 5
+    test('growth_control_spread_prevents_sign_claim',metric_growth_diagnostic(uncertain,70.)['windows'][-1]['sign']=='unresolved')
+    nonfinite = copy.deepcopy(fixture)
+    nonfinite['fine']['samples'][-1]['maximum_abs_Kretschmann'] = math.nan
+    test('growth_nonfinite_data_unavailable',metric_growth_diagnostic(nonfinite,70.)['status']=='MISSING_OR_NONFINITE_CERTIFIED_WINDOW')
+    invalid_growth = dict(good,growth_diagnostic=growing,unmeasured=math.inf)
+    test('growth_invalid_report_clears_inference',metric_report_safe(invalid_growth)['growth_diagnostic'] is None)
+    ordinary_specs = dict(coarse=(.1,120.,.1),middle=(.05,120.,.1),fine=(.025,120.,.1),
+                          half_step=(.025,120.,.05),domain=(.025,160.,.1))
+    refined_specs = dict(coarse=(.05,120.,.1),middle=(.025,120.,.1),fine=(.0125,120.,.1),
+                         half_step=(.0125,120.,.05),domain=(.0125,160.,.1))
+    test('spatial_default_ladder_unchanged',metric_case_specs()==ordinary_specs)
+    flags = dict(spatial_refine=True,positive=True,source_domain=True,late_metric=True,late_end=70.)
+    test('spatial_registered_ladder',metric_case_specs(**flags)==refined_specs)
+    for flag,value in (('positive',False),('source_domain',False),('late_metric',False),('late_end',62.75)):
+        rejected = False
+        try:
+            metric_case_specs(**dict(flags,**{flag:value}))
+        except ValueError:
+            rejected = True
+        test('spatial_requires_'+flag,rejected)
+    overlap_case = dict(samples=[replay_row,late_row])
+    overlap = metric_checkpoint_replays('middle',overlap_case,70.,True)
+    test('spatial_middle_replays_old_fine',len(overlap)==2 and all(item['passed'] and
+         item['historical_case']=='fine' for item in overlap))
+    coarse_overlap = metric_checkpoint_replays('coarse',overlap_case,70.,True)
+    test('spatial_coarse_targets_old_middle',len(coarse_overlap)==2 and all(not item['passed'] and
+         item['historical_case']=='middle' for item in coarse_overlap))
+    test('spatial_new_grids_have_no_fake_replay',all(metric_checkpoint_replays(name,overlap_case,70.,True)==[]
+         for name in ('fine','half_step','domain')))
+    test('spatial_legacy_replays_unchanged',metric_checkpoint_replays('fine',overlap_case,70.)==
+         [metric_t28_replay_check('fine',overlap_case),metric_t6275_replay_check('fine',overlap_case)])
+    late_samples = dict(samples=[dict(t=t) for t in (0.,69.,69.5,69.75,70.)])
+    test('spatial_late_gate_samples_retained',[row['t'] for row in metric_case_summary(late_samples,True)['samples']]==
+         [0.,69.,69.5,69.75,70.])
+    test('spatial_legacy_summary_unchanged',[row['t'] for row in metric_case_summary(late_samples)['samples']]==[0.,70.])
     json.dumps(metric_report_safe(aggregate),allow_nan=False)
     failed = [item for item in checks if not item['passed']]
     return dict(decision='METRIC_REPORTING_CONTROLS' if not failed else 'METRIC_REPORTING_FAILURE',
         checks=len(checks),passed=len(checks)-len(failed),failed=failed,details=checks)
 
 
-def metric_upgrade_checks(positive=False,source_domain=False,late_metric=False):
+def metric_upgrade_checks(positive=False,source_domain=False,late_metric=False,late_end=62.75,spatial_refine=False):
     """Fixed five-case operator repair, with process-isolated grids and stdout."""
     from concurrent.futures import ThreadPoolExecutor
     import subprocess
     import time
     start = time.perf_counter()
+    metric_case_specs(spatial_refine,positive,source_domain,late_metric,late_end)
     if source_domain and not positive:
         raise ValueError('Source-domain reconstruction requires the positive-metric test ladder')
     if late_metric and not (positive and source_domain):
         raise ValueError('Late metric continuation requires the source-domain reconstruction')
-    preflight = collapse_checks(positive_metric='controls',source_domain=source_domain,late_metric=late_metric) if positive else collapse_checks(metric_controls=True)
+    if late_end not in (62.75,70.) or (late_end!=62.75 and not late_metric):
+        raise ValueError('Only registered late-metric endpoints 62.75 and 70 are supported')
+    preflight = collapse_checks(positive_metric='controls',source_domain=source_domain,late_metric=late_metric,late_end=late_end,spatial_refine=spatial_refine) if positive else collapse_checks(metric_controls=True)
     if preflight['failed']:
         return preflight
     def worker(name):
@@ -3412,9 +3571,12 @@ def metric_upgrade_checks(positive=False,source_domain=False,late_metric=False):
                 '--positive-metric' if positive else '--metric-case',name]
             if source_domain:
                 command.append('--source-domain')
+            if spatial_refine:
+                command.append('--spatial-refine')
             if late_metric:
                 import threading
                 command.append('--late-metric')
+                command.extend(('--late-end',str(late_end)))
                 with subprocess.Popen(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,encoding='utf-8') as child:
                     messages = []
                     def progress():
@@ -3434,7 +3596,7 @@ def metric_upgrade_checks(positive=False,source_domain=False,late_metric=False):
         except Exception as exc:
             return metric_worker_report(name,None,'',repr(exc))
     results = {'coarse':worker('coarse')} if positive else {}
-    failure = metric_failed_workers(preflight,results)
+    failure = metric_failed_workers(preflight,results,spatial_refine)
     if failure is not None:
         failure['decision'] = 'LATE_SOURCE_DOMAIN_PILOT_FAILED' if late_metric else 'POSITIVE_SOURCE_PILOT_FAILED'
         failure['elapsed_seconds'] = time.perf_counter()-start
@@ -3447,11 +3609,11 @@ def metric_upgrade_checks(positive=False,source_domain=False,late_metric=False):
                 results[name] = future.result()
             except Exception as exc:
                 results[name] = metric_worker_report(name,None,'',repr(exc))
-    failure = metric_failed_workers(preflight,results)
+    failure = metric_failed_workers(preflight,results,spatial_refine)
     if failure is not None:
         failure['elapsed_seconds'] = time.perf_counter()-start
         return failure
-    result = (collapse_checks(positive_metric='aggregate',metric_case_results=results,source_domain=source_domain,late_metric=late_metric) if positive else
+    result = (collapse_checks(positive_metric='aggregate',metric_case_results=results,source_domain=source_domain,late_metric=late_metric,late_end=late_end,spatial_refine=spatial_refine) if positive else
               collapse_checks(metric_upgrade=True,metric_case_results=results))
     same_hash = result.get('source_hashes')==preflight['source_hashes']
     hash_check = dict(name='metric_preflight_production_hash',passed=same_hash)
@@ -3463,8 +3625,9 @@ def metric_upgrade_checks(positive=False,source_domain=False,late_metric=False):
         result['decision'] = 'INVALID_METRIC_PRODUCTION_HASH'
         result['scope']['metric_operator_upgrade'] = False
         result['scope']['positive_source_reconstruction_prefix'] = False
+        result['growth_diagnostic'] = None
     for name,case in result.get('cases',{}).items():
-        result['cases'][name] = metric_case_summary(case)
+        result['cases'][name] = metric_case_summary(case,spatial_refine)
     result['elapsed_seconds'] = time.perf_counter()-start
     return result
 
@@ -3505,17 +3668,26 @@ def main():
                         help='With --positive-metric: use the existing source-domain tolerance instead of exact positivity')
     parser.add_argument('--late-metric',action='store_true',
                         help='With --positive-metric and --source-domain: extend the frozen five-case test to t=62.75')
+    parser.add_argument('--late-end',type=float,choices=(62.75,70.),default=None,
+                        help='With --late-metric: select the registered late endpoint (default 62.75)')
+    parser.add_argument('--spatial-refine',action='store_true',
+                        help='With source-domain late-end 70: use the registered .05/.025/.0125 spatial ladder')
     args = parser.parse_args()
+    if args.spatial_refine and not (args.positive_metric and args.source_domain and args.late_metric and args.late_end==70.):
+        parser.error('--spatial-refine requires --positive-metric, --source-domain, --late-metric and --late-end 70')
+    if args.late_end is not None and not args.late_metric:
+        parser.error('--late-end requires --late-metric')
     if args.late_metric and not (args.positive_metric and args.source_domain):
         parser.error('--late-metric requires --positive-metric and --source-domain')
     if args.source_domain and not args.positive_metric:
         parser.error('--source-domain requires --positive-metric')
     if args.positive_metric:
-        if any(value for name,value in vars(args).items() if name not in ('positive_metric','source_domain','late_metric','verbose')):
+        if any(value for name,value in vars(args).items() if name not in ('positive_metric','source_domain','late_metric','late_end','spatial_refine','verbose')):
             parser.error('Choose the source-positive metric mode on its own')
-        result = (metric_upgrade_checks(positive=True,source_domain=args.source_domain,late_metric=args.late_metric) if args.positive_metric=='pilot' else
-                  collapse_checks(positive_metric=args.positive_metric,source_domain=args.source_domain,late_metric=args.late_metric))
-        result['requested_endpoint'] = 62.75 if args.late_metric else 28.
+        late_end = args.late_end if args.late_end is not None else 62.75
+        result = (metric_upgrade_checks(positive=True,source_domain=args.source_domain,late_metric=args.late_metric,late_end=late_end,spatial_refine=args.spatial_refine) if args.positive_metric=='pilot' else
+                  collapse_checks(positive_metric=args.positive_metric,source_domain=args.source_domain,late_metric=args.late_metric,late_end=late_end,spatial_refine=args.spatial_refine))
+        result['requested_endpoint'] = late_end if args.late_metric else 28.
         result['source_reconstruction'] = 'existing_domain_admissible_endpoint' if args.source_domain else 'exact_positive_zero_blend'
         result = metric_report_safe(result)
         if not args.verbose:

@@ -1,14 +1,27 @@
 # Saturating spherical gravity coupled to conserved matter
 
-**შედეგი მოკლედ:** მიღებულია პოსტულატურ გაჯერების კანონზე დაფუძნებული
-სფეროსიმეტრიული მოდელი, რომელშიც მატერიის შეკუმშვა და გარე ველი ერთი
-მოქმედებით ითვლება. ერთგვაროვანი უწნევო წყაროს ამოხსნაში სიმრუდე
-შეზღუდულია; კანონიკური ველის კოლაფსში მისი სასრულობა გამოთვლილ
-მონაკვეთზეა შემოწმებული. §14 ადგენს, რომ თვითნებური ადგილობრივი წყაროს
-შემთხვევაში გაჯერება ამ ზღვარს ავტომატურად ვერ უზრუნველყოფს.
-სრული RefG-მიერთება ჯერ ვერ ჩაითვლება მიღწეულად:
-წნევა–ოსცილონის მასშტაბური კანონი ამ მოქმედებიდან გამოსაყვანია, ზუსტად
-ერთი სტატიკური საათი–სახაზავის ფაქტორი კი არჩეულ გეომეტრიასთან ვერ თავსდება.
+**შედეგი მოკლედ (2026-09-14):** პოსტულატურ გაჯერების კანონზე დაფუძნებულ
+სფეროსიმეტრიულ მოდელში ერთგვაროვანი უწნევო წყაროს კოლაფსის სიმრუდე
+შეზღუდულია. ეს ნამდვილი დადებითი შედეგია. კანონიკური ველის კოლაფსის
+რიცხვითი შემოწმება ცალკე შედეგია და მხოლოდ გამოთვლილ მონაკვეთს ეხება.
+ადგილობრივი წყაროს ნებისმიერი განაწილებისთვის გაჯერება სიმრუდის
+უნივერსალურ ზღვარს არ იძლევა; რეგულარული გლობალური გაგრძელება ყველა
+წყაროსა და მოქმედების განტოლებით ჯერ არ არის დასრულებული.
+
+RefG-სთან მისაერთებლად შემოწმებული სიმკვრივეზე დამოკიდებული F(n)T
+ფორმულების კლასისთვის მიღებულია მკაცრი უარყოფითი შედეგი: §§27,31,32-ის
+ზუსტ პირობებში ის ვერ იძლევა ერთდროულად მდგრად, სიმრუდით შემოსაზღვრულ
+და სრულად გაგრძელებად მუდმივად შემკუმშავ KS ბირთვს. ეს დასკვნა მიღებულია
+გარემოსა და მატერიის სრული დაკავშირებული განტოლებებიდან, არა გარემოს
+ცალკე, ხელოვნურად გაყინული ცვლილებიდან. ყველა 293 ანალიტიკური შემოწმება
+დამოუკიდებლად გამეორდა; მათ შორისაა უარყოფითი შედეგების შემოწმებებიც.
+
+**სრული უსინგულარო RefG შავი ხვრელი ჯერ არ არის დამტკიცებული; მთელი
+RefG-ის შეუძლებლობაც არ არის დამტკიცებული.** ორი სხვადასხვა მოქმედების
+შედეგები ერთმანეთს არ უნდა გადაეცეს. წნევა–ოსცილონის მასშტაბური კანონის
+სრული მიერთება კვლავ საჭიროა; ზუსტად ერთი სტატიკური საათი–სახაზავის
+ფაქტორი არჩეულ გეომეტრიასთან ვერ თავსდება. გამოთვლილი შეზღუდვები ეხება
+აქ განსაზღვრულ მოდელებსა და პირობებს, არა ყველა შესაძლო განვითარებას.
 
 ## Decision — 2026-09-11
 
@@ -3074,10 +3087,1227 @@ result. Any later interval needs a separate bounded contract.
 No reconstruction retuning, new
 physical term, monograph edit, Git-rule edit or extra artifact was made.
 
+## 22. Fixed same-action curvature-growth window through t=70
+
+### Contract before implementation and evolution
+
+The decision is the finite-time behavior of the off-centre maximum
+curvature after the certified section21 interval. Use the same action,
+packet, source reconstruction, grids, time steps, boundaries and original
+prefix acceptance gates. Only the verifier, this report and W92 index
+may change; no primary clipping, new physical term or tolerance change.
+The optional `--late-end 70` requires the existing late/source-domain
+mode. Its default remains 62.75 so section21 stays reproducible.
+
+After the existing controls and reporting/regression tests, run the
+coarse pilot to70; stop this stage if it fails. Otherwise run the same
+four refinement/half-step/domain controls, with at most two workers
+concurrent. Require 281 samples per completed case, unchanged code
+hashes and the original unbroken base/curvature/feedback prefix gates.
+The t=28 regression remains; the five section21 t=62.75 values of mass,
+minimum F, maximum density, central proper time and maximum absolute
+Kretschmann scalar must also repeat within absolute 1e-10. Missing or
+failed cases keep their actual failure context and cannot be certified.
+
+The physical trend is a diagnostic, not a desired-sign acceptance gate.
+Use the existing Kmax=max(abs(Kretschmann)) readout: record changes on
+the fixed baseline [61.75,62.75] and the one-unit windows [63,64],
+[64,65], [65,66], [66,67], [67,68], [68,69], [69,70]. A signed trend
+is resolved only when all five signs agree and the fine change exceeds
+three times the largest difference from any of the four controls.
+Compare the last available certified window's change with the baseline
+using the same five-case spread rule; label growing curvature as
+slowing/accelerating only when its change-of-rate is resolved.
+Report E and its existing normal-frame budget at the curvature peak
+at62.75,65,67.5,70 when those snapshots are inside the accepted prefix.
+Instantaneous local n(E) is distinct from the time change of a moving
+global maximum. No extrapolation from these finite windows is allowed.
+
+If accuracy fails, retain the first failed gates and restrict all new
+physical interpretation to the certified prefix. If no new certified
+window survives, return that numerical limit rather than infer a trend.
+A turnover is not required: monotone approach to a finite limit is an
+admissible physical possibility. Neither slowing nor a finite-time
+turnover proves an all-time bound. Global regularity, singularity
+removal, persistent regulation and the full RefG pressure join remain
+separate open flags. Stop after this one registered decision, with no
+post-output retuning or further time extension and no generated files.
+
+Pre-replay verifier SHA256:
+`03fa8560cb014f4e9a09b192deec7efd3a9649dbe245345a666a15385589afdf`.
+The t=70 preflight passes 168/168 and reporting/growth controls 30/30.
+Base, source-budget, localization and section21 controls pass 74/74,
+104/104, 93/93 and 168/168. AST comparison against the committed
+section21 version confirms identical evolution classes, run loop and
+verdict/certify functions. Endpoint misuse is rejected. The two imported
+engine hashes remain unchanged. No nonlinear section22 output was used
+to select these rules.
+
+### Outcome of the registered run (2026-09-14)
+
+All five cases complete t=70 with 281 samples each. The frozen verifier
+returns `CURVATURE_GROWTH_PREFIX_OPEN`: **226/228** aggregate checks
+pass. The two failed checks are `terminal_curvature_metric_R2_error`
+and its dependent `terminal_positive_unbroken_prefix`. The base
+evolution passes through70; the joint curvature/feedback sampled prefix
+passes through **69.5**, with first resolved trapping still at50.5.
+The first rejected sample is69.75 and fails only the R2 accuracy gate.
+The five t=62.75 checkpoint quantities reproduce section21 exactly in
+every case (all25 absolute differences zero); t=28 replay gates also pass.
+
+| Prefix end | Fine normalized R2 error maximum | Middle maximum | Joint prefix |
+|---|---:|---:|---|
+| 69.5 | .004715164558097584 | .06613396785066517 | accepted |
+| 69.75 | .005143821862437554 | .07087981359358365 | first rejected |
+| 70 | .005611957866249050 | .07558564306381411 | rejected |
+
+The original gate requires fine error below .005 and refinement relative
+to the middle grid. Refinement survives; the fine absolute error exceeds
+.005. At70 the coarse R2 maximum is1.1178144343792542, the half-step
+maximum .005611956065397421 and the expanded-domain maximum equals
+the fine value. Coarse and middle values are refinement controls, not
+individually certified fine-grid accuracy. The close half-step/domain
+agreement locates the unresolved accuracy in the spatial calculation
+rather than supplying an independent continuation certificate.
+
+At the accepted69.5 prefix, fine error maxima are: radial constraint
+.0002364396037185474, regular metric .000001749253707582351, origin
+.00035145802299166074, Ricci .001084468538736610, Kretschmann
+.002636032899555008 and feedback budget .0011295857156654984.
+Reported sampled mass drift is zero in all five complete runs; the
+largest charge drift through70 is1.8743850915825533e-10.
+
+### Certified physical readout
+
+Every registered complete window inside the accepted prefix has
+positive maximum-absolute-Kretschmann growth, resolved by the fixed
+five-case spread rule. Rates use the model coordinate time.
+
+| Window | Fine change per unit time | Three times largest control spread |
+|---|---:|---:|
+| 61.75--62.75 | .006878783351028428 | .0001983367823450433 |
+| 63--64 | .007224303059618076 | .0002913351391807817 |
+| 64--65 | .007624974335917134 | .0003987663664386520 |
+| 65--66 | .008158828759446290 | .0001441567991368187 |
+| 66--67 | .008903419163419524 | .0005893727756484113 |
+| 67--68 | .009891609420797254 | .002098212767913110 |
+| 68--69 | .010295487315045593 | .003638897613409353 |
+
+The registered baseline-to-last-window rate difference is
++.003416703964017165 on the fine grid, below its three-spread threshold
+.003440560831064310. Its classification is therefore **unresolved**.
+The supported physical statement is continued growth. Neither slowing
+nor acceleration is promoted to a resolved rate-change claim. The
+[69,70] window and t=70 physical snapshot are excluded because they
+extend beyond the joint accuracy certificate.
+
+At the off-centre curvature maximum, the fine-grid source readout is:
+
+| t | Peak radius | Kmax | E | n(E) | n(rho) |
+|---|---:|---:|---:|---:|---:|
+| 62.75 | 1.0875 | .402646918354115 | .590496570563721 | +.017832769390740 | +3.515526256238848 |
+| 65 | 1.1875 | .419251840439430 | .598228757005243 | +.030679231710463 | +4.272029975106355 |
+| 67.5 | 1.2625 | .441105022749825 | .608446361160210 | +.042864402778202 | +5.428786546361598 |
+
+Here E=alpha*ell^2*q^(3/2)*rho is the curvature-controlling weighted
+density; n is the normal-frame derivative defined in section21.
+All five snapshot cases have positive n(E) and n(rho). At67.5 the
+fine E budget contains flux -.20254570196687094, compression
++.3328379009399843 and response -.08742836001214889. The negative
+response is active while the net local source still increases. The
+moving peak's coordinate-time curvature growth and local n(E) are
+distinct readouts.
+
+The stage extends the verified finite interval from62.75 to69.5 and
+identifies the next numerical limit precisely. Its full t=70 acceptance
+condition fails. Global regularity, singularity removal, persistent
+regulation and the full RefG pressure join remain false. The existing
+section21 certificate remains valid within its original interval.
+
+The bounded follow-up, if authorized, is a spatial-refinement test of
+this same late R2 mismatch at fixed endpoint70, with an independent
+metric/source curvature comparison. Further time extension alone cannot
+settle it. This stage ends with the recorded result; no threshold
+retuning, new physical term or additional evolution was performed.
+
+Reproduce with
+`--positive-metric pilot --source-domain --late-metric --late-end 70`.
+Production SHA256 equals the preregistered verifier hash above; both
+imported engine hashes are unchanged. Total elapsed time was
+1374.5457141 seconds. The reporting controls remain30/30.
+
+## 23. Fixed-endpoint spatial refinement and global-decision audit
+
+### Contract before implementation and new evolution (2026-09-14)
+
+The author authorizes multiple consecutive research stages toward a
+singularity-removal decision. Each stage retains a separate frozen
+contract and actual outcome; finite numerical success is not a global
+proof and numerical failure is not a spacetime singularity. The work
+remains in this strong-field package. Monographs, speculative material,
+Git rules and external publication remain unchanged.
+
+CLAIM_ID / MODEL_VERSION: W92_SPATIAL_REFINEMENT_T70_V1.
+GOAL: test whether the section22 late R2 mismatch is reduced by halving
+the spatial mesh, at the same endpoint70 and with unchanged action.
+TYPE: numerical refinement evidence for this fixed initial packet.
+ASSUMPTIONS / FREEDOM / DOMAIN: retain alpha=.04, ell=2, original
+packet, source-domain reconstruction, original guards and all acceptance
+thresholds. The new (coarse,middle,fine) mesh spacings are (.05,.025,.0125)
+at R=120 with dt=.1h; the half-step case uses h=.0125, dt=.05h and the
+domain case h=.0125, R=160, dt=.1h. Start every case at t=0.
+No interpolated restart or later time extension is permitted.
+METHOD / CROSSCHECK: existing independent metric/source curvature,
+constraint, conservation, time-step, domain and refinement tests;
+run the new coarse pilot first, then remaining controls with at most
+two concurrent workers. The initial-packet preflight explicitly covers
+h=.0125. Existing run/evolution/verdict/certify mathematics is unchanged.
+PASS: all five cases finish70 with281 samples, code hashes agree, the
+original unbroken curvature/feedback certificate reaches70, and exact
+overlap checkpoints repeat within1e-10. New coarse repeats old middle;
+new middle repeats old fine at28 and62.75. New resolutions have no old
+exact target and are assessed by refinement rather than assigned replay
+success. Report the same fixed growth windows and original spread rule.
+FAIL: retain the actual first failed gate or numerical guard. A shortened
+valid prefix is reported precisely. No threshold or physical retuning
+after output; no singularity inference from failed resolution.
+BENCHMARK: section22 h=.025 R2 mismatch at69.75 and70; section21 overlap
+checkpoints. INPUT/DATA_ROLE: model-produced numerical controls, no
+observational fit or predictive data claim. ERROR_BOUND: original
+normalized residual/refinement thresholds, not rigorous interval bounds.
+VALIDITY / FLAGS: finite-window trapping and curvature are separate from
+global regularity, singularity removal and full RefG pressure join.
+PROVENANCE / FILES: existing verifier, this report and the W92 index.
+Results to stdout; no large generated output files. Freeze the verifier
+hash after controls and before nonlinear runs.
+STOP: obtain this fixed-endpoint refinement decision. A separate bounded
+analytic audit will test the global source/causal conditions; it may run
+concurrently read-only. Any subsequent physical change requires its own
+explicit contract and fresh tests, as already authorized by the user.
+
+Pre-evolution verifier SHA256:
+`1a23833cd7bc907da7bdda32f26c8ced9ec866f298423a646fb4827f7ce40500`.
+Refined preflight172/172, default preflight168/168 and reporting42/42
+pass; four invalid CLI combinations are rejected. The five evolution
+classes and run/verdict/certify ASTs match the previous engine. The
+returned grids are explicitly checked against the registered ladder.
+
+### Result: full fixed-endpoint refinement passes (2026-09-14)
+
+All five registered cases finish t=70 with281 samples each. The final
+decision is SPATIAL_REFINEMENT_PREFIX_VALIDATED:237/237 checks pass,
+first_rejected=null. Base evolution, independent curvature and feedback
+all accept the unbroken sampled interval0-70. Resolved future trapping
+is first certified at50.5. Total concurrent runtime is5036.718seconds;
+no run was restarted from an interpolated checkpoint.
+
+| Case | h | Outer radius | dt | Maximum normalized R2 error on0-70 | Final max abs(K) |
+|---|---:|---:|---:|---:|---:|
+| Coarse | .05 | 120 | .005 | .075585643064 | .465699512571 |
+| Middle | .025 | 120 | .0025 | .005611957866 | .466026613684 |
+| Fine | .0125 | 120 | .00125 | .000376201094 | .466068868357 |
+| Half step | .0125 | 120 | .000625 | .000376203606 | .466068868360 |
+| Wider domain | .0125 | 160 | .00125 | .000376201094 | .466068868357 |
+
+The absolute R2 threshold .005 is the fine-grid gate; coarser levels are
+the registered convergence controls, not separately certified fine-grid
+solutions. Halving h from.025 to.0125 reduces its full-prefix maximum
+error by14.9174, without changing the equation or tolerance. The fine
+K-readout and feedback-budget errors are .000226640112 and .000096999091.
+All cases report zero sampled mass drift; the largest relative charge
+drift is5.964e-12. The parent independently repeated the172/172 refined
+preflight and rechecked the production and both engine hashes.
+
+The registered replay mapping is new coarse->old middle and new
+middle->old fine, with8 scalar targets at28 and10 at62.75. All pass.
+An additional parent comparison of every shared numerical checkpoint
+field at these four mapped states gives maximum absolute difference0.
+New h=.0125 data are judged by convergence, not assigned an old target.
+
+Every registered complete curvature-growth window remains positive.
+The fine mean rate is .006876915734 on[61.75,62.75] and .009521002712
+on[69,70]. Their difference .002644086978 exceeds the unchanged
+three-times-five-case-spread threshold .000116432057. The final window
+therefore grows faster than the baseline. This is NOT monotonic
+acceleration: the immediately preceding[68,69] rate was .010355467540,
+larger than the final rate. The comparison is in the model coordinate
+time, not a claim about every observer's proper-time acceleration.
+
+At70 the fine max abs(K)=.466068868357 occurs at r=1.30625. The local
+weighted-source budget there is
+
+    normal_rate(E)= -.213091386738 + .341792710605 - .102497075406
+                  = .026204312885,
+                   flux             compression     response.
+
+The negative response is active, but the sum is still positive at that
+point. At the centre E instead decreases at rate-.002106897189 while
+density increases at1.381305839816. The two locations must not be
+conflated. The fine terminal minimum q=.271214207905 and minimum
+lapse=.083139840313 remain within the registered domain.
+
+DECISION: the previous late R2 failure was reduced by spatial refinement;
+it is not evidence of a physical singularity. The validated packet still
+has finite, increasing maximum curvature through70. Neither eventual
+blow-up nor an all-time bound follows. The global/source and compatibility
+decisions are supplied separately by sections24-32, not by extending the
+same time integration without a new mathematical criterion.
+
+Reproduce the full stage with
+
+    python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py" --positive-metric pilot --source-domain --late-metric --late-end 70 --spatial-refine
+
+The production verifier remains at the preregistered hash above; both
+source engines and all physical parameters are unchanged.
+
+## 24. Source and causal completion boundary of the retained action
+
+### Contract before exact tests (2026-09-14)
+
+This stage answers two bounded questions that additional time samples
+cannot settle: whether enclosed-mass saturation alone controls local
+source concentration in a trapped region, and whether its radial-null
+response can by itself produce a future-null-complete, globally
+hyperbolic trapped spacetime with noncompact Cauchy surface.
+CLAIM_ID / MODEL_VERSION: W92_SATURATION_COMPLETION_BOUNDARY_V1.
+TYPE: exact local identities/counterexample and a conditional application
+of the spherical trapped-surface focusing argument.
+ASSUMPTIONS: the same sourced action and canonical scalar, alpha>0,
+ell>0, A,L,q>0, smooth regular orbit frame, z=(1-q)/ell^2. The causal
+claim additionally assumes a smooth spacetime, a closed acausal round future
+trapped surface, radial null convergence along its normal generators,
+and a connected noncompact Cauchy surface. Global hyperbolicity is an
+explicit condition, not something inferred from a finite simulation.
+METHOD / FREEDOM: at a fixed trapped point F=A-v^2<0 choose real scalar
+data psi=0, P!=0 and D/P=-v/sqrt(A)+sqrt(v^2/A-1). Verify the canonical
+stress and the exact mass-gradient cancellation rho+vS=0. Amplitude
+labels distinct local source data, not successive times of the evolved
+packet. Use the concrete point alpha=1/25, ell=2, A=L=1, v=sqrt(2),
+r=4, q=1/2 as an exact/numerical crosscheck. No physical parameter is
+fitted and no modified action is introduced.
+PASS: zero symbolic residuals for mass/metric constraint compatibility,
+canonical energy inequalities, stress determinant and leading curvature
+coefficient; demonstrate E is unbounded with amplitude at fixed q and
+fixed local M and M_r. Independently derive R''=-(R/2)Ric(k,k) for an
+affinely parameterized radial null ray, and insert the positive screened
+canonical null source. Record the focusing bound from theta'<=
+-theta^2/2 with theta_initial<0.
+FAIL / FALSIFIER: any nonzero required identity invalidates that claim.
+A local initial-data witness is explicitly not a solution evolving into
+blow-up. A focal point is explicitly not a curvature singularity.
+BENCHMARK / CROSSCHECK: derive stress directly from P,D and also from
+orthonormal variables; negative controls break the cancellation and
+the null-source sign. Prove the sufficient contrast bound from
+rho<=C M/r^3 by maximizing x/(1+2x)^(3/2).
+ERROR_BOUND: exact symbolic checks; numerical examples only illustrate
+those identities. No interval proof of the nonlinear PDE is claimed.
+CAUSAL ARGUMENT: the compact future-boundary/noncompact-Cauchy
+contradiction is a mathematical argument under the above conditions;
+a Python test checks the action and focusing algebra, not the global
+topology. Extensions beyond a Cauchy horizon remain outside that
+globally hyperbolic conclusion and require their own regularity test.
+DATA_ROLE / OBSERVATION: N/A, no observational data or fitting.
+FLAGS: local_mass_cap_insufficient and conditional_global_obstruction
+are separate from fixed_packet_blowup, curvature_singularity_proved,
+all_RefG_rejected, global_regular_completion and full_pressure_join.
+PROVENANCE / FILES: one additional reproducible exact-check script,
+verify_saturation_completion_boundary.py, this report and W92 index.
+The running evolution verifier and both engines stay unchanged.
+STOP: establish these precise restrictions and required next conditions;
+do not manufacture a binary conclusion about the undeveloped full RefG
+theory. This stage can finish while the independent fixed-endpoint
+spatial-refinement run continues.
+
+### Exact result and independent verification
+
+The isolated checker passes48/48, including an independent metric
+reconstruction of R2, the radial Hessian and the Kretschmann scalar.
+SHA256: `2073eb1141f406432dc7e0dbcaa4a27ff5e96c8b14459a67d095378ab4f41c24`.
+A second run reproduces48/48. The numerical evolution verifier remains
+at its preregistered section23 hash.
+
+At the registered trapped point, with arbitrary finite real P>0,
+
+    rho=(2-sqrt(2))*P^2, S=J=-rho/sqrt(2),
+    p_r=rho, p_t=rho/sqrt(2), M_r=0,
+    M_t=8sqrt(2)rho, A_t=sqrt(2)rho/25,
+    E=sqrt(2)rho/25,
+    R2=2rho^2/625-sqrt(2)rho/50-5/16,
+    K=R2^2+rho^2/1250+5/64,
+    limit_(P->infinity) K/rho^4=4/390625>0.
+
+The radial and temporal mass equations, metric/shift derivatives,
+momentum constraint, clock equation and scalar energy balance all agree.
+In particular the metric is allowed to respond in time: holding A_t=0
+would violate its equation and is detected by a negative control.
+This local source/geometry jet demonstrates the failure of a pointwise
+density bound inferred from M and M_r inside trapping. It is a family
+of finite local data, not a fixed-packet blow-up trajectory.
+
+For a radial affine null vector k the retained equations give exactly
+
+    Ric4(k,k)=2 alpha q^2 T(k,k)>=0,
+    d^2r/dlambda^2=-alpha r q^2 T(k,k)<=0.
+
+The canonical source is a sum of squared null field derivatives; its
+potential cancels in this contraction. For a round trapped sphere,
+its initially negative expansion obeys theta'<=-theta^2/2, so focusing
+occurs within2/abs(theta_initial). Making q smaller leaves the
+expansion-squared term and preserves the focusing inequality.
+
+With a smooth spacetime, a compact acausal trapped sphere and a connected
+noncompact Cauchy surface, the null-generator version of the singularity
+theorem excludes future-null completeness. Only convergence along the
+orthogonal generators is needed; spherical symmetry keeps them radial.
+This is a conditional causal obstruction, supported by
+[Fewster and Galloway, Theorem5.2](https://arxiv.org/html/1012.6038v3).
+Set their damping parameter to zero: the nonnegative Ricci integral
+exceeds the negative initial expansion. The theorem supplies the global
+step; Python verifies the local action/geometry premises.
+
+A focal point alone is a caustic. The global conclusion is incompleteness,
+not a proof of divergent K or an inextendible metric. A continuation
+beyond a Cauchy horizon drops the global-Cauchy hypothesis and must be
+tested separately. A compact cosmological Cauchy surface is another
+different domain. Finite-grid trapping supports, but does not rigorously
+prove, the continuum trapped-surface premise for this packet.
+
+Thus the positive-screening, canonical-source action is excluded as a
+future-null-complete **globally hyperbolic trapped completion** with the
+stated noncompact initial topology. Changing only the strength of its
+positive null response cannot remove this obstruction. The full RefG
+theory and regular-curvature non-globally-hyperbolic extensions are not
+excluded by this result.
+
+A separate sufficient curvature target is explicit: if its actual
+dynamics supplies rho<=C M/r^3 uniformly in a regular frame, then
+E<=C/(3sqrt(3)) and section14 supplies curvature bounds. The new trapped
+source witness shows why the mass constraint alone cannot supply C.
+The existing pressure/action relation and causal extension are therefore
+substantive missing conditions, not tasks that more time samples close.
+
+## 25. Existing current-action bridge: homogeneous compatibility filter
+
+### Contract before new symbolic tests
+
+CLAIM_ID: W92_EXISTING_CURRENT_HOMOGENEOUS_JOIN_V1.
+GOAL: use the already-derived W3-87 action, rather than an invented
+pressure identification, to test which constitutive coefficient
+reproduces the current homogeneous rational response and what it does
+to the phase equation and null focusing.
+MODEL: S=-K integral e F_grav(n)T + integral(J.dtheta-e rho(n)),
+K=1/(16piG), n a^3=constant, T=6H^2; positive n,rho,K,ell.
+Full W3-87 density-chain, exchange and connection terms are retained
+as dependencies; the test reduces only its established FLRW equations.
+METHOD: solve 6K F H^2=rho for F under the section2 target H^2;
+independently differentiate the constraint and compare the scale
+Euler equation. Retain the current variation in the phase equation.
+PASS: exact agreement with the same-action homogeneous target, explicit
+phase shift, and the correct sign of Hdot for rho'>=0. A mutation omitting
+F' must fail the phase/scale equations. This is a branch-restricted
+dictionary, not an independent microscopic derivation.
+FREEDOM / DATA: no fit or observation; the target response fixes F on
+this homogeneous branch. No spatial source, pressure P_F or clock/rod
+identification is inferred. Files: the existing completion-boundary
+checker, this report and W92 index; production evolution stays frozen.
+STOP: determine whether this exact existing-action match supplies a new
+defocusing mechanism or merely reproduces the previous homogeneous
+one, then record the decision before considering any further postulate.
+
+### Result: exact match, not a new focusing sign
+
+The unchanged48 section24 checks and22 new checks pass70/70. The parent
+independently reran the complete checker with the same result. At this stage
+its SHA256 is `b184e6a412a5c1e2b83cda2669ef17b3d09d15bc840fe6512b8c155ab32c8c25`;
+the production verifier remains at its frozen section23 hash.
+
+Varying N,a,j,theta independently before N=1 gives
+
+    6K F H^2=rho, n_dot=-3Hn,
+    theta_dot=rho'+6K H^2 F',
+    2F Hdot+3(F-nF')H^2=-(n rho'-rho)/(2K).
+
+The target response uniquely fixes this homogeneous-branch coefficient:
+
+    F=1+ell^2 rho/(6K), q=1/F,
+    Hdot=-n rho'/(4K F^2),
+    theta_dot=rho'(1+ell^2 H^2).
+
+The independent derivative of the Hamiltonian constraint agrees exactly
+with the scale equation. Omitting the F' contribution fails both the
+phase and scale negative controls. For rho'>=0 the metric null focusing
+keeps its original sign. The collective phase changes as well: matching
+H^2 does not make the two complete actions or their sources identical.
+This phase rate is not an externally measured clock factor and neither
+it nor q identifies the foundation pressure P_F.
+
+DECISION: retain this explicit branch-restricted dictionary; it supplies
+no new defocusing mechanism. Do not launch a duplicate spherical evolution
+by treating a homogeneous identity as a full covariant equivalence.
+
+## 26. Minimal stronger-response candidate: homogeneous and spherical filter
+
+### Contract before independent verification
+
+CLAIM_ID: W92_QUADRATIC_CURRENT_SPHERICAL_FILTER_V1.
+GOAL: test whether the next analytic term in the existing W87 coefficient
+can cure the preceding causal obstruction without discarding its current
+equation. The candidate was identified by an exploratory algebraic audit;
+this contract registers the independent verification, not a blind discovery.
+MODEL: the same W87 action, dust rho=m*n and the explicitly new constitutive
+candidate F_grav=1+x+x^2, x=ell^2*m*n/(6K), K,m,n,ell>0. It preserves the
+linear candidate's vacuum value and first density correction. It is not
+derived from the RefG pressure law and is not adopted in the active theory.
+METHOD: derive H^2, Hdot and mu_eff from the full existing FLRW equations;
+check curvature bounds, high-density proper-time and null-affine asymptotes,
+and the fixed-geometry current block. Then apply the identical coefficient
+to W89's valid spherical KS coframe/connection and its full torsion scalar.
+Use W90's weighted affine focusing identity without changing its assumptions.
+PASS: exact residuals; keep homogeneous future regularity, fixed-background
+current health, coupled health and regular-black-hole existence separate.
+If mu_eff>0 and inward b<=b0 bound x and F, the already-established W90
+finite-affine patch obstruction rejects this candidate for that target.
+FALSIFIER / CONTROL: using the FLRW torsion scalar in KS must fail; omitting
+the intrinsic sphere-curvature term must change the current equation.
+ERROR / FREEDOM: exact symbolic identities and analytic comparison bounds;
+no fitting, tuned parameter scan or new numerical black-hole evolution.
+SCOPE: positive-current-clock, non-bouncing complete KS interior only.
+Inhomogeneous interiors and extensions outside this patch are not excluded
+by this filter. A homogeneous regular asymptote is not a black hole.
+FILES: completion-boundary checker, this report and index only; the running
+production verifier remains frozen. No monograph or Git-rule changes.
+STOP: accept or reject the specified transfer before any larger simulation.
+
+### Result: homogeneous improvement fails the retained KS transfer
+
+The checker passes110/110: all preceding70 plus40 new tests. Its stage26
+SHA256 is `169e51e796351723743e91938fa4f4f66fb10d3b2be6cdb6a5be77f0f0b10e24`.
+For the explicitly postulated quadratic coefficient,
+
+    H^2=x/[ell^2(1+x+x^2)],
+    Hdot=-3x(1-x^2)/[2ell^2(1+x+x^2)^2],
+    mu_eff/m=(1+2x+3x^2)/(1+x+x^2).
+
+The identities give H^2<=1/(3ell^2), |Hdot|<=1/(2ell^2), hence conservative
+|Ricci|<=7/ell^2 and K<=29/(3ell^4). At high density a~tau^(-2/3): future
+null affine length diverges and the boosted curvature term Hdot/a^2 tends
+to zero. This is a homogeneous future asymptote, not a complete cosmological
+history or a black-hole solution. The fixed-geometry current block has
+h>0 and c_fixed^2=2x^2/(1+2x+3x^2)<2/3; coupled health is not established.
+
+The actual spherical torsion scalar is not its flat homogeneous value.
+Independent lapse/current variation on the valid W89 KS pair gives
+
+    K*T=rho/F-4K/b^2,
+    mu_eff/m=(1+2x+3x^2)/F-2ell^2(1+2x)/(3b^2).
+
+Because the first ratio is strictly below3, mu_eff>0 along b<=b0 requires
+x<9b0^2/(4ell^2)-1/2. Thus F is bounded above on that retained branch.
+The unchanged W90 identity Q=F db/dlambda<0, Q'<0 then forces zero radius
+or exit from the patch/domain in finite affine length. Both mutations
+that use the FLRW torsion scalar or omit the intrinsic sphere term fail.
+
+DECISION: reject the quadratic candidate for a positive-clock, complete
+contracting KS core. Do not run an expensive black-hole simulation of
+this already-excluded transfer. Inhomogeneous sources and extensions
+outside this patch are separate questions, not rejected by this result.
+
+## 27. Constitutive-family test using the second spherical scale equation
+
+### Contract before independent verification
+
+CLAIM_ID: W92_CURRENT_KS_TWO_SCALE_COMPLETION_FILTER_V1.
+GOAL: decide whether another smooth density-only F(n), rather than the
+quadratic example, can evade the existing inward-KS obstruction while
+retaining a nondegenerate gravitational response and positive current.
+The identity was found in an exploratory audit; independent verification
+and its conditional theorem are registered here before adding tests.
+MODEL: unchanged W87 action and valid W89 KS coframe/connection; j>0,
+a,b,F>0, mu_eff>0, conserved n=j/(a*b^2), inward db/dlambda<0.
+ADDITIONAL CONDITIONS: the same KS patch covers an alleged complete
+future radial null ray; F(n)>=F_min>0 on it; F is continuous and finite
+for bounded n including n=0. These are explicit constitutive assumptions.
+METHOD: vary N,a,b,j,theta before fixing N=1. Independently verify the
+off-shell difference of the two scale equations for
+U=F*a*b^2*(H_a-H_b): Udot=F*a, hence dU/dlambda=P*F, P>0.
+Combine this with W90's independently derived Q=F*db/dlambda<0, Q'<0.
+PASS: exact EL identity, null-affine conversion, Schwarzschild KS and
+contracting de Sitter KS benchmarks, and an intrinsic-curvature omission
+negative control. State the analytic comparison argument in full.
+THEOREM TARGET: bounded curvature requires b>=b_min>0. Complete affine
+length would make U eventually positive; a/b then increases, keeping
+a and thus 1/n bounded below. Continuous F is then bounded above, in
+contradiction with the Q focusing bound. No power-law or limiting-n
+assumption is permitted in the proof.
+SCOPE: excludes a complete inward, bounded-curvature KS patch under these
+conditions, not every inhomogeneous interior or continuation across a
+coordinate horizon. The de Sitter benchmark must demonstrate the latter
+distinction rather than be misclassified as globally singular.
+FILES: completion-boundary checker, this report and index. No production
+evolution, intuitive-file, physical-law or Git-rule changes.
+STOP: record this family-level filter; do not scan further polynomials
+inside the same excluded assumptions or claim all of RefG is rejected.
+
+### Result: a family-level patch obstruction
+
+All144 checks pass, including34 new section27 checks. The parent read
+the new derivation and independently reran the entire suite with the
+same result. Stage27 checker SHA256:
+`07e1c2295dd1674bd2e931aa885852ed1f4086122bf6d546011c6e717918dd68`.
+Direct unfixed-lapse variation verifies the off-shell identity
+
+    dU/dt-NFa=-(b E_b-2a E_a)/(4K),
+
+where E_a=d/dt(dL/dadot)-dL/da and likewise E_b. Thus the two independent
+on-shell affine identities are
+
+    U'=P F,
+    Q'=-P^2 b n mu_eff/(4K a^2).
+
+Here prime denotes affine differentiation, not density differentiation.
+The comparison proof actually works for mu_eff>=0, including a vanishing
+limit, not only the strictly positive branch in the contract:
+
+1. If affine length were infinite, F>=F_min>0 would make U positive
+   after a finite interval.
+2. Then H_a-H_b>0, so a/b has a positive lower bound c_min.
+3. Bounded KS curvature requires b>=b_min>0 because K>=4/b^4.
+   Consequently a>=c_min b_min and n<=j/(c_min b_min^3).
+4. Continuity of F on that compact density interval, including n=0,
+   gives a finite F_max.
+5. Q'<=0 and initially inward Q<0 give db/dlambda<=-|Q_1|/F_max.
+   This contradicts b>=b_min within finite affine length.
+
+No limiting density, power law or infinite proper-time assumption was
+used. Schwarzschild and contracting de Sitter KS benchmarks verify the
+signs; removing intrinsic sphere curvature from the actual Lagrangian
+fails the unchanged identity. The de Sitter patch has finite K=24H^4
+but ends at a regular metric horizon in finite affine length, so the
+patch conclusion cannot be promoted to a global singularity theorem.
+If a nonzero retained current j>0 is imposed at its a->0,b->1/H endpoint,
+however, its invariant norm -n^2 diverges. A metric extension alone
+does not extend that current smoothly; the vacuum j=0 control differs.
+
+DECISION: further smooth nondegenerate density-only F(n) trials cannot
+produce the specified complete inward KS core. Inhomogeneous dynamics,
+an actual all-field extension, or a different physical source/response
+structure must be evaluated on their own equations, not inherited from
+this excluded class. This is not an exclusion of every RefG completion.
+
+## 28. Finite dust ball, inner-horizon extension and centre-domain audit
+
+### Contract before new independent checks
+
+CLAIM_ID: W92_FINITE_BALL_LOCAL_EXTENSION_DOMAIN_V1.
+GOAL: test the concrete extension left open by section24; do not confuse
+the incomplete globally hyperbolic region with a curvature singularity.
+MODEL: the already-derived matched flat dust ball and Hayward exterior,
+G=1, ell>0, M>3sqrt(3)ell/4. No new field equation or source is introduced.
+METHOD: at an inner root r_h use M=r_h^3/[2(r_h^2-ell^2)],
+ell<r_h<sqrt(3)ell, kappa=-f'(r_h)/2>0. Substitute
+V=exp(-kappa*v), r=r_h+V*y into the ingoing metric and verify the finite,
+nondegenerate metric limit at V=0 and q(r_h)>0. Check the comoving dust
+current's zero normal jump. Use the contracting finite ball's conformal
+geodesics to distinguish its exit from the infinite-FLRW affine limit.
+CENTRE CHECK: retain the action's q>0 domain. Compute coefficient and
+full on-shell density limits independently; cancellation in the latter
+must not be confused with a smooth off-shell variational extension.
+PASS: exact local-horizon residuals and nonzero metric determinant,
+finite horizon curvature, zero current boundary flux, and correctly scoped
+centre limits. Record a local regular extension, not global completion.
+FAIL / CONTROL: an arbitrary exponential rate must leave an uncancelled
+1/V pole; a noncomoving current must fail the zero-flux matching condition.
+BOUNDARY: a finite-affine ray leaving an infinite FLRW patch is not a
+finite-ball singularity proof. The classical action at q=0 and dynamical
+packet inner-horizon stability are separate, still required questions.
+FILES: completion checker, report and index only. Production evolution
+stays frozen. No copied third-party file, monograph edit or publication.
+ADDITIONAL PROSPECTIVE JOIN CONTROL (before adding its tests): the
+time-reversed dust ball is an existing same-action building block, not
+a new equation. Test the proposed direct join by its necessary current
+flux condition across a null vacuum/dust interface, and by continuity
+of the finite-radius boundary velocity. A failed direct join does not
+exclude another globally placed matter continuation with additional data.
+STOP: decide which local extension is actually verified and isolate the
+remaining central variational/domain problem before claiming completion.
+
+### Result: local extension exists; it does not decide the global completion
+
+The38 new section28 checks pass. In the final combined run the parent
+independently reproduced all203 checks (48+22+40+34+38+21). Final checker
+SHA256: `de2a3997c79c7b74a2cf7e64e546d65d62f508cb015c83194df99b3bcef910ef`.
+
+At the inner root ell<r_h<sqrt(3)ell,
+
+    kappa=(3ell^2-r_h^2)/(2r_h^3)>0,
+    q_h=1-ell^2/r_h^2>0.
+
+The explicit transformation V=exp(-kappa v), r=r_h+V*y gives
+
+    g_Vy=-1/kappa,
+    g_VV=-(f(r_h+Vy)+2kappa Vy)/(kappa^2 V^2),
+    det(g_orbit)=-1/kappa^2,
+    limit g_VV=-f''(r_h)y^2/(2kappa^2).
+
+The rational metric is regular and nondegenerate across V=0. Horizon
+curvature and freely falling tidal components are finite, and the local
+action coefficients remain within q>0. An arbitrary exponential rate
+leaves the expected uncancelled 1/V pole. This directly verifies a local
+vacuum continuation and prevents promoting section24 to a universal
+curvature-blow-up or no-extension claim.
+
+For the finite contracting dust ball, |H|>=h0>0 after any finite launch
+time gives a<=a0 exp(-h0 Delta_tau). Its available conformal distance
+exceeds [exp(h0 Delta_tau)-1]/(a0 h0). Every radial null ray crosses at
+most2chi_b before leaving the ball, hence exits by
+Delta_tau<=log(1+2chi_b a0 h0)/h0. A comoving worldline instead retains
+infinite future proper time. The finite affine length of an infinite
+FLRW patch is therefore not a proof of a singularity in this finite ball.
+The missing explicit current-jump check passes: the comoving interface
+has zero normal dust flux.
+
+The time-reversed expanding ball is a separate same-action building
+block. Directly pasting it onto collapse at finite radius fails velocity
+continuity, since the two nonzero velocities have opposite signs. Direct
+attachment of nonzero timelike dust current to vacuum across a null
+surface also fails: locally J.k=-n exp(+/-eta) is nonzero. These tests
+exclude those direct joins, not every placement of additional matter
+data beyond the original determined domain.
+
+For the selected static vacuum centre q~r^3/(2Mell^2), and individual
+coefficients diverge: h2~ -16M^2ell^2/r^4, h3~16M^2ell^4/r^5,
+h4~ -2Mell^2/r. However, their full on-shell volume density is
+D0~(36/ell^2)r^2 log(r/ell), which tends to zero and is integrable.
+The coefficient poles therefore do not prove a divergent on-shell
+action, strong coupling or curvature singularity. The unresolved issue
+is the off-shell central variational/domain extension in section29.
+
+## 29. Central variational prescription, beyond the on-shell density
+
+### Contract before independent verification
+
+CLAIM_ID: W92_HAYWARD_CENTRE_VARIATIONAL_DOMAIN_V1.
+GOAL: decide whether a finite metric and finite on-shell action density
+already supply a source-free variational extension through q=0.
+The lapse-variation surface term was identified in an exploratory audit;
+its independent exact test and interpretation are registered here.
+MODEL: unchanged spherical action, generic static lapse N(r) retained
+until variation, and only then the vacuum Hayward metric f(r). Positive
+M,ell and r>0; the centre is a limit of that open domain, not silently
+added to it. Test regular radial lapse perturbations eta=1 and eta=r^2
+near r=0, compactly supported at larger radius.
+METHOD: derive delta L=eta D0+eta' A+eta'' B from the full reduced action;
+verify the punctured-domain Euler identity D0-A'+B''=0 and the central
+flux eta(A-B')+eta'B. Check general-M,ell limits and the finite on-shell
+density separately. Examine ordinary total-derivative/boundary freedoms
+explicitly before interpreting a nonzero bare-action flux.
+PASS: exact bulk cancellation, reproducible central flux and a negative
+control showing why setting N=1 before varying misses the issue.
+Any scalar coefficient pole is not by itself a curvature singularity,
+divergent on-shell action or proof of strong coupling.
+SCOPE: whether the currently written action and unrestricted regular
+variations suffice at the centre. A required boundary/domain prescription
+is a missing completion, not a theorem forbidding every completion.
+ERROR / FREEDOM: symbolic limits, no fitted central cutoff or silently
+added boundary source. New counterterms, boundary degrees of freedom or
+matter profiles must be separately identified, not called already derived.
+FILES: completion checker, report and index only. No change to production
+evolution or the intuitive monographs.
+STOP: state the exact central condition still required, and whether the
+current calculation supplies it; do not conflate regular metric extension
+with a proven regular solution of all fields and variational equations.
+
+### Result: the written action needs a central prescription
+
+The21 new section29 checks and all preceding checks pass203/203,
+independently repeated by the parent at the section28 final hash. For
+G=1, varying the independent static lapse gives
+
+    delta L=eta D0+eta' A+eta'' B,
+    D0-A'+B''=0 for r>0,
+    limit(A-B')=-4M, limit(rB)=4Mell^2.
+
+For a regular local perturbation eta=eta0+eta2*r^2+..., the lower
+endpoint bracket is -4M eta0+8Mell^2 eta2. With compact outer support
+and action prefactor1/4, the corresponding bare-action variation is
+M eta0-2Mell^2 eta2. Fixing the lapse before variation erases this
+equation and fails the registered control.
+
+Boundary freedom is explicitly retained, not dismissed. The exact
+reduction is L=B_total'+4N mu', with
+B_total=-r^2 H4(N f'+2f N'). Subtracting that total derivative removes
+the displayed bare lapse flux; varying f then leaves4N delta_mu at
+the centre. A further Legendre boundary exchanges it for-4mu delta_N.
+These are different variational prescriptions, not a demonstrated
+source-free completion with all regular variations unrestricted.
+
+The central domain issue is visible independently in
+
+    delta_mu=-r delta_f/(2q^2).
+
+Take delta_f=epsilon*r^2 near the centre, with a smooth outer cutoff
+and0<epsilon<ell^-2. Then delta_mu~ -2M^2ell^4 epsilon/r^3.
+For z=z_Hayward-epsilon, the centre-first limit of mu is0 whereas the
+variation-first limit isM. This is a nonuniform constitutive limit,
+not divergent spacetime curvature. A radial r^5 control gives finite
+delta_mu; no C-infinity Cartesian smoothness is inferred from that test.
+
+DECISION: the current bare action, metric limit and finite on-shell
+density do not by themselves specify a regular central variational
+completion. A boundary/domain prescription or an independently solved
+matter-containing continuation is still needed. No new centre source,
+cutoff or counterterm is adopted here. This conclusion concerns the
+chosen static vacuum continuation; other global continuations have not
+been classified or excluded.
+
+## 30. Check the unexcluded coupled-current branch before rejecting it
+
+### Bounded action-reduction contract
+
+CLAIM_ID: W92_CURRENT_COUPLED_RADIAL_OPERATOR_ENTRY_V1.
+GOAL: determine whether the negative-mu branch, left outside sections26–27,
+can be tested with the full existing action rather than the insufficient
+fixed-geometry current block. No negative phase rate is identified with
+reversed physical time or automatically with a coupled ghost.
+MODEL: unchanged W87 F(n)T/current action, with the section26 constitutive
+candidate available but no new one introduced. For a radial reduction use
+ds^2=-N^2dt^2+a^2(dx+Bdt)^2+b^2dOmega^2, densitized current (j,i)sin(theta),
+n=sqrt(N^2 j^2-a^2(i+Bj)^2)/(N a b^2). Keep the flat-spin/Lorentz variables
+required by spherical symmetry, the lapse, shift and both current
+components independent. The action includes j theta_dot+i theta_x.
+METHOD: derive the torsion/reduced action before eliminating constraints;
+retain density–torsion mixing and test the valid W89 KS limit and TEGR
+boundary identity. Only if this entry test succeeds is a leading radial
+constraint/principal calculation justified. Existing minimal-current,
+f(T), KGB and frozen-background operators are not interchangeable here.
+PASS: consistent complete spherical reduction and explicit surviving
+constraints, or one decisive obstruction to that reduction. A partial
+quadratic block does not establish full health or full instability.
+FALSIFIER: missing antisymmetric equations, wrong KS torsion, lost lapse
+constraint or a division through mu=0 without a rank check invalidates
+the proposed operator. A failed ansatz is not a theory no-go.
+FILES: prospective verification belongs only in the completion checker
+and this report/index. Production evolution and monographs stay frozen.
+STOP: the action-entry/principal decision, not an unrestricted 3+1
+Hamiltonian programme or a new numerical collapse. This stage is needed
+to avoid rejecting an unresolved branch using the wrong health test.
+
+### Action-entry result
+
+In sections30-32, F(n) denotes the density-dependent torsion coefficient,
+not the metric trapping function F printed by the collapse code.
+
+The complete spherical reduction retains four metric functions and the
+independent radial boost psi and tangential rotation chi. This local
+frame/spin parametrization follows the spherical classification in[3];
+the density-current coupling below is derived from W87, not imported
+from a different f(T) perturbation operator. The direct torsion contraction
+recovers T=4H_a*H_b+2H_b^2-2/b^2 on the W89 KS branch
+(psi=0,chi=pi/2), and T=0 for the inertial Minkowski control.
+
+After the TEGR integration by parts, the nonminimal Lorentz-dependent
+piece of the reduced Lagrangian is
+
+    L_L=2K b^2(F_x psi_t-F_t psi_x)
+        +4K N a b cos(chi)[-F0 sinh(psi)+F1 cosh(psi)],
+    F0=(F_t-B F_x)/N, F1=F_x/a.
+
+Writing d_r=b_x/(a*b), its two spin equations are
+
+    F0[b*d_r-cos(chi)cosh(psi)]
+      +F1[cos(chi)sinh(psi)-b*H_b]=0,
+    sin(chi)[F0 sinh(psi)-F1 cosh(psi)]=0.
+
+Direct antisymmetric field-equation contraction gives the same two
+equations; the other four spherical components vanish. Fixing both
+Lorentz variables to their homogeneous values before radial variation
+would lose these equations and the resulting gradient contribution.
+The independent lapse, shift and both current components are retained.
+This establishes the entry to the constrained radial calculation, not
+stability by itself. The executable aggregate is recorded after section32.
+
+## 31. Full constrained radial health, without a frozen geometry
+
+### Verification contract after exploratory action derivation
+
+CLAIM_ID: W92_COUPLED_CURRENT_RADIAL_PRINCIPAL_V1.
+GOAL: test the remaining inward, density-increasing F(n)T branch with
+the actual coupled spherical action. The formulas below were derived
+exploratorily by the parent and independently crosschecked before this
+executable-verification contract; this is not a blind prediction claim.
+MODEL: unchanged section30 action, regular KS background, K>0,F>0,
+n>0,a>0,b>0. Retain lapse, shift, flux, radial boost and tangential
+rotation until their equations are obtained. For the nonzero radial
+Fourier mode use the spatial-flat gauge only when H_b is nonzero.
+Do not divide through mu=0, F_dot=0 or H_b=0.
+HYPOTHESIS: with V3=a*b^2, Fp=dF/dn and d=delta(j), the constrained
+first-order quadratic action has density Hamiltonian coefficient
+A(k)=[h_eff+8K H_b Fp*k^2/(a^2*n_dot)]/V3, where
+h_eff=rho''+K*T*F''+2rho'*Fp/F-4K*Fp^2/(F*b^2).
+Its phase coefficient is B(k)=j*k^2/(mu*a^2)+O(1), and hence the leading
+radial frequency squared is 8K*n*H_b*Fp*k^4/(mu*a^4*n_dot).
+METHOD: independently verify spherical torsion, both surviving flat-spin
+equations, the TEGR boundary relation, quadratic expansion before flux
+elimination, lapse/shift constraints, and the reduced principal operator.
+Use Fp=0 as the minimal-fluid control and retain the undivided mu=0
+flux equation as a rank boundary. Wrong-spin/freezing and dropped-mixing
+controls must fail the unchanged comparison equations.
+PASS: exact identities and independently audited gauge/constraint rank;
+state the sign result only for H_b<0,n_dot>0,Fp>0 and the nonsingular
+elimination domain. Oscillatory frequencies alone are not positive energy.
+SCOPE: a necessary radial continuum-health condition, not a complete
+3+1 stability theorem or a singularity theorem. Without an independently
+specified ultraviolet cutoff, do not claim a measured physical unstable
+wavelength range. Degenerate surfaces and density-decreasing branches
+remain separate; one failed constitutive family is not all of RefG.
+FILES: completion checker, this report and the index only; production
+evolution remains frozen. No new action, cutoff or phenomenological force.
+STOP: decide this branch from its own constrained equations, then combine
+with the fixed numerical refinement and existing global/domain results.
+
+### Result: the coupled radial operator excludes the tested healthy route
+
+Let V3=a*b^2, j=n*V3, d=delta(j), pi=delta(theta), phi=delta(N),
+and mu=rho'+K*T*Fp. The two coordinate conditions delta(a)=delta(b)=0
+have Fourier gauge determinant i*k*a*b_dot, so this gauge is admissible
+on k*H_b!=0. The Lorentz equations are eliminated only for F_dot!=0.
+The undivided current-flux equation is retained at mu=0; no conclusion
+requiring division by mu is extended to that surface.
+
+For the regular domain, the independently expanded quadratic action gives
+
+    phi=Fp*d/(V3*F)+n*pi/(4K*F*H_b),
+    L2=d*pi_dot-[A(k)*d^2+2C*d*pi+B(k)*pi^2]/2,
+    A(k)=[h_eff+8K*H_b*Fp*k^2/(a^2*n_dot)]/V3,
+    h_eff=rho''+K*T*F''+2rho'*Fp/F-4K*Fp^2/(F*b^2),
+    B(k)=j*k^2/(mu*a^2)+V3*n^2*(4H_a*H_b+2H_b^2)/(8K*F*H_b^2),
+    C=n*mu/(4K*F*H_b).
+
+The remaining lapse equation determines the shift gradient; it does not
+remove the surviving canonical pair. Independent derivations starting
+with the original current norm agree with this reduction. The leading
+frozen-coefficient radial frequency is therefore
+
+    omega^2=8K*n*H_b*Fp*k^4/(mu*a^4*n_dot)+O(k^2).
+
+For inward density increase, H_b<0,n_dot>0,Fp>0:
+
+- mu>0 gives A<0,B>0 at sufficiently large k, hence a radial gradient
+  instability, not a restoring oscillation.
+- mu<0 gives A<0,B<0: frequencies can be oscillatory, but the reduced
+  phase kinetic term is negative, 1/(2A)<0, relative to positive-F gravity.
+
+More generally, mu<0 makes the high-frequency phase Hamiltonian
+coefficient negative on every regular patch of this reduction: either a
+negative kinetic sign or an unstable frequency remains. This is an
+instantaneous high-frequency statement on an evolving background, not
+a conserved global energy assertion or reversal of an observer's time.
+The Fp=0 control recovers the minimally coupled fluid's principal sound
+coefficient n*rho''/rho'. Thus the negative conclusion is obtained from
+the actual coupled action, not from the previously insufficient
+fixed-geometry current block.
+
+DECISION: the linear and quadratic positive-slope density-only joins
+cannot be accepted as healthy inward density-increasing continuum cores
+on this nondegenerate domain. No ultraviolet cutoff is supplied by the
+present model; none is invented to hide the large-k sign. If a finite
+effective-theory cutoff is independently derived, its relation to the
+instability scale must be checked before making a physical wavelength
+claim. Degenerate open branches, non-KS backgrounds and the different
+spherical saturation action are not silently included in this result.
+
+## 32. Constant-density degeneracy of the same inward KS branch
+
+### Bounded verification contract
+
+CLAIM_ID: W92_CONSTANT_DENSITY_KS_PIVOT_V1.
+GOAL: check the open-interval F_dot=0 case excluded from the section31
+division, rather than treating that division as a universal obstruction.
+The identities were found analytically before these executable checks.
+MODEL: the same W87/W89 action, j>0,F>0,Fp>0, regular a,b>0 and a
+connected KS interval on which F_dot=0. No changed action or source.
+METHOD: current conservation fixes n=n0 and V3=a*b^2, so H_a=-2H_b.
+Use the already varied lapse equation and anisotropy identity to test
+H_b_dot=-1/(3b^2), b_dot^2=1/3-c*b^2, b_ddot=-c*b,
+where c=rho(n0)/(6K F(n0)) is constant. These are necessary subsystem
+identities, not by themselves a constructed solution. Independently test
+the remaining scale equation: the exploratory peer audit gives
+(4/3-2beta)/b^2+[n*rho'-2rho+beta*rho]/(2KF)=0, beta=nFp/F.
+An open changing-b interval would then require beta=2/3 and n*rho'=4rho/3;
+positive dust may fail this stronger compatibility condition altogether.
+Only if all equations admit the branch, check the proper-time endpoint
+and K>=4/b^4, retaining the possibility of leaving this interval first.
+PASS: exact residuals and finite inward time to b=0 if this entire
+constant-density branch is retained. For c>=0 the inward speed does
+not decrease; for c<0 its magnitude is at least1/sqrt(3). At c>0 a
+zero-speed point is a maximum radius, not a contraction-to-expansion
+bounce. A wrong sign in the intrinsic sphere term must fail a control.
+BOUNDARY: this does not classify every rank-degenerate background.
+An isolated F_dot=0 point is not an open constant-density solution;
+mu=0 remains within section27's nonnegative-mu comparison assumptions.
+No conclusion is transferred to the different spherical saturation action.
+FILES: completion checker, this report and index only.
+STOP: close this particular pivot loophole, then report the exact
+candidate exclusions and the limits of what the available theory decides.
+
+### Result: the retained dust branch does not have this escape
+
+The full radial and angular Euler-Lagrange equations were differentiated
+before imposing constant density. Both independently give
+
+    (4/3-2beta)/b^2+[n*rho'-2rho+beta*rho]/(2KF)=0.
+
+Since b changes on an open inward interval while n=n0 is fixed, the
+two coefficients require beta=2/3 and n*rho'=4rho/3. Positive dust
+rho=m*n instead leaves the nonzero residual -rho/(6KF). Thus the
+retained W89 coframe/flat-spin branch has no such open constant-density
+dust solution; the lapse/shear subsystem alone must not be called one.
+
+For a different constitutive source that does satisfy all the equations,
+the necessary subsystem has b_dot^2=1/3-c*b^2 and b_ddot=-c*b. If it is
+retained for the entire inward continuation, its proper-time endpoint is
+
+    asin(sqrt(3c)*b0)/sqrt(c)        for c>0,
+    sqrt(3)*b0                     for c=0,
+    asinh(sqrt(-3c)*b0)/sqrt(-c)     for c<0.
+
+Each is finite on the real inward branch. Its direct curvature contraction
+gives b^4*Kretschmann->80/3. The exact test corrected an auxiliary
+hand-entered endpoint coefficient32 to80/3; no action, physical parameter
+or acceptance tolerance was changed. This conditional endpoint is not
+asserted for the excluded dust solution or for a trajectory that leaves
+the constant-density interval first.
+
+### Combined retained-branch decision
+
+For smooth positive-slope density-only dust F(n)T with F>=F_min>0 and F
+finite and continuous on bounded density intervals including zero, the
+retained W89 coframe/flat-spin branch cannot provide a future-affine-
+complete, bounded-curvature, persistent inward KS core that is continuum-
+healthy at every regular point. The same branch and KS patch must cover
+the whole proposed continuation, including any degenerate intervals.
+
+Proof: a negative-mu point gives an open negative interval by continuity.
+Section32 forbids this entire inward dust interval from having F_dot=0.
+It therefore contains a regular point where section31's negative phase
+Hamiltonian coefficient violates the necessary radial health condition.
+Health consequently requires mu>=0 throughout; section27 then excludes
+the proposed complete bounded-curvature inward patch. Isolated zero-mu
+or zero-F_dot points do not remove that argument.
+
+This is a scoped constitutive-branch exclusion, not a theorem against
+bounces, different spin branches, inhomogeneous interiors, global
+extensions, the separate spherical saturation action, or RefG generally.
+The high-frequency continuum qualification is essential; no missing
+ultraviolet completion is silently treated as already tested.
+
+### Existing-resource crosscheck: no ready-made term was omitted
+
+The [W87 action contract](../W3-87_State_Dependent_Gravitational_Response/w3_87_state_dependent_response_contract.md),
+sections1-2, already includes the induced pressure n*K*T*Fp and the
+weighted-TEGR bulk derivative term. Both enter sections30-31; adding
+that pressure again would double count it. The separate five-field
+medium in [the W92 formal integration](FORMAL_COVARIANT_MEDIUM_INTEGRATION.md)
+is not a missing operator of this density-only action.
+
+The existing cubic derivative-medium prototype is also retained, not
+forgotten: the W92 main diagnostic's stages27-29 and
+[source-response audit](matter_medium_source_response.md) contain a
+genuine local healthy negative-null-source example. Its registered
+ordinary-exterior and direct pressure-identification tests do not give
+the missing full connection. Installing it here would change the action
+and require a new source/pressure derivation; its local PASS is not a
+ready-made completion of the rejected join. This inventory is a read-only
+check of existing results, not a new rejection of all derivative models.
+
+### Reproduction of the completed analytic audit
+
+The parent independently reran the complete checker:293/293 PASS, no
+failed checks. The original203 checks are retained; section30 adds20,
+section31 adds43, and section32 adds27. These passes verify both positive
+identities and the stated negative results; they do not mean293 proofs
+of singularity removal. Checker SHA256:
+`dbf26e1b50aba9612a13d3fa2b766d819b5b268dabc4f23c14792f46a961513c`.
+The production verifier remains at the section23 preregistered hash.
+
+## 33. Regular-centre source and common-readout compatibility
+
+### Bounded verification contract (2026-09-14)
+
+GOAL: decide whether the existing finite-source regular centre can retain
+the exact static isotropic common clock/rod readout all the way to the
+selected saturation limit. This is the specific missing comparison after
+the source construction in sections1 and6; those constructions are reused.
+
+CLAIM_ID: W3-92-SAT-CENTRAL-SOURCE-READOUT-33.
+TYPE: exact local necessary-condition test and source-ledger audit.
+MODEL_VERSION: unchanged spherical rational action h(z)=z/(1-ell^2 z),
+unchanged canonical sextic matter; no W87 F(n)T substitution.
+ASSUMPTIONS/DOMAIN: smooth static isotropic centre, alpha>0, ell>0,
+finite nonnegative material density, generalized M(0)=0, positive finite
+central lapse, 0<=u=ell^2 z_c<1. Nonvacuum division requires rho_c>0.
+The additional tested readout is ds^2=-p(s)^2dt^2+p(s)^(-2)
+[ds^2+s^2dOmega^2], p=p0+p2 s^2+O(s^4).
+CONVENTIONS: signature -+++, r=s/p is areal radius, N_lapse=sigma sqrt(B);
+q=1-u is the action response, p0 is the clock normalization, and P_c is
+mechanical material pressure. These three quantities stay distinct.
+FREEDOM_LEDGER: alpha,ell retain their action roles; p0,p2 and scalar
+central data are local test variables, not fitted object parameters.
+DEPENDENCIES: sections1,4,6,13,28,29; common_scale_centre_source.md section1.
+METHOD: derive centre jets independently from the isotropic metric and
+from the mass/lapse constraints; compare them with the canonical stress.
+Audit the exact vacuum Hayward target in both the modified-action and
+Einstein-effective ledgers. No nonlinear evolution is needed.
+PASS_CONDITION: both derivations and source ledgers agree; admissible and
+inadmissible local controls are correctly distinguished.
+FAIL_CONDITION/FALSIFIER: any nonzero exact identity residual, lost
+regular-source branch, or a valid nonnegative-potential counterexample
+to the claimed necessary restriction.
+RESIDUAL/ERROR_BOUND: exact symbolic residuals; only leading centre
+coefficients are claimed, with O(r^4) metric remainder.
+VALIDITY_HEALTH: scalar positivity is a necessary local matter test;
+global solutions, coupled perturbative health and dynamical persistence
+are outside this step.
+BRANCHES: zero-density limit is separate; the M(0)>0 vacuum saturation
+limit is compared separately, without dividing by q=0.
+OBSERVABLE_MAP: local clock/rod jets and invariant central curvature;
+q is not identified with foundation pressure or clock p0.
+FORWARD_MODEL/DATA_ROLE: N/A, no observational data or astrophysical fit.
+IDENTIFIABILITY: necessary local compatibility, not a unique source
+reconstruction or a sufficient black-hole existence theorem.
+BENCHMARK: constant-scale flat centre, ell->0 common-scale pressure,
+retained positive sextic and the same-action vacuum Hayward geometry.
+CROSSCHECK: independent derivation by a second agent; separate curvature
+and mass-ledger identities plus the preceding verification suite.
+CLOSURE_FLAGS initially false: central_comparison_verified,
+common_readout_restriction_verified, full_pressure_join,
+global_black_hole, perturbative_stability.
+PROVENANCE: exploratory hand derivation preceded this contract; exact
+verification follows. This is not a blind prediction.
+FILES: this report, verify_saturation_completion_boundary.py and the
+existing medium_health_horizon_diagnostic.md index only.
+STOP: record the exact compatibility range and missing physical join;
+do not repeat the 70-time evolution or open a new constitutive family.
+
+### Result: the additional static readout restriction is identified
+
+All42 new checks and all293 preceding checks pass: **335/335**, failed=[].
+The full suite ran from the unchanged section23 production hash
+`1a23833cd7bc907da7bdda32f26c8ced9ec866f298423a646fb4827f7ce40500`.
+The completed checker's hash is
+`34b60949d239d88215430f0ce4298f815def9a9824dca3736c59d3baa3742e2d`.
+A second agent independently derived the coordinate/source relations and
+then read the implementation; a separate read-only repository inventory
+confirmed the distinction from the earlier centre tests.
+
+**Already available:** sections1 and6 constructed the canonical sourced
+regular centre, including the independent lapse equation and central
+curvature bound. W3-85's regular-centre test and
+[inverse_saturation_candidate.md](inverse_saturation_candidate.md) already
+reconstructed the vacuum target's effective Einstein tensor.
+[common_scale_centre_source.md](common_scale_centre_source.md) already
+tested a different Einstein/medium common-scale source. Their results
+are retained; the new question is the local compatibility of exact static
+common scaling with this spherical saturation action.
+
+For the smooth isotropic scale p(s)=p0+p2 s^2+O(s^4), the areal map gives
+
+    r=s/p, B=(1-s p'/p)^2,
+    z_c=4p0 p2, N_lapse=p0[1+(z_c/4)r^2+O(r^4)].
+
+The two source constraints of section6 instead give
+
+    rho_c=3z_c/(2alpha q_c), q_c=1-u, u=ell^2 z_c,
+    N_lapse=N_c[1+n_2 r^2+O(r^4)],
+    n_2=alpha q_c^2(rho_c+P_c)/2-z_c/2.
+
+Equating the two lapse coefficients, with rho_c>0, yields
+
+    P_c/rho_c = u/(1-u).
+
+This is a condition on mechanical material stress for the additional
+static metric restriction. The actual retained canonical scalar has
+
+    rho_c=W_c/2+V_c, P_c=W_c/2-V_c,
+    V_c/W_c=(1-2u)/2.
+
+Nonnegative V_c requires u<=1/2. The retained sextic
+V(chi)=chi^2[(chi^2-3)^2+3]/24 is strictly positive for chi!=0, giving
+**u<1/2, q_c>1/2** on the nonzero smooth harmonic central branch.
+Thus the unchanged canonical source and this exact static common
+clock/rod restriction cannot jointly approach the selected u->1 centre.
+
+The independent sectional-curvature calculation gives
+K_c=48n_2^2+12z_c^2, hence K_c=15z_c^2 under the common readout.
+The zero-density limit is flat at central order. A positive leading
+central-jet control uses chi_c=1, ell=1, alpha=4/7:
+V_c=7/24, W_c=7/6, rho_c=7/8, P_c=7/24, u=1/4 and n_2=1/16.
+Its leading scalar equation gives chi_2=-11/72. This verifies the
+retained central coefficients; it does not establish an all-orders or
+global solution under the extra readout restriction.
+
+A control with u=3/4 and P_c=0 has finite density and curvature when
+the lapse is allowed its independently solved coefficient
+n_2=-5z_c/16. Therefore the new obstruction belongs specifically to
+the locked static readout. It is not an exclusion of low-q regular
+source data. In particular **q_c is not p0**: p0 cancels from the
+compatibility relation. The result gives no lower bound on the local
+clock normalization or foundation pressure.
+
+### Exact target and the energy ledger
+
+For the original constant-generalized-mass Hayward target,
+
+    z=2alpha M0/(r^3+2alpha ell^2 M0), sigma=1,
+    M_generalized=M0, rho_material=M_generalized'/r^2=0  (r>0).
+
+The remaining radial equation is vacuum as well. In an alternative
+Einstein representation the same metric has
+
+    rho_effective=6alpha ell^2 M0^2/(r^3+2alpha ell^2 M0)^2,
+    P_r,effective=-rho_effective,
+    P_t,effective=(3q-1)rho_effective.
+
+Its central effective density is 3/(2alpha ell^2). These are two
+representations of the gravitational equations; adding the effective
+tensor as extra matter to the modified-action equation double counts
+the response. The geometric mass tends to zero at the centre and to
+M0 at infinity, while the vacuum generalized mass is M0 throughout
+r>0. The finite smooth material centre has M_generalized(0)=0.
+Section29's variational prescription remains relevant to the different
+M0>0 central limit.
+
+The vacuum central lapse has n_2=-1/(2ell^2). The exact common readout
+at z_c=1/ell^2 requires n_2=+1/(4ell^2), an explicit mismatch of
+-3/(4ell^2). Both statements concern metric coefficients; the vacuum
+target still has its already verified finite central curvature.
+
+### Decision and stopping point
+
+The proposed source comparison is now localized to a definite
+mathematical incompatibility: the unchanged spherical saturation action,
+the retained canonical source, and the exact static common-scale
+strong-field extrapolation cannot all realize the selected saturated
+centre together. The weak-field common-scale readout in
+`intuitive/RefG_GE.md` section2.2 is not silently promoted to a universal
+static strong-field law by this test.
+
+The full RefG join requires a same-action physical derivation relating
+foundation pressure to the temporal and spatial metric components in
+the actual strong-field state. Simply renaming q as p, prescribing
+the desired centre, or adding its effective Einstein density as matter
+does not provide that derivation. No new constitutive law is introduced
+by this step. Central-source comparison and its restriction are verified;
+full pressure join, global black-hole regularity and perturbative
+stability remain unestablished. No additional time evolution was run.
+The intuitive monographs, speculative folder, Git rules and production
+evolution equations are unchanged.
+
 ## Reproduction and attribution
 
     python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py"
     python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_inverse_saturation_candidate.py"
+    python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_saturation_completion_boundary.py"
 
 Results and numerical examples are emitted to stdout; no generated files.
 
@@ -3112,3 +4342,10 @@ claim that the underlying regular metric was newly discovered.
 
 [2] S. A. Hayward, Phys. Rev. Lett. 96, 031103 (2006),
 [primary text](https://arxiv.org/abs/gr-qc/0506126).
+
+[3] R. J. van den Hoogen and H. Forance, *Teleparallel Geometry with
+Spherical Symmetry: The diagonal and proper frames*, sections4.2-4.5,
+[primary text](https://arxiv.org/html/2408.13342v1).
+Used for the complete spherical frame/spin parametrization; the
+F(n)T/current quadratic action and constrained radial operator are
+independently derived here.
