@@ -4,17 +4,244 @@ Run: python -X utf8 -B verify_saturation_completion_boundary.py --verbose
 Only stdout is written. No evolution or global initial-data family is solved.
 The topological focusing argument is an analytical conditional theorem; these
 symbolic checks verify its local field-equation premises, not that theorem.
-See spherical_saturation_matter_bridge.md, sections 24 through 37.
+See spherical_saturation_matter_bridge.md, sections 24 through 38.
 """
 import argparse
 import ast
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 import sys
 
 sys.dont_write_bytecode = True
 import sympy as s
+
+
+def existing_light_source_checks(exact, gate):
+    """Section38: reuse actual light code, then compare the sourced EF rays."""
+    work3 = Path(__file__).resolve().parents[2]
+    w43 = "Cosmology_and_LSS/Photon_Atomic_Observable_Bridge/"
+    w82 = "Strong_Field/W3-82_Dynamical_Clock_Radar_Readout/"
+    w91 = "Strong_Field/W3-91_Direct_Scaling_Endpoint/"
+    pins = {
+        w43 + "w3_43_photon_atomic_observable_bridge_preregistration.md":
+            "20793b696e7fcd64a0a4f9a575b4091eeb2faf651973448b87b2c025b2d258da",
+        w82 + "w3_82_dynamical_clock_radar_contract.md":
+            "3c389016254c2c554bec346e6012857c41daaa01a10e2fbba876be1d971d63d8",
+        w82 + "w3_82_dynamical_clock_radar.py":
+            "8e9f3d673841a37bb55f445c0f8ff0c8b031bd639254fae01ed6e2ed539dd793",
+        w91 + "w3_91_direct_scaling_endpoint_contract.md":
+            "d6dfe89f13e34210a7dbd3b4e68e7dff7fb488c93fdc73251a9d03c4b84459c8",
+    }
+    actual = {path: hashlib.sha256((work3/path).read_bytes()).hexdigest()
+              for path in pins}
+    gate("light38_existing_optical_inputs_pinned", actual == pins,
+         actual_sha256=actual)
+    spec = importlib.util.spec_from_file_location(
+        "w92_existing_w82_optics", work3/w82/"w3_82_dynamical_clock_radar.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    # Pure symbolic code only: do not run old mains or read cached PASS output.
+    groups, contexts = module.exact_interface()
+    for name, group in groups.items():
+        gate("light38_w82_recomputed_" + name, group["all_pass"],
+             identities=len(group["checks"]))
+    controls = module.controls(contexts)
+    gate("light38_w82_production_controls", controls["production"]["all_pass"])
+    for name, item in controls["mutations"].items():
+        gate("light38_w82_mutation_" + name, item["detected"])
+
+    v, r, alpha, ell = s.symbols("v r alpha ell", positive=True)
+    f = s.Function("f")(v, r)
+    mass = s.Function("m")(v)
+    carrier = s.Function("omega_in", positive=True)(v)
+    coords = (v, r)
+    g = s.Matrix([[-f, 1], [1, 0]])
+    gi = g.inv()
+    connection = {
+        (i, j, k): s.simplify(sum(
+            gi[i, a]*(s.diff(g[a, k], coords[j])
+                      + s.diff(g[a, j], coords[k])
+                      - s.diff(g[j, k], coords[a]))/2 for a in range(2)))
+        for i in range(2) for j in range(2) for k in range(2)}
+    cov = s.Matrix([-carrier, 0])  # d[-integral omega_in(v) dv]
+    ray = gi*cov
+    xi = s.diff(mass, v)/(alpha*r**2)
+    # Phase-averaged/RMS normalization absorbs EM units and real-wave averaging.
+    amplitude2 = xi/carrier**2
+    current = amplitude2*ray
+    exact("light38_eikonal_null", (cov.T*gi*cov)[0])
+    exact("light38_phase_closed", s.diff(cov[0], r)-s.diff(cov[1], v))
+    exact("light38_future_ingoing_ray", ray[1], -carrier)
+    for i in range(2):
+        acceleration = sum(ray[j]*s.diff(ray[i], coords[j]) for j in range(2))
+        acceleration += sum(connection[i, j, k]*ray[j]*ray[k]
+                            for j in range(2) for k in range(2))
+        exact("light38_affine_ray_" + str(i), acceleration)
+    divergence = sum(s.diff(r**2*current[i], coords[i])
+                     for i in range(2))/r**2
+    exact("light38_wave_action_conservation", divergence)
+    exact("light38_boundary_number_flux", -r**2*current[1],
+          s.diff(mass, v)/(alpha*carrier))
+
+    K = s.symbols("Uv", positive=True)
+    observer = s.Matrix([K, (f*K-1/K)/2])
+    outward = s.Matrix([K, (f*K+1/K)/2])
+    frequency = -(observer.T*cov)[0]
+    exact("light38_observer_unit_norm", (observer.T*g*observer)[0], -1)
+    exact("light38_radial_unit_norm", (outward.T*g*outward)[0], 1)
+    exact("light38_orthogonal_frame", (observer.T*g*outward)[0])
+    exact("light38_existing_frequency_projection", frequency, carrier*K)
+    for i in range(2):
+        exact("light38_local_photon_decomposition_" + str(i),
+              ray[i], frequency*(observer[i]-outward[i]))
+    local_momentum = (outward.T*cov)[0]
+    exact("light38_local_speed_squared", local_momentum**2/frequency**2, 1)
+    # Instantaneous proper period; endpoint identity is differential phase timing.
+    pulse = 2*s.pi/(carrier*K)
+    exact("light38_phase_proper_pulse", frequency*pulse, 2*s.pi)
+    Ke, Ko = s.symbols("Uv_e Uv_o", positive=True)
+    exact("light38_same_front_endpoint_reciprocity",
+          (pulse.subs(K, Ko)/pulse.subs(K, Ke))
+          *(frequency.subs(K, Ko)/frequency.subs(K, Ke)), 1)
+    measured_number = -(observer.T*g*current)[0]
+    exact("light38_positive_number_readout", measured_number, xi*K/carrier)
+    exact("light38_energy_number_ledger", measured_number*frequency, xi*K**2)
+
+    # Reconstruct the leading, polarization-averaged Maxwell Hilbert tensor.
+    # This is not a claim that this amplitude solves all finite-wavelength terms.
+    theta = s.symbols("theta", real=True)
+    g4 = s.diag(1, 1, r**2, r**2*s.sin(theta)**2)
+    g4[:2, :2] = g
+    gi4 = g4.inv()
+    p4 = s.Matrix([-carrier, 0, 0, 0])
+    polar = s.Matrix([0, 0, r, 0])  # unit covector, on an angular patch
+    exact("light38_transverse_polarization", (p4.T*gi4*polar)[0])
+    exact("light38_unit_polarization", (polar.T*gi4*polar)[0], 1)
+    wave = p4*polar.T-polar*p4.T
+    invariant = sum(wave[i, j]*(gi4*wave*gi4)[i, j]
+                    for i in range(4) for j in range(4))
+    exact("light38_Maxwell_leading_invariant", invariant)
+    hilbert = amplitude2*(wave*gi4*wave.T-g4*invariant/4)
+    expected = amplitude2*p4*p4.T
+    for i, j in ((0, 0), (0, 1), (1, 1), (2, 2), (3, 3)):
+        exact("light38_Maxwell_stress_" + str(i) + str(j),
+              hilbert[i, j], expected[i, j])
+    exact("light38_original_Tvv_recovered", hilbert[0, 0], xi)
+    exact("light38_original_source_mass_balance",
+          alpha*r**2*hilbert[0, 0], s.diff(mass, v))
+    exact("light38_stress_trace", sum(gi4[i, j]*hilbert[i, j]
+                                     for i in range(4) for j in range(4)))
+    exact("light38_polarization_parallel_transport",
+          -carrier*s.diff(1/r, r)-carrier*(1/r)*(1/r))
+    T = amplitude2*cov*cov.T
+    mixed = gi*T
+    for b in range(2):
+        divT = sum(s.diff(r**2*mixed[a, b], coords[a])/r**2
+                   - sum(connection[c, a, b]*mixed[a, c] for c in range(2))
+                   for a in range(2))
+        exact("light38_stress_conservation_" + str(b), divT)
+    fsol = 1-2*mass*r**2/(r**3+2*mass*ell**2)
+    q = r**3/(r**3+2*mass*ell**2)
+    exact("light38_gravity_response_already_included",
+          -s.diff(fsol, v)/(2*r), alpha*q**2*hilbert[0, 0])
+    exact("light38_static_tail_zero_flux_control",
+          hilbert[0, 0].subs(s.diff(mass, v), 0))
+
+    # Existing rod/clock law: p^2 is a coordinate speed, not extra absorption.
+    pt, pl, p, eps = s.symbols("pT pL p epsilon", positive=True)
+    static_g = s.diag(-pt**2, pl**(-2))
+    static_cov = s.Matrix([-eps, -eps/(pt*pl)])
+    static_ray = static_g.inv()*static_cov
+    exact("light38_static_common_metric_null", (static_cov.T*static_ray)[0])
+    exact("light38_coordinate_light_speed", -static_ray[1]/static_ray[0], pt*pl)
+    exact("light38_common_p_square_limit", (pt*pl).subs({pt:p, pl:p}), p**2)
+    exact("light38_static_local_light_speed",
+          -(static_ray[1]/pl)/(pt*static_ray[0]), 1)
+    static_observer = s.Matrix([1/pt, 0])
+    exact("light38_static_frequency_clock", -(static_observer.T*static_cov)[0],
+          eps/pt)
+    pe, po = s.symbols("p_e p_o", positive=True)
+    exact("light38_static_endpoint_clock_ratio", (eps/po)/(eps/pe), pe/po)
+
+    # A missing receiver factor or extra radial attenuation is detectable.
+    attenuation = s.Function("S")(v, r)
+    changed_current = attenuation*current
+    bad_div = sum(s.diff(r**2*changed_current[i], coords[i])
+                  for i in range(2))/r**2
+    exact("light38_extra_attenuation_exchange_required", bad_div,
+          -xi*s.diff(attenuation, r)/carrier)
+    gate("light38_radial_attenuation_mutation_detected", bad_div != 0)
+    gate("light38_omitted_clock_mutation_detected",
+         s.simplify(frequency-carrier) != 0)
+    gate("light38_extra_static_p_mutation_detected",
+         s.simplify((pe/po)**2-pe/po) != 0)
+    gate("light38_unchanged_mass_with_changed_source_detected",
+         s.simplify(alpha*r**2*attenuation*hilbert[0, 0]-s.diff(mass, v)) != 0)
+
+    # An exactly SO(3)-invariant coherent source-free Maxwell field is Coulomb.
+    # This does not exclude a spherical distribution of incoherent photons.
+    electric = s.Function("electric")(v, r)
+    magnetic = s.Function("magnetic")(v, r)
+    em = s.zeros(4)
+    em[0, 1], em[1, 0] = electric, -electric
+    em[2, 3], em[3, 2] = magnetic*s.sin(theta), -magnetic*s.sin(theta)
+    exact("light38_spherical_magnetic_Bianchi_time",
+          s.diff(em[2, 3], v)/s.sin(theta), s.diff(magnetic, v))
+    exact("light38_spherical_magnetic_Bianchi_radius",
+          s.diff(em[2, 3], r)/s.sin(theta), s.diff(magnetic, r))
+    raised = gi4*em*gi4
+    exact("light38_spherical_Maxwell_v_constraint",
+          s.diff(r**2*raised[1, 0], r)/r**2,
+          s.diff(r**2*electric, r)/r**2)
+    exact("light38_spherical_Maxwell_r_constraint",
+          s.diff(r**2*raised[0, 1], v)/r**2, -s.diff(electric, v))
+    charge, magnetic_charge = s.symbols("Q Qm", real=True)
+    ec = em.subs({electric:charge/r**2, magnetic:magnetic_charge})
+    ec_invariant = sum(ec[i, j]*(gi4*ec*gi4)[i, j]
+                       for i in range(4) for j in range(4))
+    tc = ec*gi4*ec.T-g4*ec_invariant/4
+    exact("light38_exact_spherical_Maxwell_no_radial_flux", (gi4*tc)[1, 0])
+    exact("light38_exact_spherical_Maxwell_radial_stress", tc[0, 1],
+          -(charge**2+magnetic_charge**2)/(2*r**4))
+    # Blueshift alone neither establishes nor disproves wave/EFT validity.
+    tidal_wave = q**2*s.diff(mass, v)*K**2/r**2
+    exact("light38_tidal_to_frequency_ratio", tidal_wave/frequency**2,
+          q**2*s.diff(mass, v)/(r**2*carrier**2))
+    w0 = s.symbols("omega0", positive=True)
+    ratio = (q**2*s.diff(mass, v)/(r**2*w0**2)).subs(
+        mass, 2-1/(4*(1+v))).doit()
+    exact("light38_fixed_radius_optical_ratio_limit", s.limit(ratio, v, s.oo))
+    return dict(
+        decision="COMPATIBLE_WITH_EXISTING_LEADING_LIGHT_LAWS_NO_MISSING_P_FACTOR",
+        source_sha256=actual,
+        reused_W82=dict(identity_count=sum(len(x["checks"]) for x in groups.values()),
+                        groups={name:x["all_pass"] for name,x in groups.items()},
+                        mutation_controls=controls["all_pass"]),
+        exact_dictionary=dict(phase="theta=-integral omega_in(v)dv",
+                              amplitude_squared="m'/(alpha*r^2*omega_in^2)",
+                              measured_frequency="omega_in*U^v",
+                              measured_energy_density="m'*(U^v)^2/(alpha*r^2)",
+                              local_speed="c0", response="q^2 already in geometry"),
+        boundary="m(v) is prescribed incoming luminosity data, not a derived oscillon emitter.",
+        approximation="Exact null-fluid solution; leading Maxwell/kinetic optical stress. No full finite-wavelength solution or uniform endpoint error proof.",
+        scope_notes=[
+            "The W82 test-ray calculation excludes backreaction only in its own scope; section37 includes this source in the metric equations.",
+            "No additional pressure attenuation is present in the selected existing optical action.",
+            "A radial attenuation needs compensating energy exchange and a modified sourced solution.",
+            "High blueshift alone does not establish geometric-optics or EFT breakdown.",
+            "Zero late incoming flux removes this flux term, not every possible singularity."],
+        closure=dict(existing_light_transport_compatible=False,
+                     leading_optical_stress_matches=False,
+                     no_extra_scale_factor_needed=False,
+                     source_backreaction_included=False,
+                     optical_scope_boundary_verified=False,
+                     exact_coherent_Maxwell_solution=False,
+                     uniform_endpoint_optical_validity=False,
+                     incoming_tail_derived_from_oscillons=False,
+                     full_foundation_photon_action_derived=False,
+                     full_RefG_rejected=False, global_singularity_removal=False))
 
 
 def null_tail_curvature_checks(exact, gate):
@@ -2026,6 +2253,19 @@ def audit():
     for flag in ("null_source_solution", "finite_affine_pp_blowup", "finite_proper_time_tidal_blowup",
                  "universal_null_source_regularization_excluded"):
         null_tail["closure"][flag] = all(item["passed"] for item in null_tail_checks)
+    before_light = len(checks)
+    light_source = existing_light_source_checks(exact, gate)
+    light_checks = checks[before_light:]
+    light_source["checks"] = len(light_checks)
+    light_source["passed"] = sum(item["passed"] for item in light_checks)
+    optical_ok = all(item["passed"] for item in light_checks)
+    if not optical_ok:
+        light_source["decision"] = "EXISTING_LIGHT_SOURCE_AUDIT_FAILED"
+    for flag in ("existing_light_transport_compatible", "leading_optical_stress_matches",
+                 "no_extra_scale_factor_needed", "optical_scope_boundary_verified"):
+        light_source["closure"][flag] = optical_ok
+    light_source["closure"]["source_backreaction_included"] = (
+        optical_ok and null_tail["closure"]["null_source_solution"])
     passed = sum(item["passed"] for item in checks)
     return dict(
         decision="COMPLETION_BOUNDARY_AND_HOMOGENEOUS_JOIN_VERIFIED" if passed == len(checks)
@@ -2047,6 +2287,7 @@ def audit():
         common_readout_continuation=continuation,
         full_coframe_source_decision=full_readout,
         null_tail_curvature=null_tail,
+        existing_light_source_audit=light_source,
         local_witness=dict(
             scope="One smooth local source/geometry jet, not a global initial-data family.",
             finite_amplitude="Every finite P gives finite source, geometry and listed derivatives.",

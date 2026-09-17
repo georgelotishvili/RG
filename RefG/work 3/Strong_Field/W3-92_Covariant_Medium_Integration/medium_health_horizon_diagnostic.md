@@ -13,7 +13,24 @@ exponential exterior and selected additive constitutive truncations are
 candidate assumptions, not requirements imposed on every future action.
 The negative results below remain valid in their stated domains.
 
-Latest conclusive dynamical test:
+Latest completed light/source compatibility audit:
+[spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section38 (2026-09-17). The section37 null source matches the existing
+W43/W82/W91 leading optical rules: same null cone, conserved wave action,
+proper-clock frequency omega=-u.k, local speed c0, and the leading Maxwell
+stress tensor. The original sourced equations already include its q^2
+gravitational response. No omitted extra p attenuation was identified.
+All506 previous and65 new checks pass **571/571**; the new checks also
+recompute W82's76 exact identities and its negative controls.
+The retained negative result is exact for the declared null-fluid model.
+An exact finite-wavelength Maxwell realization, uniform endpoint optical/EFT
+validity and the complete photon/foundation origin are not established.
+The arbitrarily late incoming tail is prescribed finite-energy boundary
+data, not derived oscillon emission. Production evolution and intuition
+are unchanged. This closes the missing-light-factor audit without claiming
+either full RefG rejection or singularity removal.
+
+Retained conclusive dynamical test in its declared null-fluid model:
 [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
 section37 (2026-09-14). The unchanged rational gravitational action admits
 an exact positive conserved ingoing null-fluid solution with bounded mass

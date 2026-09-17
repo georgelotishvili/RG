@@ -5050,6 +5050,208 @@ different coordinate readout alone does not meet that requirement.
 The present candidate is not certified as a nonsingular black hole;
 the negative regularity test above is complete in its declared class.
 
+## 38. Existing-light compatibility and the radiation scope boundary
+
+### Contract before implementation (2026-09-17)
+
+CLAIM_ID: W92_EXISTING_LIGHT_NULL_SOURCE_AUDIT_38.
+GOAL: decide whether section37 bypassed the already established RefG light,
+clock or source-response rules. Stop at this compatibility decision; no new
+collapse run, matter law, attenuation factor or singularity-removal claim.
+TYPE: conditional exact transport/source identities and an approximation-scope audit.
+MODEL_VERSION: unchanged rational gravity and section37 null source; W43's
+selected minimal-Maxwell geometric-optics branch, W82's dynamic observer/ray
+map and W91's clock/projection controls. These existing optical formulas are
+reused; their old Einstein benchmark is not transferred as a gravity result.
+ASSUMPTIONS: one operational metric, transparent propagation, positive incoming
+wave action, an ideal proper clock, and no extra nonmetric interaction.
+DOMAIN: smooth r>0, q>0 EF patch. Electromagnetic interpretation is leading
+geometric optics, with its inherited wavelength/EFT restrictions. Exact null
+fluid equations remain a separately declared mathematical source model.
+CONVENTIONS: signature -+++, c0=hbar=1, alpha=4piG; incoming phase
+theta=-integral omega_in(v)dv, omega_in>0, distinct from observer frequency.
+FREEDOM_LEDGER: section37 incoming mass profile retained unchanged; positive
+carrier frequency is boundary data, not an extra pressure law. No fitting.
+DEPENDENCIES: W43 contract, W82 contract and pure exact-interface verifier,
+W91 contract, sections36-37, and the relevant intuitive scale descriptions.
+METHOD: recompute W82's pure symbolic interface and its negative controls;
+derive EF phase, wave-action current, local photon speed, observer frequency
+and stress; reconstruct the leading Maxwell stress with transverse polarization;
+check source feedback and static/common-scale limits without double counting.
+Compare an exactly rotation-invariant Maxwell field to the averaged ray source.
+PASS_CONDITION: identical null transport, phase/pulse and stress/source ledgers;
+negative controls reject an extra radial attenuation without compensating
+exchange. A genuine mismatch is reported rather than patched into the result.
+FAIL_CONDITION/FALSIFIER: a nonzero required residual, failed inherited optical
+identity, contradictory source ledger or a claimed Maxwell/RefG endpoint proof
+without the required wave/EFT completion invalidates that respective claim.
+RESIDUAL/ERROR_BOUND: exact symbolic zeros; no fitted or numerical evolution.
+No bound on subleading Maxwell errors uniform to the infinite-v endpoint is
+assumed. Its absence limits transfer of the exact null-model theorem.
+VALIDITY_HEALTH: positive incoming current and one local light cone. The
+geometric-optics approximation and the microscopic cutoff are separate limits;
+neither is presumed to cure, nor to realize, the null-model singular endpoint.
+BRANCHES: exact null fluid; leading optical/kinetic photon interpretation;
+exact rotation-invariant Maxwell field as a non-equivalence control.
+OBSERVABLE_MAP: omega=-u.k, local speed, proper pulse spacing, T_ab u^a u^b.
+FORWARD_MODEL/DATA_ROLE: N/A, no observations or emission-source fit.
+IDENTIFIABILITY: distinguishes a missing optical factor from an unproved full
+wave/foundation completion; no microscopic emitter is inferred from a tail.
+BENCHMARK: W82 dynamic Hamiltonian/geodesic/clock identities, W91 static limit,
+local orthonormal Maxwell stress and independent null-current conservation.
+CROSSCHECK: existing pure verifier vs direct EF derivation; independent review.
+CLOSURE_FLAGS initially false: existing_light_transport_compatible,
+leading_optical_stress_matches, no_extra_scale_factor_needed,
+source_backreaction_included, optical_scope_boundary_verified.
+Keep exact_coherent_Maxwell_solution, uniform_endpoint_optical_validity,
+incoming_tail_derived_from_oscillons, full_foundation_photon_action_derived,
+full_RefG_rejected and global_singularity_removal false.
+PROVENANCE: identities explored analytically before implementation; this is
+a consistency audit, not a blind prediction. Input hashes and exact residuals
+will be emitted by the completion checker. Source attribution: W43/W82/W91
+and S. R. Dolan, https://arxiv.org/abs/1806.08617, sections3.2-3.2.2, for the
+established leading Maxwell geometric-optics expansion.
+FILES: this report, verify_saturation_completion_boundary.py and the existing
+diagnostic index only. Production evolution, intuition and Git rules unchanged.
+
+### Completed compatibility result
+
+**571/571 checks pass: all506 previous checks and65 new audit checks.**
+The new suite also recomputes W82's76 existing symbolic identities (reported
+as six group checks, not76 new discoveries) and its four negative controls.
+The final checker SHA-256 is
+016b0f84ba97f41fa5f207ef079b523074f8603c2d1f5356c6b72e5a37025329.
+The result is compatibility with the selected existing light sector, with
+no omitted universal p attenuation identified.
+
+The relevant pre-existing resources, relative to work3, are:
+
+- Cosmology_and_LSS/Photon_Atomic_Observable_Bridge/
+  w3_43_photon_atomic_observable_bridge_preregistration.md, assumptions3-5:
+  minimal Maxwell action, null geodesics and conserved wave-action current.
+  Its Maxwell-from-foundation flag remains open.
+- Strong_Field/W3-82_Dynamical_Clock_Radar_Readout/
+  w3_82_dynamical_clock_radar_contract.md, sections1 and3, and the associated
+  executable exact_interface(): dynamic ray transport, omega=-u.k, proper
+  pulse reciprocity and regular moving-observer limits. Its previous
+  test-signal scope does not prohibit a later sourced photon model.
+- Strong_Field/W3-91_Direct_Scaling_Endpoint/
+  w3_91_direct_scaling_endpoint_contract.md, section2: clock projection and
+  signal arrival use the same metric, with no second photon p factor.
+- Workspace intuitive/RefG_GE.md, sections2.1-2.2: local c0, coordinate p^2
+  on the common-scale branch, and the complete coframe extension. A
+  coordinate speed reduction is not a separate absorption coefficient.
+
+#### The source follows the existing optical laws
+
+In the same EF geometry of section37, write
+
+\[
+\theta=-\int\omega_{\rm in}(v)\,dv,\qquad
+k_a=(-\omega_{\rm in},0),\quad k^a=(0,-\omega_{\rm in}),\qquad
+I=\frac{m'(v)}{\alpha r^2\omega_{\rm in}^2}.
+\]
+
+Here omega_in(v)>0 is an incoming carrier-frequency label; alpha=4piG.
+The phase-averaged/RMS normalization I absorbs electromagnetic units and
+the real-wave averaging factor. The phase gradient is null and affine, and
+
+\[
+N^a=I k^a,\quad \nabla_aN^a=0,\qquad
+T_{ab}=I k_a k_b,\quad T_{vv}=\frac{m'}{\alpha r^2}.
+\]
+
+This is the leading Maxwell wave-action/stress dictionary, also admitting
+a radial collisionless photon-stream interpretation at this effective level.
+The transverse-polarization Hilbert tensor is recomputed explicitly in
+Python, rather than inferred merely from a common null cone. The usual
+photon-number interpretation fixes the wave-action normalization; it is
+not a microscopic derivation of quantization.
+
+For a radial observer and its outward unit ruler,
+
+\[
+U^a=\left(K,\frac{fK-K^{-1}}2\right),\qquad
+e^a=\left(K,\frac{fK+K^{-1}}2\right),
+\quad U^2=-1,\ e^2=1,\ U\cdot e=0.
+\]
+
+Then k^a=omega_in K(U^a-e^a), so the observer measures
+
+\[
+c_{\rm local}=1,\qquad \omega=\omega_{\rm in}K,\qquad
+T_{\rm inst}=\frac{2\pi}{\omega_{\rm in}K},\qquad
+\rho_\gamma=T_{ab}U^aU^b=\frac{m'K^2}{\alpha r^2}.
+\]
+
+T_inst is an instantaneous proper period; the adjacent-front reciprocity
+is a differential timing statement. It is not an exact finite interval
+between two crests when the frequency varies appreciably during that interval.
+The source's wave fronts are v=constant; K=dv/dtau is the receiving clock
+and motion factor. Section37's stronger local signal is a frequency and
+intensity increase under this same measurement law, not superluminal
+propagation. The static control recovers c_coord=p_T p_L, c_local=1 and
+omega=epsilon/p_T; the common-scale limit gives exactly c_coord=p^2.
+
+Backreaction is present. Substituting this recovered T_vv into the
+unchanged original equation gives E_vv=2alpha r^2 T_vv=2m'(v).
+The tidal response obeys -f_v/(2r)=alpha q^2 T_vv. Thus q^2 was already
+active in the coupled solution; the geometry responds to the incoming flux.
+
+Multiplying the current or intensity by a new S(v,r) gives
+
+\[
+\nabla_a(SN^a)=-\frac{m'}{\alpha r^2\omega_{\rm in}}\,\partial_rS.
+\]
+
+A radial attenuation needs a derived compensating exchange and a changed
+source/metric solution. A factor S(v) alone changes incoming luminosity
+and hence m'(v). Neither operation is an automatic missing pressure
+correction to the existing transparent branch. The checker rejects radial
+attenuation without exchange, an omitted receiving-clock factor, a doubled
+static p factor and changed source with unchanged mass balance.
+
+#### Exact source model and full light/foundation completion
+
+Section37 is an exact theorem for its gravity-plus-null-fluid equations.
+The match above establishes its leading optical source interpretation.
+The full finite-wavelength Maxwell solution has not been constructed.
+A source-free electromagnetic field which itself is exactly rotation-invariant
+has Coulomb components: F_vr=Q/r^2 and F_theta_phi=Qm sin(theta), with
+constant charges. Maxwell and Bianchi constraints, the mixed stress
+T_vr=-(Q^2+Qm^2)/(2r^4), and zero radial flux T^r_v are checked directly.
+A spherical distribution of incoherent photons is a different description
+and is not excluded by that coherent-field control.
+
+The power-law tail is prescribed incoming boundary data persisting to
+arbitrarily late v with finite integrated energy. Its production by
+specific oscillons has not been derived. Such boundary data are legitimate
+for the stated source-model test; physical formation and genericity are
+separate claims. When late influx is zero, this particular flux-driven
+tidal term is zero; that control does not establish global regularity.
+
+Neither an assumed breakdown nor an assumed unlimited validity of the
+optical approximation settles the endpoint. For constant omega_in,
+
+\[
+\frac{q^2m'K^2/r^2}{\omega^2}
+ =\frac{q^2m'}{r^2\omega_{\rm in}^2}\longrightarrow0.
+\]
+
+The convergence is uniform on section37's compact annulus: q<=1,
+r>=7/6 and m'->0. The checker verifies the exact cancellation and the
+fixed-radius limit. Thus growing frequency alone is not evidence that
+geometric optics fails. A uniform error bound for a complete coupled
+wave/foundation solution, including its effective-theory domain, is absent.
+
+**Decision:** no conflict with the already computed light propagation,
+clock or leading energy-current rules was found. Section37's exact
+null-model counterexample is retained. Its transfer to an exact
+finite-wavelength light source and to the complete RefG foundation remains
+unproved. The suggestion in conversation that an omitted pressure factor
+probably caused the result is not supported by this audit.
+Production collapse code and all intuitive text remain unchanged.
+
 ## Reproduction and attribution
 
     python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py"
