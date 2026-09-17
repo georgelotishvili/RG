@@ -5252,6 +5252,279 @@ unproved. The suggestion in conversation that an omitted pressure factor
 probably caused the result is not supported by this audit.
 Production collapse code and all intuitive text remain unchanged.
 
+## 39. Inner-extremal geometry and the fixed-law bridge
+
+### Bounded contract, 2026-09-18
+
+CLAIM_ID: W92-INNER-EXTREMAL-FIXED-LAW.
+CLAIM: decide whether the mass-robust inner-extremal construction can enter
+the existing regular one-function vacuum response without retuning its law.
+TYPE: exact construction and restricted analytical obstruction; a separate
+conditional null-transport bound is geometric, not a derived source solution.
+MODEL_VERSION: retain sections37-38 and all production equations unchanged.
+The comparison target specializes equation(12) of Carballo-Rubio et al.,
+https://arxiv.org/abs/2205.13556 (JHEP09(2022)118).
+ASSUMPTIONS/DOMAIN: a>0, M>a/2, r>=0, with a fixed; target N=(r-a)^3(r-2M),
+D=N+2M*r^3+a^2*r^2, f=N/D. The old-law comparison is r^3 H(z)=12M,
+z=(1-f)/r^2, fixed H, finite positive r,M and finite nonzero H'.
+CONVENTIONS: G=c=1; ds^2=-f dv^2+2dvdr+r^2 dOmega^2; kappa=f_r/2.
+a is a new geometric target scale, not an identification with P_F or the
+old action scale ell. Their physical relation has not been prescribed.
+FREEDOM_LEDGER: M is the state mass; a is fixed; outer root 2M and b2=a^2
+are construction choices. No fitted data or modified photon law.
+DEPENDENCIES: sections1,37,38; published geometry only, not inherited stability.
+METHOD: exact derivatives, a positive denominator certificate, inverse-law
+comparison and analytical geodesic bounds on a compact annulus.
+PASS_CONDITION: verify target regularity and mass-persistent triple root;
+decide the fixed-law bridge with a nonzero residual or an exact obstruction.
+FAIL_CONDITION: an incorrect identity, a hidden denominator zero, retuned
+couplings counted as states, or a geometric family labelled derived dynamics.
+FALSIFIER: any counterexample to the stated fixed-H derivative identities
+within their domain, or a pole in the registered target metric.
+RESIDUAL/ERROR_BOUND: exact symbolic zero residuals; the annular asymptotic
+estimate uses explicit compact-domain sign and boundedness assumptions.
+VALIDITY_HEALTH: C2 central metric and finite algebraic curvature, not smooth
+higher-curvature derivatives; causal cones come from the Lorentzian metric.
+No healthy matter action, global extension or observation claim is registered.
+BRANCHES: existing Hayward control; prescribed inner-extremal target; regular
+fixed-H vacuum response. Extra dynamical matter states remain outside the
+fixed-H vacuum obstruction.
+OBSERVABLE_MAP: horizon multiplicity, mass susceptibility, parallel null Ricci
+contraction. FORWARD_MODEL/DATA_ROLE: N/A, no observational comparison.
+IDENTIFIABILITY: distinguish a geometric mass family from solutions of one
+regular constitutive/action law. BENCHMARK: exact old Hayward degeneracy.
+CROSSCHECK: independent derivative and candidate audits, full old regression.
+CLOSURE_FLAGS initially false: target_geometry_verified,
+conditional_null_Ricci_bound_verified, fixed_H_bridge_excluded.
+Keep fixed_theory_dynamics_derived, self_regulating_attractor,
+full_RefG_pressure_join and global_singularity_removal false.
+PROVENANCE: candidate and derivative relations explored analytically before
+coding; no blind prediction. Checks write only stdout.
+FILES: this report, verify_saturation_completion_boundary.py and the existing
+diagnostic index. Production solver, intuition, manuscripts and Git rules stay
+unchanged. STOP: one verified bridge decision and its exact missing physical
+input; no parameter scan or long collapse simulation.
+
+### 39.1 Result and concrete target
+
+The prescribed inner-extremal family passes the geometry audit. For the same
+finite-energy incoming mass history used in section37, its outgoing radial
+null Ricci contraction is bounded and decays. A regular fixed one-function
+vacuum response of the existing form cannot generate a continuously
+mass-varying family of degenerate horizons. These are separate results:
+the candidate supplies a target response, and the obstruction identifies
+the dynamical structure that must change to realize it.
+
+The target specializes the geometry of Carballo-Rubio, Di Filippo, Liberati,
+Pacilio and Visser [4], equation(12), with r_-=a, r_+=2M and b2=a^2:
+
+    P=(r-a)^3, N=P(r-2M),
+    D=N+2Mr^3+a^2r^2, f=N/D, a>0, M>a/2.
+
+Here a stays fixed when the state mass M changes. This is a construction
+choice, not a derivation of a from RefG's physical foundation pressure.
+Setting b=2M, the denominator has the exact certificate
+
+    D=r^2(r-3a/2)^2+c2*r^2+a^3*b*[1-r(3/a+1/b)/2]^2,
+    c2=(a^2+3ab-a^3/b)/4 > 0.
+
+For b>a, c2 is positive. Thus D>0 for r!=0; D(0)=a^3b>0 as well.
+At the centre and infinity,
+
+    f=1-r^2/(ab)-[1/a^3+3/(a^2b)+1/(ab^2)]r^3+O(r^4),
+    R(0)=12/(ab), K(0)=24/(a^2b^2),
+    f=1-2M/r+O(r^-2).
+
+K denotes the Kretschmann scalar. The centre has a C2 local metric and
+finite algebraic curvature; the nonzero cubic term does not certify
+arbitrary higher-order smoothness. At fixed r>0, a->0 recovers Schwarzschild.
+No observational fitting or full RefG weak-field match is performed here.
+
+The inner horizon r=a is a triple root for every M>a/2, the outer horizon
+r=b is simple, and f<0 throughout a<r<b. More precisely,
+
+    f=-alpha*(r-a)^3+O((r-a)^4),
+    alpha=(b-a)/[a^3(a+b)]>0,
+    kappa_-=0, kappa_+=(b-a)^3/[2b^2(b^2+a^2)]>0.
+
+This realizes the geometric feature selected from the published construction.
+The mass susceptibility is also essential:
+
+    f_M=-2r^2(r-a)^3(r^2+a^2)/D^2.
+
+It vanishes cubically at the inner horizon. Its sign changes across r=a;
+the formula specifies a required geometric response, not a matter-health test.
+
+### 39.2 The same incoming tail: bounded null Ricci response
+
+Use a=1 and exactly the section37 mass history,
+
+    M(v)=2-1/[4(1+v)], v>=24, r(24)=6/5,
+    dr/dv=f/2, delta=r-1, K_aff=dv/dlambda>0.
+
+K_aff denotes the affine boost, not the Kretschmann scalar. The closed
+rectangle 1<=r<=6/5, 199/100<=M<=2 has D>0 and
+2M-r>=139/50. Consequently c=(2M-r)/D is smooth and has
+strictly positive finite lower and upper bounds there. The exact equation
+
+    delta'=-c*delta^3/2, (delta^-2)'=c
+
+keeps delta positive at every finite v and proves delta=Theta(v^-1/2).
+The ray remains in the rectangle, approaches r=1, and c->3/5, so
+
+    delta~sqrt[5/(3v)].
+
+The unchanged affine null-geodesic equation is
+d log(K_aff)/dv=-f_r/2. With Y=(-f)K_aff>0,
+
+    d log(Y)/dv=(f_M/f)M'
+               =2r^2(r^2+1)M'/[D(2M-r)].
+
+The coefficient multiplying M' is bounded on that same rectangle.
+Since the remaining integral of M' is 1/100, Y tends to a strictly positive
+finite constant Y_inf. Therefore
+
+    K_aff~Y_inf*sqrt(3/5)*v^(3/2).
+
+For the unit-cross-term ingoing metric, warped-sphere curvature gives
+
+    R_ab k^a k^b=-f_v*K_aff^2/r
+               =2r(r-1)^3(r^2+1)M'*K_aff^2/D^2
+               ~[Y_inf^2*sqrt(3/5)/15]*v^(-1/2).
+
+This geometric null convergence is finite along the entire specified ray
+and tends to zero. The proof is an analytical comparison using the compact
+rectangle, with exact identities checked by Python; it uses no finite-time
+extrapolation. The remaining affine interval is finite because
+integral(dv/K_aff) converges. An extension through that endpoint and a bound
+on every parallel-frame curvature component require their own proof.
+
+The source interpretation fixes the scope of this positive result.
+For independently conserved incoming photon stress on the same metric,
+with normalization T_vv=M'/(4*pi*r^2), the measured contraction is
+
+    T_ab k^a k^b=M'*K_aff^2/(4*pi*r^2)
+               ~[3Y_inf^2/(80*pi)]*v.
+
+Thus ordinary photon transport still blueshifts the stress. Choosing this
+normalization specializes section37's alpha_source to 4*pi; it changes no
+power or decision. The prescribed metric responds weakly enough to keep
+the displayed Ricci contraction bounded. A coupled gravitational/source
+law must produce that response; imposing f alone does not establish it.
+No photon absorption, frequency cutoff, exchange term or extra scale factor
+has been inserted.
+
+### 39.3 Exact obstruction for the existing one-function vacuum law
+
+The existing spherical vacuum response can be written
+
+    r^3 H(z)=12M, z=(1-f)/r^2,
+
+where H=6h in the normalization of the original spherical action. All
+couplings in H are fixed. On a finite-radius, finite-mass regular branch
+with finite nonzero H', implicit differentiation gives
+
+    f_M=-12/(r H'), f_r=r*(3H/H'-2z).
+
+At any degenerate horizon, f=0 and f_r=0 imply
+
+    z=1/r_h^2, H=12M/r_h^3, H'=18M/r_h,
+    f_M=-2/(3M).
+
+A differentiable family r_h(M) of such horizons would instead require
+
+    0=d f(r_h(M),M)/dM=f_M+f_r*r_h'(M)=-2/(3M),
+
+which is impossible for finite positive M. This excludes a mass-robust
+degenerate-horizon family in the stated regular fixed-H vacuum class.
+It includes a moving horizon radius; fixing r_h was not assumed.
+
+The second-derivative test at a double root is
+
+    f_rr=2z(2zH''-H')/H'.
+
+A triple root at one selected mass can therefore be tuned by
+2zH''=H', but that does not remove the mass-family obstruction.
+For the old Hayward choice the sole degenerate mass is
+M=3*sqrt(3)*ell/4, with coincident inner and outer horizons at
+r=sqrt(3)*ell. It supplies a useful control, not separated mass-robust horizons.
+
+Vanishing inverse susceptibility alone is also insufficient within the
+same response class: writing z=Z(s), s=12M/r^3, gives
+
+    f_M=-12Z'/r, f_r=r[-2Z+3sZ'].
+
+If Z'=0 at a finite-load horizon, then f_r=-2/r_h, a simple root.
+This closes the specific proposal to obtain extremality just by placing
+a flat segment in the old inverse response.
+
+### 39.4 Where a new dynamical completion must differ
+
+For the target of 39.1, the explicit inverse mass relation away from
+degenerate points is
+
+    Q=r^3-(r-a)^3,
+    Mcal(r,z)={z*r[(r-a)^3+a^2r]-a^2}/{2(r-zQ)}.
+
+Substitution of z=(1-f)/r^2 returns M exactly. At
+(r,z)=(a,1/a^2), both numerator and denominator vanish for every M.
+Approaching that same point along two target geometries of masses M1 and
+M2 gives two different inverse limits. Moreover,
+
+    Mcal_z|target=D^2/[2(r-a)^3(r^2+a^2)].
+
+Hence this mass family cannot simply be relabelled a regular single-valued
+constitutive inverse through its inner horizon. It is a useful target
+family whose field equations remain to be supplied.
+
+The needed new input is a fixed physical action or field equation whose
+solutions escape the regular one-function vacuum relation. An actual
+evolving medium/source state is one option; a different gravitational
+vacuum structure is another. For an additional state S, the horizon-family
+condition would read f_M+f_S*dS/dM=0. The state equation must determine dS/dM.
+Choosing that derivative solely to cancel f_M would again impose the answer.
+Replacing a universal coupling by an object-dependent fitted function of
+M similarly changes the theory rather than solving one fixed theory.
+
+The obstruction is restricted to the stated static regular fixed-H class.
+It leaves sourced non-vacuum solutions, additional physical states,
+different field equations and genuinely time-dependent horizon avoidance
+outside its scope. Neither the obstruction nor the candidate settles the
+full RefG singularity question.
+
+### 39.5 Verification, decision and stop
+
+The completion verifier passes 631/631 checks: all 571 earlier checks and
+60 new exact checks/controls. The new checks cover the positive denominator,
+central jet, horizons, mass derivatives, inverse obstruction and identities
+in the compact-domain ray proof. Independently repeated derivative and
+ray analyses agree; code review confirms that bounded Ricci response is
+kept separate from unbounded transported photon stress.
+
+Decision: GEOMETRIC_TARGET_VERIFIED_REGULAR_FIXED_H_BRIDGE_EXCLUDED.
+
+    target_geometry_verified = True
+    conditional_null_Ricci_bound_verified = True
+    fixed_H_bridge_excluded = True
+    inverse_law_obstruction_verified = True
+    fixed_theory_dynamics_derived = False
+    self_regulating_attractor = False
+    full_RefG_pressure_join = False
+    photon_stress_bounded = False
+    global_singularity_removal = False
+    full_RefG_rejected = False
+
+The first four flags are computed from their required check groups; the
+conditional ray flag also uses the analytical proof in 39.2. A successful
+regression includes verification of the restricted obstruction, so its
+check count is not a singularity-removal certificate.
+
+The concrete next physical task is to select and derive a fixed response
+law for the coupled source and foundation that can generate the required
+suppression as the source changes. This bounded stage stops at that
+identified missing input, without changing the production action or
+conducting another collapse run under a prescribed answer.
+
 ## Reproduction and attribution
 
     python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py"
@@ -5298,3 +5571,10 @@ Spherical Symmetry: The diagonal and proper frames*, sections4.2-4.5,
 Used for the complete spherical frame/spin parametrization; the
 F(n)T/current quadratic action and constrained radial operator are
 independently derived here.
+
+[4] R. Carballo-Rubio, F. Di Filippo, S. Liberati, C. Pacilio and M. Visser,
+*Regular black holes without mass inflation instability*, JHEP 09 (2022) 118,
+[primary text](https://arxiv.org/html/2205.13556v1).
+Section39 specializes equation(12), checks the denominator independently,
+and derives its own fixed-law and null-ray results. The construction is
+credited to this source; RefG compatibility is tested separately.

@@ -13,7 +13,23 @@ exponential exterior and selected additive constitutive truncations are
 candidate assumptions, not requirements imposed on every future action.
 The negative results below remain valid in their stated domains.
 
-Latest completed light/source compatibility audit:
+Latest completed inner-extremal bridge audit:
+[spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section39 (2026-09-18). A prescribed triple-inner-horizon geometry has
+finite central algebraic curvature and a bounded, decaying outgoing radial
+null Ricci contraction for the section37 incoming mass history. Conserved
+photon stress still grows on that ray; the positive result concerns the
+geometric response. Exact differentiation excludes a continuously
+mass-varying degenerate-horizon family in the existing regular fixed
+one-function vacuum law. The inverse mass map of the target is noninvertible
+at its inner horizon. All 571 earlier and 60 new checks pass **631/631**.
+The required completion is a fixed dynamical law that escapes that restricted
+vacuum response and produces the source-dependent suppression. Action
+derivation, the RefG pressure/scale join, attractor stability and global
+singularity removal remain unestablished. The production solver, optical
+law, intuitive files, manuscripts and Git rules are unchanged.
+
+Previous completed light/source compatibility audit:
 [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
 section38 (2026-09-17). The section37 null source matches the existing
 W43/W82/W91 leading optical rules: same null cone, conserved wave action,

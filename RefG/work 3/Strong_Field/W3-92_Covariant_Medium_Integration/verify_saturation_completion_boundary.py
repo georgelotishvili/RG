@@ -4,7 +4,7 @@ Run: python -X utf8 -B verify_saturation_completion_boundary.py --verbose
 Only stdout is written. No evolution or global initial-data family is solved.
 The topological focusing argument is an analytical conditional theorem; these
 symbolic checks verify its local field-equation premises, not that theorem.
-See spherical_saturation_matter_bridge.md, sections 24 through 38.
+See spherical_saturation_matter_bridge.md, sections 24 through 39.
 """
 import argparse
 import ast
@@ -16,6 +16,170 @@ import sys
 
 sys.dont_write_bytecode = True
 import sympy as s
+
+
+def inner_extremal_bridge_checks(exact, gate):
+    """Section39: prescribed geometry, ray bound, and a fixed-H obstruction.
+
+    The ray asymptotics use the compact-domain argument in section39, not
+    a finite-time numerical extrapolation. Geometry is not a source action.
+    """
+    def eq(name, expression, target=0):
+        exact("inner39_" + name, s.cancel(expression - target))
+
+    def ok(name, condition, **evidence):
+        gate("inner39_" + name, condition, **evidence)
+
+    r, a, M, gap, ell = s.symbols("r a M gap ell", positive=True)
+    b = 2*M
+    P = (r-a)**3
+    N = P*(r-b)
+    D = N+b*r**3+a**2*r**2
+    f = N/D
+    c2 = (a**2+3*a*b-a**3/b)/4
+    certificate = (r**2*(r-3*a/2)**2+c2*r**2
+                   +a**3*b*(1-r*(3/a+1/b)/2)**2)
+    eq("geometry_denominator_certificate", D, certificate)
+    ok("geometry_positive_square_coefficient",
+       s.factor(c2.subs(M, (a+gap)/2)).is_positive,
+       domain="a>0, 2M=a+gap, gap>0")
+    eq("geometry_denominator_at_centre", D.subs(r, 0), 2*M*a**3)
+    eq("geometry_centre_value", f.subs(r, 0), 1)
+    eq("geometry_centre_first_derivative", s.diff(f, r).subs(r, 0))
+    # Polynomial division checks the centre jet without a large series.
+    f2 = -1/(a*b)
+    f3 = -(1/a**3+3/(a**2*b)+1/(a*b**2))
+    centre_residual = s.Poly(s.expand(N-D*(1+f2*r**2+f3*r**3)), r)
+    for power in range(4):
+        eq("geometry_centre_jet_" + str(power), centre_residual.nth(power))
+    eq("geometry_centre_R", -12*f2, 6/(M*a))
+    eq("geometry_centre_K", 24*f2**2, 6/(M**2*a**2))
+    eq("geometry_asymptotic_mass", s.limit(r*(1-f)/2, r, s.oo), M)
+    eq("geometry_Schwarzschild_limit", f.subs(a, 0), 1-2*M/r)
+    fr = s.cancel(s.diff(f, r))
+    frr = s.cancel(s.diff(fr, r))
+    for order, expression in enumerate((f, fr, frr)):
+        eq("geometry_inner_root_order_" + str(order), expression.subs(r, a))
+    alpha = (2*M-a)/(a**3*(a+2*M))
+    eq("geometry_inner_cubic_coefficient", (1/D*(r-b)).subs(r, a), -alpha)
+    ok("geometry_inner_cubic_sign", alpha.subs(M, (a+gap)/2).is_positive)
+    eq("geometry_outer_root", f.subs(r, b))
+    eq("geometry_outer_kappa", fr.subs(r, b)/2,
+       (b-a)**3/(2*b**2*(b**2+a**2)))
+    t = s.symbols("t", positive=True)
+    ok("geometry_trapped_annulus_numerator", s.factor(N.subs(
+        {r: a+gap*t/(1+t), M: (a+gap)/2})).is_negative,
+       parametrization="r=a+gap*t/(1+t), t>0 covers all a<r<2M")
+    eq("geometry_inner_R", (-frr-4*fr/r+2*(1-f)/r**2).subs(r, a), 2/a**2)
+    eq("geometry_inner_K", (frr**2+4*fr**2/r**2+4*(1-f)**2/r**4).subs(r, a), 4/a**4)
+    eps = s.symbols("eps", nonzero=True)
+    ok("geometry_negative_control_root_offset", (f+eps).subs(r, a) != 0)
+
+    # Fixed-H vacuum mass family: differentiate the actual implicit equation.
+    z, H, Hp, Hpp = s.symbols("z H Hp Hpp", nonzero=True)
+    zr = -3*H/(r*Hp)
+    zM = 12/(r**3*Hp)
+    old_fr = -2*r*z-r**2*zr
+    old_fM = -r**2*zM
+    eq("fixed_law_radial_derivative", old_fr, r*(3*H/Hp-2*z))
+    eq("fixed_law_mass_derivative", old_fM, -12/(r*Hp))
+    horizon_sub = {z: 1/r**2, H: 12*M/r**3, Hp: 18*M/r}
+    eq("fixed_law_degenerate_radial_derivative", old_fr.subs(horizon_sub))
+    eq("fixed_law_degenerate_mass_derivative", old_fM.subs(horizon_sub), -s.Rational(2, 3)/M)
+    rh_M = s.symbols("rh_M", real=True)
+    eq("fixed_law_family_chain_residual", (old_fM+old_fr*rh_M).subs(horizon_sub), -s.Rational(2, 3)/M)
+    ok("fixed_law_nonzero_family_obstruction", (-s.Rational(2, 3)/M).is_nonzero)
+    # Total radial derivative along H(z(r)), followed by the double-root condition.
+    total_rr = (s.diff(old_fr, r)+s.diff(old_fr, z)*zr
+                +s.diff(old_fr, H)*Hp*zr+s.diff(old_fr, Hp)*Hpp*zr)
+    eq("fixed_law_triple_condition", total_rr.subs(H, 2*z*Hp/3),
+       2*z*(2*z*Hpp-Hp)/Hp)
+    mass_slope = Hp/(12*z**s.Rational(3, 2))-H/(8*z**s.Rational(5, 2))
+    eq("fixed_law_horizon_mass_stationarity", mass_slope.subs(H, 2*z*Hp/3))
+    source, Z, Zp = s.symbols("source Z Zp", nonzero=True)
+    plateau_fr = r*(-2*Z+3*source*Zp)
+    eq("fixed_law_plateau_is_simple", plateau_fr.subs({Z: 1/r**2, Zp: 0}), -2/r)
+    oldf = 1-2*M*r**2/(r**3+2*M*ell**2)
+    Mh = r**3/(2*(r**2-ell**2))
+    eq("fixed_law_Hayward_control_slope", s.diff(oldf, r).subs(M, Mh), (r**2-3*ell**2)/r**3)
+    degM = 3*s.sqrt(3)*ell/4
+    eq("fixed_law_Hayward_coincident_roots", r**3-2*degM*r**2+2*degM*ell**2,
+       (r-s.sqrt(3)*ell)**2*(r+s.sqrt(3)*ell/2))
+
+    # The target has mass-dependent response that a regular fixed H cannot supply.
+    target_z = s.cancel((1-f)/r**2)
+    fM = s.cancel(s.diff(f, M))
+    eq("source_target_mass_response", fM, -2*r**2*P*(r**2+a**2)/D**2)
+    eq("source_target_z_response", s.diff(target_z, M), 2*P*(r**2+a**2)/D**2)
+    eq("source_persistent_inner_mass_zero", fM.subs(r, a))
+    M2 = s.symbols("M2", positive=True)
+    mms = r*(1-f)/2
+    eq("source_finite_mass_jump", mms.subs(M, M2)-mms,
+       r**3*P*(r**2+a**2)*(M2-M)/(D*D.subs(M, M2)))
+    Q = r**3-P
+    inverse_num = z*r*(P+a**2*r)-a**2
+    inverse_den = 2*(r-z*Q)
+    inverse_mass = inverse_num/inverse_den
+    eq("source_inverse_back_substitution", inverse_mass.subs(z, target_z), M)
+    eq("source_inverse_derivative", s.diff(inverse_mass, z).subs(z, target_z),
+       D**2/(2*P*(r**2+a**2)))
+    eq("source_inverse_zero_numerator", inverse_num.subs({r: a, z: 1/a**2}))
+    eq("source_inverse_zero_denominator", inverse_den.subs({r: a, z: 1/a**2}))
+    eq("source_inverse_path_ambiguity", (inverse_mass.subs(z, target_z)
+       -inverse_mass.subs(z, target_z.subs(M, M2))), M-M2)
+
+    # Same finite-energy incoming tail as section37; unchanged metric null rays.
+    v = s.symbols("v", positive=True)
+    tail = 2-1/(4*(1+v))
+    eq("ray_tail_initial_mass", tail.subs(v, 24), s.Rational(199, 100))
+    eq("ray_tail_remaining_mass", 2-tail.subs(v, 24), s.Rational(1, 100))
+    eq("ray_tail_derivative", s.diff(tail, v), 1/(4*(1+v)**2))
+    eq("ray_annulus_gap_lower_bound", 2*tail.subs(v, 24)-s.Rational(6, 5), s.Rational(139, 50))
+    eq("ray_delta_inverse_square_derivative", -2*(r-a)**-3*f/2, (2*M-r)/D)
+    eq("ray_c_limit", ((2*M-r)/D).subs({r: 1, a: 1, M: 2}), s.Rational(3, 5))
+    Md, K = s.symbols("Md K", positive=True)
+    eq("ray_log_Y_derivative", ((fr*f/2+fM*Md)/f-fr/2),
+       2*r**2*(r**2+a**2)*Md/(D*(2*M-r)))
+    # Warped-sphere Ricci contraction, using the EF connection and null tangent.
+    F, Fv, Fr = s.symbols("F Fv Fr", real=True)
+    gamma_r_vv, gamma_r_vr = (F*Fr-Fv)/2, -Fr/2
+    eq("ray_Ricci_connection_identity", 2*K**2/r*(gamma_r_vv+F*gamma_r_vr), -Fv*K**2/r)
+    eq("ray_Ricci_response", -fM*Md*K**2/r,
+       2*r*P*(r**2+a**2)*Md*K**2/D**2)
+    response_cubic = s.cancel(-fM/(r*(r-a)**3)).subs({r: 1, a: 1, M: 2})
+    eq("ray_Ricci_cubic_coefficient", response_cubic, s.Rational(4, 25))
+    # The analytic comparison proof gives delta~(c_inf*v)^(-1/2), K~Y*sqrt(c_inf)*v^(3/2).
+    cinf, Y = s.Rational(3, 5), s.symbols("Y", positive=True)
+    ricci_lead = response_cubic*s.Rational(1, 4)*Y**2*cinf*cinf**-s.Rational(3, 2)
+    eq("ray_Ricci_asymptotic_coefficient", ricci_lead, Y**2*s.sqrt(s.Rational(3, 5))/15)
+    eq("ray_Ricci_power", -2+3-s.Rational(3, 2), -s.Rational(1, 2))
+    eq("ray_finite_affine_remainder", s.integrate(v**-s.Rational(3, 2), (v, 1, s.oo)), 2)
+    # A geometric Ricci bound must never be relabelled a bounded photon stress.
+    eq("ray_conserved_photon_stress_power", -2+3, 1)
+    eq("ray_conserved_photon_stress_coefficient", Y**2*cinf/(16*s.pi), 3*Y**2/(80*s.pi))
+    ok("ray_negative_control_photon_stress_unbounded",
+       s.limit(Y**2*cinf/(16*s.pi)*v**(-2+3), v, s.oo) == s.oo)
+    return dict(
+        decision="GEOMETRIC_TARGET_VERIFIED_REGULAR_FIXED_H_BRIDGE_EXCLUDED",
+        reference="https://arxiv.org/abs/2205.13556, equation12 specialized with r_-=a, r_+=2M, b2=a^2",
+        geometry=dict(domain="a>0, M>a/2, r>=0; a fixed", f="N/D; N=(r-a)^3(r-2M); D=N+2Mr^3+a^2r^2",
+                      centre="C2 metric; finite R=6/(Ma), Kretschmann=6/(M^2*a^2)",
+                      inner="r=a triple for every M>a/2", outer="r=2M simple"),
+        fixed_law=dict(domain="regular fixed H; r^3 H((1-f)/r^2)=12M; finite nonzero H'; differentiable horizon family",
+                       obstruction="d f(r_h(M),M)/dM = -2/(3M) != 0 at a degenerate root",
+                       exclusions="Extra dynamical matter states, two-function metrics and non-vacuum field equations are outside this no-go."),
+        null_ray=dict(domain="a=1; M(v)=2-1/[4(1+v)]; v>=24; r(24)=6/5; outgoing radial affine tangent",
+                      proof="Section39 compact-annulus analytical comparison; symbolic identities audited here",
+                      delta="Theta(v^(-1/2))", affine_boost="Theta(v^(3/2))",
+                      null_Ricci="R_kk~Y_inf^2*sqrt(3/5)/15*v^(-1/2); bounded and tends to zero",
+                      endpoint="Finite affine parameter; extension and all-frame curvature not established",
+                      conserved_photon_stress="For T_vv=M'/(4pi r^2): T_kk~3Y_inf^2/(80pi)*v; unbounded",
+                      source_boundary="A fixed coupled action must generate the suppressed geometric response to this stress."),
+        closure=dict(target_geometry_verified=False, conditional_null_Ricci_bound_verified=False,
+                     fixed_H_bridge_excluded=False, inverse_law_obstruction_verified=False,
+                     fixed_theory_dynamics_derived=False, self_regulating_attractor=False,
+                     full_RefG_pressure_join=False, photon_stress_bounded=False,
+                     global_singularity_removal=False, full_RefG_rejected=False))
 
 
 def existing_light_source_checks(exact, gate):
@@ -2266,6 +2430,22 @@ def audit():
         light_source["closure"][flag] = optical_ok
     light_source["closure"]["source_backreaction_included"] = (
         optical_ok and null_tail["closure"]["null_source_solution"])
+    before_inner = len(checks)
+    inner_extremal = inner_extremal_bridge_checks(exact, gate)
+    inner_checks = checks[before_inner:]
+    inner_extremal["checks"] = len(inner_checks)
+    inner_extremal["passed"] = sum(item["passed"] for item in inner_checks)
+    inner_groups = {group: [item for item in inner_checks if item["name"].startswith("inner39_"+group+"_")]
+                    for group in ("geometry", "fixed_law", "source", "ray")}
+    inner_ok = {group: bool(rows) and all(item["passed"] for item in rows)
+                for group, rows in inner_groups.items()}
+    if not all(inner_ok.values()):
+        inner_extremal["decision"] = "INNER_EXTREMAL_BRIDGE_AUDIT_FAILED"
+    inner_extremal["closure"]["target_geometry_verified"] = inner_ok["geometry"]
+    inner_extremal["closure"]["fixed_H_bridge_excluded"] = inner_ok["fixed_law"]
+    inner_extremal["closure"]["inverse_law_obstruction_verified"] = inner_ok["source"]
+    inner_extremal["closure"]["conditional_null_Ricci_bound_verified"] = (
+        inner_ok["geometry"] and inner_ok["ray"] and inner_ok["source"])
     passed = sum(item["passed"] for item in checks)
     return dict(
         decision="COMPLETION_BOUNDARY_AND_HOMOGENEOUS_JOIN_VERIFIED" if passed == len(checks)
@@ -2288,6 +2468,7 @@ def audit():
         full_coframe_source_decision=full_readout,
         null_tail_curvature=null_tail,
         existing_light_source_audit=light_source,
+        inner_extremal_bridge_audit=inner_extremal,
         local_witness=dict(
             scope="One smooth local source/geometry jet, not a global initial-data family.",
             finite_amplitude="Every finite P gives finite source, geometry and listed derivatives.",
