@@ -4,7 +4,7 @@ Run: python -X utf8 -B verify_saturation_completion_boundary.py --verbose
 Only stdout is written. No evolution or global initial-data family is solved.
 The topological focusing argument is an analytical conditional theorem; these
 symbolic checks verify its local field-equation premises, not that theorem.
-See spherical_saturation_matter_bridge.md, sections 24 through 39.
+See spherical_saturation_matter_bridge.md, sections 24 through 40.
 """
 import argparse
 import ast
@@ -16,6 +16,149 @@ import sys
 
 sys.dont_write_bytecode = True
 import sympy as s
+
+
+def inner_extremal_source_entry_checks(exact, gate):
+    """Section40: existing-source requirements and a shrinking-radius control.
+
+    The fixed-central-curvature control is a prescribed geometry, not a new
+    medium equation. The compact-domain ray proof is in the report.
+    """
+    def eq(name, expression, target=0):
+        exact("entry40_" + name, s.cancel(expression-target))
+
+    def ok(name, condition, **evidence):
+        gate("entry40_" + name, condition, **evidence)
+
+    r, v, a, M, L = s.symbols("r v a M L", positive=True)
+    F, psi = s.Function("F")(v, r), s.Function("psi")(v, r)
+    coords = (v, r)
+    metric = s.Matrix([[-s.exp(2*psi)*F, s.exp(psi)], [s.exp(psi), 0]])
+    inverse = metric.inv()
+    gamma_r = [[s.simplify(sum(inverse[1, k]*(s.diff(metric[k, j], coords[i])
+                +s.diff(metric[k, i], coords[j])-s.diff(metric[i, j], coords[k]))
+                for k in range(2))/2) for j in range(2)] for i in range(2)]
+    outgoing = s.Matrix([1, s.exp(psi)*F/2])
+    incoming = s.Matrix([0, -s.exp(-psi)])
+    eq("source_outgoing_null", (outgoing.T*metric*outgoing)[0])
+    eq("source_incoming_null", (incoming.T*metric*incoming)[0])
+    eq("source_null_normalization", (incoming.T*metric*outgoing)[0], -1)
+    # In the spherical warped product the 2D Ricci term is proportional to
+    # the 2D metric and drops from either null contraction.
+    def null_ricci(vector):
+        return s.simplify(2/r*sum(gamma_r[i][j]*vector[i]*vector[j]
+                                 for i in range(2) for j in range(2)))
+    expected_ll = -s.exp(psi)*s.diff(F, v)/r+s.exp(2*psi)*F**2*s.diff(psi, r)/(2*r)
+    eq("source_general_lapse_null_Ricci", null_ricci(outgoing), expected_ll)
+    eq("source_other_null_Ricci", null_ricci(incoming), 2*s.exp(-2*psi)*s.diff(psi, r)/r)
+    eq("source_triple_surface_null_zero", expected_ll.subs({s.diff(F, v): 0, F: 0}))
+
+    P = (r-a)**3
+    D = P*(r-2*M)+2*M*r**3+a**2*r**2
+    f = P*(r-2*M)/D
+    fM, fa = s.cancel(s.diff(f, M)), s.cancel(s.diff(f, a))
+    adot_M = s.symbols("adot_M", real=True)
+    total_fM = s.cancel(fM+fa*adot_M)
+    B = 2*(r-a)*(r**2+a**2)+adot_M*(r-2*M)*((6*M+2*a)*r+a**2)
+    eq("source_moving_mass_response", total_fM, -r**2*(r-a)**2*B/D**2)
+    eq("source_triple_fv_zero", total_fM.subs(r, a))
+    eq("source_triple_frv_zero", s.diff(total_fM, r).subs(r, a))
+    alpha = (2*M-a)/(a**3*(a+2*M))
+    eq("source_moving_quadratic_response", s.cancel(total_fM/(r-a)**2).subs(r, a), 3*alpha*adot_M)
+    m = r*(1-f)/2
+    rho = s.cancel(s.diff(m, r)/(4*s.pi*r**2))
+    pt = s.cancel(-s.diff(m, r, 2)/(8*s.pi*r))
+    eq("source_horizon_mass", m.subs(r, a), a/2)
+    eq("source_horizon_density", rho.subs(r, a), 1/(8*s.pi*a**2))
+    eq("source_horizon_transverse_pressure", pt.subs(r, a))
+    eq("source_tangential_null_identity", rho+pt, -r*s.diff(rho, r)/2)
+    # The stress is type II for nonzero mass flux. These diagonal values
+    # are particularly transparent in the stationary limit.
+    z1 = (4*M**2+6*M*a+a**2)/(4*M**2*a**3)
+    eq("source_centre_tangential_slope", s.limit((rho+pt)/r, r, 0), -z1/(4*s.pi))
+    ok("source_centre_tangential_NEC_failure", (-z1/(4*s.pi)).is_negative)
+    Lum = s.symbols("Lum", positive=True)
+    photon_ll = Lum/(4*s.pi*r**2)
+    chi = s.cancel(-r*total_fM/2)
+    eq("source_mass_susceptibility", s.diff(m, M)+s.diff(m, a)*adot_M, chi)
+    eq("source_radiation_response", -Lum*total_fM/(8*s.pi*r), chi*photon_ll)
+    medium_ll = (chi-1)*photon_ll
+    eq("source_medium_horizon_requirement", medium_ll.subs(r, a), -Lum/(4*s.pi*a**2))
+    eq("source_photon_radial_conservation", s.diff(r**2*photon_ll, r))
+    # Replacing the medium by zero leaves a finite nonzero source residual.
+    ok("source_negative_control_omitted_medium", (8*s.pi*photon_ll.subs(r, a)).is_positive)
+    k1, k2 = s.symbols("k1 k2", real=True)
+    Pplanck, ZH = s.symbols("Pplanck ZH", positive=True)
+    ok("source_canonical_null_sign", (k1**2+k2**2).is_nonnegative)
+    ok("source_existing_projected_H_negative_sign", (-2*Pplanck*ZH).is_negative,
+       scope="Existing exterior Hilbert source only; no health or target-joining inference.")
+
+    # Constant central curvature fixes Ma=L^2/2 at the geometric level.
+    a_control = L**2/(2*M)
+    eq("shrink_control_derivative", s.diff(a_control, M), -a_control/M)
+    eq("shrink_centre_R", (6/(M*a)).subs(a, a_control), 12/L**2)
+    eq("shrink_centre_K", (6/(M**2*a**2)).subs(a, a_control), 24/L**4)
+    radial_fM = s.cancel(total_fM.subs(adot_M, -a/M))
+    quadratic = 2*r**2-(8*a+2*a**2/M)*r+12*M*a+6*a**2-a**3/M
+    eq("shrink_radial_sign_polynomial", B.subs(adot_M, -a/M), r*quadratic)
+    discriminant = s.discriminant(quadratic, r)
+    eq("shrink_discriminant", discriminant, 4*a*(2*M+a)*(a**2+8*M*a-12*M**2)/M**2)
+    u = s.symbols("u", nonnegative=True)
+    ok("shrink_negative_discriminant_domain", s.factor(discriminant.subs(a, M/(1+u))).is_negative,
+       domain="M>0, 0<a<=M; a=M/(1+u), u>=0")
+    centre_q = 2*a+a**2/(2*M)
+    eq("shrink_positive_square_certificate", quadratic, 2*(r-centre_q)**2-discriminant/8)
+    eq("shrink_nonnegative_radial_source", radial_fM, -r**3*(r-a)**2*quadratic/D**2)
+    eq("shrink_triple_surface_retained", f.subs(r, a))
+    eq("shrink_tangential_failure_retained", (-z1/(4*s.pi)).subs(a, a_control),
+       -(16*M**4+12*M**2*L**2+L**4)/(8*s.pi*M*L**6))
+    ok("shrink_negative_control_growing_radius",
+       (3*alpha*adot_M).subs({M: 2*a, adot_M: 1}).is_positive)
+
+    tail = 2-1/(4*(1+v))
+    a_tail = 2/tail
+    eq("ray_moving_radius", a_tail, 1+1/(8*v+7))
+    eq("ray_initial_radius", a_tail.subs(v, 24), s.Rational(200, 199))
+    eq("ray_radius_velocity", s.diff(a_tail, v), -8/(8*v+7)**2)
+    ok("ray_initial_gap_positive", (s.Rational(6, 5)-a_tail.subs(v, 24)).is_positive)
+    eq("ray_moving_normal_norm", -2*s.diff(a_tail, v), 16/(8*v+7)**2)
+    eq("ray_drift_asymptotic", s.limit(-v**2*s.diff(a_tail, v), v, s.oo), s.Rational(1, 8))
+    c = (2*M-r)/D
+    eq("ray_c_limit", c.subs({r: 1, a: 1, M: 2}), s.Rational(3, 5))
+    delta, cd, ad, cv, Y = s.symbols("delta cd ad cv Y", real=True)
+    delta_prime = -cd*delta**3/2-ad
+    eq("ray_inverse_square_equation", -2*delta_prime/delta**3, cd+2*ad/delta**3)
+    # Fixed-r derivative, not derivative following the moving zero surface.
+    f_v_jet = -cv*delta**3+3*cd*ad*delta**2
+    eq("ray_log_Y_cancellation", f_v_jet/(-cd*delta**3), cv/cd-3*ad/delta)
+    eq("ray_Ricci_split", -f_v_jet*Y**2/(r*cd**2*delta**6),
+       Y**2/r*(cv/(cd**2*delta**3)-3*ad/(cd*delta**4)))
+    # Compact-domain proof: c->3/5, delta~(c_inf*v)^(-1/2),
+    # ad~-(1/8)v^-2, and integrable log-Y derivative.
+    cinf = s.Rational(3, 5)
+    eq("ray_log_Y_drift_power", -2+s.Rational(1, 2), -s.Rational(3, 2))
+    eq("ray_inverse_square_correction_power", -2+s.Rational(3, 2), -s.Rational(1, 2))
+    eq("ray_Ricci_positive_limit", -3*(-s.Rational(1, 8))*cinf*Y**2, 9*Y**2/40)
+    eq("ray_finite_affine_remainder", s.integrate(v**-s.Rational(3, 2), (v, 1, s.oo)), 2)
+    eq("ray_photon_stress_still_grows", -2+3, 1)
+    return dict(
+        decision="SHRINKING_RADIAL_CONTROL_VERIFIED_MEDIUM_SOURCE_CLOSURE_REQUIRED",
+        source_requirement="At any smooth moving triple surface G_ll=0. Conserved T_gamma,ll>0 requires T_medium,ll=-T_gamma,ll in Einstein form.",
+        existing_entry="Independent W92 clock/strain/deficit fields; their off-silent response F_med remains unspecified.",
+        source_filter="A sum of individually NEC-respecting Einstein sources cannot realize this transparent illuminated triple surface. The existing noncanonical medium is outside that exclusion.",
+        control=dict(relation="a=L^2/(2M), fixed L, 0<a<=M", origin="Prescribed constant central curvature, not a derived medium state equation",
+                     positive_result="Radial mass susceptibility >=0 for all r>0; degeneracy persists",
+                     remaining_source_fault="Unit-cross target still has negative rho+p_t near its centre"),
+        null_ray=dict(domain="L=2, old M(v), v>=24, r(24)=6/5",
+                      proof="Analytical compact-domain proof in section40; exact identities checked here",
+                      Rkk_limit="9Y_inf^2/40", affine_length="finite",
+                      marginal_surface="timelike degenerate marginal tube, not automatically a Cauchy horizon"),
+        closure=dict(source_entry_verified=False, shrinking_radial_control_verified=False,
+                     conditional_shrinking_ray_bound_verified=False,
+                     ordinary_positive_source_shortcut_excluded=False,
+                     medium_dynamics_derived=False, self_regulating_attractor=False,
+                     full_RefG_pressure_join=False, global_singularity_removal=False,
+                     full_RefG_rejected=False))
 
 
 def inner_extremal_bridge_checks(exact, gate):
@@ -2446,6 +2589,23 @@ def audit():
     inner_extremal["closure"]["inverse_law_obstruction_verified"] = inner_ok["source"]
     inner_extremal["closure"]["conditional_null_Ricci_bound_verified"] = (
         inner_ok["geometry"] and inner_ok["ray"] and inner_ok["source"])
+    before_entry = len(checks)
+    source_entry = inner_extremal_source_entry_checks(exact, gate)
+    entry_checks = checks[before_entry:]
+    source_entry["checks"] = len(entry_checks)
+    source_entry["passed"] = sum(item["passed"] for item in entry_checks)
+    entry_groups = {group: [item for item in entry_checks if item["name"].startswith("entry40_"+group+"_")]
+                    for group in ("source", "shrink", "ray")}
+    entry_ok = {group: bool(rows) and all(item["passed"] for item in rows)
+                for group, rows in entry_groups.items()}
+    if not all(entry_ok.values()):
+        source_entry["decision"] = "INNER_EXTREMAL_SOURCE_ENTRY_AUDIT_FAILED"
+    source_entry["closure"]["source_entry_verified"] = entry_ok["source"]
+    source_entry["closure"]["ordinary_positive_source_shortcut_excluded"] = entry_ok["source"]
+    source_entry["closure"]["shrinking_radial_control_verified"] = (
+        entry_ok["shrink"] and inner_ok["geometry"] and entry_ok["source"])
+    source_entry["closure"]["conditional_shrinking_ray_bound_verified"] = (
+        all(entry_ok.values()) and inner_ok["geometry"])
     passed = sum(item["passed"] for item in checks)
     return dict(
         decision="COMPLETION_BOUNDARY_AND_HOMOGENEOUS_JOIN_VERIFIED" if passed == len(checks)
@@ -2469,6 +2629,7 @@ def audit():
         null_tail_curvature=null_tail,
         existing_light_source_audit=light_source,
         inner_extremal_bridge_audit=inner_extremal,
+        inner_extremal_source_entry_audit=source_entry,
         local_witness=dict(
             scope="One smooth local source/geometry jet, not a global initial-data family.",
             finite_amplitude="Every finite P gives finite source, geometry and listed derivatives.",

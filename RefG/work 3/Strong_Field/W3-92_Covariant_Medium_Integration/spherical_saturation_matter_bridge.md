@@ -5525,6 +5525,283 @@ suppression as the source changes. This bounded stage stops at that
 identified missing input, without changing the production action or
 conducting another collapse run under a prescribed answer.
 
+## 40. Coupled-source entry: a shrinking inner radius and the required stress
+
+### Bounded contract, 2026-09-18
+
+CLAIM_ID: W92-INNER-EXTREMAL-SOURCE-ENTRY.
+CLAIM: determine what the stage39 geometry requires of the existing
+independent medium/source sector, and test the smallest moving-radius
+control before proposing any new response function.
+TYPE: exact source identities, restricted source-class exclusion, and
+conditional geometric ray result. This is not an action derivation.
+MODEL_VERSION: the stage39 target family; the existing W92 five-field
+medium and its independent source equations are retained as reference.
+CONVENTIONS: (-+++), G=c=1, G_ab=8*pi*T_total, and the unit-cross ingoing
+metric unless the explicitly stated regular lapse is retained.
+ASSUMPTIONS/DOMAIN: a>0, M>a/2. The positive control holds L fixed and
+sets a=L^2/(2M), with 0<a<=M. This is a registered fixed-central-curvature
+geometric restriction; a is a state radius, not a retuned universal coupling.
+Its dynamical realization and relation to oscillon size/physical pressure
+are not assumed. For the ray comparison L=2, the old M(v) is unchanged,
+v>=24, and r(24)=6/5.
+FREEDOM_LEDGER: L is a fixed candidate core-curvature scale; M is a state;
+a(M) is a diagnostic relation selected before numerical or symbolic
+execution, not a measured or action-derived relation. No matter or light
+law is changed. The off-silent F_med remains unspecified, as in the source.
+DEPENDENCIES: sections37-39; FORMAL_COVARIANT_MEDIUM_INTEGRATION.md;
+common_scale_centre_source.md section8; the existing source-response audit.
+METHOD: independent EF connection, exact Einstein-source ledger and
+mass derivatives; polynomial positivity; compact-domain geodesic proof.
+PASS_CONDITION: identify the necessary medium null stress at the moving
+triple surface and decide the proposed positive-source shortcut; test
+whether the shrinking control removes the fixed-radius radial sign fault.
+FAIL_CONDITION: incorrect residual, a radius/coupling identification
+without a state equation, or prescribed total stress called a derived medium.
+FALSIFIER: nonzero residual in the stated source/geometry identities,
+or a negative radial-loading response in the positive control's domain.
+RESIDUAL/ERROR_BOUND: exact symbolic residuals; the late-ray result uses
+the explicit analytic comparison proof, not finite-time extrapolation.
+VALIDITY_HEALTH: NEC is a filter for sums of individually NEC-respecting
+Einstein sources, not a universal synonym for stability. Existing
+noncanonical medium and modified-gravity alternatives remain distinct.
+OBSERVABLE_MAP: source-null projections, transverse pressure, centre
+curvature and affine null Ricci contraction. DATA_ROLE/FORWARD_MODEL: N/A,
+no observational fit. BENCHMARK: the fixed-a family of section39.
+IDENTIFIABILITY: separate the state-radius control from its missing
+constitutive dynamics. CROSSCHECK: independent source and ray derivations,
+existing-equation audit, negative controls and full regression.
+CLOSURE_FLAGS initially false: source_entry_verified,
+shrinking_radial_control_verified, conditional_shrinking_ray_bound_verified,
+ordinary_positive_source_shortcut_excluded.
+Keep medium_dynamics_derived, self_regulating_attractor,
+full_RefG_pressure_join and global_singularity_removal false.
+PROVENANCE: analytic relations explored before coding; not a blind prediction.
+FILES: this report, verify_saturation_completion_boundary.py, diagnostic
+index. Production solver, intuition, manuscripts and Git rules unchanged.
+STOP: one source-entry decision and one bounded positive control; no new
+phenomenological F, absorption law, parameter scan or collapse simulation.
+
+### 40.1 The existing medium is an actual entry, with independent equations
+
+The five-field medium in FORMAL_COVARIANT_MEDIUM_INTEGRATION.md uses
+Einstein gravity plus independent clock, label/strain and deficit fields.
+This is a different source-entry test from section39's one-function
+modified-vacuum relation; the two gravitational operators are not added
+together. The exact independent static balances already derived in
+common_scale_centre_source.md section8 are
+
+    P0*K_N' = N A S^2 [Q0(J+Fbar)+W-V],
+    P0*Q_H' = Q0 N A S^2 J,
+    P0[(N S^2/A)(ln N+H)']' = N A S^2[Q0 Fbar+W-V].
+
+Here P0 is the constant Planck coefficient, Q0 the fixed medium
+normalization, N the lapse, A the radial scale, S the areal radius,
+K_N=S^2 N'/A, Q_H=-N S^2 H'/A, and W=Omega^2 chi^2/N^2.
+V is the retained canonical scalar potential. Fbar depends on the
+independent clock and strain invariants y,b_r,b_t, and
+J=y Fbar_y-b_r Fbar_r-b_t Fbar_t.
+
+Those states escape the vacuum-only hypothesis of section39, but their
+off-silent constitutive response has not been selected by the existing
+action. Assigning Fbar to cancel W-V along a desired profile would impose
+the answer. The registered derivative-medium prototype has a separate
+homogeneous compensating response and an enhanced quasistatic spatial
+response; its already-failed direct pressure map supplies no such law.
+The positive-energy static common-scale join also already failed its
+exterior test (common_scale_centre_source.md section6D).
+
+The present calculation determines the required dynamical source at the
+triple surface directly. Static equations valid for positive N,A are
+not extrapolated through the trapped region.
+
+### 40.2 Exact source requirement, including a regular lapse
+
+Take the horizon-regular two-function metric
+
+    ds^2=-exp(2psi) f dv^2+2 exp(psi) dv dr+r^2 dOmega^2,
+    l=partial_v+exp(psi) f partial_r/2,
+    n=-exp(-psi) partial_r, l.n=-1.
+
+Direct connection calculation and spherical warped-product curvature give
+
+    R_ll=-exp(psi) f_v/r+exp(2psi) f^2 psi_r/(2r),
+    R_nn=2 exp(-2psi) psi_r/r.
+
+If f has a smooth moving triple root r=a(v), differentiation of
+f(v,a(v))=f_r(v,a(v))=f_rr(v,a(v))=0 gives f_v=f_rv=0
+on that surface. For finite exp(psi)>0 and bounded psi_r,
+R_ll=G_ll=0 there. A smooth lapse cannot supply the missing null source.
+
+In the unit-cross target, set m=r(1-f)/2 and use Einstein-source variables
+
+    rho=m_r/(4*pi*r^2), p_r=-rho, p_t=-m_rr/(8*pi*r).
+
+At the triple surface,
+
+    m=a/2, m_r=1/2, m_rr=0,
+    rho=1/(8*pi*a^2), p_r=-rho, p_t=0.
+
+Thus the stationary surface requires anisotropic tension. It is locally
+compatible with nonnegative total null projections in the stationary
+limit. The extra requirement comes from a transparent incoming stream.
+
+Use the same ordinary photon normalization as section39,
+T_gamma,vv=Lum(v)/(4*pi*r^2), Lum=M'>0. This stream is separately
+conserved in the unit-cross metric: its radial conservation equation is
+partial_r(r^2 T_gamma,vv)=0. With the total derivative along a(M), define
+
+    chi_M=partial_M m=-r*(f_M+f_a*a_M)/2.
+
+The exact Einstein-source split then requires
+
+    T_total,ll=chi_M*T_gamma,ll,
+    T_medium,ll=(chi_M-1)*T_gamma,ll,
+    T_medium,ll|horizon=-T_gamma,ll|horizon.
+
+The target therefore requires a compensating medium null stress, even
+though the photons themselves follow their unchanged conserved transport.
+This quantity combines energy and stress in a null direction; it is not
+an assertion that every observer measures negative medium energy.
+Defining T_medium=G/(8*pi)-T_gamma makes a formally conserved tensor by
+the Bianchi identity, but it supplies no field equation for that medium.
+
+A sum of individually null-energy-condition-respecting Einstein sources
+cannot satisfy this requirement with a nonzero transparent incoming
+stream. This excludes the positive-source shortcut, not general healthy
+modified gravity or every noncanonical medium. The original projected-H
+sector already has a negative radial null sum on its exterior,
+rho_H+p_rH=-2P0 Z_H, Z_H>0. It has the required possible sign; matching its
+magnitude and checking its coupled health on this target remain necessary.
+
+### 40.3 A shrinking state radius fixes the radial-loading sign
+
+For the same rational geometry of section39 with a now a state variable,
+
+    f_M(total)=-r^2(r-a)^2 B/D^2,
+    B=2(r-a)(r^2+a^2)+a_M(r-2M)[(6M+2a)r+a^2].
+
+At fixed a the response changes sign across the inner surface. Near a
+moving triple root it instead has the leading form
+
+    f_M(total)=3 alpha*a_M*(r-a)^2+O((r-a)^3).
+
+Thus a_M<0 gives a nonnegative radial Einstein-source response to M'>0
+on both sides locally. Merely increasing a gives the opposite sign.
+
+As a single positive control, keep the central curvature fixed:
+
+    R(0)=6/(Ma)=12/L^2,
+    a=L^2/(2M), a_M=-a/M, K(0)=24/L^4.
+
+L is held fixed. This relation follows from the registered geometric
+central-curvature condition; it has not been derived from a medium state
+equation. It does not identify the inner areal radius with an oscillon's
+operational size or assert a universal bound on curvature away from the
+centre.
+
+For 0<a<=M the response has the global radial sign certificate
+
+    f_M(total)=-r^3(r-a)^2 Q2(r)/D^2,
+    Q2=2r^2-(8a+2a^2/M)r+12Ma+6a^2-a^3/M,
+    discriminant(Q2)=4a(2M+a)(a^2+8Ma-12M^2)/M^2<0.
+
+The positive leading coefficient and negative discriminant imply Q2>0,
+so chi_M>=0 for every r>0. Both triple degeneracy and the central
+curvature values persist as M varies within this prescribed family.
+Mass-dependent inner radii and quadratic susceptibility also appear in
+the general construction [4], equations(23)-(27); this particular
+fixed-central-curvature control and its sign certificate are calculated here.
+
+The full source still has a separate transverse requirement. Its central
+expansion gives
+
+    z=(1-f)/r^2=1/(2Ma)+z1*r+O(r^2),
+    z1=(4M^2+6Ma+a^2)/(4M^2*a^3)>0,
+    rho+p_t=-z1*r/(4*pi)+O(r^2)<0.
+
+Consequently this same unit-cross target still fails the all-NEC Einstein
+source shortcut near its centre. The successful radial sign repair
+therefore selects a viable direction of motion, not a healthy complete
+matter model. A general lapse/source system or a modified gravitational
+response has to be tested on its own equations.
+
+### 40.4 The known late incoming history remains geometrically bounded
+
+Set L=2, retain M(v)=2-1/[4(1+v)], v>=24 and r(24)=6/5. Then
+
+    a(v)=1+1/(8v+7), -a_dot=8/(8v+7)^2,
+    delta=r-a(v), c=(2M-r)/D,
+    delta'=-c*delta^3/2-a_dot.
+
+The ray stays in a(v)<r<=6/5. On its moving lower boundary delta'=-a_dot>0;
+at the upper boundary f<0. All coefficients are smooth and c is bounded
+above and below by positive constants on the enclosing compact set.
+The decreasing r tends to 1, since any larger limiting radius would
+leave f strictly negative. Thus delta->0 and c->3/5.
+
+The comparison delta'>=-c_max*delta^3/2 gives
+
+    delta>=[delta_24^-2+c_max*(v-24)]^-1/2.
+
+Writing w=delta^-2 yields
+w'=c-2(-a_dot)w^(3/2)->3/5: the second term is O(v^-1/2).
+Hence delta~sqrt[5/(3v)], as in the fixed-radius control.
+For K_aff=dv/dlambda and Y=(-f)K_aff,
+
+    d ln(Y)/dv=f_v/f=c_v/c-3a_dot/delta.
+
+Here c_v is the partial derivative at fixed r, including the dependence
+on M(v) and a(v). Its contribution is O(v^-2), while a_dot/delta is
+O(v^-3/2). Both are integrable, giving a finite positive Y_inf and
+K_aff~Y_inf*sqrt(3/5)*v^(3/2).
+
+The geometric null contraction is
+
+    R_kk=(Y^2/r)[c_v/(c^2 delta^3)-3a_dot/(c delta^4)]
+         ->9Y_inf^2/40.
+
+It remains finite and approaches a positive constant. Ordinary
+T_gamma,kk still grows as v; the necessary medium contribution cancels
+its leading effect in the prescribed geometry. This result concerns
+the specified ray and incoming history, not arbitrary irradiation.
+The remaining affine interval is finite. At finite v the surface
+r=a(v) has normal norm -2a_dot>0 and is a timelike degenerate marginal
+tube; its name or existence alone does not establish a global Cauchy
+horizon, endpoint extension or geodesic completeness.
+
+### 40.5 Decision and exact next physical input
+
+The completion verifier passes 680/680 checks: all 631 earlier checks and
+49 new checks, including an independent connection calculation, source
+requirements, sign controls and the exact identities supporting the
+analytical ray proof. Independent derivative, source and ray reviews
+agree. The closure flags below retain the distinction between verified
+conditional geometry and a derived dynamical medium.
+
+    source_entry_verified = True
+    shrinking_radial_control_verified = True
+    conditional_shrinking_ray_bound_verified = True
+    ordinary_positive_source_shortcut_excluded = True
+    medium_dynamics_derived = False
+    self_regulating_attractor = False
+    full_RefG_pressure_join = False
+    global_singularity_removal = False
+    full_RefG_rejected = False
+
+The new result is a concrete response requirement: the coupled medium
+must determine a shrinking state radius and the compensating null stress
+while satisfying its independent clock, label, deficit and metric equations.
+The old source audit supplies these independent fields, but leaves their
+off-silent constitutive response undetermined. The retained positive-energy
+static shortcut and the separately tested derivative prototype cannot
+be reused as if they had already supplied it.
+
+This fixes where the next physical law has to enter. Another prescribed
+metric or another run of the unchanged collapse solver cannot derive that
+law. The present stage adds no fitted absorption term, imposed stress
+profile to the evolution, or change to the photon's propagation equation.
+
 ## Reproduction and attribution
 
     python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py"

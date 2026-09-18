@@ -13,7 +13,23 @@ exponential exterior and selected additive constitutive truncations are
 candidate assumptions, not requirements imposed on every future action.
 The negative results below remain valid in their stated domains.
 
-Latest completed inner-extremal bridge audit:
+Latest completed source-entry and shrinking-radius audit:
+[spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section40 (2026-09-18). The fixed-central-curvature control a=L^2/(2M)
+gives nonnegative radial mass susceptibility at every r>0 for 0<a<=M.
+For L=2 and the retained incoming history, outgoing null R_kk tends to
+9Y_inf^2/40 rather than diverging. This is a prescribed geometric control.
+An illuminated smooth moving triple surface has G_ll=0 and therefore
+requires T_medium,ll=-T_gamma,ll in an Einstein-source completion.
+The existing independent medium supplies an entry point and a possible
+negative null-stress sector, but no already-derived required response.
+The target also retains a negative central rho+p_t, excluding an
+all-NEC Einstein-source shortcut. The completion verifier passes
+**680/680**: 49 new exact checks and all 631 earlier checks. Medium dynamics,
+the physical pressure/scale join and global regularity remain unestablished.
+Production equations, intuitive files, articles and Git rules are unchanged.
+
+Previous completed inner-extremal bridge audit:
 [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
 section39 (2026-09-18). A prescribed triple-inner-horizon geometry has
 finite central algebraic curvature and a bounded, decaying outgoing radial
