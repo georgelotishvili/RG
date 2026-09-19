@@ -308,3 +308,1547 @@ de/dg=-G/g კავშირს: G გარემოს პროფილი�
 კლებადი დანამატებით. ადიტიურობა რეალური ერთი არაწრფივი ველის
 ოსცილონებისთვის გამოყვანილად არ ითვლება. ფონური დაჭიმულობის
 ენერგიის კანონი და სრული ფიზიკური შეერთება კვლავ §4-ის ამოცანაა.
+
+## ერთი შეთანხმებული მოქმედება: რეზონანსიდან წნევის პასუხამდე
+
+2026-09-19. შეთანხმებული მიზანია ერთი დახურული თვითრეგულირების
+კანონი, მისი ენერგეტიკული ბალანსი, წონასწორობა და ნულამდე მისვლის
+შემოწმება ორივე საათში. ძლიერი ველი და ხელნაწერები უცვლელია.
+
+არსებული წყაროები განასხვავებს p² ენერგეტიკულ გადაცემას, ფუძის
+საპასუხო კანონს და სტაციონარული წყაროს ნულოვან გამოსხივებას.
+ამჯერად უშუალოდ საპასუხო კანონი მუშავდება. ახალი კანდიდატი ერთი
+სასრული, გარე ფონის მიმართ განსაზღვრული კოლექტიური მოდის აღწერაა.
+
+### გაყინული შემოწმების კონტრაქტი
+
+- CLAIM_ID / MODEL_VERSION: SINGLE_STATE_RESONANCE_RESPONSE_V1.
+- CLAIM / TYPE: explicit new finite-mode constitutive candidate;
+  derive and solve its response law, energy identity, equilibrium and
+  finite-energy two-clock positivity theorem. Exact identities,
+  conditional analytic theorems and numerical checks are separate.
+- ASSUMPTIONS: p=exp(-u)>0, d tau=p dt, fixed finite local source
+  energy M>=0; fixed reference patch and exterior normalization.
+  Intrinsic ruler/mass/cadence readouts retain the existing dictionary.
+  P_F/P_F0=p² is kept distinct from p.
+- NEW CONSTITUTIVE INPUTS: restoring/profile energy V_R=K u²/2,
+  K>0, continued to every finite u; collective kinetic energy
+  I u_t²/(2p), I>0; optional Rayleigh function zeta u_t²/2, zeta>=0,
+  with loss carried by a recorded escaping-energy channel.
+  I=0,zeta>0 is a separate exact first-order response law.
+- FREEDOM_LEDGER: M is fixed local content-energy; K is patch stiffness
+  (energy), I collective inertia (energy*time²), zeta has energy*time
+  units. They are constitutive inputs, not observational fits. V_R is
+  deformation energy, not a derived homogeneous tension-energy density.
+- DEPENDENCIES: existing p/p² dictionary, source energy M p,
+  stationary zero-flux rule and weak-static gradient-energy motivation.
+  The new inertia and global quadratic continuation are not derived
+  from the earlier scalar PDE or W54/W75 full metric equations.
+- DOMAIN / HEALTH: one collective mode; finite initial energy; no ongoing
+  matter injection or incoming energy; u of either sign. Positive inertia,
+  coercive potential and passive loss. No spatial wave-speed theorem.
+- METHOD: vary one action; transform clocks retaining derivative terms;
+  derive the first-order limit and Lyapunov bound; independently solve
+  both clock formulations and refine numerical tolerances.
+- PASS_CONDITION: exact variational, clock and energy residuals vanish;
+  unique finite-load equilibrium and stability follow analytically.
+  Numeric equilibrium residuals <1e-11; fine relative energy-budget
+  errors <2e-8; coarse/fine state discrepancies <2e-6; independent-clock
+  endpoint errors <2e-6. First-order trajectories remain between initial
+  state and equilibrium (slack 2e-9) and reach |u-u_star|<1e-7 by t=80.
+  Finite-inertia errors against I=0 decrease by a factor <0.8 at each
+  registered inertia halving.
+- NUMERIC BENCHMARKS: K=zeta=1 for first-order runs, M=1,10,
+  u0=0 or u_star+0.25, t in [0,80]. Inertial runs I=K=1, M=1,10,
+  zeta=0 or 0.7, u0=u_t0=0, t in [0,60].
+  Inertia-limit test M=K=zeta=1, I=.01,.005,.0025, u0=0,u_t0=1,
+  t in [0,8]. DOP853 (Radau for small inertia), relative tolerances
+  1e-8 and 1e-10, absolute tolerances 1e-11 and 1e-13.
+  Report actual residuals; no result-based threshold changes.
+- FAIL_CONDITION / FALSIFIER: nonzero exact residual rejects its identity;
+  failed numeric gates withhold their checks. Finite-energy p=0 in the
+  specified K>0 action falsifies its positivity theorem. A different
+  measured restoring or inertial law rejects this candidate for that patch.
+- NEGATIVE CONTROLS: missing/extra clock factor and wrong energy-exchange
+  sign fail the same identities. K=zeta=0 gives an exact finite-local-time
+  endpoint despite infinite external time.
+- ERROR_BOUND / RESIDUAL: analytic results are conditional on the displayed
+  law; numerical errors are separate. Physical errors of the finite-mode
+  reduction and global constitutive continuation are not bounded.
+- OBSERVABLE_MAP: p; P_F/P_F0=p²; mass/ruler/cadence ratios p;
+  c_coord/c0=p². Collective-mode frequency differs from intrinsic oscillon
+  cadence. Mode energy is not identified with ADM mass.
+- FORWARD_MODEL / DATA_ROLE / IDENTIFIABILITY: no observations or fits;
+  an openly selected response law, not its unique physical derivation.
+- CROSSCHECK: energy differentiation, u and p equations, t and tau
+  integrations, exact no-restoration solution and inertia limit.
+- CLOSURE_FLAGS: candidate_response_closed, candidate_energy_balanced,
+  candidate_equilibrium and candidate_two_clock_positivity are separate.
+  Original_PDE_reduction_derived, homogeneous_tension_EOS_derived,
+  spatial_RefG_closure, observational_pass and singularity_resolution=false.
+- FILES / PROVENANCE: this existing ledger and stdout-only
+  single_state_resonance_response.py; source/environment hashes printed
+  at execution. No Git configuration change, commit or upload.
+- COMPLETION: finish this candidate and identify exactly which results
+  follow from common scaling and which require its added response law.
+  This finite-mode result does not complete §4's full spatial action.
+
+### 1. რას ნიშნავს ათჯერ და ასჯერ
+
+აქ p არის წნევითი საერთო მასშტაბი. p=0.1-ზე ოსცილონის გარე
+მასა, ზომა და შინაგანი საათის ტაქტი საწყისის 0.1-ია; იგივე
+ადგილობრივი ენერგეტიკული პროცესის გარე სიმძლავრე საწყისის 0.01-ია.
+ძველ ლექსიკონში განზომილებიანი P_F ამ დროს საწყისის 0.01-ია.
+P_F-ის ათჯერ შემცირება და p-ის ათჯერ შემცირება სხვადასხვა პირობაა.
+ძველი ფორმულა ამ სამუშაოში უცვლელი დარჩა.
+
+    u = -ln p,
+    E_osc = M p,       L_ext/L_local = Omega_t/Omega_local = p,
+    d tau = p dt,      P_F = P_F0 p²,      c_coord = c0 p².
+
+M ნიშნავს შენარჩუნებული ადგილობრივი მდგომარეობის ენერგიას c0=1
+ერთეულებში. მისი მუდმივობა აქ ადიაბატური წყაროს პირობაა.
+u აღწერს სასრული უბნის განსხვავებას გარე საყრდენი ფონისგან;
+შიგნით დამკვირვებელი საკუთარ უცვლელ სახაზავს შემცირებულად არ ზომავს.
+სივრცითი პროფილისა და სხეულის შიდა აგებულების ცვლილება ამ ერთ
+კოლექტიურ კოორდინატში დამოუკიდებლად არ გამოითვლება.
+
+### 2. დამატებული კანონი და ერთი მოქმედება
+
+გარემოს აღმდგენი პასუხის მინიმალური არჩევანია
+
+    V_R(u) = K u²/2,       K>0.
+
+მისი სუსტი დეფორმაციის მოტივაცია უკვე არსებული სტატიკური ენერგიაა:
+ფიქსირებულ საცდელ პროფილზე u(x)=u h(x), alpha=4 pi G,
+
+    integral |grad u|²/(2 alpha) d³x = K u²/2,
+    K = integral |grad h|²/alpha d³x.
+
+ეს იგივეობა კვადრატულ ენერგიას ფიქსირებულ პროფილზე გვაძლევს.
+K-ის მუდმივად დატოვება ყველა u-ზე ახალი კონსტიტუციური გაგრძელებაა.
+h გარე ფონის მიმართ დაფიქსირებული პროფილია და ოსცილონის
+შემცირებად რადიუსთან არ იგივდება. პროფილის დამოუკიდებელი
+გადაწყობის დაშვებისას K-ის დამოკიდებულებაც გამოსათვლელია.
+
+კოლექტიური მოდის კინეტიკური პასუხისთვის დამატებით ვირჩევთ
+
+    T = I u_t²/(2p) = p I u_tau²/2,       I>0.
+
+ეს გვაძლევს ადგილობრივი კინეტიკური ენერგიის საერთო p-ამოკითხვას.
+I არის გარემოს კოლექტიური ინერცია; იგი ნაწილაკის რადიუსის
+მექანიკურ ინერციად არ იკითხება. ძველი სკალარული PDE-ის
+ფიქსირებულ პროფილზე პროექცია თავისით I/p-ს არ იძლევა.
+
+არჩეული მოქმედება და პასიური დანაკარგის ფუნქციაა
+
+    S = integral [I u_t²/(2p) - K u²/2 - M p] dt,
+    Rayleigh = zeta u_t²/2,       zeta>=0.
+
+zeta=0 დახურული კონსერვატიული მოდია. zeta>0-ზე გარდამავალი
+ენერგია ტოვებს აღწერილ უბანს; ქვემოთ მისი მარაგი ცალკე აღირიცხება.
+თუ გასული ენერგია ახლოს რჩება და კვლავ ამავე უბანს ტვირთავს,
+ეს ღია-საზღვრის აღწერა აღარ კმარა.
+
+### 3. უშუალო საპასუხო განტოლება
+
+ვარიაციიდან, I>0-ზე,
+
+    u_tt + (1/2)u_t² + (zeta p/I)u_t
+         + (Kp/I)u - (M/I)p² = 0.
+
+ეკვივალენტური p-განტოლებაა
+
+    p_tt - (3/2)p_t²/p + (zeta p/I)p_t
+         + (K/I)p² ln p + (M/I)p³ = 0.
+
+ეს სრული ინერციული პასუხია მოცემულ ერთმოდიან მოდელში. მის
+u-აჩქარებაში მატერიული წყაროს წევრი p²-ს შეიცავს. იგი ცალკე
+სიდიდეა, ხოლო p-ის კლების სიჩქარე მთელი განტოლებით განისაზღვრება.
+საათის შეცვლისას მიღებული ზუსტი ადგილობრივი ფორმაა
+
+    u_tau_tau = (1/2)u_tau² - (zeta/I)u_tau
+                - (K/I)u/p + M/I.
+
+ინერციის გარეშე, I=0 და zeta>0-ზე, იმავე ვარიაციული და
+დისიპაციური სტრუქტურიდან მიიღება დახურული პირველი რიგის კანონი:
+
+    zeta u_t = M p - K u,
+
+    p_t = (K/zeta) p ln(1/p) - (M/zeta) p²,
+    p_tau = (K/zeta) ln(1/p) - (M/zeta) p.
+
+აქ მატერიით გამოწვეული კლების ცალკე წევრი ადგილობრივ საათში
+p-ს მიჰყვება; გარე საათზე გადასვლა მას მეორე p-ს ამრავლებს.
+ფიქსირებულ M,zeta-ზე p-ის ათჯერ შემცირება ამ წევრს ასჯერ ამცირებს.
+მთლიანი p_t აღმდგენ წევრსაც შეიცავს და წონასწორობაში ნულია.
+ძველი განზომილებიანი წნევა იმავე კანონით იკითხება:
+
+    (P_F)_t = (2 P_F0/zeta)[K p² ln(1/p) - M p³].
+
+ეს პირველი რიგის კანონი ზუსტია როგორც გამოცხადებული
+დამოუკიდებელი კონსტიტუციური მოდელი. სასრული I-ის მიახლოებად
+მისი გამოყენება ინერციის სიმცირის შემოწმებას მოითხოვს.
+
+### 4. ენერგია და წონასწორობა ერთსა და იმავე კანონში
+
+    E = I u_t²/(2p) + V(u),       V(u)=K u²/2+M exp(-u),
+    E_t = -zeta u_t²,
+    (E_out)_t = zeta u_t²,
+    (E+E_out)_t = 0.
+
+I=0-ზე იგივე ბალანსში კინეტიკური წევრი უბრალოდ ნულია.
+V_R გარემოს დეფორმაციის ენერგიაა. იგი ფონური წნევის რიცხვით
+მნიშვნელობას ან სრულ დაჭიმულობის ენერგიას არ უდრის.
+M p-ის დანაკარგი ერთობლივად აღირიცხება დეფორმაციაში, მოდის
+მოძრაობასა და გასულ ენერგიაში; ამ განაწილებიდან ფონური
+წნევის ზრდა არ გამომდინარეობს.
+
+დანაკარგის გადაყვანას ზუსტად აქვს ორი ფაქტორი:
+
+    (E_out)_t = zeta p² u_tau² = p² Power_out,local.
+
+ადგილობრივი აქტივობა u_tau² თვითონ ამოხსნიდან მიიღება.
+სტაციონარულ ოსცილონს ამ ფორმულა მუდმივ გამოსხივებას არ აკისრებს:
+u_t=0-ზე გასული სიმძლავრეც ნულია.
+
+წონასწორობა და მისი ერთადერთობა მიიღება იმავე V-დან:
+
+    K u_star = M exp(-u_star),
+    u_star exp(u_star) = M/K,
+    u_star = W_0(M/K),       p_star=exp[-W_0(M/K)]>0,
+    V''(u) = K+M exp(-u)>0.
+
+W_0 მთავარი რეალური ლამბერტის ფუნქციაა; M=0-ზე u_star=0,p_star=1.
+სასრული მატერიული დატვირთვა სასრულ დადებით p_star-ს იძლევა.
+ხელით შერჩეული დადებითი წნევის ქვედა ზღვარი განტოლებაში არ დგას.
+ქვედა ზღვრის წყარო არჩეული აღმდგენი ენერგიის ზრდაა.
+
+პირველი რიგის ამოხსნა საწყის p0-სა და p_star-ს შორის რჩება
+და მონოტონურად მიდის p_star-მდე. მისი დროითი ამოხსნის ზუსტი
+არაცხადი ფორმაა, წონასწორობის გარეთ,
+
+    t-t0 = zeta integral_(u0)^u ds/[M exp(-s)-K s],
+    tau-tau0 = zeta integral_(u0)^u exp(-s) ds/[M exp(-s)-K s].
+
+წონასწორობის მარტივი ფესვი ორივე ინტეგრალს უსასრულობას აძლევს.
+პირველი რიგის აღდგენის ხაზოვანი სიჩქარე გარე საათით არის
+K(1+u_star)/zeta. ინერციულ მოდში მცირე გადახრა ასრულებს
+
+    delta_u_tt + (zeta p_star/I)delta_u_t
+       + [K p_star(1+u_star)/I]delta_u = 0.
+
+zeta>0-ზე წონასწორობა ასიმპტოტურად მდგრადია; zeta=0-ზე დასაშვებია
+მდგრადი რხევა. კოლექტიური რხევის სიხშირე ოსცილონის შინაგანი
+საათის სიხშირისგან ცალკე სიდიდეა.
+
+ფიქსირებულ K-ზე წონასწორული სრული მოდის ენერგიაც თვითშეთანხმებულია:
+
+    dE_star/dM = p_star,
+    d²E_star/dM² = -p_star²/[K(1+u_star)] < 0.
+
+ეს ენერგეტიკული პასუხია ფიქსირებული უბნის მოდელში. მისი
+სრული გრავიტაციული მასის ამოკითხვად გამოყენება ცალკე სივრცულ
+შეერთებას მოითხოვს.
+
+### 5. ნულოვანი წნევა: ორივე საათის მტკიცება და მისი საფუძველი
+
+სასრული საწყისი ენერგიის E0-სთვის პასიური ბალანსი იძლევა
+
+    K u²/2 <= E(t) <= E0,
+    |u(t)| <= R=sqrt(2 E0/K),
+    exp(-R) <= p(t) <= exp(R).
+
+I>0-ზე სიჩქარეც შემოსაზღვრულია:
+
+    |u_t|² <= 2 E0 exp(R)/I.
+
+მარჯვენა მხარე რეგულარულია ამ კომპაქტურ ფაზურ არეში; ამიტომ
+ამოხსნა გრძელდება ყველა სასრულ მომავალ t-მდე. საათის კავშირი
+იძლევა tau-tau0 >= exp(-R)(t-t0). ორივე საათი უსასრულოდ გრძელდება,
+ხოლო p ნულს არც სასრულ დროში და არც უსასრულო დროში უახლოვდება
+ამ ფიქსირებული, სასრული ენერგიისა და K>0-ის პირობებში.
+პირველი რიგის მოდში იგივე შედეგი პირდაპირ p0,p_star-ის
+დადებითი ქვედა ზღვრიდანაც მიიღება.
+
+ეს მტკიცება p=exp(-u)-ის ფორმალურად ჩაწერაზე ძლიერი შედეგია:
+იგი u-ის უსასრულოდ გაქცევას ენერგიის საშუალებით გამორიცხავს.
+მისი აუცილებელი ფიზიკური წინაპირობა გლობალური აღმდგენი კანონია.
+
+ამის განმასხვავებელი ზუსტი მაგალითია K=zeta=0,
+I>0,M>0,u_t(0)=0,p(0)=p0:
+
+    p(t) = p0/[1+M p0² t²/(2I)],
+    tau(t) = sqrt(2I/M) arctan[p0 sqrt(M/(2I)) t],
+    p(tau) = p0 cos²[sqrt(M/(2I)) tau].
+
+ამ მაგალითში გარე დრო უსასრულოა, მაგრამ ადგილობრივი საათი
+tau_end=pi sqrt(I/(2M))-ზე მთავრდება. წყაროს p²-შესუსტება
+კვლავ განტოლებაშია. შესაბამისად, მისი არსებობა თავისით
+აღმდგენი კანონის ნაცვლად ვერ გამოიყენება.
+
+ინერციის გამოტოვების მიახლოებასაც თავისი ზღვარი აქვს:
+
+    I K(1+u_star)/(zeta² p_star) << 1.
+
+ფიქსირებული I,zeta-ისას ეს პირობა ყველა შესაძლო დატვირთვაზე
+ერთდროულად გარანტირებული არ არის. ამიტომ ძირითადი ნულამდე
+მიუღწევლობის მტკიცება სრული ინერციული ენერგიიდანაა მიღებული.
+
+### 6. რომელი დამატებითი დაშვებაა გადამწყვეტი
+
+არჩეული აღმდგენი კანონი სუსტ პასუხთან თანხვედრას გასცდა:
+იგი ამბობს, რომ u-ის შეუზღუდავ ზრდას შეუზღუდავი დეფორმაციის
+ენერგია სჭირდება. სწორედ ეს გაგრძელებაა შესამოწმებელი ფიზიკური
+დაშვება. ერთნაირი სუსტი პასუხი მის უნიკალურობას ვერ ადგენს.
+
+დამოუკიდებელი ანალიზით ეს ზუსტად შემოწმდა შემდეგი დიაგნოსტიკური
+ალტერნატივით (ახალი ფიზიკური ტოტის მიღების გარეშე):
+
+    V_R,b(u)=K u²/[2(1+u²)]
+           = K u²/2 - K u⁴/2 + O(u⁶).
+
+I=K=M=1,zeta=0,u(0)=u_t(0)=0,E0=1-ზე განვსაზღვროთ
+
+    D(u)=1-exp(-u)-u²/[2(1+u²)].
+
+u>0-ზე exp(-u)<1/(1+u), ამიტომ
+
+    D(u)>u(u²-u+2)/[2(1+u)(1+u²)]>0.
+
+უკან მოსაბრუნებელი სასრული ბარიერი ამ ტრაექტორიას არ აქვს.
+საწყისი აჩქარება დადებითია და ენერგიიდან
+
+    u_t=sqrt[2 exp(-u) D(u)],
+    t=integral_0^u exp(s/2)/sqrt[2D(s)] ds,
+    tau=integral_0^u exp(-s/2)/sqrt[2D(s)] ds.
+
+საწყისთან D(s)~s, ხოლო უსასრულობაში D(s)->1/2. პირველი
+დრო უსასრულოა; მეორე სასრული. ამ ალტერნატივაში კინეტიკური
+კოეფიციენტი დადებითია და პოტენციალი ყოველ სასრულ u-ზე რეგულარულია.
+მას ძირითად მოდელთან ერთნაირი საწყისი კვადრატული სიხისტე აქვს.
+
+ეს შედარება ადგენს შედეგის ზუსტ საფუძველს: ორი მასშტაბური ფაქტორი
+და სუსტი აღმდგენი სიხისტე მარტო ვერ არჩევს გლობალურ პასუხს.
+კვადრატული გაგრძელების ქვეშ ნულამდე მიუღწევლობა დამტკიცებულია;
+მისი რეალური ფუძის კანონად არჩევა დამატებითი ფიზიკური შემოწმებაა.
+ანალიზი კონსტიტუციური მგრძნობელობის შემოწმებაა, არა წინასწარ
+გაყინული რიცხვითი გამოცდის ზღურბლების ან შედეგების ცვლილება.
+
+### რიცხვითი მეთოდის აუცილებელი დახვეწა — ხელახალ გაშვებამდე
+
+პირველ გაშვებას ჰქონდა სტატუსი FAIL. ზუსტი იგივეობები, ენერგიის
+ბალანსი, ორი საათის საბოლოო მდგომარეობები და ინერციის ზღვარი
+გავიდა. თავისუფალი ადაპტური ნაბიჯის DOP853-ის ინტერპოლაცია
+წონასწორობის მახლობლად მონოტონური ინტერვალის ზღვარს სცდებოდა:
+
+    M=1, below: 4.1337319123e-9; above: 2.9374762622e-9;
+    M=10, below: 1.0453770294e-8; above: 8.0159867633e-9;
+    required: <=2e-9.
+
+M=10,zeta=0 ინერციულ ტესტში უხეში/წვრილი ამოხსნების სრული
+მდგომარეობის სხვაობა იყო 2.7331097964e-6 გარე საათით და
+3.4136043938e-6 ადგილობრივი საათით; მოთხოვნა <2e-6.
+
+შემდეგი გაშვების წინ ფიქსირდება მეთოდის დახვეწა: ყოველი
+ინტეგრაციის საკუთარ საათში max_step=0.1. ყველა საწყისი პირობა,
+განტოლება, დროითი დიაპაზონი, ორი ტოლერანსი და შეფასების ზღურბლი
+უცვლელია. მდგომარეობები ხელით არ იჭრება და წონასწორობაზე
+ხელოვნურად არ ისმება. სკრიპტის --unbounded-step რეჟიმი საწყის
+თავისუფალ ნაბიჯს აღადგენს; საბოლოო შემოწმება ორივე გარჩევადობაზე
+ნაბიჯის კონტროლით ჩატარდება.
+
+### მიღებული შედეგი და კვლავწარმოება
+
+ნაბიჯის კონტროლით შემოწმება დასრულდა PASS-ით; შენახული სკრიპტის
+დამოუკიდებელმა გაშვებამ იგივე პასუხები დააბრუნა. 11 რიცხვითი
+შემთხვევა, ზუსტი იგივეობები და უარყოფითი კონტროლები ერთობლივად
+67 შემოწმებას შეიცავს. დამატებითი კონსტიტუციური მგრძნობელობის
+ხუთი ალგებრული ნაშთი ცალკე დიაგნოსტიკად ნულია.
+
+| გაზომილი რიცხვითი ცდომილება | მაქსიმუმი | წინასწარი ზღვარი |
+|---|---:|---:|
+| სრული ენერგეტიკული ბალანსი, ფარდობითი | 9.4243333e-10 | 2e-8 |
+| უხეში/წვრილი სრული მდგომარეობა, აბსოლუტური | 1.1060223e-6 | 2e-6 |
+| ორი საათის საბოლოო მდგომარეობა, აბსოლუტური | 1.7594672e-9 | 2e-6 |
+| მონოტონური ინტერვალის საზღვრის გადაცდენა | 1.7763568e-15 | 2e-9 |
+| პირველი რიგის საბოლოო u-u_star | 4.4408921e-16 | 1e-7 |
+
+ინერციის .01 -> .005 -> .0025 შემცირებისას პირველი რიგის
+ამოხსნასთან მაქსიმალური სხვაობა იყო .01354344, .00705961,
+.00360458; ყოველი განახევრების ფარდობა .52126 და .51059 გამოვიდა.
+ამით მოცემულ ტესტში პირველი რიგის მიახლოების გაუმჯობესებაც
+უშუალოდ შემოწმდა.
+
+არჩეული უგანზომილებო საცდელი დატვირთვებისთვის:
+
+    M/K=1:  p_star=0.5671432904097838;
+    M/K=10: p_star=0.17455280027406994.
+
+ეს თეორიული საცდელი რიცხვებია, არა ასტროფიზიკური ობიექტების გაზომვა.
+ოსცილონის გარე მასა, სახაზავის კვალი და შინაგანი ტაქტი p_star-ს
+მიჰყვება; კოორდინატული სინათლე და P_F/P_F0 — p_star²-ს.
+დამპირებული მოდელი წონასწორობაში წყნარდება; დაუმპირებული
+მოდელი სასრული ენერგიის ფარგლებში ირხევა.
+
+**ამ მოქმედებით დასრულდა გამოცხადებული ერთმოდიანი კანდიდატი:**
+მივიღეთ რეალური p-პასუხის კანონი, ორივე ფაქტორის ადგილი,
+ერთიანი ენერგეტიკული ბალანსი და დადებითი წონასწორობისა და
+ნულამდე მიუღწევლობის პირობითი მტკიცება. დამატებითი ფიზიკური
+შინაარსი არის აღმდგენი ენერგიის გლობალური კანონი, მოდის ინერცია
+და პასიური დანაკარგის მოდელი. ისინი ღიად განსაზღვრულია.
+
+ამ კანდიდატის არჩევა არსებული სრული RefG-ისგან უნიკალურად არ
+გამომდინარეობს. ფონური დაჭიმულობის სრული მდგომარეობის განტოლება
+და სივრცითი შეერთება ზემოთ აღწერილ ამოცანად რჩება; მათი მზადყოფნის
+ალმები სკრიპტში false-ია. ამ შედეგით ძლიერი ველის სამუშაო არ გახსნილა.
+არჩეულ მოდელსა და უკვე მიღებულ საერთო მასშტაბურ კინემატიკას
+შორის შეუთავსებლობა ამ შემოწმებამ არ აჩვენა.
+
+კვლავწარმოება საცავის ფესვიდან:
+
+    python -X utf8 -B "RefG/work 3/Cosmology_and_LSS/Active_Participation_Resonance_Feedback/single_state_resonance_response.py"
+
+საწყისი თავისუფალი ადაპტური ნაბიჯის გასამეორებლად დაემატოს
+--unbounded-step. ყველა პასუხი მხოლოდ stdout-ში იწერება.
+
+    source SHA256:
+      e7a76455cec3af5cfa3aa5b14a73f78747b8a5c545ca06ffd7256fbf6c65540c
+    frozen-contract SHA256:
+      bed037bb748ec4c588a308722131fcacc253bb0c1af954f33019283d37c0bac1
+    execution-environment SHA256:
+      f9220a344d273ffef610a1fcacd07ff8435ccdfd3cf79cd989c157ea37729cf0
+
+შეიცვალა მხოლოდ ეს სამუშაო ჩანაწერი და დაემატა ერთი Python-შემოწმება.
+ძლიერი ველის ორი აქტიური ვერიფიკატორისა და ქართული ხელნაწერის
+SHA256 უცვლელია; Git-ის წესები, Canon, ინგლისური ტექსტი და
+ძველი სამეცნიერო განტოლებები ხელუხლებელია.
+
+## არსებული ენერგიიდან აღმდგენი პასუხის გამოყვანა — სამუშაო ჩარჩო
+
+2026-09-19. შემდეგი შეთანხმებული მოქმედება: ოსცილონისა და გარემოს
+პროფილების ერთობლივი გადაწყობისას გამოვითვალოთ აღმდგენი პასუხი
+არსებული მოქმედებიდან და შევადაროთ ზემო ერთმოდიან კანონს.
+ძლიერი ველი, Canon, ხელნაწერები და ძველი ვერიფიკატორები უცვლელია.
+
+საწყისი ენერგია არის უკვე გამოთვლილი common_scale_finite_source
+სკალარული განშტოების E_Q[f,u]. ეს განშტოება თვითონაც გამოცხადებული
+კანდიდატია; მისი გამოყვანა შენარჩუნებული სრული აინშტაინური
+RefG-მოქმედებიდან არ იგულისხმება. წინა ერთმოდიანი შედეგი ინარჩუნებს
+თავის პირობით სტატუსს, ხოლო მისი ამ ენერგიიდან მიღება მოწმდება.
+
+უშუალო საკითხია ფიქსირებული პროფილის K-ს შეცვლა რეალურად
+გადაწყობილი პროფილების პასუხით. საკმარისი შედეგია: არსებული
+ენერგიისგან გამოყვანილი ადგილობრივი აღმდგენი სიხისტე; გლობალური
+ნულამდე მიუღწევლობის არგუმენტის გამოყენებადობის ზუსტი საზღვარი;
+იმავე მოქმედების დროითი პასუხი და ერთმოდიან შემცირებასთან შედარება.
+მიკროსკოპული სპექტრი, მოლეკულები და ახალი კოლაფსი არ გამოითვლება.
+
+### PROFILE_RELAXED_RESPONSE_V1 — შემოწმების კონტრაქტი
+
+- MODEL / CLAIM: unchanged scalar fixed-charge action; derive the local
+  profile-relaxed energy response rather than postulate K. Test whether
+  the old one-mode coercivity and finite inertia follow from this action.
+- TYPE / HISTORY: exact constrained-energy identities plus numerical
+  static susceptibility. The scaling argument and method choice were
+  explored analytically before freezing this confirmation contract.
+- ASSUMPTIONS / DOMAIN: alpha=.003; the retained regular spherical weak
+  branch from the W58 Omega=.8 core; same fixed Q; u infinity=0. No
+  horizon or strong-field solution. Global rescaled test profiles below
+  are admissible off-shell configurations, not evolved PDE solutions.
+- ENERGY: E_Q=Q²/(2J)+integral[|grad f|²/2+|grad u|²/(2alpha)
+  +exp(2u)V(f)]d³x, J=integral exp(4u)f²d³x. Include the existing
+  analytic exterior tail in energy; V=f²/2-f⁴/4+f⁶/24.
+- PROBE: A=integral w(r)u(r)d³x, w=exp[-r²/(2s²)]/[(2pi)^(3/2)s³],
+  s=3. Solve the constrained stationary functional E_Q+lambda A.
+  lambda is a diagnostic conjugate force, not a new physical source.
+  Finite-box Gaussian truncation is quantified; the same definition is
+  used at both radii.
+- NEW FREEDOMS: only a smooth averaging observable and small probe
+  values lambda=0,+/-.5,+/-1. No new physical action term is adopted,
+  no fitted restoring/damping coefficient and no equation change.
+- DERIVED TARGET: dE/dlambda=-lambda dA/dlambda;
+  chi=dA/dlambda, K_eff=-1/chi. At a positive fixed-Q Hessian,
+  chi=-b^T H^-1 b<0. The earlier sampled Hessian evidence is reused
+  only within its stated radial finite-domain class.
+- NUMERICS: recompute the same baseline solely to solve this new
+  constrained problem. R=40,tol=1e-7,quadrature=8001 and
+  R=60,tol=1e-9,quadrature=16001. Independent central differences
+  h=.5 and h=1; base profile used as seed. No broader coupling scan.
+- PASS: exact symbolic residuals zero; each BVP residual <=2tol,
+  relative charge error<1e-7, nonzero localized profile and max|u|<.1.
+  chi<0 at both h and R. Susceptibility h-refinement<.005 and
+  R-refinement<.005. Unprobed baseline mass/energy discrepancy<2e-5.
+  Symmetric energy curvature divided by -chi differs from 1 by<.01;
+  dE/dlambda=-lambda dA/dlambda checked by integrating the five-point
+  degree-four interpolation, energy-change residual <.01 of its
+  corresponding nonzero endpoint energy change.
+- FAIL / FALSIFIER: failure withholds that numerical or exact claim;
+  it does not reject RefG. A uniform divergent lower energy bound as
+  central u increases is disproved only by an explicit fixed-Q,
+  asymptotically normalized admissible finite-energy family.
+- NEGATIVE CONTROLS: reversed probe sign in the susceptibility/energy
+  identity and omitted moving-profile scale factor must be detected.
+- DYNAMIC BOUNDARY: use the old action's positive kinetic term and
+  actual source; no phenomenological friction is inferred from static
+  energy. Distinguish static-profile tangent from causal evolution.
+- ERROR / OBSERVABLE MAP: numerical truncation/refinement reported;
+  A is a smooth profile average, not a pointwise central theorem.
+  P_F/P_F0=p² and all previous common-scale readouts unchanged.
+- DATA / FORWARD / IDENTIFIABILITY: no observations, fitted inputs or
+  unique full-theory claim. No ADM interpretation for probed solutions.
+- FILES / PROVENANCE: this ledger plus one stdout-only
+  profile_relaxed_response.py; imported existing solver hash-pinned.
+  Independent algebra review and root rerun; no public export.
+- CLOSURE: derived_local_static_response and old_mode_import_test
+  separated. Full_spatial_RefG_closure, guaranteed_global_positive_pressure,
+  damping_derived, observational_pass and singularity_resolution=false
+  unless an independent actual derivation supplies those claims.
+
+### შედეგი: გადაწყობილი პროფილების აღმდგენი პასუხი
+
+კონტრაქტი შესრულდა უცვლელ სკალარულ მოქმედებაში. ორივე პროფილი,
+f(r) და u(r), და სიხშირე Omega ერთად გადაითვალა; Q უცვლელია.
+ახალი ფიზიკური ძალა, ხახუნი ან წნევის ქვედა ზღვარი არ დამატებულა.
+ეს არის არსებული კანდიდატისგან მიღებული პასუხი და არა სრული
+აინშტაინური RefG-ისგან უკვე გამოყვანილი ფუძის მდგომარეობის კანონი.
+
+მოვნიშნოთ z=(f,u), ხოლო b=delta A/delta z. დამხმარე დატვირთვისას
+სტაციონარობის პირობა და მისი წარმოებულია
+
+    delta E_Q/delta z + lambda b = 0,
+    H dz/dlambda = -b,
+    chi = dA/dlambda = -<b,H^-1 b>.
+
+H არის ფიქსირებული Q-ს ენერგიის მეორე ვარიაცია; ფაზის თავისუფლება
+გამორიცხულია. დადებით H-ზე chi<0. პროფილების უკვე დაშვებული
+გადაწყობის შემდეგ ეფექტური ენერგია აკმაყოფილებს
+
+    dE_eff/dA = -lambda,
+    K_A = d²E_eff/dA² |lambda=0 = -1/chi > 0,
+    E_eff(A) = E_0 + K_A (A-A_0)²/2 + O((A-A_0)³).
+
+ეს კონკრეტული კვადრატული წევრი გამოყვანილია, არა წინასწარ
+შერჩეული. მისი მოქმედების არე არის გამოთვლილი წონასწორობის
+მახლობელი პასუხი არჩეული გლუვი A-ს მიმართ; A არც ცენტრის u-ა და
+არც სრული ველის ერთადერთი დინამიკური კოორდინატი. სრული რადიალური
+H-ს დადებითობის წინა სასრულბადიანი შემოწმება ინარჩუნებს მხოლოდ
+თავის ძველ არეს; აქ ყველა სხვა მიმართულების ახალი მტკიცება არ ხდება.
+
+ახალმა სკრიპტმა 10 სტაციონარული სასაზღვრო ამოცანა ამოხსნა.
+მთავარმა აგენტმა შენახული სკრიპტი დამოუკიდებლად გაუშვა:
+14 ზუსტი/უარყოფითი კონტროლი და 52 რიცხვითი კრიტერიუმი შესრულდა.
+პირველი დადასტურებითი რიცხვითი გაშვება წარმატებული იყო; ზღვრების
+შეცვლა ან დამატებითი ძლიერ-ველიანი ძებნა არ გამხდარა საჭირო.
+
+R=60, h=.5 შედეგია:
+
+    Q=190.40113622348403, alpha=.003,
+    A_0=.010236873440573904, p_A0=exp(-A_0)=.9898153450118816,
+    chi=-4.451291710124046e-5,
+    K_A=22465.38904034516,
+    K_p=K_A/p_A0²=22930.08048453384.
+
+ეს K არჩეული საშუალოსა და მოდელის ერთეულებზეა დამოკიდებული;
+იგი უნივერსალური მუდმივა ან დაკვირვებით გაზომილი რიცხვი არ არის.
+პროფილები არ გაყინულა: df(0)/dA=.1457845085 და
+dR_charge/dA=-4.3005945627.
+
+| lambda | საშუალო A | მატერიისა და ფუძის სრული E_Q |
+|---:|---:|---:|
+| -1 | .01028138633962325 | 175.67559718223092 |
+| -.5 | .01025912989461114 | 175.67558048989753 |
+| 0 | .01023687344057390 | 175.67557492578440 |
+| .5 | .01021461697750990 | 175.67558048990054 |
+| 1 | .01019236050541748 | 175.67559718225500 |
+
+ორივე მხარეს გადახრა ენერგიას ზრდის. აქედან გამომდინარე,
+ამ გაზომილი გადახრის მიმართ ენერგეტიკული პასუხი აღმდგენია.
+ეს ცხრილი არ არის დროითი ჩაქრობის ან ნებისმიერი დატვირთვის ცდა.
+
+| კონტროლი | მიღებული ცდომილება |
+|---|---:|
+| Q-ს ფარდობითი ნაშთის მაქსიმუმი | 2.61e-12 |
+| chi-ს h=1 -> .5 ფარდობითი სხვაობის მაქსიმუმი | 3.70e-11 |
+| chi-ს R=40 -> 60 ფარდობითი სხვაობის მაქსიმუმი | 3.66e-11 |
+| ენერგიის სიმრუდე / (-chi), ერთიდან გადახრის მაქსიმუმი | 1.15e-8 |
+| ინტეგრალური dE=-lambda dA ბალანსის მაქსიმალური ფარდობითი ნაშთი | 5.68e-8 |
+| დაუტვირთავი E და Gauss-მასის მაქსიმალური ფარდობითი სხვაობა | 5.66e-11 |
+
+ენერგიაში ჩათვლილია არსებული გარეთა 1/r-პროფილის კუდი.
+არანულოვანი lambda მხოლოდ შეზღუდული ვარიაციის საზომია.
+ამ დამხმარე ამოცანაში ძველი დაუტვირთავი E=M ტოლობის მოთხოვნა
+არასწორი იქნებოდა: თვითონ სასაზღვრო ამოცანას დამატებული აქვს
+alpha lambda w წყარო. სწორად მიღებული იგივეობებია
+
+    Delta u = -alpha D + alpha lambda w,
+    M_Gauss = integral D - lambda integral w,
+    B_probe = -integral w r u',
+    virial + lambda B_probe = 0,
+    E - M_Gauss = lambda (integral w - B_probe).
+
+მათი ნაშთებიც დაბეჭდილია როგორც დამატებითი დიაგნოსტიკა;
+შედეგის შემდეგ მიღების ახალ კრიტერიუმებად არ გადაკეთებულა.
+lambda=0-ზე ძველი ენერგია-მასის თანხვედრა აღდგება.
+
+### რა ვერ გადმოდის წინა ერთმოდიანი კანონიდან
+
+წინა დადებითი ქვედა ზღვრის მტკიცება იყენებდა გლობალურ ენერგიას
+K u²/2, მუდმივი K>0-ით. ახლა ზუსტად მოწმდება, არსებობს თუ არა
+ასეთი ერთგვაროვანი ენერგეტიკული ბარიერი პროფილების ზომის ცვლილებისას.
+
+ავიღოთ გლუვი, კომპაქტურად შემოსაზღვრული არანულოვანი f_0 და
+გლუვი h, 0<=h<=1, რომელიც f_0-ს საყრდენის გარემოცვაში 1-ია.
+ყოველი სასრული U>=0-სთვის განვსაზღვროთ
+
+    p=e^-U, y=x/p,
+    f_U(x)=f_0(y), u_U(x)=U h(y),
+    F_2=integral f_0², G=integral |grad f_0|²,
+    H_h=integral |grad h|², P=integral V(f_0).
+
+სივრცის მოცულობის p³ და გრადიენტის 1/p ფაქტორების პირდაპირი
+ჩასმა იმავე E_Q-ში იძლევა
+
+    J_U=p^-1 F_2, Omega_U=p Q/F_2,
+    E_Q(U)=p[B+C U²],
+    B=Q²/(2F_2)+G/2+P, C=H_h/(2alpha)>0.
+
+Q უცვლელია, u უსასრულობაში ნულია, ყოველი სასრული U-სთვის
+პროფილები გლუვია და ენერგია სასრულია. ამავე ოჯახში მატერიის
+კოორდინატული ზომა p-ჯერ მცირდება, ხოლო ერთგვაროვან შიდა უბანში
+მისი ადგილობრივი ზომა და Omega_U/p უცვლელია. ამიტომ ეს ტესტი
+საერთო მასშტაბირების ლოგიკას არ გამორიცხავს.
+
+ზუსტად:
+
+    E_Q(U) -> 0 as U -> infinity,
+    E_foundation = (p H_h/alpha) U²/2.
+
+აქ კვადრატული წევრის კოეფიციენტი p H_h/alpha-ა, არა მუდმივი K.
+უფრო ზოგადად, u=U h(x/R)-სთვის იგი R H_h/alpha-ს უდრის.
+ეს კოეფიციენტი არ უნდა აგვერიოს მთელი გადაწყობილი ენერგიის
+მეორე წარმოებულში K_A.
+
+ამ ოჯახს სტაციონარულ ამოხსნად არ ვაცხადებთ. დამოუკიდებლად
+ცვლადი R-სთვის იმავე ენერგიიდან მიიღება
+
+    E(U,R)=a e^-4U/R³+(b+C U²)R+d e^2U R³,
+    a=Q²/(2F_2), b=G/2, d=P,
+    partial_R E |R=e^-U = -3a+b+C U²+3d,
+
+რაც საზოგადოდ ნული არ არის. ეს არის დაშვებული კონფიგურაციების
+ოჯახი, არა წონასწორობათა მიმდევრობა და არა კოლაფსის ტრაექტორია.
+დასკვნა ზუსტია, მაგრამ შეზღუდული: ამ სკალარული ენერგიისთვის
+ფიქსირებული Q და სასრული სრული ენერგია მარტო ვერ მოგვცემს
+წინა ერთმოდიან გლობალურ ქვედა ზღვარს p-ზე.
+ამით არც რეალური p=0 ევოლუცია დამტკიცდა და არც RefG უარყოფილა.
+ნულამდე მიუღწევლობას სხვა, რეალურად გამოყვანილი არგუმენტი შეიძლება
+უზრუნველყოფდეს; სწორედ მუდმივი K-ს მტკიცების გადატანა გამოირიცხა.
+
+### დროითი პასუხი: რა გვაქვს უკვე და რას არ ვამატებთ
+
+გამოიყენება უკვე გამოყვანილი საერთო მოქმედება, არა ახალი დაშლა:
+
+    L=(e^4u u_t²-|grad u|²)/(2alpha)
+      +(e^4u |psi_t|²-|grad psi|²)/2-e^2u V.
+
+იგი ზუსტად იძლევა
+
+    e^4u (u_tt+2u_t²)-Delta u
+      =2alpha(e^4u |psi_t|²-e^2u V).
+
+ადგილობრივი საათის ფაქტორი ამ განტოლებაში უკვე ჩართულია;
+იგი არ უნდა გამრავლდეს მეორედ იგივე მიზეზით. ენერგეტიკული
+დანაკარგი ღია უბნიდან უნდა მოდიოდეს ამ მოქმედების ნაკადიდან;
+სტატიკური K_A-დან ახალი ხახუნი zeta არ გამომდინარეობს.
+
+ამავე 10 ამოხსნიდან შემოწმდა ერთკოორდინატიანი დროითი შემცირების
+მეორე პირობა. შორს u(r)=C_ext(A)/r და მიღებულია
+
+    dC_ext/dA=5.3169258763 != 0.
+
+თუ მთელ უსასრულო პროფილს მყისიერად გადავაწყობდით A(t)-ს მიხედვით,
+ფუძის კინეტიკურ კოეფიციენტში მივიღებდით
+
+    I_A(R_max)=(4pi/alpha)(dC_ext/dA)² R_max+o(R_max),
+    (4pi/alpha)(dC_ext/dA)²=118415.8457.
+
+ამიტომ ასეთი მყისიერი, მთელ სივრცეზე ერთკოორდინატიანი მოძრაობა
+სასრულ ინერციას არ იძლევა. ეს არც ცენტრში სინგულარობაა და არც
+თეორიის ავარია: რეალური განტოლება ცვლილებას სასრული სიჩქარით
+ავრცელებს; მყისიერი უსასრულო პროფილის გადაწყობა მისი ამოხსნა არ არის.
+წინა I/p მოდი და zeta ამ სტატიკური გამოთვლიდან ვერ გამოცხადდება
+გამოყვანილად. რეალური დროითი განტოლება კი უკვე ზემოთ წერია.
+
+ანალოგიურად, f_U-ს თვითნებურად დროით შეკუმშვა ერთგვაროვანი
+ფაზით ადგილობრივი მუხტის გადატანას არ აღწერს. ამიტომ ზემო
+საცდელი ოჯახის გამოყენებით დროით კოლაფსს არ ვითვლით.
+
+### ამ მოქმედების გადაწყვეტილება და კვლავწარმოება
+
+მიღებულია: იმავე მოქმედებიდან სრულად გადაწყობილი პროფილების
+კონკრეტული ადგილობრივი აღმდგენი პასუხი და მისი ენერგეტიკული შემოწმება.
+გადაწყვეტილია აგრეთვე წინა გლობალური მტკიცების გადატანის საკითხი:
+მუდმივი სიხისტე და სასრული ერთმოდიანი ინერცია ავტომატურად არ გადმოდის.
+წინა ერთმოდიანი შედეგი რჩება დამატებითი კონსტიტუციური კანონის
+პირობით შედეგად; სრული ფუძის კანონის სახელით არ გამოიყენება.
+
+ძლიერ ველზე გადასვლა ამით არ გახსნილა. შემდეგი განვითარების
+საგანი არის ფუძის სრული ენერგეტიკული პასუხის ისეთი შეერთება,
+რომელიც უკვე შენარჩუნებულ მოქმედებასა და წყაროებს ეთანხმება,
+და არა იმავე მარტივი კანდიდატის კიდევ ერთხელ დათვლა.
+ეს ჩანაწერი არ აცხადებს ამ შემდგომი შეერთების შესრულებას.
+
+გაშვება საცავის ფესვიდან:
+
+    python -X utf8 -B "RefG/work 3/Cosmology_and_LSS/Active_Participation_Resonance_Feedback/profile_relaxed_response.py"
+
+სკრიპტი ბეჭდავს ყველა 10 პროფილის დიაგნოსტიკას, კრიტერიუმებს,
+ზუსტ იგივეობებს, კოეფიციენტებსა და provenance-ს; ფაილებს არ წერს.
+მხოლოდ ალგებრული შემოწმებისთვის გამოიყენება --symbolic-only.
+
+    source SHA256:
+      7d8059fb2123778f890c1e679f374820c9f9010e54ec4d34a1e5efc10458a7ba
+    ledger SHA256 at independent run, before this result append:
+      306341b67296c8c66d52c61134e4301a44f3e663da53e1e07ea6ec712fff88eb
+    candidate dependency SHA256:
+      6b4a4a0f906725e7262a73496d02330fc4f040bb20ec419d51dbaccd241925b8
+    W58 dependency SHA256:
+      b2c7d4380ba06eafefcae83391d321fd9cccb311a2f2a369a3d3b1406ad3dd57
+    Python 3.10.6; NumPy 1.24.3; SciPy 1.15.2; SymPy 1.13.3.
+
+## სრული მოქმედებისა და ენერგიის შეერთება — 2026-09-19
+
+ამოცანაა გამოყენებული სკალარული ენერგიის შედარება შენარჩუნებულ
+W54/W75 მოქმედებასთან, საჭირო წყაროსა და წნევის განტოლების გამოყვანა
+და დადებითი წონასწორობის/ნულამდე მიუღწევლობის დასაბუთების შემოწმება.
+ძველი დაჭიმულობის აუდიტი და სუსტი პროფილების პასუხი ხელახლა არ ითვლება.
+სამუშაო ეხება უშუალოდ შეერთებას: მარტო გარემოს ენერგიის დამატება
+აღადგენს თუ არა თეორიის სრულ დინამიკას.
+
+დასაშვები ფაილებია ეს ჩანაწერი და ერთი stdout-only ზუსტი შემმოწმებელი
+foundation_action_bridge.py. ძველი კანდიდატები, ძლიერი ველი,
+ხელნაწერები და Git-ის წესები უცვლელია. მეთოდია მოქმედებების
+ვარიაცია, დამოუკიდებელი გეომეტრიული შეზღუდვის აღდგენა და
+კონსტიტუციური განუსაზღვრელობის კონკრეტული მაგალითებით შემოწმება.
+საკმარისი შედეგია წყაროს ზუსტი ფორმა, შეერთების მიღების/უარყოფის
+პირობა და მითითება, რომელი კანონის დამატება იქნებოდა რეალურად ახალი.
+
+### FULL_ACTION_ENERGY_BRIDGE_V1 — დამადასტურებელი კონტრაქტი
+
+- TYPE / HISTORY: exact action/source comparison and constitutive
+  underdetermination witnesses; hand derivations explored before this
+  frozen computer check. No observational fit or new adopted EOS.
+- MODEL / DOMAIN: W54 current action, c0=1, signature -+++;
+  alpha=4pi G>0; positive lapse, finite smooth fields. Compare the
+  diagnostic common-scale slice N=e^-u,h_ij=e^2u delta_ij to the
+  unchanged scalar candidate. Keep full ADM variation independent.
+- TARGETS: derive rest-current n=J0 exp(-3u), Pi=n rho'-rho,
+  delta L_C/d u=exp(2u)(rho+3Pi), delta E_C/dJ0=p mu and the
+  corresponding scalar p equation; derive EH kinetic coefficient and
+  the independent lapse constraint before any common-scale restriction.
+- FREEDOMS: rho remains unspecified in W54. Two analytic witnesses,
+  rho1=m n+m n²/(2ns) and rho2=2m n-m ns ln(1+n/ns), m,ns>0,
+  only test whether existing positivity/causality conditions select
+  a unique static lapse endpoint. Reference density n=ns sets p=1.
+  They are not new physical candidates, fits, or solved stars.
+- METHODS / PASS: registered symbolic residuals exactly zero;
+  current/source factors and ADM restriction derived by two routes.
+  For x=n/ns>0, verify rho>0, mu>0 and 0<cs²<1 by positive
+  factors/derivatives, static Euler p mu=mu_ref and endpoint limits.
+  Verify same pressure permits an arbitrary Cn energy contribution.
+- FALSIFIERS / CONTROLS: using n proportional to p^5 in the local
+  fixed-current variation, omitting 3Pi, treating scalar +1 kinetic
+  coefficient as EH -3, or counting a finite positive lapse as bounded
+  density must produce distinguishable nonzero differences.
+- ENERGY TEST: extend the existing correlated-shrink family by a
+  finite material packet with unchanged proper density. Require
+  E_C=p E_C,proper. This conditional packet argument is not applied to
+  an infinite cosmological background without its subtraction/boundary
+  prescription and not to ADM-constrained initial data by assumption.
+- TIME / CLOSURE: stationary Euler supplies no trajectory or endpoint
+  time. Full action identification and a closed constitutive law are
+  required before claiming nonlinear equilibrium, two-clock positivity
+  or singularity resolution. All such unproved flags remain false.
+- CROSSCHECK / PROVENANCE: independent analytic reviews of the
+  current variation and ADM comparison; saved exact Python verifier
+  independently rerun. Pin inherited action-source hashes. No new
+  long-time evolution, coupling sweep, manuscript edit or public export.
+- DECISION: test whether simply adding rho_C completes the retained
+  theory. If it fails, record the exact additional equations and
+  constitutive information required, rather than install another
+  unmotivated stiffness or pressure floor.
+
+### 1. მოქმედებების შედარების ზუსტი პასუხი
+
+W54-ის შენარჩუნებულ მოქმედებას აქვს ორი ნაწილი: დამოუკიდებლად
+ვარიირებადი გეომეტრია და კოლექტიური ფაზის შენარჩუნებული დენი.
+W75 მას იმავე გეომეტრიაზე ჩვეულებრივი ოსცილონის სექტორს უერთებს.
+სკალარულ საცდელ მოდელში დენის ცალკე სექტორი გამოტოვებულია,
+ხოლო გეომეტრიის მოძრაობის კანონი სხვა, დადებითკინეტიკური u-ველით
+არის ჩანაცვლებული. ეს ორი ცვლილება ცალ-ცალკე უნდა აღირიცხოს.
+
+წყაროები:
+
+- [W54, §2 და §5](../../Lagrangian_Formulation/Relational_Coframe_TEGR_Phase_Source_Closure/w3_54_relational_coframe_tegr_phase_source_closure_contract.md):
+  მოქმედება, დენის შენახვა და მისი ენერგია–იმპულსის ტენზორი;
+- [W75, §4](w3_75_dynamical_relaxation_response_contract.md):
+  კოლექტიური დენისა და ოსცილონის ადიტიური მოქმედება;
+- [სკალარული კანდიდატი, §1](common_scale_finite_source_candidate.md):
+  ახალი u-კინეტიკის გამოცხადებული არჩევანი;
+- [W92, The former energy gap is an unsatisfied constraint](../../Strong_Field/W3-92_Covariant_Medium_Integration/medium_health_horizon_diagnostic.md):
+  დამოუკიდებელი ენერგეტიკული შეზღუდვის ძველი სტატიკური აუდიტი.
+
+W92-ის ხუთველიანი F_med-მოქმედება ცალკე განშტოებაა; მისგან
+W54-ის rho_C-ს მზა ფუნქცია არ გამომდინარეობს. ამიტომ ორივე
+ენერგია ერთ სისტემაში დამატებით წყაროდ არ იკრიბება.
+
+[W76-ის გაცვლის](w3_76_same_field_resonant_exchange_contract.md) და
+[W77-ის წყვილური პასუხის](w3_77_pair_phase_susceptibility_contract.md)
+შემოწმებამაც იგივე საზღვარი შეინარჩუნა: მათი გამოთვლილი წვლილი
+ჩვეულებრივი ველის ენერგიას ეკუთვნის. კოლექტიურ დენსა და P_F-თან
+ახალი რაოდენობრივი კანონი ამ ფაილებში არჩეული არ არის.
+
+### 2. ფუძის დენის ენერგიის ზუსტი შეერთება
+
+გამოვიყენოთ J^mu როგორც შენარჩუნებული დენის სიმკვრივე და
+U_C^mu როგორც მისი ოთხსიჩქარე, რათა იგი u=-ln p-ს არ აერიოს:
+
+    S_C=integral[J^mu partial_mu theta_C-sqrt(-g)rho_C(n)]d^4x,
+    n=sqrt(-g_mu_nu J^mu J^nu)/sqrt(-g),
+    mu=rho_C'(n), Pi_C=n mu-rho_C.
+
+u-მიმართულების ადგილობრივ ვარიაციაში J^mu ფიქსირდება.
+N=p=e^-u, h_ij=e^2u delta_ij და იმ მომენტში J^i=0-ზე:
+
+    n=J^0 e^-3u,
+    L_C=J^0 theta_C,t-e^2u rho_C(J^0 e^-3u),
+    delta L_C/d u=e^2u(rho_C+3Pi_C).
+
+ამრიგად, ფუძის ენერგიის წყაროს შესაერთებელი წევრი ზუსტად
+გამოყვანილია. rho_C-ის უბრალოდ დამატება სტრესის 3Pi_C წვლილს
+დაკარგავდა. კოსმოლოგიური n proportional to p^5 სხვა განშტოების
+მოცულობის წესია; აქ დენის შენახვა ლოკალურ ვარიაციაში p^3-ს იძლევა.
+
+თუ ამ დენს სწორედ საცდელ სკალარულ მოქმედებას შევუერთებთ,
+მისი დროითი პასუხი იქნება
+
+    e^4u (u_tt+2u_t²)-Delta u
+      =alpha[2e^4u|psi_t|²-2e^2u V+e^2u(epsilon_C+Sigma_C)],
+    Sigma_C=h^ij T^C_ij.
+
+Sigma_C სივრცული დაძაბულობების კვალს ნიშნავს. უძრავ ჩარჩოში
+epsilon_C=rho_C და Sigma_C=3Pi_C. იმავე განტოლების p-ფორმაა
+
+    p_tt-p^4 Delta p
+      =3p_t²/p-p³|grad p|²-2alpha p|psi_t|²+2alpha p³V
+       -alpha p³(epsilon_C+Sigma_C).
+
+ამ ფორმულაში წყაროც, დროის ფაქტორიც და სივრცული პასუხიც
+ერთი ვარიაციიდან მოდის. მოძრაობისას უძრავი rho_C+3Pi_C უნდა
+შეიცვალოს რეალური epsilon_C+Sigma_C-ით.
+აქ p³ აჩქარების განტოლების წევრში დგას; ადრე მიღებული p²
+სიმძლავრის გადაყვანას ეხება. ეს სხვადასხვა სიდიდის ფორმულებია.
+
+ამავე დროს დამოუკიდებლად ვარიირდება დენი:
+
+    partial_mu J^mu=0,
+    partial_mu theta_C+mu U_C,mu=0.
+
+ფიქსირებულ კოორდინატულ უძრავ უჯრაში q=J^0 და
+E_C=integral p^-2 rho_C(p³q)d³x. მისგან მიიღება
+
+    delta E_C/dq=p mu,
+    delta q=-div(q xi)  =>  grad(p mu)=0
+
+სტატიკური მატერიალური წონასწორობისას. ეს იგივე პირობაა, რაც
+grad Pi_C=-(rho_C+Pi_C)grad ln p. ამ მეორე ვარიაციის შესრულებას
+ფიქსირებული q-თი მარტო u-განტოლების ამოხსნა ვერ ცვლის.
+
+ენერგეტიკული მუშაობა იმავე კანონიდანაა:
+
+    d(rho_C V_proper)=-Pi_C dV_proper  (N_C=n V_proper fixed).
+
+გარე E_t=p E_local ამოკითხვისას სრული წარმოებულია
+E_t,t=p_t E_local+p² E_local,tau. მუშაობის პირველი წევრი
+დანაკარგის მეორე წევრთან ერთად აღირიცხება; დამატებითი საათის
+მამრავლი თვითნებურად აღარ ემატება.
+
+### 3. რატომ არ კმარა მარტო ამ ენერგიის დამატება
+
+დროითი განსხვავება შეიძლება სრულად, კოლაფსის გაშვების გარეშე
+ვიპოვოთ. ჯერ დამოუკიდებლად ავიღოთ N და A, h_ij=A²delta_ij,
+ნულოვანი ცვლით. მაშინ
+
+    R^(3)=A^-2[-4 Delta ln A-2|grad ln A|²],
+    K_ij K^ij-K²=-6(A_t/(N A))²,
+    L_EH=N A³[R^(3)+K_ij K^ij-K²-2Lambda]/(4alpha).
+
+მხოლოდ ამ ფორმულის შემდეგ N=e^-u,A=e^u-ს ჩასმა და სივრცული
+დივერგენციის ცალკე გატანა იძლევა
+
+    L_EH,restricted=-(3e^4u u_t²+|grad u|²+Lambda e^2u)/(2alpha).
+
+გამოყენებული კანდიდატის წევრი კი არის
+
+    L_u,candidate=(e^4u u_t²-|grad u|²)/(2alpha).
+
+სტატიკური გრადიენტული წევრი თანხვდება; დროითი კოეფიციენტი -3-დან
++1-ზეა შეცვლილი. rho_C(n)-ის ჩასმა ამ განსხვავებას არ ასწორებს.
+უარყოფითი შეზღუდული კინეტიკური ნიშანი თავისით ფიზიკურ მოჩვენებით
+რეჟიმს არ ამტკიცებს: სრული გეომეტრია დამოუკიდებელ შეზღუდვებს ატარებს.
+ამიტომ კანდიდატში ნიშნის ხელით შეცვლაც სწორი შეერთება არ იქნებოდა.
+
+დამოუკიდებელი N-ვარიაცია დამატებით იძლევა
+
+    R^(3)+K²-K_ij K^ij=4alpha epsilon_total+2Lambda.
+
+საერთო მასშტაბის დიაგნოსტიკურ ჭრილში ეს ნიშნავს
+
+    e^-2u[-4 Delta u-2|grad u|²]+6e^2u u_t²
+      =4alpha epsilon_total+2Lambda.
+
+მატერიისთვის იგივე დამოუკიდებელი ვარიაციაა
+delta L_m/dN=-sqrt(h)epsilon_total; იგი u-მიმართულების
+epsilon_total+S_total წყაროსგან განსხვავებული განტოლებაა.
+სკალარული მოქმედება საკუთარ მოდელად გამართულია; მისი სრული
+RefG-ის შედეგებით ჩანაცვლება ამ დამატებით განტოლებებს მოითხოვს.
+
+შეერთების სწორი საწყისი სისტემა, W54/W75-ის ფარგლებში, არის
+
+    S_total=S_EH[g]+S_C[g,J,theta_C]+S_osc[g,psi],
+    G_mu_nu+Lambda g_mu_nu=2alpha(T_C+T_osc)_mu_nu,
+    partial_mu J^mu=0,  partial_mu theta_C+mu U_C,mu=0,
+    Box_g psi_A - V_A=0
+
+კომპლექსური ოსცილონის ორი რეალური კომპონენტისთვის psi_A.
+ჯერ ვარიირდება ყველა დამოუკიდებელი ველი; საერთო წაკითხვის რუკა
+და მისი შესაძლო შეზღუდვა შემდეგ მოწმდება. ეს არსებული მოქმედების
+აღდგენაა და არა ამ სისტემის უკვე მიღებული ახალი ამოხსნა.
+
+### 4. კონკრეტულად რომელი კონსტიტუციური მონაცემია დაუდგენელი
+
+W54 rho_C(n)-ს ფუნქციურ თავისუფლებად ტოვებს, პირობებით
+rho_C>0, mu>0 და 0<=n rho_C''/rho_C'<=1.
+ეს პირობები ერთი კონკრეტული კანონის ასარჩევად არასაკმარისია.
+შედარებისთვის, მხოლოდ მათემატიკურ მოწმეებად, ავიღოთ m,ns>0,
+x=n/ns და ორი ფუნქცია; ორივე აქ მხოლოდ განუსაზღვრელობის მოწმეა:
+
+| სიდიდე | მოწმე 1 | მოწმე 2 |
+|---|---|---|
+| rho_C/(m ns) | x+x²/2 | 2x-ln(1+x) |
+| mu/m | 1+x | (1+2x)/(1+x) |
+| Pi_C/(m ns) | x²/2 | ln(1+x)-x/(1+x) |
+| c_s² | x/(1+x) | x/[(1+x)(1+2x)] |
+| p=mu(ns)/mu(n) | 2/(1+x) | 3(1+x)/[2(1+2x)] |
+
+ორივე ენერგია და mu დადებითია, ორივე c_s² რეალურია და 1-ზე
+ნაკლები. rho_C(0)=0, ამიტომ მეორე ვაკუუმური მუდმივა არ შემოგვიტანია.
+წნევის დადებითობა მეორე სვეტში გამომდინარეობს
+d[ln(1+x)-x/(1+x)]/dx=x/(1+x)²>0-დან და ნულოვანი საწყისი
+მნიშვნელობიდან. ჯანმრთელობის ნიშნები სასრულ წერტილებზე მორგებას
+არ ეყრდნობა.
+
+გარედან ნორმირებული სტატიკური დენის პირველ ინტეგრალში,
+x->infinity-ზე პირველისთვის p->0, მეორისთვის p->3/4.
+მეორე შემთხვევაში
+
+    x=(3-2p)/(4p-3) -> infinity  as p decreases to 3/4,
+
+და rho_C და Pi_C უსასრულოდ იზრდება. ამგვარად, დადებითი
+მასშტაბის ქვედა რიცხვი თავისით არც სასრულ სიმკვრივეს ადგენს.
+ეს ორი EOS-მოწმე სრული მეტრიკული ამოხსნები ან დროითი ტრაექტორიები
+არ არის; მათ აქ ერთი დანიშნულება აქვთ: არსებული პირობებისგან
+ნულამდე მიუღწევლობის ერთი პასუხი ვერ აირჩევა.
+
+წნევის მთელი ფუნქციაც რომ გვქონდეს, მისი ინტეგრაცია იძლევა
+
+    rho_C(n)=n[C+integral_(n_*)^n Pi_C(s)/s² ds].
+
+C n წევრი Pi_C-ს არ ცვლის, მაგრამ ენერგიასა და წყაროს ცვლის.
+ამიტომ მინიმალური დამატებითი კონსტიტუციური მონაცემია rho_C(n),
+ან ეკვივალენტურად Pi_C(n) და ერთი ენერგეტიკული ნორმალიზაცია.
+მისი კავშირი P_F-ის ოპერაციულ ამოკითხვასთან ცალკე უნდა დასაბუთდეს;
+P_F/P_F0=p² რიცხვითი რუკა Pi_C(n)-ს თავისით არ განსაზღვრავს.
+ეს ახალი მონაცემის ზუსტი როლია; ერთ-ერთი მოწმე სასურველი
+საზღვრის მისაღებად თეორიაში არ ირჩევა.
+
+### 5. ენერგეტიკული ბარიერი და ორი საათის შემოწმების შედეგი
+
+წინა თავისუფლად გადაწყობადი პროფილების ტესტი ამატებს კიდევ ერთ
+მოკლე შემოწმებას. თუ ფიქსირებული საკუთარი მატერიალური პროფილის
+სასრული პაკეტი საერთო x=p y მასშტაბირებას მიჰყვება,
+
+    dV_proper=d³y, n(y) unchanged, N_C unchanged,
+    E_C,t=p E_C,proper.
+
+ამიტომ წინა სკალარულ საცდელ ოჯახში ასეთი პაკეტის დამატება იძლევა
+
+    E_total(U)=e^-U[B+C U²+E_C,proper] -> 0.
+
+პაკეტის სასაზღვრო/ვაკუუმში გაგრძელების დასაშვებობა ამ მტკიცების
+პირობაა. უსასრულო კოსმოლოგიური ფონის ენერგიის გამოკლებასა და
+სრული ADM-შეზღუდვების შესრულებას ეს ოჯახი არ ამტკიცებს.
+შედეგი გამორიცხავს კონკრეტულ სწრაფ გზას: ამ საცდელ ოჯახში მხოლოდ
+სასრული ბაროტროპული ენერგიის დამატება ძველ მუდმივ-K ბარიერს ვერ
+გამოიყვანს. მთელი თეორიის დინამიკური კოლაფსი აქედან არ გამომდინარეობს.
+
+სტატიკური p mu=constant დროით ტრაექტორიას არ განსაზღვრავს.
+თუ მართლაც გამოყვანილი ერთკოორდინატიანი კონსერვატიული შემცირება
+არსებობს, ორი საათის საჭირო ტესტი იქნებოდა
+
+    Delta t=integral sqrt[M(p)/(2(E-V(p)))] |dp|,
+    Delta tau_rest=integral p sqrt[M(p)/(2(E-V(p)))] |dp|.
+
+M(p) უნდა მოვიდეს იმავე სრულ დინამიკიდან. მოძრავი მატერიის
+საათისთვის დამატებით d tau=p dt/Gamma; მისი სიჩქარეც ამოხსნის
+ნაწილია. მხოლოდ დადებითი ენერგია ან p mu-ს სტატიკური ფორმულა
+ამ ინტეგრალების კრებადობას ვერ წყვეტს.
+
+ამიტომ შეერთების გადაწყვეტილება კონკრეტულია: საცდელ მოდელს
+მხოლოდ ერთი ენერგიის დამატებით სრული თეორიის სტატუსი ვერ მიენიჭება.
+წყაროს ფორმულა მიღებულია; სრული მოქმედება დამოუკიდებელი
+გეომეტრიით აღდგენილია; დასადგენია ერთი არჩეული განშტოების
+კონსტიტუციური პასუხი და მისი ოპერაციული კავშირი. ახალი EOS-ის,
+შერეული ურთიერთქმედების ან F_med-ის არჩევა უკვე ახალი ფიზიკური
+კანონის აგება იქნება. მათი არჩევანი საერთო მასშტაბების ლექსიკონიდან
+ერთადერთი გზით არ გამომდინარეობს.
+
+შესაბამისად, ამ აუდიტით სრულად შეერთებული დინამიკა და ორივე
+საათში ნულამდე მიუღწევლობა მიღწეულად არ ინიშნება. შეჩერების
+კონკრეტული საფუძველია არსებული მოქმედების დაუზუსტებელი ფიზიკური
+ფუნქცია და მისი ამოკითხვის კავშირი, ხოლო შემოწმებული მარტივი
+დამატება უკვე ზემოთ ნაჩვენები მიზეზით არასაკმარისია.
+
+### ზუსტი შემოწმების დასრულება
+
+შენახული foundation_action_bridge.py-ის საბოლოო ვერსია მთავარმა
+აგენტმა დამოუკიდებლად გაუშვა. შესრულდა 55 ზუსტი იგივეობა/
+დადებითობის შემოწმება და ოთხივე უარყოფითი კონტროლი; exit code=0.
+სკრიპტმა ცალ-ცალკე დააბრუნა
+
+    current_source_derived=true,
+    ADM_comparison_verified=true,
+    constitutive_witnesses_verified=true.
+
+გეომეტრიული ნაწილი ორი გზით შემოწმდა: ADM-ის დამოუკიდებელი
+ვარიაციით და უშუალოდ მეტრიკის კრისტოფელის სიმბოლოებიდან
+ოთხგანზომილებიანი რიჩის სკალარის შეკუმშვით. მათ შორის სხვაობა
+ზუსტად სრული დივერგენციაა:
+
+    L_EH,direct-L_ADM,restricted
+      =Delta u/(2alpha)+(3/(2alpha))partial_t(e^4u u_t).
+
+წყარო დამოუკიდებლად შემოწმდა როგორც დენის ენერგიის წარმოებულით,
+ისე ჰილბერტის ტენზორისა და მეტრიკის u-წარმოებულის შეკუმშვით.
+ნულოვანი ნაშთები, დადებითობის ფაქტორები და კონტრმაგალითების
+განსხვავებები სრულად იბეჭდება. რიცხვითი ევოლუცია ან მორგებული
+ზღურბლი ამ აუდიტს არ სჭირდება.
+
+კვლავწარმოება:
+
+    python -X utf8 -B "RefG/work 3/Cosmology_and_LSS/Active_Participation_Resonance_Feedback/foundation_action_bridge.py"
+
+    verifier SHA256:
+      5e30dad3e3518a8248fc5c481462d821f3b199126a16c144ed4150dfadbb2d93
+    ledger SHA256 at independent run, before this result append:
+      03193acbe6bcb250c06f9807dce80d6aafb13da047d55c4d3134db49c68dc14f
+    W54 contract SHA256:
+      6cc748eb806d0bccaaf63105567a5d9b1569c56f6b53951c554ec4bad1aa9879
+    Python 3.10.6; SymPy 1.13.3.
+
+კანდიდატის და წინა პროფილური შემოწმების ჰეშები სკრიპტში
+დაფიქსირებულია და უცვლელობა ავტომატურად მოწმდება. ძველი ერთმოდიანი
+ვერიფიკატორი, ქართული ხელნაწერი და ძლიერი ველის ორივე აქტიური
+ვერიფიკატორი საწყის ჰეშებს ინარჩუნებს; git diff --check სუფთაა.
+ამ მოქმედებამ შეცვალა მხოლოდ ეს სამუშაო ჩანაწერი და დაამატა
+ერთი ზუსტი Python-შემმოწმებელი. სრული ფიზიკური დახურვის,
+ორივე საათში ნულამდე მიუღწევლობისა და სინგულარობის მოხსნის
+ალმები შენარჩუნებულია false-ად ზემოთ დასახელებული მიზეზებით.
+
+## არსებული სრული მოქმედების წონასწორული თავსებადობა
+
+მიზანი უცვლელია: ერთიანი წყარო, ენერგია და აღდგენის დინამიკა,
+რომელშიც ოსცილონისა და ფუძის მდგომარეობა ერთად განისაზღვრება.
+ამ გაგრძელების უშუალო გადაწყვეტილებაა, შეიძლება თუ არა ამ მიზნის
+მიღწევა W54-ის მოქმედებაში მხოლოდ rho_C(n)-ის შერჩევით.
+დასაშვები ცვლილებებია ეს ჩანაწერი და foundation_action_bridge.py;
+ხელნაწერი, ძველი ძლიერი ველის განტოლებები და Git-ის წესები უცვლელია.
+
+W92/common_scale_centre_source.md §1 და §6D უკვე შეიცავს საერთო
+მასშტაბის აუცილებელ სტრესსა და შესაბამის შეზღუდულ დაბრკოლებას.
+ეს შედეგი ხელახლა აღმოჩენად არ ითვლება. აქ იგი გადადის მიმდინარე
+W54/W58 ენერგეტიკული დახურვის გადაწყვეტილებაში: ენერგიის ფუნქციის
+არჩევამდე უნდა დაკმაყოფილდეს დამოუკიდებელი სივრცითი განტოლებაც.
+წინა აუდიტის დასკვნა, რომ დაუზუსტებელი rho_C(n) უშუალო დაბრკოლებაა,
+ამ კლასისთვის არასაკმარისი იყო — მისი ნებისმიერი არჩევანი ქვემოთ
+მოცემულ ნიშანთა წინააღმდეგობას უცვლელად ტოვებს.
+
+### STATIC_COMMON_SCALE_COMPATIBILITY_V1 — შემოწმების კონტრაქტი
+
+ეს არის უკვე ანალიზურად მიღებული შედეგის დამოუკიდებელი სიმბოლური
+გადამოწმება და მიმდინარე კანდიდატზე გამოყენება; ახალი პროგნოზი
+ან დაკვირვებითი ტესტი არ ტარდება.
+
+კლასი: c=1, (-+++) სიგნატურა, alpha=4 pi G>0; ჩვეულებრივი
+აინშტაინ–ჰილბერტის მოქმედება, უძრავი იზოტროპული ბაროტროპული
+დენი ნებისმიერი გლუვი rho_C(n)-ით და კანონიკური კომპლექსური
+სკალარი Psi_O=(f(r)/sqrt(2)) exp(i Omega t), რეალური f-ით,
+L_O=-g^{mu nu} partial_mu(Psi_O*) partial_nu(Psi_O)-V(f).
+სკალარი ჰარმონიულია, ხოლო გეომეტრია და ენერგია–იმპულსის ტენზორი
+სტატიკურია. პროფილები გლუვია r>0-ზე და აქვს N=exp(-u), A=exp(u).
+კოსმოლოგიური
+მუდმივის იზოტროპული წვლილი წნევების სხვაობას არ ცვლის;
+ვაკუუმური შედარება კეთდება Lambda=0-ზე.
+
+შემოწმდეს უშუალოდ მეტრიკიდან კრისტოფელის სიმბოლოების, რიჩისა და
+აინშტაინის ტენზორის გამოთვლით საჭირო ენერგია და ორივე წნევა.
+მატერიის წნევების სხვაობა დამოუკიდებლად მიიღება ორი სივრცითი
+მასშტაბის მიმართ მატერიის მოქმედების ვარიაციით. PASS მოითხოვს
+ყველა გამოცხადებულ იგივეობაში ზუსტად ნულოვან ნაშთს და ნიშნის
+წინაპირობების ზუსტ შემოწმებას. არანულოვანი ნაშთი აუქმებს
+შესაბამის დასკვნას; რიცხვითი ზღურბლი ან პარამეტრების მორგება არ არის.
+
+შედარებისთვის შემოწმდეს დამოუკიდებელი N,A მეტრიკის ვაკუუმური
+ამოხსნა და მისი ზუსტი გადახრა საერთო მასშტაბისგან. ეს არის
+დიაგნოსტიკური ალტერნატივა, რომლის მიღებაც ცალკე არჩევანია;
+სკრიპტის PASS მას თეორიაში ავტომატურად არ შემოიტანს.
+
+კვლავწარმოება:
+
+    python -X utf8 -B "RefG/work 3/Cosmology_and_LSS/Active_Participation_Resonance_Feedback/foundation_action_bridge.py" --static-compatibility
+
+არსებული ჩვეულებრივი გაშვება ინარჩუნებს წინა აუდიტს.
+ახალი რეჟიმი მას თავიდან არ იმეორებს. ორივე რეჟიმი შედეგს
+მხოლოდ stdout-ზე ბეჭდავს. ახალი EOS, ევოლუცია, უცნობი ფიზიკური
+პარამეტრი ან ფონური წნევის ახალი განსაზღვრება არ ემატება.
+
+### გადაწყვეტილება: მხოლოდ ენერგიის ფუნქციის შერჩევის გზა დახურულია
+
+უშუალო მეტრიკული გამოთვლა იძლევა:
+
+    2 alpha rho_geom = -exp(-2u)[2(u''+2u'/r)+u'^2],
+    2 alpha Pi_r,geom = -exp(-2u)u'^2,
+    2 alpha Pi_t,geom = +exp(-2u)u'^2.
+
+ამიტომ Pi_r,geom-Pi_t,geom=-exp(-2u)u'^2/alpha.
+კანონიკური ოსცილონის მოქმედების დამოუკიდებელი ვარიაცია კი იძლევა
+
+    Pi_r,matter-Pi_t,matter = exp(-2u)f'^2.
+
+უძრავი ბაროტროპული დენი ორივე წნევას ერთსა და იმავე Pi_C-ს
+უმატებს. მისი ენერგიის ფუნქცია, სიმკვრივე და შეკუმშვადობა ამ
+სხვაობიდან ზუსტად ქრება. სივრცითი განტოლება შედეგად მოითხოვს
+
+    u'^2 + alpha f'^2 = 0.
+
+რეალური პროფილებისა და alpha>0-ისთვის აუცილებელია u'=f'=0.
+ამ კლასში არატრივიალური სტატიკური საერთო-მასშტაბური წონასწორობა
+გამორიცხულია ნებისმიერი rho_C(n)-ით. ეს არის მთელი მითითებული
+კლასის ნიშანთა დაბრკოლება; ახალი ბადე, მეტი ოსცილონი, სხვა
+სკალარული პოტენციალი ან იმავე დენის სხვა EOS მას ვერ ცვლის.
+
+შედეგის ფარგლებია ჩვეულებრივი EH, ზუსტი N A=1 და ზემოთ დასახელებული
+სტატიკური წყაროები. დროითი ოსცილონი, დამატებითი ანიზოტროპული
+მედიუმი ან შეცვლილი გრავიტაციული მოქმედება ამ თეორემის კლასში არ
+შედის. მთელი RefG-ის ან თვითრეგულირების შეუძლებლობა არ დადგენილა.
+მიმდინარე მარტივი შეერთების სტატუსია
+REJECTED_NONUNIFORM_STATIC_COMMON_SCALE_EH_CURRENT_CANONICAL_SCALAR.
+
+არსებული გაფართოებების ხელახალი გამოყენების გადაწყვეტილება:
+
+- W92-ის პროეცირებული H-წევრი საჭირო ნიშნის სტრესს უკვე იძლევა,
+  მაგრამ მისი ჯანმრთელი იზოლირებული დასრულება ვერ მემკვიდრეობს
+  მხოლოდ ამ ნიშანს. common_scale_centre_source.md §§2,6-ში მოცემული
+  ცენტრალური კანდიდატი იზოლირებული დასრულებისათვის უარყოფილია.
+- იმავე ფაილის §6D და medium_health_horizon_diagnostic.md-ის Stage 26
+  უკვე ზღუდავს რეგულარულ დადებითი ენერგიის მქონე ალგებრულ
+  clock–label პასუხს. F-ის უცვლელი კლასის კოეფიციენტთა ახალი
+  გადარჩევა დასაბუთებულ გაგრძელებად არ ჩაითვლება.
+- იმავე დიაგნოსტიკის Stages 27–28-ში წარმოებულური კანდიდატის
+  ჯანმრთელი ადგილობრივი წერტილი მიღებულია, მაგრამ ჩვეულებრივ
+  გარე გარემოსთან და ოსცილონის წყაროსთან შეერთება ვერ სრულდება.
+  იგი მზადმყოფ შემცვლელ ფუძის კანონად არ გამოიყენება.
+
+### უმცირესი გეომეტრიული ალტერნატივის ზუსტი ფასი
+
+დამოუკიდებელი დროითი და სივრცითი პასუხებისთვის ჩავწეროთ
+
+    A=exp(u), N=exp(-u+chi), chi=ln(N A).
+
+მაშინ აუცილებელი განტოლებაა
+
+    2 alpha exp(2u)(Pi_r-Pi_t)
+      =-chi''+chi'/r-2u'^2+4u'chi'-chi'^2.
+
+chi-ის პასუხს ამ განტოლებაში დამატებითი წევრები შემოაქვს.
+მათი მოქმედება შემოწმდა ზუსტ ვაკუუმურ მაგალითზე, Lambda=0 და r>m/2:
+
+    N=(1-m/(2r))/(1+m/(2r)),
+    A=(1+m/(2r))^2, N A=1-m^2/(4r^2).
+
+სამივე დამოუკიდებელი ენერგეტიკულ-წნევითი განტოლება ნულდება.
+თუ საათის ფაქტორად p=N რჩება, ადგილობრივი სახაზავის
+კოორდინატული კვალი და სინათლის კოორდინატული სიჩქარე ხდება
+
+    L_coord/L_local=1/A=(1+p)^2/4,
+    1/A-p=(1-p)^2/4,
+    c_coord=N/A=p(1+p)^2/4,
+    c_coord-p^2=p(1-p)^2/4.
+
+პირველი სუსტი რიგი ემთხვევა საერთო მასშტაბს; ზუსტი თანასწორობა
+იცვლება მეორე რიგიდან. ეს ფიზიკური ამოკითხვის ცვლილებაა და
+უბრალო აღნიშვნის შეცვლად ვერ ჩაითვლება. ეს მაგალითი აჩვენებს
+დაბრკოლების ერთ შესაძლო მოხსნას; იგი ახალი მატერიალური სხეულის
+ამოხსნა ან მიღებული RefG-კანონი არ არის.
+
+### გავლენა მიმდინარე ამოცანაზე და გაგრძელების პირობა
+
+წინა ცალკეული სკალარული კანდიდატის ლოკალური წონასწორობისა და
+მასშტაბური ენერგია/ტაქტის შედეგები საკუთარ ფარგლებს ინარჩუნებს.
+მათზე სრული W54 დინამიკისა და უნივერსალური არანულოვანი წნევის
+დასკვნა აღარ აიგება მხოლოდ rho_C(n)-ის დამატებით.
+
+საჭიროა არქიტექტურული არჩევანი:
+
+1. ზუსტი საერთო p-მასშტაბის შენარჩუნება და არსებული შეზღუდული
+   კლასის მიღმა ფუძის გრავიტაციული/წარმოებულური პასუხის განვითარება;
+   ახალი მოქმედების წყარო, ენერგია და ჯანმრთელობა ერთად მოწმდება.
+2. EH-ის შენარჩუნება და დამოუკიდებელი N,A პასუხების დაშვება;
+   იცვლება ზუსტი საერთო სახაზავ–საათის რუკა, რის შემდეგაც სრული
+   ენერგეტიკული დახურვა ახალი რუკით უნდა გაკეთდეს.
+
+არც ერთი არჩევანი ავტომატურად არ დანერგილა. ავტორს გაეგზავნა
+ამ კონკრეტული ცვლილების განმარტება და არჩევანი; ეს უკვე მოცემული
+გამოთვლითი ნებართვის ხელახალი მოთხოვნა არ არის. უცვლელი
+თეორიის დათვლის გაგრძელებას ამჟამად მათემატიკური დაბრკოლება აქვს.
+მთავარი მიზანი — სრული ენერგეტიკული/დინამიკური დახურვა — OPEN-ია
+ამ კონკრეტული არქიტექტურული ცვლილების შერჩევამდე. ახალი
+rho_C(n)-ის ვარაუდებით ან ძველი ძლიერი ველის ევოლუციებით ამ
+ბარიერის შემოვლა დაუშვებელია.
+
+დამოუკიდებელი გაშვება: 18 ზუსტი შემოწმება და 2 უარყოფითი
+კონტროლი შესრულდა, exit=0. გადაწყვეტილებაა ზემოთ მითითებული
+შეზღუდული კლასის უარყოფა; ახალი მოქმედების მიღების, არაწრფივი
+წონასწორობის, ორივე საათში ნულამდე მიუღწევლობისა და სინგულარობის
+მოხსნის ალმები false რჩება.
+
+    verifier SHA256:
+      715ba779925467c7f78fa70be9523d9d3a980c7e3cce8b0d8d7f2d5e061709de
+    ledger SHA256 at run, before this result append:
+      9f90fcd18b7a71936d451139af2bbd9a9cc4ada429b3d34a6ea61b9b4b570fe2
+    Python 3.10.6; SymPy 1.13.3.
+
+დამოუკიდებელმა განხილვამ დააზუსტა W58-ის f/sqrt(2) ნორმალიზაციის
+ტექსტური ჩაწერა და ჰარმონიული ველის/სტატიკური სტრესის გამიჯვნა;
+მოქმედება, კოდი და ნიშანთა დასკვნა უცვლელია. ამის შემდეგ მთავარმა
+აგენტმა საბოლოო ვერსია ხელახლა გაუშვა: ახალი რეჟიმი 18+2 და
+ძველი აუდიტის რეგრესია 55+4 სრულად შესრულდა, ორივე exit=0.
+ამ გაშვების ჩანაწერის ჰეში იყო
+994939c923ae8c4ba634d022a349aac37f0dd38ddec962ca165da30d10401f85.
+git diff --check სუფთაა. ქართული ხელნაწერი და ორივე ძლიერი
+ველის აქტიური ვერიფიკატორი საწყის ჰეშებს ინარჩუნებს.
+
+## ავტორიზებული ახალი დინამიკა: საკუთარი ტემპის სასრული პასუხი
+
+ავტორის ახალი არჩევანია ზუსტი საერთო მასშტაბის შენარჩუნება და
+გრავიტაციული მოქმედების განვითარება EH-ის სავალდებულო მემკვიდრეობის
+გარეშე. მიმდინარე მიზანია წყაროს, ფუძის საპასუხო ენერგიისა და
+ორივე საათში p=0-მდე მიუღწევლობის ერთ მოქმედებაში შეერთება.
+ეს სექცია ცვლის წინა არჩევანის მოლოდინს; EH-ის დაბრუნება აღარ
+არის ამ კანდიდატის მოთხოვნა.
+
+### არჩეული ცვლილება და მისი ფიზიკური ფასი
+
+ფუძის საკუთარ თანამოძრავ საათში u=-ln p-ის გადაწყობას აქვს
+სასრული დამახასიათებელი მაქსიმალური ტემპი b>0. ეს ახალი
+კონსტიტუციური პოსტულატია, რომელიც ქვემოთ მოცემული მოქმედებით
+ხორციელდება. b უნივერსალური საკუთარი დროის შებრუნებული მასშტაბია,
+რომლის რიცხვითი ფიზიკური მნიშვნელობა ამ სამუშაოში არ მორგდება.
+ეს დამატებითი კანონი p/p^2 საზომი რუკიდან თავისით არ გამომდინარეობს.
+
+მარტივი სივრცული გამაგრების გზები წინასწარ გაანალიზდა და არ
+შეირჩა: u-ზე დამოკიდებული სიხისტე საერთო მასშტაბურ სიმეტრიასა
+და ენერგია–გაუსის მასის იგივეობას ცვლის; შესწავლილ ზუსტად
+საერთო-მასშტაბურ, მიზეზობრივ არაწრფივ გრადიენტულ კლასში მარტო
+სასრული ენერგია p-ის დადებით ქვედა ზღვარს არ იძლევა.
+არჩეული გზა პირდაპირ დროით პასუხს ცვლის და
+სივრცულ სტატიკურ ენერგიას უცვლელს ტოვებს.
+
+### FOUNDATION_RATE_LIMITED_DYNAMICS_V1 — გაყინული კონტრაქტი
+
+- კლასი: უპირატესი ფუძის კოორდინატები, c0=1, alpha=4 pi G>0,
+  p=exp(-u)>0. b>0; კანონიკური კომპლექსური ოსცილონი ძველი
+  სკალარული კანდიდატის ნახევრად ნორმალიზებული რეალური კომპონენტებით;
+  სურვილისამებრ მაქსველის ველი იმავე g(u)-ში. დამოუკიდებელი EH
+  მეტრიკა და დაუზუსტებელი rho_C(n) ამ კონკრეტულ მოქმედებაში არ დგას.
+- მიზანი: სრული ვარიაციული წყარო და ლოკალური ენერგეტიკული ბალანსი,
+  დადებითი კინეტიკა/მიზეზობრივი მთავარი ნაწილი, ზუსტი საერთო
+  მასშტაბური გარდაქმნა, სტატიკური შედეგების უცვლელობა და p=0-ის
+  დროითი მიუღწევლობა ფუძის თანამოძრავ საათებზე.
+- წინაპირობები: საწყისი p დადებითია; განიხილება კლასიკური
+  ამოხსნის არსებობის ინტერვალი. სივრცული ერთგვაროვანი ქვედა
+  ზღვარი მოითხოვს inf_x p(0,x)>0-ს. უცვლელი ფონური კოორდინატული
+  ხაზის საკუთარი საათია d tau=p dt.
+- ახალი თავისუფლებაა მხოლოდ b. alpha და ძველი სექსტიკური
+  V(f)=f²/2-f⁴/4+f⁶/24 იმპორტირდება. ახალი მორგებული პოტენციალი,
+  ხახუნი, წნევის იატაკი, დროითი გადამრთველი ან გარე ენერგიის
+  წყარო არ ემატება.
+- ზუსტი ტესტები: მოქმედება/ლეჟანდრის გარდაქმნა, წყარო,
+  მთავარი სიჩქარე, ნელტემპიანი ზღვარი, საერთო მასშტაბური
+  გარდაქმნა, სტატიკური ენერგიის და კვადრატული ვარიაციის
+  უცვლელობა, მატერიისა და სინათლის წყარო და ენერგიის გაცვლა.
+- დროითი ტესტი: სივრცულად ერთგვაროვანი უჯრედი იგივე მოქმედებიდან,
+  შვიდი კანონიკური ცვლადით (u,pi_u,psi_1,psi_2,Pi_1,Pi_2,tau).
+  ეს არც კოლაფსის სიმულაციაა და არც სივრცული აღდგენის ტესტი.
+  alpha=.003; b in {.5,1,2}; საწყისი psi=(1,0), psi_t=(0,.8),
+  u=0; საწყისი v=u_t/(bp) in {0,.9}. დამატებით თავისუფალი
+  ფუძის ტესტი psi=0,b=1,v=.9. ინტერვალი t=[0,12].
+- მეთოდი: DOP853, ორი დამოუკიდებელი სიზუსტის გაშვება:
+  (rtol,atol,max_step)=(1e-8,1e-10,.02) და (1e-10,1e-12,.01),
+  601 საერთო დაკვირვების დრო. კრიტერიუმები წინასწარ:
+  ენერგიის ფარდობითი შეცდომა <2e-6; წვრილ/მსხვილ ბადეთა
+  ნორმირებული მდგომარეობითი სხვაობა <2e-5; |v|<1; p>0;
+  p(t)>=p0/(1+b p0 t), tau>=ln(1+b p0 t)/b და
+  p(t)>=p0 exp(-b tau(t)) ნაშთებით
+  არანაკლებ -1e-7. ენერგიის ნორმირების მნიშვნელი max(1,|E0|).
+- PASS აღნიშნავს მხოლოდ ზემო ზუსტ/დროით კარიბჭეებს.
+  არანულოვანი სიმბოლური ნაშთი ან რიცხვითი ზღურბლის დარღვევა
+  უარყოფს შესაბამის შემოწმებას და ღიად ინახება.
+- მთავარი ახალი გამაუქმებლებია ფუძის უკურეაქციის სუპერლუმინალური
+  მთავარი რეჟიმი, უარყოფითი კინეტიკა, ენერგიის დაუბალანსებელი
+  წევრი ან გამოცხადებულ კლასში საკუთარი საათის სასრულ
+  მონაკვეთში p=0-ის მიღწევის ამოხსნა.
+- სრული RefG, ფონური თერმოდინამიკური EOS, ტენზორული გრავიტაციული
+  გამოსხივება, სრული PPN, დაკვირვებითი გავლა, გლობალური PDE
+  გაგრძელება, გამრუდების საზღვრები და გეოდეზიური სისრულე ამ
+  კარიბჭის წარმატებას ავტომატურად არ მემკვიდრეობს.
+- ცვლილებები: ეს სამუშაო ჩანაწერი და stdout-only
+  foundation_rate_limited_dynamics.py. ხელნაწერი, ძველი მოქმედებები
+  და ძლიერი ველის ევოლუცია უცვლელია.
+
+### ერთი განსაზღვრული მოქმედება
+
+    g(u)=diag(-p²,p^-2,p^-2,p^-2), p=exp(-u),
+    v=u_t/(b p), gamma=1/sqrt(1-v²),
+    L_u=b²/(alpha p²) [1-sqrt(1-v²)]-|grad u|²/(2alpha),
+    L_psi=p^-4 |psi_t|²/2-|grad psi|²/2-p^-2 V,
+    L_EM=p^-2 |E|²/2-p² |B|²/2,
+    S=integral(L_u+L_psi+L_EM) dt d³x.
+
+EM შეიძლება ნულოვანი იყოს. სინათლის ენერგია ითვლება ერთხელ,
+ამავე მოქმედებიდან. p-ის თერმოდინამიკურ სითხედ ხელახლა დამატება
+არ ხდება. P_F=P_F0 p² აქ კვლავ ოპერაციული წნევითი ამოკითხვაა;
+ქვემოთ მიღებული H_u არის მისი გადაწყობის სრული ენერგია ამ
+ეფექტურ სკალარულ სექტორში, არა გამოყვანილი მიკროსკოპული
+ფონური დაჭიმულობის მარაგი U_tension(P_F).
+
+კანონიკურ ცვლადში z=alpha p³ pi_u/b და gamma=sqrt(1+z²):
+
+    H_u=b²/(alpha p²)(sqrt(1+z²)-1)+|grad u|²/(2alpha),
+    u_t=alpha p^4 pi_u/gamma=b p z/gamma,
+    (pi_u)_t=Delta u/alpha
+       +b²/(alpha p²)(gamma+2-3/gamma)+S_m,
+    S_m=2p^-4 |psi_t|²-2p^-2 V+p^-2 |E|²+p² |B|².
+
+ეს ფორმა განსაზღვრულია ყველა სასრული pi_u-სთვის და წნევის
+კლების ხელით შეზღუდვა არ სჭირდება. ოსცილონისა და სინათლის
+განტოლებებიც იმავე მოქმედების ვარიაციებია.
+
+### გამოყვანილი ბალანსი, სიჩქარე და ორი საათი
+
+მეორე რიგის ზუსტი განტოლება და მთავარი სიჩქარეა
+
+    p^-4 gamma³ u_tt-Delta u
+      +b²p^-2(gamma³+gamma-2)=alpha S_m,
+    c_u²=p^4/gamma³<=p^4=c_light².
+
+ყველა სასრული კანონიკური მდგომარეობისათვის კინეტიკური
+ჰესიანი p^-4 gamma³/alpha დადებითია. უძრავ ფონზე gamma=1;
+სინათლე და ფუძის მცირე პასუხი ერთ კონუსს მიჰყვება. სწრაფად
+გადაწყობისას ფუძის სკალარული პასუხი სინათლეზე ნელდება.
+ბოლო თვისება ახალი კანონის ნაწილია; ყველა დინამიკური რეჟიმის
+ზუსტად ერთნაირი სიჩქარე ამ ვერსიის მტკიცება არ არის.
+
+მთლიანი ლოკალური ენერგია და ნაკადები:
+
+    H_total=H_u+H_psi+H_EM,
+    H_psi=p^-4|psi_t|²/2+|grad psi|²/2+p^-2 V,
+    H_EM=p^-2|E|²/2+p²|B|²/2,
+    J_u=-u_t grad u/alpha,
+    J_psi=-sum_A (psi_A)_t grad psi_A,
+    J_EM=p² E cross B.
+
+    partial_t H_u+div J_u=u_t S_m,
+    partial_t(H_psi+H_EM)+div(J_psi+J_EM)=-u_t S_m,
+    partial_t H_total+div J_total=0.
+
+ეს ფუძის საპასუხო რხევის ენერგიის გაცვლაა. იგი ფუძის სტატიკური
+ფონური დაჭიმულობის მატებად არ სახელდება. დახურული უჯრედის
+ენერგია ინახება; ღია უბანი ენერგიას ზუსტად მოცემული ნაკადებით
+ცვლის. ხახუნი და საბოლოო ჩაქრობა ხელით არ არის დამატებული.
+
+წნევის უშუალო ცვლადში, P=P_F და P_*=P_F0:
+
+    H_u[P,P_t,grad P]
+      =b² P_*/(alpha P)
+        [(1-P_* P_t²/(4b² P³))^(-1/2)-1]
+        +|grad P|²/(8alpha P²).
+
+ამრიგად, ამ სკალარული სექტორის ენერგია სრულად განსაზღვრულია
+მდგომარეობითა და მისი წარმოებულებით. ერთგვაროვან უძრავ P-ზე
+იგი ნულია; ფონური თერმოდინამიკური U_tension(P) ამით არ
+გამოყვანილა. W54-ის კოლექტიური სითხის ძველი rho_C(n)-ის
+დამატება ახალ, ჯერ შეუმოწმებელ მოქმედებას შექმნიდა.
+
+კანონიკური სიჩქარიდან, ყოველ ფუძესთან თანამოძრავ ხაზზე,
+
+    |u_t|<b p, |p_t|<b p², d tau=p dt,
+    |du/d tau|<b.
+
+ინტეგრირება იძლევა ზუსტ შეფასებებს:
+
+    p(t,x)>=p0(x)/(1+b p0(x)t),
+    tau(t,x)>=ln(1+b p0(x)t)/b,
+    p(tau,x)>=p0(x) exp(-b tau).
+
+საწყისად დადებითი p კლასიკური ამოხსნის განმავლობაში ნულს ვერ
+აღწევს სასრულ გარე დროში ან ფუძის საკუთარი საათის სასრულ დროში.
+თუ გარე ამოხსნა უსასრულოდ გრძელდება, საკუთარი დროის ინტეგრალიც
+უსასრულოა. p-ის ათჯერ კლებისას მისი კლების მაქსიმალური გარე
+ტემპი ასჯერ მცირდება. ეს არის ტემპის ზედა ზღვარი; რეალური
+ტემპი და წონასწორობა S_m-სა და სივრცულ პასუხზეა დამოკიდებული.
+განტოლება არ აწესებს მუდმივ დადებით წნევის იატაკს.
+
+### რისი მემკვიდრეობა შენარჩუნდა
+
+ახალი დროითი წევრის ნელტემპიანი გაშლაა
+
+    L_u=(p^-4 u_t²-|grad u|²)/(2alpha)
+        +u_t^4/(8alpha b² p^6)+O(u_t^6).
+
+u_t=0-ზე შესწორება და მისი პირველი ვარიაციები ნულდება.
+ამიტომ ძველი სკალარული კანდიდატის ყველა სტატიკური ამოხსნა,
+მისი სტაციონარული ენერგია–გაუსის მასის იგივეობა და სტატიკურ
+ფონზე კვადრატული რხევების ოპერატორი ზუსტად შენარჩუნდა.
+ძველი რადიალური წონასწორობის ანგარიშის ხელახლა გაშვება ამ
+შედეგისათვის საჭირო არ არის. მისი თავდაპირველი შეზღუდული
+რადიალური სტატუსი უცვლელია.
+
+გარდაქმნით t=T/s, x=s X, u=U-ln s მიიღება p=s exp(-U),
+v უცვლელია, მოქმედების სიმკვრივე s^-2-ჯერ, ზომა კი s²-ჯერ
+იცვლება. სრული მოქმედება ინვარიანტულია. ასე შენარჩუნდა ზუსტი
+საერთო საათი–სახაზავი და სინათლის p² ამოკითხვა. b საკუთარ
+ერთეულებში უნივერსალურია და გარე ფიქსირებულ მინიმალურ სიგრძეს
+არ შემოიტანს.
+
+### დამატებითი გლობალური შედეგი ერთგვაროვან მატერიულ სექტორში
+
+სივრცულად ერთგვაროვანი, მაქსველის ველის გარეშე ერთეული პერიოდული
+კოორდინატული უჯრედისათვის მოქმედება იძლევა გლუვ ჰამილტონურ ODE-ს.
+E და Q აქ უჯრედის ენერგია და ფაზური მუხტია; უსასრულო სივრცის
+სასრული სრული ენერგია არ იგულისხმება.
+საწყისად E>0, Q=a Pi_c-c Pi_a!=0, p0>0.
+
+აღვნიშნოთ q=a²+c². იმავე პოტენციალისთვის
+
+    V(q)>=q/8,
+    V(q)-q/8=q(q-3)²/24.
+
+უფრო ზუსტად, ორივე sigma=+1,-1 ნიშნით,
+
+    H_psi-sigma p Q/2
+      =[(p² Pi_a+sigma c/(2p))²
+        +(p² Pi_c-sigma a/(2p))²]/2
+        +q(q-3)²/(24p²)>=0.
+
+ამიტომ p<=p_+=2E/|Q|. ყოველი სასრული T-სთვის უკვე გვაქვს
+p>=p_-=p0/(1+b p0 T)>0. ენერგია დამატებით ზღუდავს:
+
+    q<=8E p_+²,
+    Pi_a²+Pi_c²<=2E/p_-^4,
+    pi_u²<=2E/(alpha p_-^4)+E²/(b² p_-²).
+
+u=-ln p და tau<=p_+ T-ც შემოსაზღვრულია. მაშასადამე ყოველი
+სასრული დროის მონაკვეთში ყველა კანონიკური ცვლადი რჩება გლუვი
+მარჯვენა მხარის კომპაქტურ არეში. ODE-ის გაგრძელების კრიტერიუმით
+ამოხსნა არსებობს ყველა t>=0-ზე. ზემო ლოგარითმული შეფასება
+ამტკიცებს tau->infinity-საც.
+
+ამ კონკრეტულ არანულოვან-მუხტიან ერთგვაროვან სექტორში მიღებულია
+გლობალური დროითი გაგრძელება და p-ის არანულოვნება ორივე საათში.
+ეს შედეგი უკვე სცდება სასრული დროის რიცხვით ნიმუშებს.
+Q!=0 არსებითი პირობაა; იგი ვერ მოიხსნება მატერიის ნულოვანი
+საწყისი მდგომარეობის ერთჯერადი წარმატებული ტესტით.
+
+### დასრულებული შემოწმება და დარჩენილი ზუსტი საზღვარი
+
+ახალმა მოქმედებამ გაიარა 41 ზუსტი იგივეობის/დადებითობის
+შემოწმება, 4 უარყოფითი კონტროლი და 7 გაყინული ერთგვაროვანი
+ევოლუცია ორ სიზუსტეზე. უდიდესი ენერგეტიკული ფარდობითი
+ცდომილება იყო 1.90e-14, მდგომარეობათა სხვაობა — 2.03e-14.
+მუხტის შეცდომა დამატებით დიაგნოსტიკად დაიბეჭდა, max=5.40e-14;
+იგი თავდაპირველი რიცხვითი PASS-ის ცალკე ზღურბლი არ ყოფილა.
+
+მაგალითად b=1, v0=0, alpha=.003-ზე t=12-ისთვის
+p=0.9435243366, tau=11.7408647515. იმავე b-სა და alpha-ზე
+დამატებული საწყისი ფუძის იმპულსით v0=.9 მივიღეთ
+p=0.1661748840, tau=3.5874373420. მეორე შემთხვევას საწყისშივე
+მეტი საპასუხო კინეტიკური ენერგია აქვს; ეს იმავე ენერგიით
+შედარება ან თავისუფლად შექმნილი გაუხშოება არ არის.
+
+პირველი გაშვების შემდეგ დამოუკიდებელმა განხილვამ დაამატა
+კოდის რეგრესია: 60 დეტერმინისტულ მდგომარეობაზე ცალკე ჩაწერილი
+ჰამილტონიანის კომპლექსური-ნაბიჯით წარმოებულები პირდაპირ rhs()-ს
+შედარდა. სხვაობა <1.45e-15-ია. ეს შემდგომი პროგრამული
+გადამოწმებაა, არა წინასწარ დარეგისტრირებული ახალი ფიზიკური
+პროგნოზი. ნულოვანი ენერგიის ვაკუუმში ყველა ფიზიკური წარმოებული
+ზუსტად ნულია; მხოლოდ საათი მოძრაობს.
+
+მიღებულია ახალი, სრულად განსაზღვრული ეფექტური სკალარული
+ფუძე–ოსცილონი–სინათლის მოქმედება და ზემო არანულოვნების შედეგები.
+მისი ახალი პოსტულატი და ფარგლები ცალკე იკითხება:
+
+- ფუძის დროითი ტემპი b ახალი კანონის ნაწილია და დაკვირვებით
+  ამ სამუშაოში არ დაკალიბრებულა.
+- სტატიკური განტოლებები უცვლელია; ამიტომ შესაძლო ძველი
+  სინგულარული სტატიკური ტოტებიც მხოლოდ ამ ცვლილებით არ ქრება.
+- დადებითი p მარტო სტრესს არ ზღუდავს: p=1-ზე pi_u->infinity
+  იძლევა H_u->infinity-ს. ეს უარყოფითი კონტროლი სკრიპტშიც დგას.
+- სრული სივრცული PDE-ის გლობალური გაგრძელება, გამრუდების
+  შემოსაზღვრულობა და გეოდეზიური სისრულე მიღწეულად არ ინიშნება.
+  მოძრავ დამკვირვებელს დამატებითი ადვექცია/დროითი ფაქტორი აქვს;
+  ნულოვან სხივს თავისი აფინური პარამეტრით შემოწმება სჭირდება.
+- ეს მოქმედება W54-ის სრულ ტენზორულ/დაკვირვებით მემკვიდრეობას
+  და ფუძის მიკროსკოპულ თერმოდინამიკურ EOS-ს არ ანაცვლებს
+  დამტკიცებული ეკვივალენტობით.
+
+ამიტომ მთელი თეორიისა და სინგულარობის მოხსნის სტატუსი კვლავ
+OPEN-ია. კონკრეტული მიღწევა არის უკვე განსაზღვრული ახალი
+დინამიკა, მისი ენერგეტიკული შეკვრა და ფუძის საათებზე წნევის
+სასრულ დროში განულების გამორიცხვა. ძლიერი ველის ძველი
+სკრიპტები ამ მოქმედების ამომხსნელებად არ გადაირქმევა.
+
+კვლავწარმოება:
+
+    python -X utf8 -B "RefG/work 3/Cosmology_and_LSS/Active_Participation_Resonance_Feedback/foundation_rate_limited_dynamics.py"
+
+მხოლოდ ზუსტი ნაწილი: იგივე ბრძანება --symbolic-only-ით.
+შედეგი, წყაროების ჰეშები, თითოეული ნაშთი და ყველა დროითი
+შემთხვევა stdout-ზე იბეჭდება.
+
+საბოლოო დამოუკიდებელი გაშვება: exit=0,
+PASS_DECLARED_CANDIDATE_GATES; 41 ზუსტი შემოწმება, 4 უარყოფითი
+კონტროლი, 7 დროითი შემთხვევა და განხილვის შემდგომი 60-წერტილიანი
+პროგრამული რეგრესია შესრულდა.
+
+    verifier SHA256:
+      93447a6a656535846f95e762dbe726a06218b0f4b004724d6cf1288f9a3122b6
+    ledger SHA256 at final run, before this provenance append:
+      b06343db5c891aa35dad58e6d056625eb5e4bef09da51924c601cb95f7fbca2d
+    Python 3.10.6; SymPy 1.13.3; NumPy 1.24.3; SciPy 1.15.2.
+
+ამ მოქმედებით შეიცვალა მხოლოდ ეს სამუშაო ჩანაწერი და დაემატა
+foundation_rate_limited_dynamics.py. foundation_action_bridge.py,
+ძველი სკალარული მოქმედება, ქართული ხელნაწერი და ორივე ძლიერი
+ველის აქტიური სკრიპტი უცვლელია. git diff --check სუფთაა.
