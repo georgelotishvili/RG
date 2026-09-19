@@ -1,5 +1,12 @@
 # Saturating spherical gravity coupled to conserved matter
 
+**მიმდინარე კონტექსტი — 2026-09-19:** სხვადასხვა მოქმედების შედეგების
+მოქმედების არეები შეკრულია [ერთიან სამუშაო რუკაში](medium_health_horizon_diagnostic.md).
+ამ ფაილის q არის პოსტულატური გრავიტაციული გაჯერების ფაქტორი;
+მისი RefG-ის საერთო წნევით p-ფაქტორთან იდენტიფიკაცია გამოყვანილი
+არ არის (§36). ქვემოთ დათარიღებული შედეგები თავიანთ თავდაპირველ
+მოდელსა და პირობებს ინარჩუნებს. ეს შენიშვნა ახალ გამოთვლას არ ამატებს.
+
 **შედეგი მოკლედ (2026-09-14):** პოსტულატურ გაჯერების კანონზე დაფუძნებულ
 სფეროსიმეტრიულ მოდელში ერთგვაროვანი უწნევო წყაროს კოლაფსის სიმრუდე
 შეზღუდულია. ეს ნამდვილი დადებითი შედეგია. კანონიკური ველის კოლაფსის
@@ -5802,6 +5809,1304 @@ metric or another run of the unchanged collapse solver cannot derive that
 law. The present stage adds no fitted absorption term, imposed stress
 profile to the evolution, or change to the photon's propagation equation.
 
+## 41. Relative flow and minimal mixing: source decision (2026-09-18)
+
+### 41.1 Registered bounded contract
+
+Decision to test: can the existing independent Einstein--medium action
+supply the negative radial null stress required in section40, once the
+radial material labels are allowed to move relative to the regular clock?
+Also test the smallest already-listed amendment, a constant coefficient
+lambda multiplying W^2, W=u.d(phi). This operator is absent from the
+defined action; testing it is explicitly an amendment, not a reinterpretation.
+
+The registered domain is a local orthonormal clock frame, positive radial
+strain, a regular nondegenerate short-wavelength material branch, and a
+strictly positive reduced principal Hamiltonian. For the amendment also
+require that radial characteristics stay within the existing local light
+cone. Arbitrary first and second derivatives of F are retained; no equation
+of state, numerical fitting or coefficient scan is selected for a result.
+The old projected-H constraint reduction is a dependency to reproduce,
+not a new degree of freedom. Finite-wavelength metric-constraint reduction,
+degenerate branches and general higher-derivative actions are out of scope.
+
+Write scope: this report, the existing completion verifier, and the current
+diagnostic summary only. Preserve the production solver, optical law,
+intuition, articles and Git settings. Success means a reproducible source
+compatibility decision in the stated class, not a global singularity result.
+If a sign obstruction holds for the whole registered class, close this
+route without presenting further coefficient tuning as a physical mechanism.
+
+### 41.2 Existing action, allowing radial motion relative to the clock
+
+Section40 fixes an actual source requirement. For a smooth moving triple
+surface and regular lapse, R_ll=0; a positive ordinary photon stream
+therefore needs T_medium,ll=-T_gamma,ll<0 in the Einstein-source completion.
+This is an energy-plus-stress contraction, not a statement that the
+medium must have negative energy density in every frame.
+
+The whole-action (-+++) convention of the existing source audit gives
+
+    L=Q F(y,B)+kappa h^ab H_a H_b,   Q,kappa>0.
+
+Use a regular local clock-rest frame and normalize the positive background
+clock norm to y=1. Positive frozen label/deficit normalizations are absorbed
+into F and its derivatives. With the other two label eigenvalues fixed,
+
+    Phi=t+theta,   phi=Vt+Sx+xi,   S^2>V^2,
+    H=q t+g_H x+h,   d=kappa g_H^2>=0.
+
+The derivatives F_y,F_b,F_yy,F_yb,F_bb are arbitrary local derivatives of
+this normalized F, not coefficients chosen by a scan. In an unnormalized
+clock notation the clock slope is y F_y. The radial subsystem gives
+necessary conditions for the full spherical medium; it is not a sufficient
+test of all its modes.
+
+The previously established normalized-projector calculation is reproduced:
+eta=h-q theta gives, at principal order,
+
+    L_H,2=kappa[eta_x^2-2g_H eta_t theta_x+g_H^2 theta_x^2].
+
+Integration by parts replaces eta_t theta_x by eta_x theta_t. For nonzero
+radial wave number the auxiliary constraint sets eta_x=g_H theta_t,
+leaving -d(theta_t^2-theta_x^2). Thus a nonzero background q is not a
+missing independent response. This repeats a dependency of stage26;
+the new test here is the noncomoving label, V!=0.
+
+For z=(theta,xi), the complete radial matter principal form is
+
+    L_2=z_t^T K z_t+2 z_t^T N z_x-z_x^T G z_x,
+    A=Q(F_y+2F_yy)-d, B=QF_y-d,
+    C=Q(-F_b+2V^2 F_bb), D=Q(-F_b-2S^2 F_bb),
+    K=[[A,-2QV F_yb],[-2QV F_yb,C]],
+    N=[[0,2QS F_yb],[0,-2QVS F_bb]], G=diag(B,D).
+
+The canonical Hamiltonian is
+
+    H_2=(p-2Nz_x)^T K^-1(p-2Nz_x)/4+z_x^T G z_x.
+
+On the registered regular positive-energy branch K>0 and G>0, hence
+B,C,D>0. This requirement is stronger than merely real characteristic
+speeds and is stated explicitly. The exact identity
+
+    -QF_b=(S^2 C+V^2 D)/(S^2+V^2)>0
+
+then fixes the sign. Independent inverse-metric variation, including the
+clock dependence of h^ab, gives on k_+=(1,1) and k_-=(1,-1)
+
+    T_medium,++/2=B-QF_b(V+S)^2>0,
+    T_medium,--/2=B-QF_b(V-S)^2>0.
+
+No subluminality premise was used in this original-action sign result.
+Neither arbitrary F_yb nor radial label motion can supply section40's
+negative radial null stress within this branch. A coefficient retuning
+of F cannot change this conclusion while preserving the registered energy
+gate. The positive and negative test controls in the code are local
+principal data only, not solutions of the background field equations.
+
+### 41.3 Smallest listed amendment: constant lambda W^2
+
+The mixed clock--label invariant W=u.d(phi) is permitted by the field
+symmetries but its coefficient is zero in the defined action; see root
+RefG_ka.md, equations(15) and the adjoining operator list. Its introduction
+here is an explicitly tested amendment. With lambda any real constant,
+
+    Delta L_2=lambda[(xi_t-S theta_x)^2+V^2 theta_x^2
+                     -2V theta_x xi_x+2VS theta_t theta_x],
+    Delta T_++/2=lambda(V^2+2VS),
+    Delta T_--/2=lambda(V^2-2VS).
+
+Let beta=S^2+V^2, replace B by B_lambda=B-lambda beta and C by
+C_lambda=C+lambda. The new off-diagonal G entry is lambda V;
+N_theta,theta=lambda VS and N_xi,theta=-lambda S. K's other entries
+and D are unchanged. Positive energy necessarily gives
+B_lambda,C_lambda,D>0.
+
+For lambda>=0 the exact certificates are
+
+    T_++/2=B_lambda+(V+S)^2(S^2 C_lambda+V^2 D)/beta
+                      +2lambda V^2(beta+VS)/beta>0,
+    T_--/2=B_lambda+(V-S)^2(S^2 C_lambda+V^2 D)/beta
+                      +2lambda V^2(beta-VS)/beta>0.
+
+Both beta+VS and beta-VS are positive. No cone condition is needed in
+this sign case.
+
+For lambda=-ell<0, with ell>0, choose S>V>=0 without loss of generality:
+positive radial strain gives |S|>|V| and changes of label basis/radial
+orientation only interchange the two null directions. The principal
+characteristic pencil is P(c)=K c^2-(N+N^T)c-G. If P(-1) has a negative
+eigenvalue, while K>0, continuity from sufficiently negative c (where
+P(c)>0) forces det P(c_*)=0 at some c_*<-1. Thus the unchanged local
+light cone necessarily requires
+
+    p_-=P(-1)_xi,xi=-ell+2Q(S-V)^2 F_bb>=0.
+
+This endpoint test is necessary, not sufficient, for all modes to be
+healthy and subluminal. It is enough for the exclusion:
+
+    T_--/2=B_lambda+D(S-V)^2+S^2 p_-+2ell V(S-V)>0,
+    -QF_b-ell=D+S^2 p_-/(S-V)^2
+                 +ell V(2S-V)/(S-V)^2>0,
+    T_++-T_--=8VS(-QF_b-ell)>=0.
+
+Consequently the constant W^2 amendment also cannot supply the required
+negative null stress with both positive radial principal energy and the
+existing light-cone bound. This is a certificate for all constant lambda
+and arbitrary retained F jets, not a failed search through a few examples.
+Related general energy/cone issues are discussed in [5]; the explicit
+RefG field, constraint and sign calculations above are performed here.
+
+### 41.4 Decision, verification and boundary
+
+The new function flowing_medium_source_checks in the existing completion
+verifier checks the invariant expansion, full projected-H null variation,
+auxiliary reduction, canonical energy, the two null-source signs,
+constant-W mixing and its cone/sign certificates. Its 45 checks pass;
+the complete regression passes 725/725, retaining all 680 earlier checks.
+Independent algebraic and conceptual reviews agree with the source
+signs and the stated energy/cone domain.
+The analytical eigenvalue-continuity lemma and the sign reasoning above
+are the proofs; passing Python identities is their reproducible algebraic
+check, not a numerical proof of global regularity.
+
+The result closes two concrete source routes: the original regular
+relative-flow F branch and its constant-W^2 amendment under the stated
+energy/cone conditions. It does not close RefG itself. In particular,
+this is not a complete finite-wavelength lapse/shift reduction, a
+degenerate-constraint theorem, or an exclusion of field-dependent
+mixed invariants, nonminimal curvature couplings or higher derivatives.
+The regular high-frequency ordering used by the earlier source-health
+audit is retained as a premise; an actual applicable EFT band has not
+been derived here.
+
+    original_flow_source_join_excluded_in_domain = True
+    constant_W2_source_join_excluded_in_domain = True
+    complete_finite_wavelength_metric_reduction = False
+    degenerate_branches_excluded = False
+    general_mixed_invariant_action_excluded = False
+    medium_dynamics_derived = False
+    full_RefG_pressure_join = False
+    global_singularity_removal = False
+    full_RefG_rejected = False
+
+The obstruction is structural, not an omitted overall pressure multiplier
+or a newly added radiation species. The candidate geometry remains a
+conditional construction; the tested source action does not generate
+its compensating response in the admissible branch. Repeating the old
+collapse evolution or tuning more F derivatives cannot complete this
+join. If this geometric target is retained, a further construction must explicitly change a premise of this
+source-action class, derive its constraints and conserved total source,
+and preserve the existing weak-field/light limit. The self-regulation
+principle alone does not select that new dynamical operator. This stage
+therefore ends with the exact class decision instead of naming an
+untested new operator as the solution.
+
+## 42. Source-led metric and moving-inner-surface budget (2026-09-18)
+
+### 42.1 Bounded verification contract
+
+CLAIM_ID: W92-SOURCE-LED-HORIZON-BUDGET.
+CLAIM: remove the imposed degenerate surface and determine the independent
+Einstein metric constraints and the positive-source budget for a moving
+simple inner marginal surface. Decide whether merely keeping its
+instantaneous radial slope small can persist under the retained incoming
+history without exhausting its radius-squared budget.
+TYPE: exact field-equation identities and a conditional integral bound.
+MODEL_VERSION: the section41 regular positive-energy matter branch coupled
+to Einstein gravity; no new F, interaction, absorption or photon law.
+ASSUMPTIONS/DOMAIN: spherical areal ingoing chart, finite positive exp(psi),
+r>0, regular stress; f(v,a(v))=0, f_r|a<0 for the inner-surface result.
+The budget additionally assumes T_medium,ll>=0 and the specified positive
+ingoing photon luminosity. All statements end if these premises fail.
+CONVENTIONS: (-+++), G=c=1; v normalized to exterior advanced time.
+FREEDOM_LEDGER: retain both independent f(v,r),psi(v,r); neither a(M) nor
+an interior profile is prescribed. The diagnostic slope bound kappa_h<=c/(1+v)
+has one fixed c>0, not a fitted dynamical law.
+DEPENDENCIES: sections40--41 and the existing independent-medium action.
+METHOD: radial Einstein equations from an independent connection; null
+source conservation, moving-root differentiation and exact integral budget.
+PASS_CONDITION: reproduce the unrestricted source equations and prove or
+refute the stated low-slope persistence possibility in its full domain.
+FAIL/FALSIFIER: nonzero identity residual or a regular positive-radius
+counterexample satisfying every stated inequality at arbitrarily late v.
+ERROR_BOUND: zero algebraic residual; integral argument analytical.
+VALIDITY_HEALTH: retain section41's regular principal-energy domain; do not
+infer complete metric/matter stability from these necessary conditions.
+BRANCHES: unit-cross target, unrestricted two-function metric and simple
+shrinking marginal surface; no selected complete medium solution.
+OBSERVABLE_MAP: local curvature/source, areal radius, instantaneous surface
+slope. DATA_ROLE/FORWARD_MODEL: N/A, no observational comparison.
+IDENTIFIABILITY: a source-determined metric is distinguished from inverse
+assignment of a desired profile. BENCHMARK: section40's imposed triple root
+and constant-central-curvature radius law.
+CROSSCHECK: separate source and horizon-budget derivations; old regression.
+CLOSURE_FLAGS initially false: source_led_constraints_verified,
+unit_cross_strict_source_excluded, slow_slope_persistence_excluded.
+Full medium closure, ray bounds and global singularity removal remain false.
+FILES: this report, existing completion verifier and diagnostic index only.
+STOP: one source-led constraint/budget decision; no arbitrary constitutive
+polynomial, new long collapse run or selection of a geometry as a solution.
+
+### 42.2 Free radial geometry: two independent functions are necessary
+
+Keep the general areal ingoing form
+
+    ds^2=-exp(2psi) f dv^2+2 exp(psi) dv dr+r^2 dOmega^2,
+    m=r(1-f)/2.
+
+The radial Einstein equations, derived directly from its connection, are
+
+    psi_r=4pi r T_rr,
+    m_r=-4pi r^2 exp(-psi) T_vr,
+    m_v=4pi r^2[exp(-psi) T_vv+f T_vr].
+
+These are source-led necessary equations; the angular equation and
+independent medium equations remain part of the full system. The null
+curvature identities in section40 already contain the first relation.
+Its implication for the now-tested strict source branch is the new
+ansatz decision: setting psi=0 imposes T_rr=0 everywhere. For ingoing
+photons T_gamma,rr=0, whereas section41 gives T_medium,nn>0 and therefore
+T_medium,rr=exp(2psi) T_medium,nn>0 wherever that branch is present.
+The unit-cross ansatz cannot represent it, with or without a horizon.
+
+Consequently both f and psi must remain free in this Einstein-source
+branch. A time relabelling v->V(v) changes psi by an r-independent term;
+it cannot remove psi_r. Allowing the second metric function restores a
+physical radial constraint, not a second independent foundation substance
+or a new particle-scale mechanism.
+
+### 42.3 The source determines the motion of a simple inner surface
+
+For l=partial_v+exp(psi)f partial_r/2 and n=-exp(-psi)partial_r, l.n=-1.
+An ingoing photon source
+
+    T_gamma,ab=[Lum(v)/(4pi r^2)](dv)_a(dv)_b
+
+is conserved for general psi: n is affinely geodesic and the current
+divergence reduces to partial_r(r^2 T_gamma,vv)=0. No new attenuation
+coefficient or nonstandard photon law is introduced.
+
+Let f(v,a(v))=0 be a SIMPLE inner marginal surface, f_r|a<0. Differentiating
+this equation gives f_v|a=-a' f_r|a, hence
+
+    G_ll|a=exp(psi) a' f_r/a.
+
+Define kappa_h=-exp(psi) f_r|a/2>0 in this fixed advanced-time coordinate,
+and U=T_medium,ll|a. The local Einstein equation gives the exact motion law
+
+    a'= -[Lum/a+4pi a U]/kappa_h.
+
+Positive incoming photons and U>=0 force the inner surface to move inward.
+The same formula before fixing the inner sign gives outward motion for
+a simple outer surface with positive T_ll. A persistent degenerate
+surface would still set G_ll=0; adding psi alone cannot rescue that
+earlier target.
+
+A local smooth geometric source-sign control uses a(v)=1-v,
+f=-(r-a)-(r-a)^3 and psi=r-1. At v=0,r=1 it has G_ll=1,G_rr=2.
+With Lum=1/4, the required medium remainder is
+T_medium,ll=1/(16pi)>0 and T_medium,rr=1/(4pi)>0. The metric determinant
+is nonzero and all coefficients are smooth at this point. This verifies
+that freeing both restrictions removes the local sign contradiction.
+It does not solve the independent clock, label and deficit equations.
+
+### 42.4 Finite source budget excludes arbitrary late flattening
+
+The same motion equation imposes
+
+    -d(a^2)/dv = 2 Lum/kappa_h+8pi a^2 U/kappa_h,
+    integral_[v0,v] Lum/kappa_h dv <= [a0^2-a(v)^2]/2.
+
+Thus a finite initial radius supplies a finite radius-squared budget.
+Retain the previously specified incoming light history
+Lum=1/[4(1+v)^2], and test kappa_h<=c/(1+v) for a fixed c>0 throughout
+v>=v0. Then
+
+    a(v)^2 <= a0^2-ln[(1+v)/(1+v0)]/(2c).
+
+The right-hand side reaches zero at
+1+v=(1+v0)exp(2c a0^2) and becomes negative afterwards. No positive-radius
+simple inner surface can obey all these premises indefinitely. Faster
+flattening satisfies the same upper bound and is excluded as well.
+This establishes a failure of simultaneous persistence assumptions;
+it does not predict that an actual object reaches zero radius. Before
+that bound, the source, the slope bound, the horizon branch or the
+retained equation/domain must change.
+
+Here v remains the SAME exterior-normalized advanced time used to
+prescribe Lum. A time reparametrization transforms both T_vv and kappa_h
+and cannot be used while leaving the old luminosity/slope formulas fixed.
+In this source-led calculation total asymptotic mass evolution is not
+prescribed separately as M'=Lum: it must include the complete source flux.
+
+As a separate benchmark only, if the older a=L_core^2/(2M) and M'=Lum
+are both imposed again, U>=0 requires kappa_h>=M/a^2. For the old
+L_core=2, M->2, a->1 control, that is kappa_h>=2+o(1). Thus even an
+asymptotically degenerate replacement is incompatible with that exact
+old radius/mass/flux prescription on the retained nonnegative-source branch.
+
+This surface budget is not a blueshift theorem for an actual ray. Its
+affine rate is evaluated at the ray position and has the full expression
+
+    d ln(dv/dlambda)/dv=-psi_v-exp(psi) f_r/2-exp(psi) f psi_r.
+
+Neither its additional lapse terms nor its evaluation away from r=a(v)
+can be dropped when kappa_h tends to zero. No ray or global-regularity
+conclusion is inferred from the surface inequality alone.
+
+### 42.5 Decision and actual remaining input
+
+The new source_led_horizon_checks function passes 39/39 exact checks;
+the complete verifier passes 764/764, retaining all 725 previous checks.
+The new checks cover
+independent radial connection identities, general-lapse photon
+transport, moving-root balance and the finite-budget primitive.
+Independent source and budget reviews agree.
+
+The permissible metric description is now narrowed by the field equations:
+both radial functions must be determined by the source, and an illuminated
+simple inner surface must move according to that source. The unit-cross
+restriction and arbitrary late flattening are rejected in their stated
+domains. The earlier prescribed geometry remains a historical conditional
+control and is not imposed on the new equations.
+
+The underlying matter constitutive closure has not become specified by
+releasing these geometric restrictions. The original medium action fixes
+its silent exterior but leaves its off-silent F response open
+(FORMAL_COVARIANT_MEDIUM_INTEGRATION.md, model/source ledger).
+The independent matter--medium balance in common_scale_centre_source.md,
+section8, explicitly keeps F undetermined. Its earlier polynomial has
+failed its separate completion test; the homogeneous derivative prototype
+has a different action and no accepted inhomogeneous pressure join.
+Consequently none can be silently substituted as a completed source law
+for a new collapse simulation.
+
+    source_led_constraints_verified = True
+    unit_cross_strict_source_excluded = True
+    slow_slope_persistence_excluded = True
+    full_medium_constitutive_law_selected = False
+    independent_medium_equations_solved = False
+    ray_boost_bound_derived = False
+    full_RefG_pressure_join = False
+    global_singularity_removal = False
+    full_RefG_rejected = False
+
+This step ends with the source-led geometry and persistence decision.
+An actual solution requires a specified admissible off-silent response
+and its independent field equations, not another assigned radius profile.
+The production solver, intuitive text, articles, optical law and Git
+configuration are unchanged.
+
+## 43. Explicit deficit--curvature response: radiation activation test (2026-09-18)
+
+Scope correction (section44): this standalone scalar--tensor control
+does not replace the already-derived common-pressure matter coupling.
+Its trace-only scalar equation cannot be used to claim that RefG light
+was uncoupled from the medium or that the old pressure source vanishes.
+
+### 43.1 Frozen operator-selection contract
+
+CLAIM_ID: W92-DEFICIT-CURVATURE-RADIATION-RESPONSE.
+CLAIM: test whether the simplest positive deficit-dependent Einstein
+coefficient supplies automatic self-regulation under the retained ingoing
+null-fluid source. This tests an actual specified action rather than
+another undetermined response function or target metric.
+MODEL_VERSION: standalone scalar--tensor control
+S=integral sqrt(-g)[P exp(2H)R/2-P exp(2H)(partial H)^2/2]+S_m[g], P>0.
+This is a new restricted prototype, NOT a reduction of the five-field
+medium or a replacement of its clock/label equations. H is the proposed
+deficit variable; its RefG pressure/oscillon identification is not assumed
+proved by its name. The physical matter/photon metric is g.
+TYPE: exact field/source check and restricted mechanism falsifier.
+FREEDOM_LEDGER: exp(2H) and the kinetic coefficient are fixed before
+execution, with no potential, fitted profile or tuned threshold.
+P is universal; constant H0 and the existing mass/flux history are state
+and boundary data. No new particle species or absorption law is introduced.
+DOMAIN/CONVENTIONS: (-+++), r>0, A=exp(2H)>0, regular invertible conformal
+map g_E=A g; classical two-derivative action and the already-used null-fluid
+source. The r->0 limit is a model curvature test, not an exact Maxwell
+beam or smooth-centre formation calculation.
+DEPENDENCIES: source completeness, sections37--42, scalar--tensor
+variation/conformal identities [6]. No successful old branch is inherited.
+METHOD: vary metric and H, eliminate the trace, test full equations on
+an exact ingoing null-source branch and independently compute its curvature.
+PASS_CONDITION: verify local kinetic/cone eligibility and decide whether
+the source necessarily activates H. FALSIFIER for AUTOMATIC regulation:
+an exact positive-flux constant-H branch retaining unbounded curvature.
+RESIDUAL/ERROR_BOUND: exact algebraic zero residual; no numerical fit.
+HEALTH: positive tensor/scalar kinetic terms on A>0; global stability,
+full RefG constraints and a physical EFT cutoff are not supplied.
+OBSERVABLE_MAP: curvature and source activation; the static force ratio
+is only a fixed-background tree-level control. DATA/FORWARD_MODEL: N/A.
+BENCHMARK: constant-coefficient Einstein plus the same null-fluid source.
+IDENTIFIABILITY: a larger coefficient versus a source-induced change of
+that coefficient. CROSSCHECK: independent action and null-branch reviews.
+FILES: this report, existing completion verifier and diagnostic index.
+CLOSURE_FLAGS initially false: explicit_action_eligibility_verified,
+constant_deficit_null_branch_verified, automatic_regulation_excluded.
+Production, intuition, articles, Canon, Git and the original action stay
+unchanged. STOP after this operator's source decision; do not tune a
+potential after the failed test or declare another mechanism without testing it.
+
+### 43.2 Action variation and the source that activates the deficit
+
+Write A=exp(2H), Z=P A. Varying the metric and H independently gives
+
+    P A G_ab = T_ab + P A (H_a H_b - g_ab (partial H)^2/2)
+               + P (nabla_a nabla_b A - g_ab box A),
+    R + box H + (partial H)^2 = 0.
+
+T_ab is the minimally coupled material/radiation stress, and
+T=g^ab T_ab is its trace. Taking the metric trace and then using the
+independent H equation gives the exact reduced equation
+
+    7 P A [box H + 2 (partial H)^2] = T,
+    (7P/2) box A = T.
+
+This identifies the activation problem: the scalar responds directly
+to the stress trace. An ingoing null fluid has positive energy and
+T=0 simultaneously. Constant H is therefore an allowed solution even
+while the radiation gravitates. The scalar curvature R can also vanish
+while the full curvature is large; coupling H to R alone does not make
+H respond to every kind of curvature.
+
+The regular transformation g_E=A g puts the gravity/scalar kinetic
+terms into Einstein form [6]. Their scalar coefficient is
+
+    K_E = Z/A + (3P/2)(A_H/A)^2 = 7P > 0,
+    chi = sqrt(7P) H,       g = exp[-2 chi/sqrt(7P)] g_E.
+
+Thus the local tensor/scalar principal terms have positive kinetic
+coefficients and the same conformal null cone. This is local
+two-derivative eligibility, with no statement of global stability.
+Around a constant background the massless scalar force gives
+G_eff/G_bare=1+P A_H^2/(2 A^2 K_E)=9/7. A chosen larger background A
+and a dynamically source-induced increase of A are different claims;
+the positive kinetic result supplies neither the latter nor screening.
+
+### 43.3 Exact null-source branch and independent curvature check
+
+Keep H=H0 finite and constant, A0=exp(2H0), and use the physical metric
+
+    ds^2 = -[1-2m(v)/r] dv^2 + 2 dv dr + r^2 dOmega^2,
+    T_vv = 2 P A0 m'(v)/r^2.
+
+This fixes the geometric history and derives its physical source.
+For an equal-luminosity comparison at different H0, fixing
+T_vv=Lum/(4pi r^2) instead gives m'=Lum/(8pi P A0).
+H0=0 and P=1/(8pi) recover the earlier G=1 source normalization.
+
+The connection gives R=0, G_vv=2m'/r^2 and every other independent
+Einstein component zero. Both metric and scalar equations above are
+satisfied exactly. The null-fluid equation is also retained:
+V=v obeys (partial V)^2=0, and the density current is conserved because
+partial_r(r^2 T_vv)=0. No absorption, faster light or extra energy
+component was added.
+
+An independent spherical warped-product contraction gives
+
+    K = R_abcd R^abcd = 48 m(v)^2/r^6.
+
+For the unchanged geometric history m(v)=2-1/[4(1+v)], v>=24,
+m'>0, m(24)=199/100 and m(infinity)=2. Its finite extra incoming
+geometric mass is 1/100. Nevertheless K diverges as r->0.
+The explicit action therefore admits positive incoming energy with
+no deficit response and no central curvature cap.
+
+Scope of the falsifier: this branch already has a singular centre
+on its initial slice; the fluid density grows as r^-2 there. It rejects
+AUTOMATIC UNIVERSAL regulation by this standalone operator. It does
+not settle formation from regular-centre oscillon data, the response
+of every possible scalar--tensor action, or the full five-field RefG
+model. The original pressure/mass/clock identification remains unjoined.
+
+### 43.4 Decision, reproducibility and stop
+
+The explicit operator passes the local kinetic/cone check and fails
+the proposed automatic radiation-regulation mechanism. This specified
+zero-potential prototype is rejected as an automatic regular completion:
+its positive coefficient multiplying R leaves the trace-free radiation
+channel unregulated on the exact branch above.
+
+The existing completion verifier contains
+deficit_curvature_activation_checks, including the uneliminated scalar
+equation, all independent metric components, source conservation and
+the curvature invariant. A nonzero-R constant-H control fails the
+scalar equation, so that equation cannot be silently dropped. The flat
+limit has zero curvature. Two read-only action/source reviews reproduce
+the trace equation, null-source normalization and curvature result.
+No new numerical evolution, boundary profile or constitutive fit was used.
+
+The new checks pass **36/36**, and the full regression passes **800/800**
+(all 764 earlier checks retained). Exact identity residuals are zero.
+The first isolated run left the flux-sign query undecided because v
+was unrestricted at its pole v=-1; the gate now uses the registered
+v=24+t, t>0 domain. Its v=24 endpoint is positive by direct substitution.
+The physical action and source were unchanged by that test correction.
+Completion verifier SHA256:
+1049769b74ea3d919f84616e5248f6b5c6717206594afcf9c6b70db521cea575.
+Production verifier SHA256 remains:
+1a23833cd7bc907da7bdda32f26c8ced9ec866f298423a646fb4827f7ce40500.
+The three local verification flags close; full_medium_constitutive_law_selected,
+full_RefG_pressure_join, global_singularity_removal and full_RefG_rejected
+remain false.
+The physical outcome is an excluded shortcut, not a singularity-removal
+PASS. The full-medium task returns to the existing shared metric and
+its independent equations; section44 checks their nonzero light-source
+projection. This section chooses no replacement coupling. The registered stop is
+reached at this operator decision. Production, intuition, articles,
+Canon and Git configuration remain unchanged.
+
+## 44. Existing common-pressure light coupling: source-map correction (2026-09-18)
+
+### 44.1 Frozen correction contract
+
+CLAIM_ID: W92-COMMON-PRESSURE-LIGHT-SOURCE-MAP.
+CLAIM/TYPE: exact action/source audit of the already-used pressure
+metric; decide whether section43's trace-only scalar source can stand
+for that metric's pressure variation. No new mechanism is proposed.
+MODEL_VERSION/ASSUMPTIONS: minimal Maxwell action on
+g=diag(-p^2,p^-2,p^-2,p^-2), p=exp(-H_p), signature (-+++), c=1.
+H_p is the common-scale coordinate, distinct from the independent
+section43 scalar and from the independent five-field H until a map is
+derived. The zero-shift isotropic branch is a source diagnostic.
+DOMAIN: finite H_p, p>0, smooth fields; local principal symbol at frozen
+coefficients; time-dependent energy check within this declared metric.
+FREEDOM_LEDGER: existing metric and Maxwell normalization, no new
+coefficient, absorption, density profile, cutoff or fitted potential.
+DEPENDENCIES: intuitive sections2.1--2.2; W43 minimal Maxwell branch;
+common_scale_centre_source.md source-pullback audit and section8;
+verify_common_scale_centre_source.py feedback_assumption_checks.
+METHOD/CROSSCHECK: independently vary the full Maxwell contraction
+and the metric through its Hilbert stress; check the canonical energy
+balance and existing light cone. Carry that source into the existing
+static lapse/deficit balance with zero total radial flux, retaining the
+independent H equation. A static Maxwell control checks its coefficient;
+it is not an ingoing-collapse ansatz. Rerun the old source audit unchanged.
+PASS_CONDITION: equal nonzero radiation source in both variations,
+unchanged common-scale optics and exact energy-balance identity.
+FAIL/FALSIFIER: nonzero symbolic residual, wrong sign/factor, or
+identification of the trace-only auxiliary scalar with H_p without
+the metric/source map. Full independent equations remain required.
+RESIDUAL/ERROR_BOUND: exact zero identities; no numerical fit.
+HEALTH: positive Maxwell kinetic/Hamiltonian and the existing local
+light cone on p>0; medium stability is outside this source-map audit.
+OBSERVABLE_MAP: proper energy, coordinate flux, clock and ruler.
+DATA/FORWARD_MODEL: N/A, no observational inference.
+IDENTIFIABILITY/BENCHMARK: opposite time/space scale variation versus
+uniform conformal variation; rest constituent and null wave controls.
+BRANCHES: common-pressure optical branch retained, section43 separate.
+FLAGS initially false: existing_pressure_source_verified,
+trace_only_identification_excluded, photon_energy_balance_verified.
+Full medium closure and singularity-removal flags remain false.
+PROVENANCE/FILES: the existing completion verifier, this report and
+diagnostic index only. Original source verifiers, production, intuition,
+articles, Canon and Git unchanged. STOP after source-map correction,
+its regression and the exact remaining dynamical boundary are recorded.
+
+### 44.2 Located mismatch and unchanged prior source
+
+The pre-existing feedback_assumption_checks in
+verify_common_scale_centre_source.py already verifies
+
+    (1/2) T^ab partial_Hp g_ab = rho + p_r + 2 p_t.
+
+Its accompanying report, source-pullback audit and section8, distinguishes
+this metric-mediated source from fixed-metric variation of an independent
+medium H. The unchanged audit was rerun: 13/13 checks pass.
+The general identity is reused here, not claimed as a new mechanism.
+
+Section43 instead selected a separate scalar--tensor action with
+independent g and H. In its Einstein-frame representation the scalar
+changes the physical metric conformally, so its direct matter source
+is proportional to the Lorentz trace, -rho+p_r+2p_t. A map from that
+scalar to the old common-pressure coordinate was never derived.
+Identifying the two source equations would be the model-selection error.
+
+For H_p=-ln p, time and space coefficients vary with opposite signs:
+partial_Hp g_00=-2g_00 and partial_Hp g_ij=2g_ij.
+For traceless radiation, p_r+2p_t=rho; its common-pressure source is
+therefore 2rho, while its Lorentz trace is zero.
+Section38's existing photon source and q^2 geometric backreaction remain
+present and unchanged. The conclusion that light needs a newly invented
+coupling to pressure is withdrawn.
+
+### 44.3 Direct Maxwell variation and reciprocal energy bookkeeping
+
+With E_i=F_0i, B_i=epsilon_ijk F_jk/2 and sqrt(-g)=p^-2,
+direct contraction of the full Maxwell action gives
+
+    L_EM = (p^-2 E^2 - p^2 B^2)/2,
+    rho_EM = (E^2 + p^4 B^2)/2,
+    delta S_EM/delta H_p = p^-2 E^2+p^2 B^2
+                         = 2 sqrt(-g) rho_EM.
+
+The independent Hilbert-tensor variation gives exactly the same source.
+It is nonzero for a nonzero null beam even though F_ab F^ab=0.
+Variation must precede the null-wave substitution; inserting its
+on-shell zero Lagrangian first would incorrectly erase the source.
+
+The canonical momentum is pi_i=p^-2 E_i. Up to the Gauss constraint
+and a boundary term, the positive coordinate Hamiltonian density is
+
+    epsilon_EM = p^2(pi^2+B^2)/2 = p^-2 rho_EM,
+    partial_Hp epsilon_EM |_pi,B = -2 epsilon_EM.
+
+For a transverse potential A_y(t,x), exact Maxwell evolution yields
+
+    partial_t epsilon_EM + partial_x S^x
+       = -2 (partial_t H_p) epsilon_EM,
+    S^x = -p^2 (partial_t A_y)(partial_x A_y).
+
+The sign follows E_i=F_0i. The executable checks the off-shell residual
+against (partial_t A_y) times the Maxwell equation. This is metric work
+in the declared common-scale description, not extra absorption or a
+violation of covariant Maxwell stress conservation. In a complete
+autonomous coupled action the opposite contribution enters the field
+sector's energy accounting. No total-medium Hamiltonian was solved here.
+
+The same metric gives c_coord=p^2, d tau=p dt and d ell=p^-1 dx;
+the locally measured light speed stays one. Thus propagation, source
+and energy bookkeeping use one metric, with no second pressure factor.
+
+### 44.4 Source carried into the existing independent equations
+
+In common_scale_centre_source.md section8 the static spherical metric is
+ds^2=-N^2 dt^2+A^2 dr^2+S^2 dOmega^2. Define
+
+    K=S^2 N'/A,    Q_H=-NS^2 H'/A,    D=K-Q_H.
+
+P is the constant Einstein coefficient, Q the medium normalization,
+Fbar its response, and W,V the retained oscillon kinetic/potential
+terms defined in that source. Adding a minimally coupled Maxwell
+stress once extends the existing balance to
+
+    P D' = NAS^2 [Q Fbar + W - V + rho_EM].
+
+The coefficient follows from rho_EM+p_rEM+2p_tEM=2rho_EM and the
+factor 1/2 in the lapse source. An independent reduced Maxwell action
+
+    L_EM,rad = S^2 (V_e')^2/(2NA) - NA q_m^2/(2S^2)
+
+checks the full source combination N E_N-A E_A-S E_S=-2NAS^2 rho_EM.
+V_e is an electrostatic potential, distinct from the oscillon V;
+q_m is a magnetic-charge control, which may be set to zero.
+The fixed-metric independent H equation gains no second direct source.
+
+This last balance is restricted to static spherical stress with zero
+total radial energy flux. It is not the equation for the one-way
+incoming dynamical stream. Requiring N=exp(-H) in this static sector
+imposes Q Fbar+W-V+rho_EM=0 as an additional compatibility condition.
+All independent metric, clock, label, H and Maxwell equations still
+have to be solved together. A projected source equation alone cannot
+replace them.
+
+### 44.5 Correction outcome and verification
+
+The existing light--pressure coupling is retained and its exact Maxwell
+source is verified. Section43 remains a mathematical test of its own
+auxiliary scalar--tensor action; its trace-only response is not RefG's
+common-pressure response. This corrects the interpretation and equation
+selection, without fabricating a new medium coupling.
+
+The original source audit passes **13/13** unchanged. The completion
+verifier passes **834/834**, comprising the new **34/34** source-map
+checks and all 800 previous checks; no failed residuals remain.
+Completion verifier SHA256:
+dc0b4e58fbad77956c34e788266c2ce3f857f78ee72e34b7ea445e2f2ac32c0b.
+Unchanged original source-audit verifier SHA256:
+0a864e0c681d58ef84beb5f03d12f531aa393023ccff5c3956dc1f805f263c51.
+The three source-map verification flags close. Independent medium
+evolution, full pressure join and global singularity removal stay false.
+Two independent read-only reviews checked the variation, energy balance
+and the static source coefficient. No production evolution or article
+was changed, and no all-time curvature bound or singularity-removal
+claim is made by this source-map correction.
+
+## 45. Full-equation irradiation gate for the exact exterior (2026-09-18)
+
+### 45.1 Frozen dynamical-entry contract
+
+CLAIM_ID: W92-SILENT-EXTERIOR-RADIATION-DYNAMICS.
+GOAL/TYPE: decide whether promoting the existing exact exponential
+exterior to H(t,r), with its clock and labels retained, permits nonzero
+radial null irradiation. This is a restricted full-equation gate, not
+another Maxwell-source identity or an all-RefG exclusion.
+MODEL: unchanged five-field action P R/2+Q F(y,Bhat)+P gamma^ab H_a H_b
+plus minimally coupled radiation, in the established (-+++) convention.
+P>0; gamma^ab=g^ab+u^a u^b; clock Phi and labels phi^A are independent
+fields before variation. The exact exterior has y=1,Bhat=I and
+F=F_y=F_B=0. No Hessian or off-silent coefficients are selected.
+TESTED ANSATZ: g=diag(-exp(-2H),exp(2H),exp(2H),exp(2H))
+in isotropic Cartesian coordinates, Phi=t, phi^A=x^A, then H=H(t,r).
+DOMAIN: smooth classical fields on a spherical annulus r>0; the centre
+and isolated asymptotic boundary are optional additional restrictions.
+FREEDOMS: arbitrary smooth H(t,r), same universal P, no luminosity fit,
+new constitutive term, attenuation, or prescribed absorbing boundary.
+METHOD: vary the projected-gradient action with respect to the clock,
+H and metric independently; evaluate its constraints; subtract its
+Hilbert stress from the independently computed Einstein tensor.
+PASS/FAIL: admit a nonzero radial null source satisfying all equations,
+or exclude that source by their simultaneous algebraic requirements.
+FALSIFIER: a missed independent equation, a nonzero identity residual,
+or a positive radial-null counterexample inside the stated ansatz.
+CROSSCHECK: independent analytic current/Einstein derivation; retain
+the static exterior and a non-isolated homogeneous radiation control.
+ERROR/HEALTH: exact residuals; no numerical or observational tolerance;
+background equations only, no finite-wavelength stability certificate.
+OBSERVABLE: orthonormal energy, radial/tangential pressure and flux.
+DATA/FORWARD_MODEL: N/A. BENCHMARK: existing static silent exterior.
+DEPENDENCIES: original W92 action; common_scale_centre_source.md
+independent-field/source audit; section44's unchanged photon coupling.
+FLAGS initially false: independent_clock_constraint_verified,
+required_matter_tensor_verified, strict_radial_irradiation_excluded,
+homogeneous_radiation_control_verified. No full-medium closure inherited.
+FILES: existing completion verifier, this report, diagnostic index.
+STOP: complete this dynamical-entry decision; do not simulate a rejected
+ansatz or silently replace the off-silent material law afterward.
+
+### 45.2 Independent clock equation locks the exterior charge
+
+Define Y=-g^ab Phi_a Phi_b, u_a=-Phi_a/sqrt(Y),
+s^a=(g^ab+u^a u^b)H_b and q_H=u^a H_a. Variation BEFORE any
+clock/metric substitution gives, with J=yF_y-Bhat:F_B,
+
+    P nabla_a s^a + Q J = 0,
+    nabla_a J_Phi^a = 0,
+    J_Phi^a = 2Q exp(-2H) sqrt(Y) F_y u^a
+              - 2P q_H s^a/sqrt(Y).
+
+The proposed time-dependent exact-exterior ansatz keeps y=1 and
+Bhat=I everywhere. Its silent values F=F_y=F_B=0 therefore remain
+fixed. All three Cartesian-label currents and the algebraic F stress
+vanish identically at this state, but the clock equation still contains
+the projected-gradient term. In isotropic Cartesian coordinates the
+two independent equations reduce to
+
+    Delta H = 0,             div(H_t grad H) = 0.
+
+The second equation plus the first gives partial_t |grad H|^2=0.
+On a spherical annulus the harmonic solution is
+
+    H(t,r)=h0(t)+C(t)/r,      C C'=0.
+
+Thus C^2 is constant and smooth real solutions have constant C,
+including the zero-charge case. No division by a possibly zero C is
+needed. The article's exterior parameter therefore cannot simply be
+replaced by an accreting C(t) while retaining these clock, label and
+silent-state restrictions.
+
+### 45.3 All independent Einstein components reject a radial stream
+
+The independently varied projected-H Hilbert tensor is
+
+    T_H,ab=P[g_ab s_c s^c-2s_a s_b].
+
+In the tested clock gauge its time/radial component is zero.
+For H=h0(t)+C/r with constant C, subtracting this tensor from the
+independently calculated P G_ab gives the required ordinary source
+in the orthonormal clock/ruler frame:
+
+    rho_m = 3P exp(2H) h0_dot^2,
+    p_r,m = p_t,m = -P exp(2H) [2h0_ddot+5h0_dot^2],
+    T_hat0r,m = 2PC h0_dot/r^2.
+
+These are the independent time, radial, angular and mixed metric
+equations. A radial null stream has p_r=rho, p_t=0 and rho>0.
+Here p_r=p_t, so both required null-pressure conditions force rho=0,
+then h0_dot=0 and zero flux. Positive counterpropagating radial streams
+have the same pressure obstruction. No assumption about the sign of an
+uncomputed radiation-feedback coefficient enters this result.
+
+This excludes nonzero radial irradiation on the strict silent ansatz
+even before imposing a regular centre or an asymptotically flat boundary.
+The latter restrictions further set C=0 and h0=0, respectively.
+It excludes a particular attempted continuation of an equilibrium
+solution; the general five-field action permits additional field states.
+
+### 45.4 Positive-radiation control and actual remaining input
+
+For C=0, the same background equations admit the NON-isolated homogeneous
+isotropic radiation control
+
+    h0=(1/3) ln(t/t_star),     t,t_star>0,
+    rho_m=3p_m>0,             rho_m exp(4h0)=P/(3t_star^2).
+
+The photon-gas energy law and Einstein equation agree. This is an
+isotropic radiation-fluid background control, not a constructed single
+coherent Maxwell field. It is the ordinary homogeneous radiation geometry, not a radial
+incoming beam or an isolated black hole. Perturbative medium health
+is not established by this exact background control. It prevents the
+restricted radial exclusion from being misread as a claim that the
+theory forbids all radiation or all time dependence.
+
+The operative decision is to retire the time-promoted silent exterior
+as a radiation-evolution ansatz. A full calculation must evolve the
+independent geometry, clock and material labels away from at least one
+of its fixed-state restrictions. Keeping a common observational scale
+does not authorize dropping their independent equations.
+
+The repository inventory supplies no accepted ready off-silent response
+for that calculation. Specifically, the exterior fixes F and its first
+derivatives at one state, whereas sourced clock/compression/shear
+evolution depends on F_yy, F_yB, F_BB and any retained derivative terms.
+The existing explicit centre polynomial in common_scale_centre_source.md
+section3 has local principal-health evidence but fails its isolated
+join and radial continuation in section6. The KGB polynomial in
+matter_medium_source_response.md is a different action, and its
+original-pressure identification failed its own pressure-map test.
+Neither is silently substituted for the full five-field response.
+
+### 45.5 Verification and stop
+
+The independent clock/H variations, full metric/source check, static
+control and positive homogeneous-radiation control are implemented in
+silent_exterior_irradiation_checks. Its **28/28** checks pass, and the full
+completion regression passes **862/862**, retaining all 834 prior checks.
+An independent isolated rerun also passes 28/28. All exact residuals are zero.
+Completion verifier SHA256:
+aee8c350034c74d4efba3ed64a4299caf9cf320327adf53ccc9953bd69230153.
+Production verifier SHA256 remains:
+1a23833cd7bc907da7bdda32f26c8ced9ec866f298423a646fb4827f7ce40500.
+The four restricted verification flags close; full_medium_evolution_solved,
+global_singularity_removal and full_RefG_rejected remain false.
+An independent read-only derivation reproduces all
+four required matter components and the clock-charge constraint.
+
+This step makes an actual dynamical-entry decision: the exact silent
+exterior cannot be the ansatz for the requested radial irradiation.
+No new constitutive law or numerical collapse run is claimed. The
+off-silent response must be selected and checked before a full coupled
+evolution is determined. The original production equations, intuitive
+files, articles and Git settings remain unchanged.
+
+## 46. Pressure-wave completion: independent-metric admission test
+
+### 46.1 Registered candidate and decision
+
+CLAIM_ID: W92-PRESSURE-WAVE-EINSTEIN-ADMISSION.
+GOAL/TYPE: test one explicit dynamical pressure law for admission as a
+completion of the existing theory, before a numerical light-pulse run.
+MODEL_VERSION: local pressure-wave prototype v1; p=exp(-H),
+g=diag(-p^2,p^-2,p^-2,p^-2), preferred coordinates, c0=1,
+
+    L_H = C/2 [exp(4H) H_t^2 - |grad H|^2],
+    L_EM = 1/2 [exp(2H) E^2 - exp(-2H) B^2].
+
+This positive-kinetic completion is a NEW trial action. Its static
+gradient term has the Stage8 ancestor recorded in the health diagnostic.
+It is not obtained by eliminating the independent fields of W92.
+FREEDOM_LEDGER: one positive coefficient C; stationary massive probes
+have L_probe=-m exp(-H). Matching the existing Newtonian normalization
+fixes C=1/(4 pi G)=2P, with P=1/(8 pi G). No fitted pulse profile,
+attenuation coefficient, new light cone or luminosity-dependent rule.
+ASSUMPTIONS/DOMAIN: first derive the trial pressure equation exactly;
+then test a smooth, weak, locally plane transverse Maxwell wave about
+H=0. Field amplitude a gives radiation stress O(a^2), H=O(a^2),
+and the original projected-H stress O(a^4). The exterior clock,
+Cartesian labels and silent constitutive state are retained only for
+the proposed embedding test. No isolated finite-energy plane wave is
+claimed.
+DEPENDENCIES: section44's common-pressure Maxwell action; section45's
+independent-metric convention and silent-state restrictions.
+METHOD/CROSSCHECK: Euler-Lagrange and Legendre transforms of the trial
+action; derive the linearized Einstein tensor and Maxwell Hilbert
+tensor independently, and compare all relevant components.
+PASS_CONDITION: the trial equation and independent Einstein equations
+admit the same nonzero weak pulse under the stated embedding.
+FAIL_CONDITION/FALSIFIER: a nonzero leading-order metric residual after
+the Hamiltonian and momentum constraints have been imposed. A missing
+stress term of that order or an independent counterexample invalidates
+the exclusion.
+BENCHMARK: the zero-field vacuum and stationary Newtonian source.
+OBSERVABLE_MAP: shared metric clock/ruler factors and local radiation
+energy/stress, equal to their coordinate values at the tested leading
+order. DATA_ROLE/FORWARD_MODEL/IDENTIFIABILITY: N/A; no observational
+fit, model selection from data or empirical uniqueness claim.
+RESIDUAL/ERROR_BOUND: symbolic leading-order coefficients; discarded
+terms are O(a^4) in the perturbative expansion. No finite-amplitude
+error bound or numerical evolution claim.
+VALIDITY_HEALTH: positive trial Hamiltonian at finite H; this local
+property does not supply the omitted independent metric equations.
+BRANCHES: zero-field control retained; the nonzero Maxwell embedding
+is the tested branch.
+CLOSURE_FLAGS initially false: pressure_wave_variation_verified,
+weak_metric_embedding_excluded. Full-medium and singularity flags
+remain false.
+FILES: existing completion verifier, this report and diagnostic index.
+STOP: an admission failure ends this candidate test before simulation.
+No change to the production action or solver is authorized by a
+successful calculation inside this restricted trial action.
+
+### 46.2 Calculation and decision
+
+Varying the specified trial action gives
+
+    C [exp(4H)(H_tt+2 H_t^2)-Delta H] = 2 epsilon_EM,
+    epsilon_EM = [exp(2H) E^2+exp(-2H) B^2]/2.
+
+Its canonical variables D=exp(2H)E and Pi=C exp(4H)H_t give
+
+    Hamiltonian = Pi^2 exp(-4H)/(2C) + C |grad H|^2/2
+                  + exp(-2H)(D^2+B^2)/2.
+
+This energy is positive for real finite H and C>0; its scalar and
+Maxwell principal coordinate speeds are p^2. The radiation source is
+present. These properties make it a consistent restricted trial, but
+the independent Einstein equations are a separate admission condition.
+
+At the first nonzero order in Maxwell amplitude, write rho=a^2>0.
+A right-moving transverse wave gives, with lower indices and
+coordinates (t,x,y,z),
+
+    (T_00,T_0x,T_xx,T_yy,T_zz) = (rho,-rho,rho,0,0).
+
+For the reciprocal common-pressure metric the linearized Einstein
+tensor is
+
+    G_00=-2 H_xx, G_0x=-2 H_tx,
+    G_xx=G_yy=G_zz=-2 H_tt.
+
+The original projected-H stress starts at O(a^4); the retained silent
+F stress vanishes. Consequently the independent x and y equations
+already require both H_tt=-rho/(2P) and H_tt=0. The nonzero pulse
+cannot satisfy this particular embedding.
+
+This decision survives correctly prepared initial metric constraints
+(the Einstein Hamiltonian/momentum pair, not all five-field equations).
+At an event choose H_xx=-rho/(2P) and H_tx=rho/(2P). The Hamiltonian
+and momentum residuals are then zero. The new trial equation with
+C=2P predicts H_tt=rho/(2P), giving
+
+    P G_xx-T_xx = -2 rho,     P G_yy-T_yy = -rho.
+
+The failure is therefore at O(a^2), before strong-field or late-time
+questions arise. A nonzero constant-pressure vacuum and the zero-field
+limit have no such radiation source; the test is about the response to
+an added weak source. No long numerical run can remove this leading
+local incompatibility.
+
+As a positive SOURCE control, releasing the reciprocal metric
+restriction permits the linear conformal perturbation h_ab=2 f(x-t) eta_ab.
+It satisfies all these Einstein source components when -2P f''=rho.
+This is a local pure-Einstein control, not a full RefG branch or an
+isolated plane-wave spacetime. It verifies that the tensor calculation
+can admit nonzero light stress when the restrictive readout is released.
+
+Decision: REJECTED_AS_SILENT_EINSTEIN_COMPLETION for pressure-wave v1.
+The trial has not been inserted into the production model and no pulse
+simulation is run. Its rejection applies neither to arbitrary
+constitutive responses nor to the common-pressure principle in general.
+In particular, an off-silent medium can contribute anisotropic stress
+at O(a^2); that contribution was frozen out in this tested embedding.
+
+The development target is now specifically the coupled directional
+stress/flow response with the independent metric equations retained.
+Adding a positive H_t^2 term to a single-readout reduction does not
+supply it. This failed candidate does not determine which replacement
+constitutive action passes. Full medium evolution and singularity
+removal remain open; the original production equations, intuitive
+files, articles and Git configuration are unchanged.
+
+### 46.3 Verification record
+
+The new pressure_wave_admission_checks passes 27/27 checks; the full
+completion regression passes 889/889, including all 862 previous checks.
+An independent read-only derivation and isolated rerun also pass 27/27.
+The first isolated run exposed an unspecified real-field assumption in
+the symbolic positivity predicate. Declaring real H explicitly resolved
+that check without changing any physical equation or residual.
+All identity residuals are zero; the physically obstructing Einstein
+residuals are the nonzero values explicitly verified in section46.2.
+Thus passing the regression verifies the rejection, not the candidate's
+physical admission.
+
+Completion verifier SHA256:
+76de8dec37df9f0c5ca3bd3675723c67d9b8c9d4f177bd213dfc786e202411e4.
+Production verifier SHA256 remains:
+1a23833cd7bc907da7bdda32f26c8ced9ec866f298423a646fb4827f7ce40500.
+Only pressure_wave_variation_verified and weak_metric_embedding_excluded
+close. Full-medium evolution, global singularity removal and full RefG
+rejection flags remain false. This completes the registered admission
+decision and stops the rejected prototype before numerical evolution.
+
+## 47. Locating the obstruction: outer black-hole scale versus inner scale
+
+### 47.1 Bounded scale-location contract (2026-09-18)
+
+CLAIM_ID: W92-INNER-OUTER-SCALE-LOCATION.
+GOAL: decide whether the known inner-horizon obstruction must lie at the
+outer black-hole size or can lie at a parametrically smaller areal radius.
+TYPE: exact geometry and controlled small-ratio asymptotics of the
+EXISTING spherical rational-response candidate, not a new response law.
+MODEL_VERSION: f=1-2mr^2/(r^3+2m ell^2), m>3sqrt(3)ell/4, ell>0.
+DOMAIN: its two simple positive horizons r_minus<r_plus. The extremal
+limit is a boundary control, not part of the simple-horizon claim.
+CONVENTIONS/OBSERVABLE_MAP: m=GM/c0^2 is geometric mass, r is areal
+radius (sphere area 4 pi r^2), ell is the candidate's fixed core length;
+surface gravity uses the infinity-normalized static Killing field.
+ASSUMPTIONS/FREEDOM_LEDGER: ell remains unspecified by observations or
+the RefG medium. No Planck-length identification, astronomical mass,
+pressure readout or universal microscopic ontology is assumed.
+DEPENDENCIES: the sourced candidate of sections1--3; its certified
+finite-time evolution in section23; the source-specific inner-horizon
+counterexample in section37; the full-coframe interpretation in section36.
+METHOD/CROSSCHECK: factor the horizon polynomial using the horizon
+ratio eta=r_minus/r_plus; independently differentiate f at fixed m
+before restricting to a horizon. Check cubic residuals, monotonic
+mass-ratio inversion, curvature and asymptotic coefficients.
+BENCHMARK: the m/ell=2 member used in section37; large m/ell and the
+coincident-horizon endpoint. Three ILLUSTRATIVE dimensionless mass
+ratios 2, 10^3 and 10^6 are fixed before numerical evaluation.
+PASS_CONDITION: an exact positive branch permits eta->0 as m/ell->infinity,
+with the actual inner radius, q and surface gravity quantified.
+FAIL_CONDITION/FALSIFIER: incorrect root, lost positive branch, a
+nonzero identity residual or an inner radius tied to the outer size
+throughout the stated family.
+RESIDUAL/ERROR_BOUND: exact identities; asymptotic orders reported
+explicitly. Numerical inversion uses 120 bisections on eta in (0,1)
+with exact rational endpoint signs; decimal readouts are illustrations.
+VALIDITY_HEALTH: this is a geometry-location test. No medium stability,
+new source evolution, centre prescription or singularity removal follows.
+BRANCHES: nonextremal two-horizon branch; extremal boundary; the
+horizonless family is outside this decision.
+DATA_ROLE/FORWARD_MODEL/IDENTIFIABILITY: N/A, no observational fit or
+unique determination of ell.
+CLOSURE_FLAGS initially false: horizon_scale_location_verified,
+inner_core_scale_separation_verified; global and full-medium flags
+remain false.
+FILES: existing completion verifier, this report and diagnostic index.
+STOP: locate the known problem and delimit the BH-regime claim. Do not
+repeat the t<=70 evolution, relabel an inner BH horizon as outside the
+black hole, or select another constitutive action in this stage.
+
+### 47.2 Calculation and decision
+
+Define eta=r_minus/r_plus in (0,1) and D=1+eta+eta^2. Exact
+factorization of r^3-2mr^2+2m ell^2 gives
+
+    r_minus/ell = sqrt(D),       r_plus/ell = sqrt(D)/eta,
+    m/ell = D^(3/2)/[2 eta(1+eta)].
+
+The third root is -ell sqrt(D)/(1+eta)<0. The logarithmic derivative
+of the mass ratio is
+
+    d ln(m/ell)/d eta =
+      (eta-1)(eta+2)(2eta+1)/[2 eta(1+eta)D] < 0.
+
+Thus each nonextremal mass ratio has exactly one admissible eta.
+At eta=1 the horizons coincide and m/ell=3sqrt(3)/4. As eta->0,
+m/ell->infinity, r_minus->ell and r_plus/(2m)->1.
+Writing mu=m/ell, the inverse-mass expansions are
+
+    r_minus/ell = 1 + 1/(4mu) + 5/(32mu^2) + O(mu^-3),
+    r_plus/(2m) = 1 - 1/(4mu^2) - 1/(8mu^4) + O(mu^-6),
+    r_minus/r_plus ~ 1/(2mu).
+
+The three registered examples give:
+
+| m/ell | r_minus/ell | r_plus/ell | r_minus/r_plus |
+| ---: | ---: | ---: | ---: |
+| 2 | 1.1939365665 | 3.7092753594 | 0.3218786557 |
+| 1,000 | 1.0002501564 | 1999.9995000 | 0.0005001252 |
+| 1,000,000 | 1.0000002500 | 1999999.9999995 | 0.000000500000125 |
+
+These are dimensionless model examples. Each ratio is enclosed by
+exact rational endpoints separated by 2^-120; the script emits them.
+The large example puts the inner horizon at approximately one
+two-millionth of the outer horizon's areal radius.
+
+### 47.3 What is and is not moved to the deeper scale
+
+For this metric, at fixed finite mu, the screening and inner surface
+gravity are
+
+    q_minus = eta(1+eta)/D = r_minus/(2m) > 0,
+    kappa_minus = (3-D)/(2 ell D^(3/2)) > 0.
+
+The corresponding outer surface gravity is
+eta(D-3eta^2)/(2 ell D^(3/2)); hence
+kappa_minus/kappa_plus=(eta+2)/[eta(2eta+1)].
+At large mu,
+
+    q_minus ~ 1/(2mu),         kappa_minus ~ 1/ell,
+    K_background(r_minus) -> 24/ell^4,
+    K_background(r_plus) ~ 3/(4m^4).
+
+Here q is the rational gravitational response coefficient, not a newly
+identified foundation-pressure or clock factor. These curvature values
+belong to the stationary background. Section37's freely falling tidal
+divergence concerns the additional specified incoming null source.
+
+The scale distinction is real: when m>>ell, the previously identified
+inner-horizon difficulty is located at the core scale, very far inside
+the outer black-hole scale. This supports the possibility raised by the
+user that the relevant limitation is much deeper than the outer
+black-hole environment. It does not put that inner horizon outside the
+black hole or determine ell in metres. Near the extremal threshold the
+two scales are comparable; large separation is conditional on m>>ell.
+
+For each fixed finite nonextremal mu, q_minus and kappa_minus remain
+positive. Therefore their large-mass limits do not remove section37's
+late-time counterexample. Small fixed screening can coexist with
+unbounded freely falling amplification. Taking an infinite-mass limit
+first would change the question. No new all-source theorem is claimed.
+
+The existing positive result in section23 remains finite-time sourced
+trapping with bounded tested curvature through t=70. The existing
+negative result in section37 remains a different, precisely specified
+source with a finite-proper-time inner obstruction. The present result
+locates their relevant geometric scales; it changes neither verdict.
+
+The next dynamical development must use the full coframe already
+restored in section36 and a specified medium response in this inner
+region. Reimposing the exact reciprocal single-H metric would reopen
+the restricted failures in sections45--46. No new constitutive law is
+selected here, and neither a quantum hierarchy nor Planck-scale physics
+has been inserted into the model.
+
+### 47.4 Verification and stop
+
+horizon_scale_location_checks passes 24/24 new checks; the full
+completion regression passes 913/913, including all 889 prior checks.
+An independent derivation, code review and isolated rerun confirm
+24/24 and the three numerical ratios. All registered identity
+residuals are zero; the exact root brackets pass their sign checks.
+The script implements the series using d=ell/(2m), with inner residual
+O(d^3) and normalized outer residual O(d^6).
+
+Completion verifier SHA256:
+7c0079a7b6a7b903caa878c24cf7c8e012d7a3ed1cb807bf07956afd7d26b328.
+Production verifier SHA256 remains:
+1a23833cd7bc907da7bdda32f26c8ced9ec866f298423a646fb4827f7ce40500.
+Only horizon_scale_location_verified and
+inner_core_scale_separation_verified close. Physical calibration of
+ell, full-medium evolution, singularity removal and full RefG rejection
+remain false. The registered location decision is complete.
+Production, intuitive files, articles and Git configuration are unchanged.
+
+## 48. Source weakening and the pressure-zero endpoint: keep both clocks
+
+Internal admission decision, 2026-09-18. The author's input is reciprocal
+feedback: matter produces the pressure deficit, and that same deficit
+reduces its source strength. The decision here is the precise time bound
+this mechanism must meet. No additional source or evolution law is introduced.
+
+### 48.1 Frozen contract
+
+CLAIM_ID: W3_92_PRESSURE_CLOCK_ENDPOINT; TYPE: conditional comparison
+theorem with exact algebra/control checks; MODEL_VERSION: clock audit v1.
+GOAL: decide whether source weakening alone establishes a never-zero
+pressure, and specify the sufficient rate bound in the existing clock map.
+ASSUMPTIONS/DOMAIN/CONVENTIONS: p>0 is the dimensionless material/clock
+factor; t and tau denote the two specified clocks, d tau=p dt. This is
+the at-rest common-scale dictionary of section44, not the proper time of
+an arbitrary moving observer or a chart assumed across a BH horizon.
+For the autonomous endpoint test F(p)>0 is continuous, and the branch
+continues through every positive pressure level. For the comparison,
+Gamma_max>0 is an assumed finite bound along the branch.
+FREEDOM_LEDGER: p0 is an initial value; gamma in the controls is a rate
+with inverse-time units, not a fitted coupling or selected RefG law.
+DEPENDENCIES: section44's clock dictionary; Stage8's static response;
+W3-75's separately defined homogeneous branch.
+METHOD/CROSSCHECK: chain rule and comparison proof, verified by exact
+primitives and independent substitution of the equality history.
+PASS: the clock conversion and endpoint primitives agree; controls
+distinguish vanishing loss from infinite endpoint time.
+FAIL/FALSIFIER: wrong clock factor, nonzero identity residual, or use
+of an assumed Gamma bound as if derived from the matter action.
+RESIDUAL/ERROR_BOUND: exact algebra, no numerical endpoint extrapolation.
+VALIDITY_HEALTH: an ODE endpoint comparison, conditional on the stated
+continuation; no PDE regularity, mode health or curvature gate closes.
+BRANCHES: quadratic-loss equality control and linear/root-loss negative
+controls are mathematical examples only. OBSERVABLE_MAP: stated clocks.
+FORWARD_MODEL/DATA_ROLE/IDENTIFIABILITY/BENCHMARK: no data or fit; the
+controls only test the endpoint inference, not competing physical laws.
+CLOSURE_FLAGS: only clock_criterion_algebra_verified may close.
+PROVENANCE/FILES: this section and pressure_clock_endpoint_checks in
+verify_saturation_completion_boundary.py. All dynamics, intuition,
+articles and Git settings remain unchanged. STOP: record this one
+admission condition and the existing evidence; no new constitutive scan.
+
+### 48.2 The clock-correct sufficient condition
+
+Write the pressure loss along the specified clock as dp/dt=-F. Then
+
+    dp/dtau=-F/p,     Gamma=-(dp/dtau)/p=F/p^2.
+
+Thus if 0<=Gamma<=Gamma_max along the solution,
+
+    d(1/p)/dt=Gamma <= Gamma_max,
+    p(t) >= p0/[1+Gamma_max*p0*(t-t0)],
+    p(tau) >= p0*exp[-Gamma_max*(tau-tau0)].
+
+Integration of d tau=p dt also gives
+
+    tau-tau0 >= log[1+Gamma_max*p0*(t-t0)]/Gamma_max.
+
+Both finite-time lower bounds are positive; if the branch continues
+to arbitrarily large t, its local elapsed time is also unbounded.
+For a zero asymptote one additionally needs integral Gamma d tau to
+diverge. Otherwise a positive limiting value is possible.
+These are comparison results, not a selection of constant Gamma.
+
+For a positive autonomous F, the exact zero-endpoint tests are
+
+    t_* - t0 = integral_0^p0 dp/F(p),
+    tau_* - tau0 = integral_0^p0 p dp/F(p).
+
+A linear loss F=gamma*p vanishes at p=0 but gives infinite t and finite
+tau_*-tau0=p0/gamma. A root loss F=gamma*sqrt(p) even gives finite
+t_*-t0=2*sqrt(p0)/gamma. They show why vanishing source/loss alone
+does not supply a sufficient endpoint estimate. These controls are not
+introduced into RefG. A finite endpoint here is a boundary of this
+clock description, not a proof of a spacetime singularity.
+
+### 48.3 What the existing calculations actually supply
+
+W92 Stage8 solves a fixed-radius static ensemble:
+u=W_0(kB), p=exp(-u), M_G=Bp and dp/dB=-kp^2/(1+u).
+It includes the weakened contribution of every pre-existing constituent.
+B is a population parameter, not time. This equation supplies no
+dp/dtau for collapse at fixed B; the documented independent-source
+and total-energy closure failures of that trial remain in force.
+
+W3-75 genuinely proves a future proper-time no-zero result:
+dp/dtau=-(3/5)Hp with 0<H<=H_i from its homogeneous current/Einstein
+equations. Its verifier was rerun: 38 identity checks pass, all
+dependency hashes agree, and aggregate_pass is true.
+The branch uses n/n0=p^5, P_F/P0=p^2 and operational A=p^(-5/3).
+It is expanding and homogeneous. Its microscopic pressure map and
+direct ordinary-oscillon/collective transfer remain un-derived.
+Its A is not section44's spatial factor p^(-1); relabelling time
+does not identify those two geometries or transfer the theorem to a BH.
+
+The Stage8 rerun passed all 56 mathematical/numerical checks and two
+of three dependency checks. The remaining historical pin for
+intuitive/RefG_GE.md is stale (current hash begins 1ec492831c68);
+the unmodified mode therefore returns failure. The pin was not
+silently updated and this rerun is not labelled an aggregate pass.
+
+Decision: the explicit missing physical input is the coupled
+inhomogeneous response law or a sufficient endpoint estimate, such
+as a finite bound on the local fractional response Gamma.
+The single-oscillon source scaling and optical clock identities do
+not by themselves determine it. The admission condition is now fixed;
+neither a new BH solution nor its impossibility is inferred.
+
+### 48.4 Verification
+
+The scoped check and an independent read-only rerun each pass 22/22.
+The full completion regression passes 935/935 (22 new and 913 prior).
+All new exact residuals are zero. The counterexamples establish the
+limits of the endpoint inference, not failures of a simulated RefG
+source. No constitutive coefficient or pressure trajectory was fitted.
+Only clock_criterion_algebra_verified closes. The sufficient rate
+bound, BH interior and global singularity-removal flags remain false.
+The analytic comparison above supplies the theorem; test counts
+check its algebra and controls, rather than proving global evolution.
+
 ## Reproduction and attribution
 
     python -X utf8 -B "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/verify_spherical_saturation_bridge.py"
@@ -5855,3 +7160,17 @@ independently derived here.
 Section39 specializes equation(12), checks the denominator independently,
 and derives its own fixed-law and null-ray results. The construction is
 credited to this source; RefG compatibility is tested separately.
+
+[5] S. Dubovsky, T. Gregoire, A. Nicolis and R. Rattazzi,
+*Null energy condition and superluminal propagation*, JHEP 03 (2006) 025,
+[primary text](https://arxiv.org/abs/hep-th/0512260).
+Context for conditional energy/characteristic-cone restrictions, not a
+substitute for section41's explicit medium calculation.
+
+[6] V. Faraoni, E. Gunzig and P. Nardone,
+*Conformal transformations in classical gravitational theories and in
+cosmology*, Fund. Cosmic Phys. 20, 121 (1999),
+[primary text](https://arxiv.org/html/gr-qc/9811047v1), sections1--2.
+Source for the conformal/scalar--tensor framework and physical-frame
+distinction. Section43 specifies its own restricted action and checks
+its independent equations; the framework is not claimed as new RefG physics.

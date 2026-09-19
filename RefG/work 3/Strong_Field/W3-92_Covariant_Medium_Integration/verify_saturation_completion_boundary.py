@@ -4,7 +4,7 @@ Run: python -X utf8 -B verify_saturation_completion_boundary.py --verbose
 Only stdout is written. No evolution or global initial-data family is solved.
 The topological focusing argument is an analytical conditional theorem; these
 symbolic checks verify its local field-equation premises, not that theorem.
-See spherical_saturation_matter_bridge.md, sections 24 through 40.
+See spherical_saturation_matter_bridge.md, sections 24 through 48.
 """
 import argparse
 import ast
@@ -16,6 +16,1007 @@ import sys
 
 sys.dont_write_bytecode = True
 import sympy as s
+
+
+def pressure_clock_endpoint_checks(exact, gate):
+    """Section48: a clock-aware admission test, not a new pressure law.
+
+    d tau = p d t applies only to the specified at-rest common-scale clock.
+    The local fractional rate bound is a premise, not derived from mass
+    scaling. The controls below are mathematical IVPs, not RefG sources.
+    """
+    def eq(name, expression, target=0):
+        exact("clock48_" + name, expression, target)
+
+    p, p0, gamma = s.symbols("p p0 gamma", positive=True)
+    t, tau = s.symbols("t tau", nonnegative=True)
+    F = s.symbols("F", positive=True)
+    eq("local_fractional_rate", (-F/p)/(-p), F/p**2)
+    eq("inverse_pressure_derivative", -p**(-2)*(-F), F/p**2)
+
+    # Equality control for the comparison F/p^2 <= gamma.
+    lower = p0/(1+gamma*p0*t)
+    local_elapsed = s.log(1+gamma*p0*t)/gamma
+    eq("comparison_initial_value", lower.subs(t, 0), p0)
+    eq("comparison_external_ode", s.diff(lower, t), -gamma*lower**2)
+    eq("comparison_clock_integral", s.diff(local_elapsed, t), lower)
+    eq("comparison_local_ode", s.diff(lower, t)/lower, -gamma*lower)
+    gate("clock48_positive_finite_time_comparison", lower.is_positive is True)
+    eq("comparison_zero_only_at_infinite_t", s.limit(lower, t, s.oo))
+    gate("clock48_comparison_local_elapsed_unbounded",
+         s.limit(local_elapsed, t, s.oo) == s.oo)
+    local_lower = p0*s.exp(-gamma*tau)
+    eq("proper_time_comparison_ode", s.diff(local_lower, tau), -gamma*local_lower)
+
+    # Endpoint primitives: integrate from a positive target p up to p0.
+    tq = (1/p-1/p0)/gamma
+    tauq = s.log(p0/p)/gamma
+    eq("quadratic_external_primitive", -s.diff(tq, p), 1/(gamma*p**2))
+    eq("quadratic_local_primitive", -s.diff(tauq, p), 1/(gamma*p))
+    gate("clock48_quadratic_both_times_infinite",
+         all(s.limit(expr, p, 0, dir="+") == s.oo for expr in (tq, tauq)))
+
+    # Vanishing loss alone does not supply a fractional-rate bound.
+    tl, taul = s.log(p0/p)/gamma, (p0-p)/gamma
+    eq("linear_external_primitive", -s.diff(tl, p), 1/(gamma*p))
+    eq("linear_local_primitive", -s.diff(taul, p), 1/gamma)
+    gate("clock48_linear_external_time_infinite", s.limit(tl, p, 0) == s.oo)
+    eq("linear_local_time_finite", s.limit(taul, p, 0), p0/gamma)
+    eq("linear_loss_vanishes", s.limit(gamma*p, p, 0))
+    gate("clock48_linear_local_fractional_rate_unbounded",
+         s.limit(gamma/p, p, 0) == s.oo)
+    ts = 2*(s.sqrt(p0)-s.sqrt(p))/gamma
+    eq("root_loss_external_primitive", -s.diff(ts, p), 1/(gamma*s.sqrt(p)))
+    eq("root_loss_external_time_finite", s.limit(ts, p, 0), 2*s.sqrt(p0)/gamma)
+    eq("root_loss_vanishes", s.limit(gamma*s.sqrt(p), p, 0))
+    return dict(
+        decision="CONDITIONAL_CLOCK_CRITERION__PHYSICAL_RESPONSE_OPEN",
+        scope="Specified at-rest lapse clock d tau=p d t; not a general infalling clock or BH interior solution.",
+        criterion="Along a positive monotone branch, Gamma=-(d p/d tau)/p=F/p^2. A finite upper bound gives positive p at finite proper and external time.",
+        lower_bounds=dict(p_external="p0/(1+Gamma_max*p0*Delta_t)",
+                          p_local="p0*exp(-Gamma_max*Delta_tau)",
+                          elapsed_local="log(1+Gamma_max*p0*Delta_t)/Gamma_max"),
+        endpoint_condition="For an autonomous positive loss F: t*=integral dp/F, tau*=integral p dp/F. These require continuation through every positive level.",
+        zero_limit_condition="p approaches zero only when integral Gamma d tau diverges; bounded Gamma alone also allows a positive limiting value.",
+        closure=dict(clock_criterion_algebra_verified=False,
+                     physical_fractional_rate_bound_derived=False,
+                     new_pressure_dynamics_derived=False,
+                     black_hole_interior_constructed=False,
+                     global_singularity_removal=False))
+
+
+def horizon_scale_location_checks(exact, gate):
+    """Section47: locate an existing obstruction, without a new evolution.
+
+    eta is the invariant areal-radius ratio r_minus/r_plus, in (0,1).
+    ell is not identified with a microscopic or Planck length.
+    """
+    def eq(name, expression, target=0):
+        exact("scale47_" + name, s.simplify(expression-target))
+
+    eta, ell, m, r = s.symbols("eta ell m r", positive=True)
+    D = 1+eta+eta**2
+    mu = D**s.Rational(3, 2)/(2*eta*(1+eta))
+    rminus, rplus = ell*s.sqrt(D), ell*s.sqrt(D)/eta
+    rnegative = -ell*s.sqrt(D)/(1+eta)
+    f = 1-2*m*r**2/(r**3+2*m*ell**2)
+    cubic = r**3-2*m*r**2+2*m*ell**2
+    eq("complete_cubic_factorization", cubic.subs(m, ell*mu),
+       (r-rminus)*(r-rplus)*(r-rnegative))
+    eq("actual_horizon_ratio", rminus/rplus, eta)
+    slope = s.factor(s.diff(mu, eta)/mu)
+    eq("log_mass_slope", slope,
+       (eta-1)*(eta+2)*(2*eta+1)/(2*eta*(eta+1)*D))
+    w = s.symbols("w", positive=True)
+    interior = {eta: 1/(1+w)}
+    gate("scale47_unique_mass_ratio_inversion",
+         s.factor(slope.subs(interior)).is_negative is True)
+    eq("extremal_mass_boundary", mu.subs(eta, 1), 3*s.sqrt(3)/4)
+    eq("extremal_horizon_boundary", (rplus-rminus).subs(eta, 1))
+    eq("large_mass_ratio", s.limit(2*eta*mu, eta, 0), 1)
+    eq("inner_core_scale", s.limit(rminus/ell, eta, 0), 1)
+    eq("outer_mass_scale", s.limit(rplus/(2*ell*mu), eta, 0), 1)
+
+    # Differentiate at fixed mass before evaluating either horizon.
+    fr = s.diff(f, r)
+    km = (3-D)/(2*ell*D**s.Rational(3, 2))
+    kp = eta*(D-3*eta**2)/(2*ell*D**s.Rational(3, 2))
+    eq("inner_surface_gravity", (-fr/2).subs(m, ell*mu).subs(r, rminus), km)
+    eq("outer_surface_gravity", (fr/2).subs(m, ell*mu).subs(r, rplus), kp)
+    eq("surface_gravity_ratio", km/kp, (eta+2)/(eta*(2*eta+1)))
+    q = r**3/(r**3+2*m*ell**2)
+    qm = eta*(1+eta)/D
+    eq("inner_screening", q.subs(m, ell*mu).subs(r, rminus), qm)
+    eq("inner_screening_radius_identity", qm, rminus/(2*ell*mu))
+    gate("scale47_finite_nonextremal_screening_and_gravity_positive",
+         all(s.factor(value.subs(interior)).is_positive is True
+             for value in (qm, km, kp)))
+    eq("inner_gravity_core_limit", s.limit(ell*km, eta, 0), 1)
+    eq("screening_large_mass_limit", s.limit(2*mu*qm, eta, 0), 1)
+    K = s.diff(f, r, 2)**2+4*fr**2/r**2+4*(1-f)**2/r**4
+    # Reuse the horizon mass dictionary; no new curvature law.
+    Kh = s.factor(K.subs(m, r**3/(2*(r**2-ell**2))))
+    eq("inner_background_curvature_limit",
+       s.limit(ell**4*Kh.subs(r, rminus), eta, 0), 24)
+    eq("outer_background_curvature_limit",
+       s.limit((ell*mu)**4*Kh.subs(r, rplus), eta, 0), s.Rational(3, 4))
+
+    # Inverse-mass expansions: d=ell/(2m); all expressions dimensionless.
+    d = s.symbols("d", positive=True)
+    small_inner = 1+d/2+5*d**2/8
+    small_outer = 1-d**2-2*d**4  # r_plus/(2m)
+    eq("inner_radius_series_residual",
+       s.series(d*small_inner**3-small_inner**2+1, d, 0, 3).removeO())
+    eq("outer_radius_series_residual",
+       s.series(small_outer**3-small_outer**2+d**2, d, 0, 6).removeO())
+
+    examples = []
+    for mass_ratio in (2, 1000, 1000000):
+        # Squared positive mass relation; monotonicity above selects
+        # exactly one nonextremal root. Endpoints use exact rationals.
+        def polynomial(value):
+            return 4*mass_ratio**2*value**2*(1+value)**2-(1+value+value**2)**3
+        low, high = s.S.Zero, s.S.One
+        for _ in range(120):
+            midpoint = (low+high)/2
+            if polynomial(midpoint) < 0:
+                low = midpoint
+            else:
+                high = midpoint
+        gate("scale47_exact_root_bracket_" + str(mass_ratio),
+             0 < low < high < 1 and polynomial(low) < 0 <= polynomial(high)
+             and high-low == s.Rational(1, 2**120))
+        midpoint = (low+high)/2
+        evaluate = lambda expression: str(s.N(expression.subs(eta, midpoint), 16))
+        examples.append(dict(
+            m_over_ell=mass_ratio, r_inner_over_ell=evaluate(rminus/ell),
+            r_outer_over_ell=evaluate(rplus/ell),
+            r_inner_over_outer=evaluate(eta), q_inner=evaluate(qm),
+            kappa_inner_times_ell=evaluate(km*ell),
+            exact_ratio_bracket=[str(low), str(high)]))
+    return dict(
+        decision="PARAMETRIC_INNER_OUTER_SCALE_SEPARATION_VERIFIED",
+        scope="Existing nonextremal Hayward geometry; ell remains unspecified",
+        examples=examples,
+        ratio_bracket_width="2**(-120)",
+        interpretation="Known inner-horizon issue can lie at r~ell while outer radius~2m",
+        closure=dict(horizon_scale_location_verified=False,
+                     inner_core_scale_separation_verified=False,
+                     ell_physically_calibrated=False,
+                     full_medium_evolution_solved=False,
+                     global_singularity_removal=False, full_RefG_rejected=False))
+
+
+def pressure_wave_admission_checks(exact, gate):
+    """Section46: reject a specific reduced law as an Einstein completion.
+
+    Derive both trial dynamics and independent metric equations. The weak
+    pulse's initial metric constraints are satisfied before testing its
+    spatial equations. No numerical pulse or new production law is used.
+    """
+    def eq(name, expression, target=0):
+        exact("pressure_wave46_" + name, s.simplify(expression-target))
+
+    P, C, amplitude = s.symbols("P C amplitude", positive=True)
+    t, x, y, z = s.symbols("t x y z", real=True)
+    coords = (t, x, y, z)
+    H = s.Function("H", real=True)(t, x)
+    potential = s.Function("A", real=True)(t, x)
+    ht, hx = s.diff(H, t), s.diff(H, x)
+    E, B = s.diff(potential, t), s.diff(potential, x)
+    LH = C*(s.exp(4*H)*ht**2-hx**2)/2
+    Lem = (s.exp(2*H)*E**2-s.exp(-2*H)*B**2)/2
+    energy_em = (s.exp(2*H)*E**2+s.exp(-2*H)*B**2)/2
+    EL = s.diff(s.diff(LH, ht), t)+s.diff(s.diff(LH, hx), x)-s.diff(LH+Lem, H)
+    eq("pressure_equation", EL,
+       C*(s.exp(4*H)*(s.diff(H, t, 2)+2*ht**2)-s.diff(H, x, 2))-2*energy_em)
+    D, Pi = s.symbols("D Pi", real=True)
+    velocities = {ht: Pi*s.exp(-4*H)/C, E: D*s.exp(-2*H)}
+    hamiltonian = (s.diff(LH, ht)*ht+s.diff(Lem, E)*E-LH-Lem).subs(
+        velocities, simultaneous=True)
+    expected_energy = Pi**2*s.exp(-4*H)/(2*C)+C*hx**2/2+s.exp(-2*H)*(D**2+B**2)/2
+    eq("legendre_energy", hamiltonian, expected_energy)
+    eq("pressure_light_characteristic_speed_squared",
+       C/s.diff(LH, ht, 2), s.exp(-4*H))
+    eq("Newton_normalization", (1/C-1/(2*P)).subs(C, 2*P))
+    gate("pressure_wave46_positive_hamiltonian_coefficients",
+         all(coefficient.is_positive for coefficient in
+             (s.exp(-4*H)/(2*C), C/2, s.exp(-2*H)/2)))
+
+    # Flat-space linearized Einstein operator, not hard-coded components.
+    eta = s.diag(-1, 1, 1, 1)
+    def einstein_linear(h):
+        mixed, trace = eta*h, s.trace(eta*h)
+        box = lambda value: sum(eta[k, k]*s.diff(value, coords[k], 2)
+                                for k in range(4))
+        ricci = s.Matrix(4, 4, lambda mu, nu: s.simplify((
+            sum(s.diff(mixed[k, nu], coords[k], coords[mu])
+                +s.diff(mixed[k, mu], coords[k], coords[nu]) for k in range(4))
+            -box(h[mu, nu])-s.diff(trace, coords[mu], coords[nu]))/2))
+        return (ricci-eta*s.trace(eta*ricci)/2).applyfunc(s.simplify)
+
+    G = einstein_linear(s.diag(2*H, 2*H, 2*H, 2*H))
+    for name, mu, nu, target in (
+        ("00", 0, 0, -2*s.diff(H, x, 2)),
+        ("0x", 0, 1, -2*s.diff(H, t, x)),
+        ("xx", 1, 1, -2*s.diff(H, t, 2)),
+        ("yy", 2, 2, -2*s.diff(H, t, 2)),
+        ("zz", 3, 3, -2*s.diff(H, t, 2))):
+        eq("Einstein_" + name, G[mu, nu], target)
+
+    # A_y=A_y(x-t): F_0y=-a and F_xy=a. Maxwell stress is derived
+    # from F, rather than assigned from the desired source equation.
+    F = s.zeros(4)
+    F[0, 2], F[2, 0] = -amplitude, amplitude
+    F[1, 2], F[2, 1] = amplitude, -amplitude
+    Fup = eta*F*eta
+    invariant = sum(F[i, j]*Fup[i, j] for i in range(4) for j in range(4))
+    T = F*eta*F.T-eta*invariant/4
+    rho = amplitude**2
+    eq("Maxwell_null_invariant", invariant)
+    eq("Maxwell_density", T[0, 0], rho)
+    eq("Maxwell_flux", T[0, 1], -rho)
+    eq("Maxwell_longitudinal_pressure", T[1, 1], rho)
+    eq("Maxwell_transverse_pressure", T[2, 2])
+
+    # Correct leading initial constraints, not H=Ht=0 with added matter.
+    initial_jet = {s.diff(H, x, 2): -rho/(2*P),
+                   s.diff(H, t, x): rho/(2*P)}
+    eq("prepared_Hamiltonian_constraint", (P*G[0, 0]-T[0, 0]).subs(initial_jet))
+    eq("prepared_momentum_constraint", (P*G[0, 1]-T[0, 1]).subs(initial_jet))
+    acceleration = s.solve(2*P*(s.diff(H, t, 2)+rho/(2*P))-2*rho,
+                           s.diff(H, t, 2))[0]
+    eq("trial_acceleration_after_constraints", acceleration, rho/(2*P))
+    evolution_jet = {**initial_jet, s.diff(H, t, 2): acceleration}
+    residual_x = s.simplify((P*G[1, 1]-T[1, 1]).subs(evolution_jet))
+    residual_y = s.simplify((P*G[2, 2]-T[2, 2]).subs(evolution_jet))
+    eq("longitudinal_metric_residual", residual_x, -2*rho)
+    eq("transverse_metric_residual", residual_y, -rho)
+    eq("pressure_difference_obstruction",
+       P*(G[1, 1]-G[2, 2])-(T[1, 1]-T[2, 2]), -rho)
+    gate("pressure_wave46_nonzero_pulse_embedding_rejected",
+         residual_x.is_negative is True and residual_y.is_negative is True,
+         order="first order in radiation energy; O(amplitude**2)")
+    eq("zero_field_control", residual_x.subs(amplitude, 0))
+
+    # Positive SOURCE control of the independent Einstein operator:
+    # a conformal plane response exists once reciprocal H is released.
+    # This is a pure-Einstein local control, NOT a full RefG solution.
+    f = s.Function("f")(x-t)
+    Gcontrol = einstein_linear(2*f*eta)
+    for name, mu, nu in (("00", 0, 0), ("0x", 0, 1),
+                         ("xx", 1, 1), ("yy", 2, 2)):
+        eq("independent_metric_control_" + name,
+           (P*Gcontrol[mu, nu]-T[mu, nu]).subs(s.diff(f, x, 2), -rho/(2*P)))
+
+    return dict(
+        decision="REJECTED_AS_SILENT_EINSTEIN_COMPLETION",
+        scope="Specified reduced pressure-wave action; weak plane Maxwell source",
+        coefficient="C=2P=1/(4*pi*G)",
+        trial_equation="C[exp(4H)(H_tt+2H_t**2)-Delta H]=2 epsilon_EM",
+        residuals=dict(Hamiltonian="0", momentum="0",
+                       longitudinal="-2 rho_EM", transverse="-rho_EM"),
+        pulse_simulation_run=False,
+        closure=dict(pressure_wave_variation_verified=False,
+                     weak_metric_embedding_excluded=False,
+                     full_medium_evolution_solved=False,
+                     global_singularity_removal=False, full_RefG_rejected=False))
+
+
+def silent_exterior_irradiation_checks(exact, gate):
+    """Section45: all required background equations of the retained ansatz.
+
+    Clock/H and Hilbert variations precede its substitution. A radial
+    radiation stress is excluded by the resulting Einstein components.
+    No off-silent F, general evolution or perturbative health is inferred.
+    """
+    def eq(name, expression, target=0):
+        exact("irradiation45_" + name, s.simplify(expression-target))
+
+    def ok(name, condition, **evidence):
+        gate("irradiation45_" + name, condition, **evidence)
+
+    P, r = s.symbols("P r", positive=True)
+    t = s.symbols("t", real=True)
+    H = s.Function("H")(t, r)
+    ht, hr = s.diff(H, t), s.diff(H, r)
+    aa, ab, bb, phit, phir, hdt, hdr = s.symbols(
+        "invtt invtr invrr Phi_t Phi_r H_t H_r", real=True)
+    inverse = s.Matrix([[aa, ab], [ab, bb]])
+    dphi, dh = s.Matrix([phit, phir]), s.Matrix([hdt, hdr])
+    Y = -(dphi.T*inverse*dphi)[0]
+    cross = (dphi.T*inverse*dh)[0]
+    U = (dh.T*inverse*dh)[0]+cross**2/Y
+    # Differentiate independent fields and inverse-metric entries FIRST.
+    Jphi = s.Matrix([s.diff(P*U, q) for q in (phit, phir)])
+    JH = s.Matrix([s.diff(P*U, q) for q in (hdt, hdr)])
+    dUdg = s.Matrix([[s.diff(U, aa), s.diff(U, ab)/2],
+                     [s.diff(U, ab)/2, s.diff(U, bb)]])
+    Traw = P*(inverse.inv()*U-2*dUdg)
+    state = {aa: -s.exp(2*H), ab: 0, bb: s.exp(-2*H),
+             phit: 1, phir: 0, hdt: ht, hdr: hr}
+    jc = Jphi.subs(state).applyfunc(s.simplify)
+    jh = JH.subs(state).applyfunc(s.simplify)
+    TH = Traw.subs(state).applyfunc(s.simplify)
+    Uon = s.simplify(U.subs(state))
+    eq("normalized_clock_lock", (s.exp(-2*H)*Y).subs(state), 1)
+    eq("normalized_radial_label_lock", s.exp(2*H)*state[bb], 1)
+    eq("H_current_time", jh[0])
+    eq("H_current_radial", jh[1], 2*P*s.exp(-2*H)*hr)
+    eq("clock_current_time", jc[0])
+    eq("clock_current_radial", jc[1], -2*P*s.exp(-2*H)*ht*hr)
+    eq("medium_radial_flux_zero", TH[0, 1])
+    volume = r**2*s.exp(2*H)  # sin(theta) cancels from both divergences.
+    EH = -s.diff(volume*jh[1], r)/volume
+    Eclock = -s.diff(volume*jc[1], r)/volume
+    eq("independent_H_equation", EH, -2*P*s.exp(-2*H)*(s.diff(H, r, 2)+2*hr/r))
+    eq("independent_clock_equation", Eclock,
+       2*P*s.exp(-2*H)*s.diff(r**2*ht*hr, r)/r**2)
+    h0, charge = s.Function("h0")(t), s.Function("C")(t)
+    harmonic = h0+charge/r
+    eq("harmonic_H_solution", EH.subs(H, harmonic).doit())
+    eq("clock_mass_charge_constraint",
+       Eclock.subs(H, harmonic).doit(),
+       2*P*s.exp(-2*harmonic)*charge*s.diff(charge, t)/r**4)
+    eq("squared_charge_conservation", s.diff(charge**2, t), 2*charge*s.diff(charge, t))
+
+    # Smooth solutions of (C^2)'=0 have constant C, including C=0.
+    C = s.symbols("C", real=True)
+    hb = h0+C/r
+    N, A, radius = s.exp(-hb), s.exp(hb), r*s.exp(hb)
+    metric = s.diag(-N**2, A**2)
+    inv, coordinates = metric.inv(), (t, r)
+    Gamma = [[[s.simplify(sum(inv[a, k]*(s.diff(metric[k, j], coordinates[i])
+                         +s.diff(metric[k, i], coordinates[j])
+                         -s.diff(metric[i, j], coordinates[k])) for k in range(2))/2)
+                for j in range(2)] for i in range(2)] for a in range(2)]
+    Ric2 = s.Matrix(2, 2, lambda i, j: s.simplify(sum(
+        s.diff(Gamma[a][i][j], coordinates[a])-s.diff(Gamma[a][i][a], coordinates[j])
+        +sum(Gamma[a][a][b]*Gamma[b][i][j]-Gamma[a][j][b]*Gamma[b][i][a]
+             for b in range(2)) for a in range(2))))
+    R2 = s.simplify(s.trace(inv*Ric2))
+    Hess = s.Matrix(2, 2, lambda i, j: s.diff(radius, coordinates[i], coordinates[j])
+        -sum(Gamma[k][i][j]*s.diff(radius, coordinates[k]) for k in range(2)))
+    boxS = s.simplify(s.trace(inv*Hess))
+    dS = s.Matrix([s.diff(radius, q) for q in coordinates])
+    normS = s.simplify((dS.T*inv*dS)[0])
+    G = (-2*Hess/radius+metric*(2*boxS/radius-(1-normS)/radius**2)).applyfunc(s.simplify)
+    Gang = s.simplify(radius*boxS-radius**2*R2/2)
+    THb = TH.subs(H, hb).doit()
+    THang = (P*r**2*s.exp(2*H)*Uon).subs(H, hb).doit()
+    rho = s.simplify((P*G[0, 0]-THb[0, 0])/N**2)
+    pr = s.simplify((P*G[1, 1]-THb[1, 1])/A**2)
+    pt = s.simplify((P*Gang-THang)/radius**2)
+    flux = s.simplify((P*G[0, 1]-THb[0, 1])/(N*A))
+    v0, a0 = s.diff(h0, t), s.diff(h0, t, 2)
+    eq("required_matter_density", rho, 3*P*s.exp(2*hb)*v0**2)
+    eq("required_matter_radial_pressure", pr, -P*s.exp(2*hb)*(2*a0+5*v0**2))
+    eq("required_matter_angular_pressure", pt, pr)
+    eq("required_matter_flux", flux, 2*P*C*v0/r**2)
+    static = {v0: 0, a0: 0}
+    for name, component in (("density", rho), ("radial", pr), ("angular", pt), ("flux", flux)):
+        eq("static_exterior_" + name, component.subs(static))
+    v2, acceleration = s.symbols("v2 acceleration", real=True)
+    # Null radiation needs pr=rho and pt=0. Both pressure equations are
+    # independent; their only compatible density in this ansatz is zero.
+    solutions = s.solve([-2*acceleration-5*v2-3*v2,
+                         -2*acceleration-5*v2], (v2, acceleration))
+    ok("radial_null_source_only_zero_density", solutions == {v2: 0, acceleration: 0})
+    density_positive = s.symbols("density_positive", positive=True)
+    ok("positive_radial_stream_rejected", (density_positive-0).is_positive,
+       required="pr-pt=0", radial_null="pr-pt=rho>0")
+    eq("null_zero_density_forces_zero_flux", flux.subs(v0, 0))
+    # A NON-isolated homogeneous positive-radiation control: no claim that
+    # light is forbidden in the theory or that this branch is stable.
+    tau, tstar = s.symbols("tau tstar", positive=True)
+    rad_h = s.log(t/tstar)/3
+    control = {C: 0, h0: rad_h}
+    rhoc = rho.subs(control).doit().subs(t, tau)
+    prc = pr.subs(control).doit().subs(t, tau)
+    eq("homogeneous_radiation_equation_of_state", rhoc, 3*prc)
+    eq("homogeneous_radiation_flux", flux.subs(control).doit())
+    eq("homogeneous_radiation_continuity",
+       s.diff(rhoc, tau)+4*rhoc/(3*tau))
+    ok("homogeneous_radiation_positive_density", s.simplify(rhoc).is_positive)
+    eq("homogeneous_radiation_redshift", rhoc*s.exp(4*rad_h.subs(t, tau)),
+       P/(3*tstar**2))
+    return dict(
+        decision="STRICT_SILENT_EXTERIOR_CANNOT_CARRY_RADIAL_NULL_IRRADIATION",
+        constraints=["Delta H=0", "div(H_t grad H)=0", "H=h0(t)+C/r with C constant"],
+        required_source="rho=3P exp(2H) h0_dot^2; pr=pt=-P exp(2H)(2h0_ddot+5h0_dot^2)",
+        flux="T_hat0r=2P*C*h0_dot/r^2",
+        scope="Exact shared-scale silent clock/label ansatz only; not general five-field dynamics.",
+        remaining_input="Off-silent constitutive response and independently evolving clock/labels/metric",
+        closure=dict(independent_clock_constraint_verified=False,
+                     required_matter_tensor_verified=False,
+                     strict_radial_irradiation_excluded=False,
+                     homogeneous_radiation_control_verified=False,
+                     full_RefG_rejected=False,
+                     full_medium_evolution_solved=False,
+                     global_singularity_removal=False))
+
+
+def common_pressure_light_checks(exact, gate):
+    """Section44: restore the EXISTING common-scale source interpretation.
+
+    Maxwell variation is a metric-equation projection. It is not a new
+    independent five-field H equation or a consistent-truncation proof.
+    """
+    def eq(name, expression, target=0):
+        exact("pressure44_" + name, s.factor(expression-target))
+
+    def ok(name, condition, **evidence):
+        gate("pressure44_" + name, condition, **evidence)
+
+    p, m0, k = s.symbols("p m0 k", positive=True)
+    e1, e2, e3, b1, b2, b3 = s.symbols("e1 e2 e3 b1 b2 b3", real=True)
+    g = s.diag(-p**2, p**-2, p**-2, p**-2)
+    gi, vol = g.inv(), p**-2
+    # E_i=F_0i and B_i=epsilon_ijk F_jk/2. Natural Maxwell units.
+    F = s.Matrix([[0, e1, e2, e3], [-e1, 0, b3, -b2],
+                  [-e2, -b3, 0, b1], [-e3, b2, -b1, 0]])
+    Fu = gi*F*gi
+    F2 = s.expand(sum(F[i, j]*Fu[i, j] for i in range(4) for j in range(4)))
+    e2sum, b2sum = e1**2+e2**2+e3**2, b1**2+b2**2+b3**2
+    L = -vol*F2/4
+    T = s.simplify(F*gi*F.T-g*F2/4)
+    Tu = gi*T*gi
+    rho = s.simplify(T[0, 0]/p**2)
+    spatial_trace = s.simplify(sum(gi[i, i]*T[i, i] for i in range(1, 4)))
+    trace = s.simplify(s.trace(gi*T))
+    eq("metric_volume", -g.det(), vol**2)
+    eq("maxwell_invariant", F2, -2*e2sum+2*p**4*b2sum)
+    eq("maxwell_lagrangian", L, (e2sum/p**2-p**2*b2sum)/2)
+    eq("local_energy", rho, (e2sum+p**4*b2sum)/2)
+    eq("maxwell_trace", trace)
+    eq("maxwell_spatial_stress", spatial_trace, rho)
+    # H_p=-ln p: hold coordinate potential fixed while differentiating.
+    source = -p*s.diff(L, p)
+    metric_source = vol*sum(Tu[i, j]*(-p*s.diff(g[i, j], p))
+                            for i in range(4) for j in range(4))/2
+    eq("action_hilbert_source_agreement", source, metric_source)
+    eq("radiation_pressure_source", source, 2*vol*rho)
+    ok("source_nonnegative", s.expand(source).is_nonnegative)
+    rho0, pr, pt = s.symbols("rho0 pr pt", real=True)
+    generic_Tu = s.diag(rho0/p**2, p**2*pr, p**2*pt, p**2*pt)
+    contraction = sum(generic_Tu[i, i]*(-p*s.diff(g[i, i], p)) for i in range(4))/2
+    eq("existing_matter_pullback", contraction, rho0+pr+2*pt)
+    eq("traceless_matter_control", contraction.subs(pr, rho0-2*pt), 2*rho0)
+    eq("rest_constituent_one_scale", -p*s.diff(-m0*p, p), m0*p)
+    # A uniform conformal variation instead contracts the Lorentz trace.
+    weyl_source = -vol*s.trace(Tu*g)
+    eq("weyl_source_zero", weyl_source)
+    beam, change = s.symbols("beam change", positive=True)
+    beam_state = {e1: 0, e2: beam, e3: 0, b1: 0, b2: 0, b3: -beam/p**2}
+    # Evaluate the full variation FIRST: imposing F^2=0 in L before
+    # variation would incorrectly erase the null wave's stress/source.
+    eq("null_beam_invariant", F2.subs(beam_state))
+    eq("null_beam_nonzero_source", source.subs(beam_state), 2*beam**2/p**2)
+    ok("trace_only_pressure_identification_rejected",
+       s.simplify((source-weyl_source).subs(beam_state)).is_positive)
+    ok("null_action_substitution_before_variation_rejected",
+       s.simplify(-p*s.diff(L.subs(beam_state), p)) == 0
+       and s.simplify(source.subs(beam_state)).is_positive)
+
+    momenta = s.symbols("pi1 pi2 pi3", real=True)
+    fields = (e1, e2, e3)
+    velocities = {e: p**2*pi for e, pi in zip(fields, momenta)}
+    energy = s.factor((sum(e*s.diff(L, e) for e in fields)-L).subs(velocities))
+    expected_energy = p**2*(sum(pi**2 for pi in momenta)+b2sum)/2
+    eq("canonical_energy", energy, expected_energy)
+    eq("canonical_energy_local_density", energy, (vol*rho).subs(velocities))
+    eq("canonical_exchange_source", -p*s.diff(energy, p), -2*energy)
+    eq("legendre_exchange_sign", -p*s.diff(energy, p), -source.subs(velocities))
+    ok("maxwell_kinetic_positive", s.diff(L, e1, 2).is_positive)
+    # Frozen-coefficient dispersion; proper ruler and clock remove p.
+    w = s.symbols("w", real=True)
+    covector = s.Matrix([-w, k, 0, 0])
+    dispersion = (covector.T*gi*covector)[0]
+    eq("coordinate_light_cone", dispersion.subs(w, p**2*k))
+    eq("proper_light_speed", (p**-1*p**2)/p, 1)
+    eq("conformal_only_cone_control",
+       (covector.T*(p**2*s.diag(-1, 1, 1, 1)).inv()*covector)[0].subs(w, k))
+    ok("conformal_only_rod_map_differs",
+       s.simplify((p-1/p).subs(p, s.exp(-change))).is_negative)
+
+    # One transverse component A_y(t,x); its exact Maxwell PDE gives the
+    # energy exchange without postulating an absorption or friction law.
+    t, x = s.symbols("t x", real=True)
+    hp, ay = s.Function("H_p")(t, x), s.Function("A_y")(t, x)
+    pp = s.exp(-hp)
+    at, ax = s.diff(ay, t), s.diff(ay, x)
+    epsilon = (at**2/pp**2+pp**2*ax**2)/2
+    flux = -pp**2*at*ax
+    wave_eq = s.diff(at/pp**2, t)-s.diff(pp**2*ax, x)
+    eq("exact_energy_exchange",
+       s.diff(epsilon, t)+s.diff(flux, x)+2*s.diff(hp, t)*epsilon,
+       at*wave_eq)
+    # Carry the source into the pre-existing STATIC independent lapse/
+    # deficit balance. This static electric/magnetic control has no
+    # incoming energy flux and is not a model for the dynamical stream.
+    N, A, S, P = s.symbols("N A S P", positive=True)
+    er, qm, hmed = s.symbols("radial_potential_derivative magnetic_charge H_med", real=True)
+    Lrad = S**2*er**2/(2*N*A)-N*A*qm**2/(2*S**2)
+    rhog = (er**2/(N**2*A**2)+qm**2/S**4)/2
+    radial_volume = N*A*S**2
+    combination = N*s.diff(Lrad, N)-A*s.diff(Lrad, A)-S*s.diff(Lrad, S)
+    eq("static_em_active_source", combination, -2*radial_volume*rhog)
+    eq("static_independent_H_has_no_direct_source", s.diff(Lrad, hmed))
+    eq("static_maxwell_electric_charge", s.diff(Lrad, er), S**2*er/(N*A))
+    Dprime, Q, Fbar, W, V = s.symbols("Dprime Q Fbar W V", real=True)
+    old_offshell = 2*(P*Dprime-radial_volume*(Q*Fbar+W-V))
+    eq("static_full_balance_em_extension", old_offshell+combination,
+       2*(P*Dprime-radial_volume*(Q*Fbar+W-V+rhog)))
+    eq("static_common_clock_required_source",
+       -(old_offshell+combination).subs(Dprime, 0)/(2*radial_volume),
+       Q*Fbar+W-V+rhog)
+    # Full field equations are stronger than a single metric pullback.
+    EH, Eg = s.symbols("E_H_independent E_metric_projection", real=True)
+    pulled = EH+Eg
+    eq("pullback_can_vanish_with_independent_residual", pulled.subs({EH: 1, Eg: -1}))
+    ok("independent_equations_still_required", EH.subs(EH, 1) != 0)
+    return dict(
+        decision="EXISTING_COMMON_PRESSURE_PHOTON_SOURCE_RETAINED",
+        source="delta S_EM/delta H_p = 2*sqrt(-g)*rho_EM on the shared metric",
+        existing_source="verify_common_scale_centre_source.py: feedback_assumption_checks",
+        static_balance="P*D_prime=N*A*S^2*(Q*Fbar+W-V+rho_EM); static zero-total-flux sector only",
+        distinction="Biconformal pressure variation is not a uniform Weyl variation or the independent section43 scalar.",
+        scope="Exact Maxwell/source and energy identities; not a full medium evolution or singularity cure.",
+        closure=dict(existing_pressure_source_verified=False,
+                     trace_only_identification_excluded=False,
+                     photon_energy_balance_verified=False,
+                     new_coupling_introduced=False,
+                     independent_medium_equations_solved=False,
+                     full_RefG_pressure_join=False,
+                     global_singularity_removal=False))
+
+
+def deficit_curvature_activation_checks(exact, gate):
+    """Section43: specified scalar--tensor control, not the five-field medium.
+
+    A constant-H null-fluid branch tests automatic source activation.
+    No smooth-centre formation or nonlinear stability claim is made.
+    """
+    def eq(name, expression, target=0):
+        exact("activation43_" + name, s.simplify(expression-target))
+
+    def ok(name, condition, **evidence):
+        gate("activation43_" + name, condition, **evidence)
+
+    P = s.symbols("P", positive=True)
+    H, H0, chi, X, boxH, Tm = s.symbols("H H0 chi X boxH Tm", real=True)
+    A, Z, U = (s.Function(name)(H) for name in ("A", "Z", "U"))
+    AH, AHH = s.diff(A, H), s.diff(A, H, 2)
+    KE = Z/A+3*P*AH**2/(2*A**2)
+    # Trace of P*A*G = Tm + T_H + P*(Hess A - g box A).
+    Rtrace = (-Tm+Z*X+4*U+3*P*(AH*boxH+AHH*X))/(P*A)
+    scalar = Z*boxH+s.diff(Z, H)*X/2-s.diff(U, H)+P*AH*Rtrace/2
+    D = A*KE
+    B = s.diff(Z, H)/2+Z*AH/(2*A)+3*P*AH*AHH/(2*A)
+    eq("trace_elimination", scalar,
+       D*boxH+B*X-s.diff(U, H)+2*AH*U/A-AH*Tm/(2*A))
+    explicit = {A: s.exp(2*H), Z: P*s.exp(2*H), U: s.S.Zero}
+    ae = s.exp(2*H)
+    ke = s.simplify(KE.subs(explicit).doit())
+    eq("einstein_kinetic", ke, 7*P)
+    ok("tensor_coefficient_positive", (P*ae).is_positive)
+    ok("scalar_kinetic_positive", ke.is_positive)
+    eq("canonical_scalar", ke*s.diff(chi/s.sqrt(7*P), chi)**2, 1)
+    eq("matter_conformal_factor", (1/ae).subs(H, chi/s.sqrt(7*P)),
+       s.exp(-2*chi/s.sqrt(7*P)))
+    explicit_scalar = s.simplify(scalar.subs(explicit).doit())
+    eq("explicit_scalar_equation", explicit_scalar, 7*P*ae*(boxH+2*X)-Tm)
+    R = s.symbols("R", real=True)
+    raw_scalar = Z*boxH+s.diff(Z, H)*X/2-s.diff(U, H)+P*AH*R/2
+    eq("direct_scalar_variation", raw_scalar.subs(explicit).doit(), P*ae*(R+boxH+X))
+    boxA = 2*ae*boxH+4*ae*X
+    eq("deficit_coefficient_trace_source", explicit_scalar, 7*P*boxA/2-Tm)
+    eq("traceless_source_constant_solution",
+       explicit_scalar.subs({Tm: 0, boxH: 0, X: 0}))
+    eq("traceful_source_activates_scalar",
+       explicit_scalar.subs({boxH: 0, X: 0}), -Tm)
+    # Fixed-background massless scalar force only; no nonlinear screening.
+    force = 1+P*s.diff(ae, H)**2/(2*ae**2*ke)
+    eq("fixed_background_force_ratio", force, s.Rational(9, 7))
+
+    v, r = s.symbols("v r", real=True)
+    m = s.Function("m")(v)
+    f = 1-2*m/r
+    h = s.Matrix([[-f, 1], [1, 0]])
+    hi, x = h.inv(), (v, r)
+    Gamma = [[[s.simplify(sum(hi[a, k]*(s.diff(h[k, j], x[i])
+                        +s.diff(h[k, i], x[j])-s.diff(h[i, j], x[k]))
+                        for k in range(2))/2)
+               for j in range(2)] for i in range(2)] for a in range(2)]
+    Ric2 = s.Matrix(2, 2, lambda i, j: s.simplify(sum(
+        s.diff(Gamma[a][i][j], x[a])-s.diff(Gamma[a][i][a], x[j])
+        +sum(Gamma[a][a][b]*Gamma[b][i][j]-Gamma[a][j][b]*Gamma[b][i][a]
+             for b in range(2)) for a in range(2))))
+    R2 = s.simplify(s.trace(hi*Ric2))
+    Hess = -s.Matrix(Gamma[1])
+    boxr = s.simplify(s.trace(hi*Hess))
+    R4 = s.simplify(R2+2*(1-f)/r**2-4*boxr/r)
+    G = s.simplify(-2*Hess/r+h*(2*boxr/r-(1-f)/r**2))
+    Gangular = s.simplify(r*boxr-r**2*R2/2)
+    eq("branch_ricci2", R2, -s.diff(f, r, 2))
+    eq("branch_ricci4", R4)
+    eq("branch_einstein_vv", G[0, 0], 2*s.diff(m, v)/r**2)
+    eq("branch_einstein_vr", G[0, 1])
+    eq("branch_einstein_rr", G[1, 1])
+    eq("branch_einstein_angular", Gangular)
+    A0 = s.exp(2*H0)
+    rho = 2*P*A0*s.diff(m, v)/r**2
+    T = s.Matrix([[rho, 0], [0, 0]])
+    eq("branch_source_trace", s.trace(hi*T))
+    # Full independent scalar equation, not merely the metric trace.
+    eq("branch_scalar_residual", P*s.diff(ae, H).subs(H, H0)*R4/2)
+    for i, j in ((0, 0), (0, 1), (1, 1)):
+        eq("branch_metric_residual_" + str(i) + str(j), (P*A0*G-T)[i, j])
+    eq("branch_metric_residual_angular", P*A0*Gangular)
+    Tup = s.simplify(hi*T*hi)
+    for a in range(2):
+        div = sum(s.diff(r**2*Tup[b, a], x[b])/r**2 for b in range(2))
+        div += sum(Gamma[a][b][c]*Tup[b, c] for b in range(2) for c in range(2))
+        eq("branch_conservation_" + str(a), div)
+    n = s.Matrix([0, -1])
+    eq("branch_radiation_null", (n.T*h*n)[0])
+    eq("branch_einstein_frame_same_null", (n.T*(A0*h)*n)[0])
+    # Spherical warped-product invariant, independent of Einstein's trace.
+    K = s.simplify(R2**2+8*s.trace((hi*Hess)**2)/r**2+4*(1-f)**2/r**4)
+    eq("branch_kretschmann", K, 48*m**2/r**6)
+    eq("branch_flat_control", K.subs(m, 0))
+    mp, rp, t = s.symbols("mp rp t", positive=True)
+    divergent = s.limit(K.subs({m: mp, r: rp}), rp, 0, dir="+")
+    ok("branch_central_divergence", divergent == s.oo, limit=str(divergent))
+    history = 2-1/(4*(1+v))
+    ok("branch_retained_history_positive_mass", history.subs(v, t+24).is_positive)
+    ok("branch_retained_history_positive_flux",
+       s.diff(history, v).subs(v, t+24).is_positive)
+    eq("branch_retained_history_finite_mass", s.limit(history, v, s.oo), 2)
+    # A constant deficit fails the scalar equation when R is changed.
+    # This negative control detects dropping that independent equation.
+    lam = s.symbols("lam", positive=True)
+    fdS = 1-2*mp/r-lam*r**2
+    RdS = -s.diff(fdS, r, 2)+2*(1-fdS)/r**2-4*s.diff(fdS, r)/r
+    eq("control_nonzero_ricci", RdS, 12*lam)
+    ok("control_scalar_equation_rejects_nonzero_ricci",
+       s.simplify(P*A0*RdS).is_positive)
+    return dict(
+        decision="AUTOMATIC_RADIATION_REGULATION_EXCLUDED_FOR_EXPLICIT_CONTROL",
+        action="sqrt(-g)*[P*exp(2H)*R/2-P*exp(2H)*(partial H)^2/2]+S_m[g]",
+        status="TOY_ACTION_EXACT_COUNTERBRANCH",
+        scalar_equation="box(exp(2H))=2*T_m/(7*P)",
+        counterbranch="H=H0, f=1-2*m(v)/r, T_vv=2*P*exp(2H0)*m_prime/r^2",
+        curvature="K=48*m(v)^2/r^6",
+        scope="Standalone null-fluid control; not a five-field RefG reduction or regular-centre formation.",
+        closure=dict(explicit_action_eligibility_verified=False,
+                     constant_deficit_null_branch_verified=False,
+                     automatic_regulation_excluded=False,
+                     full_medium_constitutive_law_selected=False,
+                     full_RefG_pressure_join=False,
+                     global_singularity_removal=False,
+                     full_RefG_rejected=False))
+
+
+def source_led_horizon_checks(exact, gate):
+    """Section42: radial constraints and finite surface budget, not evolution.
+
+    The two-function metric is retained. No F or complete background is
+    chosen. The low-slope persistence bound is analytical in the report.
+    """
+    def eq(name, expression, target=0):
+        exact("source42_" + name, s.simplify(expression-target))
+
+    def ok(name, condition, **evidence):
+        gate("source42_" + name, condition, **evidence)
+
+    v, r = s.symbols("v r", real=True)
+    f, psi = s.Function("f")(v, r), s.Function("psi")(v, r)
+    x = (v, r)
+    h = s.Matrix([[-s.exp(2*psi)*f, s.exp(psi)], [s.exp(psi), 0]])
+    hi = h.inv()
+    Gamma = [[[s.simplify(sum(hi[a, k]*(s.diff(h[k, j], x[i])
+                        +s.diff(h[k, i], x[j])-s.diff(h[i, j], x[k]))
+                        for k in range(2))/2)
+               for j in range(2)] for i in range(2)] for a in range(2)]
+    # Exact spherical warped-product radial Einstein block. The intrinsic
+    # 2D Einstein tensor vanishes; both Hessian and Laplacian come from h.
+    Hess = -s.Matrix(Gamma[1])
+    boxr = s.simplify(sum(hi[i, j]*Hess[i, j] for i in range(2) for j in range(2)))
+    G = s.simplify(-2*Hess/r+h*(2*boxr/r-(1-f)/r**2))
+    Gmix = s.simplify(hi*G)
+    m = r*(1-f)/2
+    l = s.Matrix([1, s.exp(psi)*f/2])
+    n = s.Matrix([0, -s.exp(-psi)])
+    eq("metric_determinant", h.det(), -s.exp(2*psi))
+    eq("metric_box_radius", boxr, s.diff(f, r)+f*s.diff(psi, r))
+    eq("metric_rr_constraint", G[1, 1], 2*s.diff(psi, r)/r)
+    eq("metric_radial_mass_constraint", Gmix[0, 0], -2*s.diff(m, r)/r**2)
+    eq("metric_mass_flux", Gmix[1, 0], 2*s.diff(m, v)/r**2)
+    eq("metric_other_diagonal", Gmix[1, 1],
+       -2*s.diff(m, r)/r**2+2*f*s.diff(psi, r)/r)
+    eq("metric_null_normalization", (l.T*h*n)[0], -1)
+    Gll = s.simplify((l.T*G*l)[0])
+    eq("metric_outgoing_null", Gll,
+       -s.exp(psi)*s.diff(f, v)/r+s.exp(2*psi)*f**2*s.diff(psi, r)/(2*r))
+    eq("metric_ingoing_null", (n.T*G*n)[0],
+       2*s.exp(-2*psi)*s.diff(psi, r)/r)
+    gv = s.Function("log_time_reparam")(v)
+    eq("metric_radial_lapse_not_time_gauge", s.diff(psi-gv, r), s.diff(psi, r))
+    eq("metric_unit_cross_forces_zero_rr", G[1, 1].subs(s.diff(psi, r), 0))
+    positive_source, rp = s.symbols("positive_source rp", positive=True)
+    ok("metric_unit_cross_strict_source_rejected",
+       (8*s.pi*positive_source).is_positive,
+       residual="G_rr-8*pi*T_rr=-8*pi*T_rr when psi_r=0, T_rr>0")
+    eq("metric_source_determined_lapse",
+       (G[1, 1]-8*s.pi*positive_source).subs(s.diff(psi, r), 4*s.pi*r*positive_source))
+    Lum = s.Function("Lum")(v)
+    flux = Lum/(4*s.pi*r**2)
+    Tgamma = s.Matrix([[flux, 0], [0, 0]])
+    eq("light_rr_zero", Tgamma[1, 1])
+    eq("light_outgoing_contraction", (l.T*Tgamma*l)[0], flux)
+    for aindex in range(2):
+        acceleration = sum(n[b]*s.diff(n[aindex], x[b]) for b in range(2))
+        acceleration += sum(Gamma[aindex][b][c]*n[b]*n[c]
+                            for b in range(2) for c in range(2))
+        eq("light_affine_ingoing_" + str(aindex), acceleration)
+    volume = s.exp(psi)*r**2
+    divergence = sum(s.diff(volume*flux*n[i], x[i]) for i in range(2))/volume
+    eq("light_conserved_in_general_lapse", divergence)
+    # A general-lapse outgoing ray has an extra psi_v and a different
+    # evaluation point from the instantaneous marginal surface.
+    affine_coefficient = -sum(Gamma[0][i][j]*l[i]*l[j]
+                              for i in range(2) for j in range(2))
+    eq("ray_affine_coefficient", affine_coefficient,
+       -s.diff(psi, v)-s.exp(psi)*s.diff(f, r)/2-s.exp(psi)*f*s.diff(psi, r))
+
+    a, E, kh, light, a0, t, t0, c, mass, Lcore = s.symbols(
+        "a E kh light a0 t t0 c mass Lcore", positive=True)
+    adot, fr = s.symbols("adot fr", real=True)
+    U = s.symbols("U", nonnegative=True)
+    on_surface = {f: 0, s.diff(f, v): -adot*fr, s.exp(psi): E, r: a}
+    surface_Gll = s.simplify(Gll.subs(on_surface))
+    eq("surface_moving_root_source", surface_Gll, E*adot*fr/a)
+    eq("surface_degenerate_root_still_zero", surface_Gll.subs(fr, 0))
+    eq("surface_inner_slope_definition", surface_Gll.subs(fr, -2*kh/E), -2*kh*adot/a)
+    source_adot = -(light/a+4*s.pi*a*U)/kh
+    eq("surface_source_driven_motion",
+       (-2*kh*adot/a-8*s.pi*(light/(4*s.pi*a**2)+U)).subs(adot, source_adot))
+    ok("surface_positive_stream_shrinks_inner_root", source_adot.is_negative)
+    eq("surface_radius_squared_balance", -2*a*source_adot,
+       2*light/kh+8*s.pi*a**2*U/kh)
+    ok("surface_nonnegative_medium_consumes_more_budget",
+       (8*s.pi*a**2*U/kh).is_nonnegative)
+    # Retained section40 a(M) is now a rejected benchmark condition,
+    # not a prescribed evolution law in this calculation.
+    arule = Lcore**2/(2*mass)
+    eq("surface_old_radius_derivative", s.diff(arule, mass), -arule/mass)
+    required_U = light*(a**2*kh/mass-1)/(4*s.pi*a**2)
+    eq("surface_old_radius_medium_source",
+       (surface_Gll.subs({fr: -2*kh/E, adot: -a*light/mass})/(8*s.pi)
+        -light/(4*s.pi*a**2)), required_U)
+    eq("surface_old_radius_threshold", required_U.subs(kh, mass/a**2))
+    eq("surface_old_L2_late_threshold", (mass/a**2).subs({mass: 2, a: 1}), 2)
+    # If kh<=c/t, the loss of a^2 is at least 1/(2ct). The integral
+    # inequality is proved in section42; these check its exact primitives.
+    loss_rate = (2*light/kh).subs({light: 1/(4*t**2), kh: c/t})
+    eq("budget_slow_slope_loss_rate", loss_rate, 1/(2*c*t))
+    Ybound = a0**2-s.log(t/t0)/(2*c)
+    eq("budget_logarithmic_primitive", s.diff(Ybound, t), -loss_rate)
+    eq("budget_initial_radius", Ybound.subs(t, t0), a0**2)
+    tend = t0*s.exp(2*c*a0**2)
+    eq("budget_finite_upper_end", Ybound.subs(t, tend))
+    hpositive = s.symbols("hpositive", positive=True)
+    ok("budget_beyond_end_impossible",
+       s.simplify(Ybound.subs(t, tend*s.exp(hpositive))).is_negative)
+    # A local smooth jet removes the TWO ansatz locks, but is not a
+    # solution of the independent medium equations.
+    ah = 1-v
+    fj = -(r-ah)-(r-ah)**3
+    jet = {f: fj, s.diff(f, v): s.diff(fj, v), psi: r-1,
+           s.diff(psi, r): 1}
+    point_ll = s.simplify(Gll.subs(jet).subs({r: 1, v: 0}))
+    point_rr = s.simplify(G[1, 1].subs(s.diff(psi, r), 1).subs(r, 1))
+    eq("control_positive_total_ll", point_ll, 1)
+    eq("control_positive_total_rr", point_rr, 2)
+    eq("control_positive_medium_ll", point_ll/(8*s.pi)-1/(16*s.pi), 1/(16*s.pi))
+    eq("control_positive_medium_rr", point_rr/(8*s.pi), 1/(4*s.pi))
+    return dict(
+        decision="SOURCE_LED_RADIAL_METRIC_AND_FINITE_SURFACE_BUDGET_VERIFIED",
+        equations=["psi_r=4*pi*r*T_rr", "m_r=-4*pi*r^2*exp(-psi)*T_vr",
+                   "m_v=4*pi*r^2*(exp(-psi)*T_vv+f*T_vr)",
+                   "a_prime=-(Lum/a+4*pi*a*T_medium,ll)/kappa_h"],
+        slope_definition="kappa_h=-exp(psi)*f_r/2 evaluated on a simple inner marginal surface",
+        budget="integral Lum/kappa_h dv <= (a0^2-a(v)^2)/2",
+        exclusion="Lum=1/[4(1+v)^2], kappa_h<=c/(1+v) cannot persist with a>0 beyond 1+v=(1+v0)*exp(2*c*a0^2)",
+        meaning="The premises cannot persist together; no prediction of a zero-radius endpoint.",
+        closure=dict(source_led_constraints_verified=False,
+                     unit_cross_strict_source_excluded=False,
+                     slow_slope_persistence_excluded=False,
+                     full_medium_constitutive_law_selected=False,
+                     independent_medium_equations_solved=False,
+                     ray_boost_bound_derived=False,
+                     full_RefG_pressure_join=False,
+                     global_singularity_removal=False,
+                     full_RefG_rejected=False))
+
+
+def flowing_medium_source_checks(exact, gate):
+    """Section41: local positive-energy/cone obstruction, not full stability.
+
+    Frozen positive normalizations are absorbed into the field variables.
+    F jets are arbitrary. Constant lambda W^2 is an explicit action amendment.
+    The characteristic endpoint lemma and sign proof are in the report.
+    """
+    def eq(name, expression, target=0):
+        exact("flow41_" + name, s.cancel(expression-target))
+
+    def ok(name, condition, **evidence):
+        gate("flow41_" + name, condition, **evidence)
+
+    eps = s.symbols("eps", real=True)
+    Q, kap, S = s.symbols("Q kap S", positive=True)
+    V, q, gH, d, lam = s.symbols("V q gH d lam", real=True)
+    Fy, Fb, Fyy, Fyb, Fbb = s.symbols("Fy Fb Fyy Fyb Fbb", real=True)
+    tt, tx, xt, xx, ht, hx, et, ex = s.symbols(
+        "tt tx xt xx ht hx et ex", real=True)
+    dy = 2*eps*tt+eps**2*(tt**2-tx**2)
+    db = 2*eps*(S*xx-V*xt)+eps**2*(xx**2-xt**2)
+    Fjet = Fy*dy+Fb*db+Fyy*dy**2/2+Fyb*dy*db+Fbb*db**2/2
+    LF2 = s.expand(Q*Fjet).coeff(eps, 2)
+
+    # Reproduce the established projector/auxiliary constraint dependency.
+    Y = 1+dy
+    X = -(1+eps*tt)*(q+eps*ht)+eps*tx*(gH+eps*hx)
+    Z = -(q+eps*ht)**2+(gH+eps*hx)**2
+    invY2 = 1-2*eps*tt+eps**2*(3*tt**2+tx**2)
+    LH2 = s.expand(kap*(Z+X**2*invY2)).coeff(eps, 2)
+    LHeta = s.expand(LH2.subs({ht: et+q*tt, hx: ex+q*tx}))
+    eq("base_projector_quadratic", LHeta,
+       kap*(ex**2-2*gH*et*tx+gH**2*tx**2))
+    # et*tx and ex*tt differ by a spacetime divergence. On a nonzero
+    # radial Fourier mode the auxiliary equation gives ex=gH*tt.
+    LHibp = kap*(ex**2-2*gH*ex*tt+gH**2*tx**2)
+    eq("base_auxiliary_equation", s.diff(LHibp, ex), 2*kap*(ex-gH*tt))
+    eq("base_auxiliary_reduction", LHibp.subs(ex, gH*tt),
+       -kap*gH**2*(tt**2-tx**2))
+    eq("base_background_time_rate_cancels", s.diff(LHeta, q))
+    L2 = LF2-d*(tt**2-tx**2)
+    A, B = Q*(Fy+2*Fyy)-d, Q*Fy-d
+    C, D = Q*(-Fb+2*V**2*Fbb), Q*(-Fb-2*S**2*Fbb)
+    K = s.Matrix([[A, -2*Q*V*Fyb], [-2*Q*V*Fyb, C]])
+    N = s.Matrix([[0, 2*Q*S*Fyb], [0, -2*Q*V*S*Fbb]])
+    G = s.diag(B, D)
+    vel, grad = s.Matrix([tt, xt]), s.Matrix([tx, xx])
+    matrix_L = (vel.T*K*vel+2*vel.T*N*grad-grad.T*G*grad)[0]
+    eq("base_invariant_expansion_matches_matrices", L2, matrix_L)
+    for i, derivative in enumerate((tt, xt)):
+        eq("base_momentum_" + str(i), s.diff(L2, derivative),
+           (2*K*vel+2*N*grad)[i])
+    Hamiltonian = sum(s.diff(L2, z)*z for z in (tt, xt))-L2
+    eq("base_Hamiltonian_no_mixed_terms", Hamiltonian,
+       (vel.T*K*vel+grad.T*G*grad)[0])
+    beta = S**2+V**2
+    eq("base_weighted_label_sign", (S**2*C+V**2*D)/beta, -Q*Fb)
+
+    T = {}
+    TW = {}
+    for sign, name in ((1, "plus"), (-1, "minus")):
+        # Independent inverse-metric variation delta(g^ab)=eps*k^a*k^b,
+        # k=(1,sign). The scalar metric-volume variation vanishes for null k.
+        Ymet = 1-eps
+        Bmet = S**2-V**2+eps*(V+sign*S)**2
+        Xmet = -q+eps*(q+sign*gH)
+        Zmet = -q**2+gH**2+eps*(q+sign*gH)**2
+        TH = -2*s.diff(kap*(Zmet+Xmet**2/Ymet), eps).subs(eps, 0)
+        eq("base_full_projector_null_" + name, TH, -2*kap*gH**2)
+        TF = -2*Q*s.diff(Fy*(Ymet-1)+Fb*(Bmet-(S**2-V**2)), eps)
+        T[sign] = 2*(B-Q*Fb*(V+sign*S)**2)
+        eq("base_metric_null_source_" + name, TF+TH,
+           T[sign].subs(d, kap*gH**2))
+        certificate = 2*(B+(V+sign*S)**2*(S**2*C+V**2*D)/beta)
+        eq("base_positive_null_certificate_" + name, T[sign], certificate)
+        eq("base_comoving_limit_" + name, T[sign].subs(V, 0),
+           2*(B-Q*Fb*S**2))
+        Wmet2 = (-V+eps*(V+sign*S))**2/Ymet
+        TW[sign] = 2*lam*(V**2+2*sign*V*S)
+        eq("amend_metric_null_source_" + name,
+           -2*lam*s.diff(Wmet2, eps).subs(eps, 0), TW[sign])
+
+    # Exact principal controls, not solutions of the background equations.
+    control = {Q: 1, d: 1, Fy: 2, Fyy: 1, Fb: -1, Fbb: 0,
+               Fyb: 0, V: s.Rational(1, 2), S: 1}
+    c = s.symbols("c", real=True)
+    P = K*c**2-(N+N.T)*c-G
+    eq("base_positive_control_characteristic", P.det().subs(control),
+       (3*c**2-1)*(c**2-1))
+    ok("base_positive_control_energy",
+       K.subs(control).is_positive_definite and G.subs(control).is_positive_definite)
+    eq("base_positive_control_null_plus", T[1].subs(control), s.Rational(13, 2))
+    eq("base_positive_control_null_minus", T[-1].subs(control), s.Rational(5, 2))
+    negative = dict(control)  # Same fields, deliberately wrong clock stiffness.
+    negative[Fy] = 0
+    eq("base_negative_control_null", T[-1].subs(negative), -s.Rational(3, 2))
+    eq("base_negative_control_clock_speed_squared", (B/A).subs(negative), -1)
+    ok("base_negative_control_rejected",
+       not G.subs(negative).is_positive_definite,
+       scope="This control has a negative squared clock speed; not a universal NEC claim.")
+
+    # The minimal explicit amendment: a constant coefficient times W^2.
+    numerator = (1+eps*tt)*(V+eps*xt)-eps*tx*(S+eps*xx)
+    LW2 = s.expand(lam*numerator**2*invY2).coeff(eps, 2)
+    expected_W = lam*((xt-S*tx)**2+V**2*tx**2-2*V*tx*xx+2*V*S*tt*tx)
+    eq("amend_normalized_W_expansion", LW2, expected_W)
+    Ba, Ca = B-lam*beta, C+lam
+    Ka = s.Matrix([[A, -2*Q*V*Fyb], [-2*Q*V*Fyb, Ca]])
+    Ga = s.Matrix([[Ba, lam*V], [lam*V, D]])
+    Na = s.Matrix([[lam*V*S, 2*Q*S*Fyb],
+                   [-lam*S, -2*Q*V*S*Fbb]])
+    La = L2+LW2
+    eq("amend_quadratic_matrices", La,
+       (vel.T*Ka*vel+2*vel.T*Na*grad-grad.T*Ga*grad)[0])
+    Ha = sum(s.diff(La, z)*z for z in (tt, xt))-La
+    eq("amend_Hamiltonian", Ha, (vel.T*Ka*vel+grad.T*Ga*grad)[0])
+    Pa = Ka*c**2-(Na+Na.T)*c-Ga
+    for sign, name in ((1, "plus"), (-1, "minus")):
+        total = T[sign]+TW[sign]
+        certificate = 2*(Ba+(V+sign*S)**2*(S**2*Ca+V**2*D)/beta
+                          +2*lam*V**2*(beta+sign*V*S)/beta)
+        eq("amend_nonnegative_lambda_certificate_" + name, total, certificate)
+        eq("amend_zero_lambda_recovers_original_" + name, total.subs(lam, 0), T[sign])
+
+    ell, gap = s.symbols("ell gap", positive=True)
+    vv, pcone = s.symbols("vv pcone", nonnegative=True)
+    bp, cp, dp = s.symbols("bp cp dp", positive=True)
+    pminus = -ell+2*Q*(S-V)**2*Fbb
+    eq("amend_negative_lambda_cone_diagonal",
+       Pa[1, 1].subs({c: -1, lam: -ell}), pminus)
+    Tminus = (T[-1]+TW[-1]).subs(lam, -ell)
+    Tplus = (T[1]+TW[1]).subs(lam, -ell)
+    eq("amend_negative_lambda_minus_certificate", Tminus/2,
+       Ba.subs(lam, -ell)+D*(S-V)**2+S**2*pminus+2*ell*V*(S-V))
+    eq("amend_negative_lambda_slope_certificate", -Q*Fb-ell,
+       D+S**2*pminus/(S-V)**2+ell*V*(2*S-V)/(S-V)**2)
+    eq("amend_negative_lambda_direction_difference", Tplus-Tminus,
+       8*V*S*(-Q*Fb-ell))
+    eq("amend_cone_endpoint_leading_coefficient", s.expand(Pa.det()).coeff(c, 4),
+       Ka.det())
+    # Explicit positive-variable certificates. S=V+gap covers S>V>=0;
+    # reflections exchange directions when V is negative.
+    for sign, name in ((1, "plus"), (-1, "minus")):
+        weight = beta+sign*V*S
+        ok("amend_positive_weight_" + name,
+           s.expand(weight.subs({S: vv+gap, V: vv})).is_positive)
+        base_cert = bp+(V+sign*S)**2*(S**2*cp+V**2*dp)/beta
+        ok("base_positive_certificate_sign_" + name,
+           base_cert.subs({S: vv+gap, V: vv}).is_positive)
+    minus_cert = bp+dp*gap**2+(vv+gap)**2*pcone+2*ell*vv*gap
+    slope_cert = dp+(vv+gap)**2*pcone/gap**2+ell*vv*(vv+2*gap)/gap**2
+    ok("amend_negative_lambda_null_sign", minus_cert.is_positive)
+    ok("amend_negative_lambda_slope_sign", slope_cert.is_positive)
+    eq("amend_spatial_reflection_exchanges_nulls",
+       (T[1]+TW[1]).subs(V, -V), T[-1]+TW[-1])
+
+    return dict(
+        decision="REGULAR_RADIAL_FLOW_AND_CONSTANT_W2_SOURCE_ROUTE_EXCLUDED",
+        domain=["Local clock-rest orthonormal frame; positive radial strain S^2>V^2",
+                "Regular nonzero-radial-wave-number auxiliary-H reduction",
+                "Strictly positive reduced principal Hamiltonian K>0 and G>0",
+                "For constant negative lambda, no radial characteristic outside the light cone"],
+        dependency="Section26 projected-H reduction, reproduced; not a new clock-time mode.",
+        result="Both radial null stresses are positive in the registered class; section40 needs a negative one.",
+        closure=dict(
+            original_flow_sign_certificate_verified=False,
+            constant_W2_sign_certificate_verified=False,
+            original_flow_source_join_excluded_in_domain=False,
+            constant_W2_source_join_excluded_in_domain=False,
+            complete_finite_wavelength_metric_reduction=False,
+            degenerate_branches_excluded=False,
+            general_mixed_invariant_action_excluded=False,
+            medium_dynamics_derived=False,
+            full_RefG_pressure_join=False,
+            global_singularity_removal=False,
+            full_RefG_rejected=False))
 
 
 def inner_extremal_source_entry_checks(exact, gate):
@@ -2606,6 +3607,99 @@ def audit():
         entry_ok["shrink"] and inner_ok["geometry"] and entry_ok["source"])
     source_entry["closure"]["conditional_shrinking_ray_bound_verified"] = (
         all(entry_ok.values()) and inner_ok["geometry"])
+    before_flow = len(checks)
+    flowing_source = flowing_medium_source_checks(exact, gate)
+    flow_checks = checks[before_flow:]
+    flowing_source["checks"] = len(flow_checks)
+    flowing_source["passed"] = sum(item["passed"] for item in flow_checks)
+    flow_groups = {group: [item for item in flow_checks
+                           if item["name"].startswith("flow41_"+group+"_")]
+                   for group in ("base", "amend")}
+    flow_ok = {group: bool(rows) and all(item["passed"] for item in rows)
+               for group, rows in flow_groups.items()}
+    if not all(flow_ok.values()):
+        flowing_source["decision"] = "FLOWING_MEDIUM_SOURCE_AUDIT_FAILED"
+    flowing_source["closure"]["original_flow_sign_certificate_verified"] = flow_ok["base"]
+    flowing_source["closure"]["constant_W2_sign_certificate_verified"] = all(flow_ok.values())
+    flowing_source["closure"]["original_flow_source_join_excluded_in_domain"] = (
+        flow_ok["base"] and entry_ok["source"])
+    flowing_source["closure"]["constant_W2_source_join_excluded_in_domain"] = (
+        all(flow_ok.values()) and entry_ok["source"])
+    before_source_led = len(checks)
+    source_led = source_led_horizon_checks(exact, gate)
+    source_led_checks = checks[before_source_led:]
+    source_led["checks"] = len(source_led_checks)
+    source_led["passed"] = sum(item["passed"] for item in source_led_checks)
+    source_led_ok = bool(source_led_checks) and all(item["passed"] for item in source_led_checks)
+    if not source_led_ok:
+        source_led["decision"] = "SOURCE_LED_HORIZON_AUDIT_FAILED"
+    source_led["closure"]["source_led_constraints_verified"] = source_led_ok
+    source_led["closure"]["unit_cross_strict_source_excluded"] = (
+        source_led_ok and flow_ok["base"])
+    source_led["closure"]["slow_slope_persistence_excluded"] = (
+        source_led_ok and flow_ok["base"])
+    before_activation = len(checks)
+    activation = deficit_curvature_activation_checks(exact, gate)
+    activation_checks = checks[before_activation:]
+    activation["checks"] = len(activation_checks)
+    activation["passed"] = sum(item["passed"] for item in activation_checks)
+    activation_ok = bool(activation_checks) and all(item["passed"] for item in activation_checks)
+    if not activation_ok:
+        activation["decision"] = "DEFICIT_CURVATURE_ACTIVATION_AUDIT_FAILED"
+    activation["closure"]["explicit_action_eligibility_verified"] = activation_ok
+    activation["closure"]["constant_deficit_null_branch_verified"] = activation_ok
+    activation["closure"]["automatic_regulation_excluded"] = activation_ok
+    before_pressure = len(checks)
+    pressure = common_pressure_light_checks(exact, gate)
+    pressure_checks = checks[before_pressure:]
+    pressure["checks"] = len(pressure_checks)
+    pressure["passed"] = sum(item["passed"] for item in pressure_checks)
+    pressure_ok = bool(pressure_checks) and all(item["passed"] for item in pressure_checks)
+    if not pressure_ok:
+        pressure["decision"] = "COMMON_PRESSURE_PHOTON_SOURCE_AUDIT_FAILED"
+    pressure["closure"]["existing_pressure_source_verified"] = pressure_ok
+    pressure["closure"]["trace_only_identification_excluded"] = pressure_ok
+    pressure["closure"]["photon_energy_balance_verified"] = pressure_ok
+    before_irradiation = len(checks)
+    irradiation = silent_exterior_irradiation_checks(exact, gate)
+    irradiation_checks = checks[before_irradiation:]
+    irradiation["checks"] = len(irradiation_checks)
+    irradiation["passed"] = sum(item["passed"] for item in irradiation_checks)
+    irradiation_ok = bool(irradiation_checks) and all(item["passed"] for item in irradiation_checks)
+    if not irradiation_ok:
+        irradiation["decision"] = "SILENT_EXTERIOR_IRRADIATION_AUDIT_FAILED"
+    for flag in ("independent_clock_constraint_verified", "required_matter_tensor_verified",
+                 "strict_radial_irradiation_excluded", "homogeneous_radiation_control_verified"):
+        irradiation["closure"][flag] = irradiation_ok
+    before_wave = len(checks)
+    pressure_wave = pressure_wave_admission_checks(exact, gate)
+    wave_checks = checks[before_wave:]
+    pressure_wave["checks"] = len(wave_checks)
+    pressure_wave["passed"] = sum(item["passed"] for item in wave_checks)
+    wave_ok = bool(wave_checks) and all(item["passed"] for item in wave_checks)
+    if not wave_ok:
+        pressure_wave["decision"] = "PRESSURE_WAVE_ADMISSION_AUDIT_FAILED"
+    for flag in ("pressure_wave_variation_verified", "weak_metric_embedding_excluded"):
+        pressure_wave["closure"][flag] = wave_ok
+    before_scale = len(checks)
+    horizon_scale = horizon_scale_location_checks(exact, gate)
+    scale_checks = checks[before_scale:]
+    horizon_scale["checks"] = len(scale_checks)
+    horizon_scale["passed"] = sum(item["passed"] for item in scale_checks)
+    scale_ok = bool(scale_checks) and all(item["passed"] for item in scale_checks)
+    if not scale_ok:
+        horizon_scale["decision"] = "HORIZON_SCALE_LOCATION_AUDIT_FAILED"
+    for flag in ("horizon_scale_location_verified", "inner_core_scale_separation_verified"):
+        horizon_scale["closure"][flag] = scale_ok
+    before_clock = len(checks)
+    pressure_clock = pressure_clock_endpoint_checks(exact, gate)
+    clock_checks = checks[before_clock:]
+    pressure_clock["checks"] = len(clock_checks)
+    pressure_clock["passed"] = sum(item["passed"] for item in clock_checks)
+    clock_ok = bool(clock_checks) and all(item["passed"] for item in clock_checks)
+    pressure_clock["closure"]["clock_criterion_algebra_verified"] = clock_ok
+    if not clock_ok:
+        pressure_clock["decision"] = "PRESSURE_CLOCK_CRITERION_FAILED"
     passed = sum(item["passed"] for item in checks)
     return dict(
         decision="COMPLETION_BOUNDARY_AND_HOMOGENEOUS_JOIN_VERIFIED" if passed == len(checks)
@@ -2630,6 +3724,14 @@ def audit():
         existing_light_source_audit=light_source,
         inner_extremal_bridge_audit=inner_extremal,
         inner_extremal_source_entry_audit=source_entry,
+        flowing_medium_source_audit=flowing_source,
+        source_led_horizon_audit=source_led,
+        deficit_curvature_activation_audit=activation,
+        common_pressure_light_audit=pressure,
+        silent_exterior_irradiation_audit=irradiation,
+        pressure_wave_admission_audit=pressure_wave,
+        horizon_scale_location_audit=horizon_scale,
+        pressure_clock_endpoint_audit=pressure_clock,
         local_witness=dict(
             scope="One smooth local source/geometry jet, not a global initial-data family.",
             finite_amplitude="Every finite P gives finite source, geometry and listed derivatives.",

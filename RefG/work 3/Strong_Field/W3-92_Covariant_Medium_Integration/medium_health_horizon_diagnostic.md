@@ -1,5 +1,86 @@
 # Existing medium: quadratic health and horizon decision
 
+## მიმდინარე სამუშაოს ერთიანი რუკა — 2026-09-19
+
+ეს არის არსებული შედეგების შეკვრა და სამუშაოს საზღვარი, არა ახალი
+ფიზიკური მოდელი ან დამატებითი შემოწმების ეტაპი. ქვემოთ მოცემული ძველი
+„Latest“/„next“ ჩანაწერები თავიანთი თარიღის ისტორიას აღწერს.
+მიმდინარე გადაწყვეტილება ამ რუკით იკითხება.
+
+**მთავარი დასკვნა:** თვითრეგულირების ანგარიშები უკვე არსებობს.
+შავი ხვრელის გაჯერების ანგარიში და ფუძის საერთო წნევითი აღწერა
+ჯერჯერობით სხვადასხვა მოქმედებას ეყრდნობა. მათი შედეგების
+ერთმანეთზე გადატანა ერთიანი ამოხსნის გამოყვანას მოითხოვს.
+წყაროების ეს გამიჯვნა უკვე ეწერა Stage 25-ში და
+[შეთავსების რუკაში](FORMAL_COVARIANT_MEDIUM_INTEGRATION.md);
+იგი დაკარგული ახალი მექანიზმის აღმოჩენად არ აღირიცხება.
+
+| არსებული ნაწილი | რა არის მიღებული | მოქმედების საზღვარი და პირველწყარო |
+|---|---|---|
+| საერთო მასშტაბური ამოკითხვა | სტატიკურ შესაბამის არეში საათისა და სახაზავის ფაქტორი p=e^(-H), სინათლის კოორდინატული სიჩქარე p²; ადგილობრივი c უცვლელია | ქართული §2.2; [ფორმალური ჩაშენება](FORMAL_COVARIANT_MEDIUM_INTEGRATION.md), exterior/compatibility map. ეს ლექსიკონი თავისით შიდა ევოლუციის კანონს არ ადგენს. |
+| ფუძის სრული მოქმედება | დამოუკიდებელი მეტრიკის, H-ის, საათისა და მატერიალური ნიშნულების ვარიაციები; ზუსტი ექსპონენციალური გარე ამონახსნი | იმავე ფორმალური ჩაშენების ფაილი; აქ Stage 9. F_med-ის სრული პასუხი გარე მდუმარე მდგომარეობის მიღმა შერჩეული და ჯანმრთელად დადასტურებული არ არის. |
+| სტატიკური უკუკავშირის მაგალითი | u=W_0(kB), p=e^(-u), M_G=Bp; მთელი ძველი ანსამბლიც გადაითვლება და დამატებითი მასის წილი მცირდება | აქ Stage 8. Stage 9 უკვე ადგენს ენერგეტიკული აცდენის მიზეზს: დამოუკიდებელი lapse-ის დაუკმაყოფილებელი შეზღუდვა. ეს საცდელი ენერგია სრული შავი ხვრელის ამოხსნად არ გამოიყენება. |
+| კანონიკური ოსცილონისა და გეომეტრიის ერთობლივი ანგარიში | წონასწორობა, შემცირებული ზღვრული მასის წილი, საწყისი ანსამბლები და დინამიკური უკუკავშირი | აქ Stages 15–24; population_assembly_initial_data.py. ეს EH + კანონიკური კომპლექსური ველის მოდელია. Stage 25 ადგენს, რომ F_med, H და მისი დამოუკიდებელი განტოლებები ამ ევოლუციაში არ მონაწილეობს. |
+| მოქმედებიდან მიღებული სფერული გაჯერება | h(z)=z/(1-ell²z), q=1-ell²z; წნევის გარეშე ერთგვაროვანი წყაროს შემოსაზღვრული სიმრუდე; კანონიკური წყაროსთვის გადამოწმებული რიცხვითი მონაკვეთი 0≤t≤70 | [სფერული ანგარიში](spherical_saturation_matter_bridge.md), §§1–3,23; verify_spherical_saturation_bridge.py. ეს პოსტულატური მოდიფიცირებული გრავიტაციაა, არა ზემო F_med-მოქმედების გამოყვანილი შემცირება. |
+| ნულთან მიუღწევლობის დროითი შემოწმება | W75-ში ერთგვაროვანი გაფართოების განშტოების მტკიცება; სფერული ანგარიშის §48-ში ორი საათის პირობითი კრიტერიუმი | W75-ის საკუთარი პირობები; [სფერული ანგარიში](spherical_saturation_matter_bridge.md), §48. ეს კრიტერიუმი შავი ხვრელის ახალი წნევითი განტოლება არ არის. |
+
+### კონკრეტულად სად რჩება შეუერთებელი ადგილი
+
+გაჯერების მოდელის q და RefG-ის საერთო გარე შედარების p სხვადასხვა
+განსაზღვრების სიდიდეებია. ამის ზუსტი მაგალითი უკვე დათვლილია
+სფერული ანგარიშის §36-ში: ჰეივორდის ვაკუუმური ბირთვის ცენტრისკენ
+q→0, ხოლო უსასრულობაში ნორმირებული სტატიკური საათის ფაქტორი
+sqrt(f)→1. ამიტომ q-სთვის „ფუძის წნევის“ სახელის მინიჭება
+არსებულ გათვლას ავტორის საერთო მასშტაბირების ამოხსნად ვერ აქცევს.
+ეს კონკრეტული იდენტიფიკაციის შეუსაბამობაა და არა სრული RefG-ის უარყოფა.
+
+ფუძის მოქმედების მხარესაც საწყისი განტოლება უკვე არსებობს. Stage 9-ის
+სტატიკურ სექტორში, მისი იქვე განსაზღვრული ცვლადებით:
+
+    Q_H = -N S² H'/A,
+    Q_H' = [Q/(omega_H P)] N A S²
+           [y F_y - l_r F_r - l_t F_t].
+
+მისი მეტრიკული შეზღუდვები და ნიშნულების განტოლება იმავე Stage 9-ში
+შენარჩუნებულია. დაუხურავი ფიზიკური ნაწილი არის F-ის ისეთი სრული
+პასუხი ან მისგან გამოყვანილი ეფექტური აღწერა, რომელიც ერთდროულად
+დააკმაყოფილებს ამ განტოლებებს, მატერიის უკუკავშირსა და ავტორის
+ადგილობრივი/გარე ამოკითხვის მოთხოვნას. მხოლოდ ზემო სტატიკური
+განტოლების ამოხსნა დინამიკურ შავ ხვრელს ვერ ჩაანაცვლებს.
+
+### რა რჩება საიმედოდ და რა აღარ უნდა განმეორდეს
+
+- სფერული §23-ის შემოწმებულ მონაკვეთში ჩაჭერა და სასრული სიმრუდე
+  შენარჩუნებულია. §37-ის ზუსტი შიდა-ჰორიზონტული უკუსმაგალითი ეხება
+  იმავე გაჯერების გრავიტაციას ცალკე განსაზღვრული ნულოვანი სითხით;
+  იგი არც საწყისი კანონიკური პაკეტის საბოლოო შედეგია და არც ყველა
+  RefG წყაროს შეუძლებლობის მტკიცება.
+- სინათლის არსებული საერთო-მეტრიკული ბმა უკვე აღდგენილია §44-ში.
+  დამატებითი p-ით წყაროს ხელახლა გამრავლება ამ ბმის აღდგენა არ არის.
+- Stage 8-ის ენერგეტიკული აცდენის მიზეზი უკვე დადგენილია Stage 9-ში;
+  მისი თავიდან ძებნა ან ველის ენერგიის მოცილება სამუშაოს წინ ვერ წაიყვანს.
+- §§45–46-ის უარყოფა ეხება მკაცრ მდუმარე/ერთი-H ანზაცსა და კონკრეტულ
+  საცდელ გაგრძელებას. იგი საერთო მასშტაბირების მთელი პრინციპის
+  უარყოფად არ გადაიწერება.
+- §48 დასრულებული საკმარისი კრიტერიუმია. მისი ალგებრის ახალი
+  გადათვლები შიდა ფიზიკური პასუხის გამოყვანად აღარ აღირიცხება.
+
+**შემდგომი გამოთვლის დაშვების წესი:** ჯერ უნდა დასახელდეს რომელი ერთი
+მოქმედება ითვლება, რომელი უკვე არსებული განტოლება გამოიყენება და
+რომელი რეალურად ახალი ფიზიკური კავშირი აკავშირებს მას წნევით
+ამოკითხვასთან. ახალი კავშირის გარეშე იგივე დაკარგული წინაპირობის
+შესამოწმებლად კიდევ ერთი სკრიპტი ან ხანგრძლივი ევოლუცია არ იწყება.
+გეომეტრიული კანდიდატის კვლევა და ავტორის სრული მოდელის ამოხსნა
+ცალ-ცალკე აღირიცხება.
+
+ეს შეკვრა ცვლის სამუშაოს ორგანიზებას და მიმდინარე სტატუსის წაკითხვას.
+ფიზიკური განტოლებები, ძველი შედეგები, Python-კოდი, ინტუიციური ტექსტები
+და Git-ის წესები უცვლელია. ახალი ფიზიკური PASS არ დამატებულა;
+935/935 არის წინა შერეული ალგებრული/რეგრესიული ნაკრების შედეგი,
+რომელშიც პირობითი მტკიცებებისა და უარყოფილი გზების შემოწმებებიც შედის.
+
+## დათარიღებული სამუშაო ისტორია
+
 Internal working diagnostic, 2026-09-07. This is the first calculation under the
 plan in `intuitive/idea.txt`. Authoritative physical input: root `RefG_ka.md`,
 equations (5)--(16) and Appendix A; W3-92 supplies the integration boundaries.
@@ -13,7 +94,143 @@ exponential exterior and selected additive constitutive truncations are
 candidate assumptions, not requirements imposed on every future action.
 The negative results below remain valid in their stated domains.
 
-Latest completed source-entry and shrinking-radius audit:
+Latest completed pressure-clock admission decision:
+[spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section48 (2026-09-18). Under the specified d tau=p dt clock dictionary,
+a finite local fractional loss bound Gamma=-(dp/dtau)/p yields positive
+lower bounds for p at every finite proper and external time. This is
+a sufficient criterion, not a newly derived pressure dynamics. The
+actual coupled response or an alternative endpoint estimate remains
+the physical input needed for the BH problem. W3-75's existing
+homogeneous proper-time theorem passed its rerun in its own domain.
+The 22 new clock checks and all 913 prior completion checks pass.
+Stage8's separate static mode retains one stale manuscript hash;
+its mathematical checks pass, but its aggregate rerun is not a pass.
+Production equations, intuition, articles and Git settings are unchanged.
+
+Previous completed inner/outer scale-location decision:
+[spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section47 (2026-09-18). In the existing nonextremal Hayward candidate,
+m>>ell gives r_inner~ell and r_outer~2m. An exact horizon-ratio
+parametrization and rational root brackets quantify the separation:
+at m/ell=10^6, r_inner/r_outer=5.000001250002031e-7. Thus the known
+inner-horizon obstruction can occur very deep inside the outer BH size.
+The length ell is uncalibrated; no microscopic or Planck interpretation
+is assigned. Positive q_inner and kappa_inner at every fixed finite
+nonextremal mass preserve the previous null-source counterexample.
+Section23's finite-time regular trapping evidence also remains intact.
+The next dynamical calculation must retain section36's full coframe;
+the reciprocal single-H restrictions in sections45--46 are not general
+RefG requirements. This stage selects no new constitutive action.
+All 913 regression checks pass (24 new plus 889 prior); an independent
+isolated rerun passes 24/24. Production, intuition, articles and Git
+settings are unchanged.
+
+Previous completed pressure-wave admission decision:
+[spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section46 (2026-09-18). The explicit trial
+L_H=C[exp(4H)H_t^2-|grad H|^2]/2, C=2P, retains the existing common-metric
+Maxwell source and has positive canonical energy. It nevertheless fails
+admission as a completion with the retained silent-state restrictions:
+a weak transverse light pulse has unequal longitudinal/transverse
+stresses, while the reciprocal single-H metric's linear Einstein spatial
+components are equal. Even after imposing the Einstein Hamiltonian and
+momentum constraints, the trial evolution leaves residuals -2rho_EM and
+-rho_EM. This is a leading weak-source incompatibility of the specified
+embedding, not a singularity calculation or a rejection of full RefG.
+The candidate is retired before pulse simulation. The required next
+development concerns independent directional stress/flow response;
+no replacement constitutive law has passed this test.
+The completion regression passes 889/889 (27 new plus 862 prior checks);
+an independent isolated rerun passes 27/27. Production equations,
+intuitive text, articles and Git settings remain unchanged.
+
+Previous completed full-equation irradiation gate:
+[spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section45 (2026-09-18). Retaining the exact common-scale metric, Phi=t,
+Cartesian material labels and the silent constitutive state while
+allowing H(t,r) gives Delta H=0 and div(H_t grad H)=0 from the independent
+H and clock equations. Hence H=h0(t)+C/r with constant C.
+All Einstein components then require p_r=p_t for the additional matter,
+which rules out a nonzero radial null stream (p_r=rho>0, p_t=0).
+This excludes that continuation of the equilibrium ansatz, not the
+general five-field dynamics. A non-isolated homogeneous isotropic
+radiation control passes, retaining the existing photon/pressure coupling.
+The completion verifier passes 862/862: 28 new checks and all 834 previous
+checks. An independent isolated rerun also passes 28/28.
+The full off-silent constitutive response is not fixed by the exterior;
+the already-tested centre polynomial is not a validated isolated replacement.
+No production evolution, intuitive text or article was changed.
+
+Previous completed common-pressure light-source correction:
+[spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section44 (2026-09-18). The existing shared pressure metric gives the
+matter source rho+p_r+2p_t, so trace-free Maxwell radiation contributes
+2rho, not zero. Direct Maxwell-action and Hilbert-tensor variations agree.
+Its propagation law, canonical energy and exact metric-work balance
+use that same metric. The static independent lapse/deficit balance
+acquires +rho_EM with no duplicate source in the independent H equation.
+Section43's trace-only auxiliary scalar is a different action/variable;
+its failure cannot be read as absent light coupling in RefG.
+The old source audit passes 13/13 unchanged. The completion verifier
+passes 834/834 (34 new checks and all 800 previous checks).
+Independent medium evolution and singularity
+removal remain unsolved. Production, intuition, articles and Git are unchanged.
+
+Previous completed explicit action/source-activation test:
+[spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section43 (2026-09-18). The standalone scalar--tensor control
+S=integral sqrt(-g)[P exp(2H)R/2-P exp(2H)(partial H)^2/2]+S_m[g]
+has positive local kinetic terms and a common conformal light cone.
+Its exact scalar equation is box(exp(2H))=2T_m/(7P), so trace-free
+incoming radiation admits an unchanged H. The full metric, scalar
+and null-fluid equations admit H=H0, f=1-2m(v)/r with
+T_vv=2P exp(2H0)m'/r^2 and K=48m(v)^2/r^6.
+This excludes automatic radiation regulation by this specified
+prototype. The central singularity is already present in these data;
+regular-centre formation and the full five-field RefG join are separate,
+unsolved questions. The completion verifier passes **800/800**:
+36 new checks and all 764 earlier checks. The original action, production
+evolution, intuitive text, articles, Canon and Git configuration are unchanged.
+
+Previous completed source-led metric and inner-surface budget:
+[spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section42 (2026-09-18). The general radial Einstein equations require
+psi_r=4pi r T_rr. The old unit-cross metric fixes T_rr=0 everywhere
+and therefore cannot contain section41's strictly positive radial medium
+source even after dropping the prescribed degenerate horizon.
+Keeping both metric functions gives a source-determined simple inner
+surface motion a'=-(Lum/a+4pi a T_medium,ll)/kappa_h, with
+kappa_h=-exp(psi) f_r/2>0. Its radius-squared budget excludes indefinite
+positive-radius persistence with Lum=1/[4(1+v)^2] and kappa_h<=c/(1+v).
+This is an analytical necessary-condition result, not an actual endpoint
+or ray-blueshift prediction. Both time normalizations and the general
+lapse terms are retained. The verifier passes **764/764**: 39 new checks
+and all 725 previous checks. The off-silent constitutive response and
+the independent medium evolution remain unsolved; the local geometric
+control is not counted as their solution. Production equations, optical
+law, intuition, articles and Git configuration remain unchanged.
+
+Previous completed relative-flow and minimal-mixing source audit:
+[spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
+section41 (2026-09-18). Allowing the radial material labels to move relative
+to the clock does not supply section40's required negative radial null
+stress in the existing regular positive-principal-energy F branch.
+The proof retains arbitrary local F derivatives and reproduces the old
+projected-H constraint reduction. The explicitly amended constant-lambda
+W^2 branch is also excluded when positive energy and the existing local
+light-cone bound are imposed together. These are exact class decisions,
+not a coefficient scan or a conclusion about all possible RefG actions.
+The completion verifier passes **725/725**: 45 new checks and all 680 prior
+checks. Full finite-wavelength metric constraints, degenerate branches,
+general mixed/higher-derivative actions, the physical pressure join and
+global singularity removal remain outside this result. This closes
+coefficient retuning and regular radial-flow shortcuts for this source
+class; a successful completion must change an explicit structural premise.
+Production equations, optical rules, intuitive files, articles and Git
+settings are unchanged.
+
+Previous completed source-entry and shrinking-radius audit:
 [spherical_saturation_matter_bridge.md](spherical_saturation_matter_bridge.md),
 section40 (2026-09-18). The fixed-central-curvature control a=L^2/(2M)
 gives nonnegative radial mass susceptibility at every r>0 for 0<a<=M.
