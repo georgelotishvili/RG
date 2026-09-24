@@ -1,0 +1,211 @@
+{
+  "Omega": 0.79600883877507,
+  "all_passed": true,
+  "alpha": 0.001,
+  "asymptotic_reduced_Hessian_threshold": 0.3663699285919646,
+  "background_BVP_max_residual": 2.986575476473987e-08,
+  "charge_quadrature": 190.4011362234505,
+  "charge_target": 190.401136223484,
+  "checks": {
+    "all_full_radial_FE_forms_pass": true,
+    "background_BVP_residual_pass": true,
+    "independent_nonlinear_energy_crosscheck_pass": true,
+    "larger_domain_positive_margin_pass": true,
+    "same_domain_refinement_pass": true,
+    "same_fixed_charge_body": true,
+    "weak_equilibrium_source_hash_locked": true,
+    "weak_regular_background": true
+  },
+  "claim_id": "REFG_WEAK_SAME_ACTION_FIXED_CHARGE_RADIAL_ADM_HESSIAN_V1",
+  "criteria": {
+    "background_BVP_residual_tolerance": 1e-06,
+    "constrained_hessian_lower_threshold": 0.3,
+    "energy_quadrature_relative_tolerance": 1e-07,
+    "energy_second_difference_contraction_upper": 0.3,
+    "energy_second_difference_finest_relative_tolerance": 2e-06,
+    "momentum_block_lower_threshold": 0.9,
+    "negative_curvature_mutation_upper_threshold": -0.5,
+    "normalized_charge_projection_tolerance": 1e-11,
+    "same_domain_refinement_absolute_tolerance": 3e-05,
+    "stationarity_absolute_tolerance": 1e-07,
+    "symmetry_absolute_tolerance": 1e-10
+  },
+  "energy_crosscheck": {
+    "all_passed": true,
+    "checks": {
+      "equilibrium_stationarity_control": true,
+      "fixed_charge_control": true,
+      "nonlinear_energy_second_difference_agrees": true,
+      "quadrature_convergence": true,
+      "second_difference_quadratic_contraction": true
+    },
+    "records": [
+      {
+        "analytic_second_variation_m": 4.808120179597913,
+        "differences": [
+          {
+            "epsilon": 0.004,
+            "relative_gap": 5.2712020959244654e-06,
+            "second_difference": 4.808145524171081
+          },
+          {
+            "epsilon": 0.002,
+            "relative_gap": 1.3175861375280817e-06,
+            "second_difference": 4.808126514710409
+          },
+          {
+            "epsilon": 0.001,
+            "relative_gap": 3.2912442149424237e-07,
+            "second_difference": 4.808121762067685
+          }
+        ],
+        "fixed_charge_variation_over_4pi": -7.303013118575022e-16,
+        "nonlinear_ADM_m": 14.066937881193335,
+        "points": 16001,
+        "stationarity_first_variation_m": -4.929129664263853e-10
+      },
+      {
+        "analytic_second_variation_m": 4.808120178263465,
+        "differences": [
+          {
+            "epsilon": 0.004,
+            "relative_gap": 5.27171054365283e-06,
+            "second_difference": 4.808145525281304
+          },
+          {
+            "epsilon": 0.002,
+            "relative_gap": 1.3180484030872464e-06,
+            "second_difference": 4.8081265155985875
+          },
+          {
+            "epsilon": 0.001,
+            "relative_gap": 3.3014086064930837e-07,
+            "second_difference": 4.808121765620399
+          }
+        ],
+        "fixed_charge_variation_over_4pi": 1.4554079454444607e-15,
+        "nonlinear_ADM_m": 14.066937884355,
+        "points": 32001,
+        "stationarity_first_variation_m": -9.862362272688526e-11
+      }
+    ]
+  },
+  "f_at_inner_boundary": 1.8223345115233889,
+  "finite_element_records": [
+    {
+      "all_passed": true,
+      "checks": {
+        "all_resolved_constrained_radial_directions_positive": true,
+        "full_momentum_minimizer_preserves_fixed_charge": true,
+        "momentum_block_positive": true,
+        "negative_curvature_control_rejected": true,
+        "quadratic_form_symmetric": true,
+        "regular_metric_on_quadrature": true
+      },
+      "constrained_schur_lowest_six_generalized_eigenvalues": [
+        0.3876334527324865,
+        0.45529406110699866,
+        0.5666635898054289,
+        0.718623408796452,
+        0.9065633914098397,
+        1.1225028836239026
+      ],
+      "independent_constrained_directions": 397,
+      "internal_modes_per_channel": 199,
+      "intervals": 200,
+      "momentum_block_lowest_generalized_eigenvalue": 0.9829814378570133,
+      "negative_curvature_control_lowest": -0.6123665472675617,
+      "normalized_charge_projection_residual": 2.1604856036639728e-17,
+      "quadratic_form_symmetry_residual": 1.7763568394002505e-15,
+      "radius": 24.0,
+      "spacing": 0.12
+    },
+    {
+      "all_passed": true,
+      "checks": {
+        "all_resolved_constrained_radial_directions_positive": true,
+        "full_momentum_minimizer_preserves_fixed_charge": true,
+        "momentum_block_positive": true,
+        "negative_curvature_control_rejected": true,
+        "quadratic_form_symmetric": true,
+        "regular_metric_on_quadrature": true
+      },
+      "constrained_schur_lowest_six_generalized_eigenvalues": [
+        0.38762433827175413,
+        0.4552579055349305,
+        0.5665738370285689,
+        0.7184324938541775,
+        0.9061946637960969,
+        1.121844764801953
+      ],
+      "independent_constrained_directions": 797,
+      "internal_modes_per_channel": 399,
+      "intervals": 400,
+      "momentum_block_lowest_generalized_eigenvalue": 0.982982046839262,
+      "negative_curvature_control_lowest": -0.6123756617280918,
+      "normalized_charge_projection_residual": 1.91472408626638e-17,
+      "quadratic_form_symmetry_residual": 3.552713678800501e-15,
+      "radius": 24.0,
+      "spacing": 0.06
+    },
+    {
+      "all_passed": true,
+      "checks": {
+        "all_resolved_constrained_radial_directions_positive": true,
+        "full_momentum_minimizer_preserves_fixed_charge": true,
+        "momentum_block_positive": true,
+        "negative_curvature_control_rejected": true,
+        "quadratic_form_symmetric": true,
+        "regular_metric_on_quadrature": true
+      },
+      "constrained_schur_lowest_six_generalized_eigenvalues": [
+        0.3770900691254988,
+        0.41246305723670673,
+        0.4713710271055809,
+        0.5531888408850014,
+        0.6570279863546744,
+        0.781709553244585
+      ],
+      "independent_constrained_directions": 797,
+      "internal_modes_per_channel": 399,
+      "intervals": 400,
+      "momentum_block_lowest_generalized_eigenvalue": 0.9829818889765294,
+      "negative_curvature_control_lowest": -0.6229099308745973,
+      "normalized_charge_projection_residual": 2.2810493147618557e-17,
+      "quadratic_form_symmetry_residual": 1.7763568394002505e-15,
+      "radius": 32.0,
+      "spacing": 0.08
+    }
+  ],
+  "larger_domain_lowest_change": -0.010534269146255326,
+  "minimum_F": 0.9938340740814099,
+  "minimum_lapse": 0.991825462269472,
+  "provenance": {
+    "contract_sha256": "46335b151fb324d2c098e4814c5e41f0e0e8d332d4556042891feefd1782e4b1",
+    "generated_utc": "2026-09-24T17:25:30.670706+00:00",
+    "numpy": "1.24.3",
+    "python": "3.10.6",
+    "scipy": "1.15.2",
+    "source_sha256": "051572c19677c5e2aa6f5340eb4d2186aba251f03b339a67ad7f8d2c799bbe04",
+    "weak_equilibrium_BVP_max_residual": 2.986575476473987e-08,
+    "weak_equilibrium_source_sha256": "32cf32e9cfd590f93928eff16cbfe5494836df8b9d72bfd88b3cf3ba7da22076"
+  },
+  "same_domain_refinement_difference": 9.11446073237343e-06,
+  "scope": {
+    "collapse_or_horizon_computed": false,
+    "exact_continuum_spectral_proof": false,
+    "full_discrete_fixed_charge_radial_form_tested": true,
+    "nonlinear_stability_proved": false,
+    "nonradial_stability_computed": false,
+    "oscillation_eigenfrequencies_computed": false,
+    "radial_linear_energy_stability_numerical_evidence": true,
+    "strong_field_campaign_performed": false
+  },
+  "selection_history": "Method and thresholds selected after exploratory calculations; saved verification is a reproducibility/regression test, not untouched prediction.",
+  "status": "NUMERICAL_EVIDENCE_POSITIVE_CONSTRAINED_RADIAL_ADM_HESSIAN",
+  "weak_equilibrium_dependency": {
+    "actual_sha256": "32cf32e9cfd590f93928eff16cbfe5494836df8b9d72bfd88b3cf3ba7da22076",
+    "expected_sha256": "32cf32e9cfd590f93928eff16cbfe5494836df8b9d72bfd88b3cf3ba7da22076",
+    "pass": true
+  }
+}

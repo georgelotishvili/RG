@@ -1,0 +1,5 @@
+# Reviewed dependency of the public Inertia research supplement.
+*
+!.gitignore
+!oscillon_inertia.md
+!verify_oscillon_inertia.py

@@ -681,6 +681,391 @@ def matter_source_bridge_checks():
     return 0 if all(checks.values()) else 1
 
 
+
+def static_label_balance_checks():
+    """New global bridge test; does not run the old equilibrium/health suites."""
+    r = s.symbols("r", positive=True)
+    P,Q = s.symbols("P Q", positive=True)
+    N,A,S,H,ell = [s.Function(n)(r) for n in ("N","A","S","H","ell")]
+    yy,bb,cc = s.symbols("y br bt", positive=True)
+    response = s.Function("F")(yy,bb,cc)
+    volume = N*A*S**2
+    y = s.exp(-2*H)/N**2
+    br = s.exp(2*H)*s.diff(ell,r)**2/A**2
+    bt = s.exp(2*H)*ell**2/S**2
+    substitution = {yy:y,bb:br,cc:bt}
+    F = response.subs(substitution)
+    Fy,Fr,Ft = [s.diff(response,v).subs(substitution) for v in (yy,bb,cc)]
+    # Ft is the derivative of F(y,br,bt,bt): BOTH angular eigenvalues.
+    LF = Q*volume*F
+    LH = P*volume*s.diff(H,r)**2/A**2
+    Lg = P*(N*A+(N*s.diff(S,r)**2+2*s.diff(N,r)*S*s.diff(S,r))/A)
+
+    def EL(lagrangian, field):
+        return s.diff(lagrangian,field)-s.diff(s.diff(lagrangian,s.diff(field,r)),r)
+
+    current = N*S**2*s.exp(2*H)*s.diff(ell,r)*Fr/A
+    traction = ell*current
+    trace = br*Fr+bt*Ft
+    label_equation = EL(LF,ell)
+    zero("label_current_from_independent_variation",
+         s.diff(LF,s.diff(ell,r))-2*Q*current)
+    zero("label_explicit_source_from_independent_variation",
+         s.diff(LF,ell)-2*Q*N*A*s.exp(2*H)*ell*Ft)
+    zero("label_weighted_offshell_identity",
+         s.diff(traction,r)-volume*trace+ell*label_equation/(2*Q))
+    require("lost_second_tangential_derivative_detected",
+            s.simplify(volume*bt*Ft/2) != 0)
+    zero("material_traction_algebra",
+         traction-volume*(ell/s.diff(ell,r))*br*Fr)
+
+    # These metric components are extracted by variation BEFORE common-p.
+    geom_rho = EL(Lg,N)/(A*S**2)
+    geom_pr = -EL(Lg,A)/(N*S**2)
+    geom_pt = -EL(Lg,S)/(2*N*A*S)
+    deficit_source = -P*s.diff(N*S**2*s.diff(H,r)/A,r)/volume
+    zero("independent_H_source",
+         EL(LF+LH,H)-2*volume*(deficit_source-Q*(y*Fy-trace)))
+    zero("independent_F_density",EL(LF,N)+A*S**2*Q*(2*y*Fy-F))
+    zero("independent_F_radial_pressure",EL(LF,A)-N*S**2*Q*(F-2*br*Fr))
+    zero("independent_F_angular_pressure",EL(LF,S)-2*N*A*S*Q*(F-bt*Ft))
+
+    u = s.Function("u")(r)
+    pscale = s.exp(-u)
+    common = {N:pscale,A:1/pscale,S:r/pscale,H:u}
+    hstress = P*s.diff(H,r)**2/A**2
+    Rrho = s.simplify((geom_rho+hstress).subs(common).doit())
+    Rr = s.simplify((geom_pr+hstress).subs(common).doit())
+    Rt = s.simplify((geom_pt-hstress).subs(common).doit())
+    Jcommon = s.simplify(deficit_source.subs(common).doit())
+    zero("common_metric_radial_H_cancellation",Rr)
+    zero("common_metric_angular_H_cancellation",Rt)
+    zero("common_metric_lapse_H_source_relation",Rrho-2*Jcommon)
+    zero("common_metric_H_Laplacian",Jcommon+P*pscale**2*(s.diff(u,r,2)+2*s.diff(u,r)/r))
+
+    # General independent geometry first; no guessed F or scalar profile.
+    f,d,a,c = s.symbols("QF QyFy QbrFr QbtFt", real=True)
+    rho,pr,pt = s.symbols("rho pr pt", real=True)
+    gr,grr,grt,j = s.symbols("Rrho Rr Rt Jg", real=True)
+    equations = [gr-rho-2*d+f, grr-pr-f+2*a,
+                 grt-pt-f+c, j-d+a+c]
+    solved = s.solve(equations,(f,d,a,c),dict=True)[0]
+    support = (3*gr+grr+2*grt)/4-3*j/2
+    zero("unrestricted_geometric_support_identity",
+         (a+c).subs(solved)-support+(3*rho+pr+2*pt)/4)
+    shared = {gr:2*j,grr:0,grt:0}
+    zero("common_scale_removes_geometric_support",support.subs(shared))
+    reduced = {v:s.factor(value.subs(shared)) for v,value in solved.items()}
+    zero("arbitrary_matter_weighted_trace",
+         reduced[a]+reduced[c]+(3*rho+pr+2*pt)/4)
+
+    T,X = s.symbols("T X", nonnegative=True)
+    V = s.symbols("V", real=True)
+    canonical = {rho:T+X+V,pr:T+X-V,pt:T-X-V}
+    zero("canonical_F_value",reduced[f].subs(canonical)-(V-2*T))
+    zero("canonical_radial_material_slope",reduced[a].subs(canonical)-(X-T)/2)
+    zero("canonical_angular_material_slope",reduced[c].subs(canonical)+(T+X))
+    zero("canonical_negative_label_trace",(reduced[a]+reduced[c]).subs(canonical)+(3*T+X)/2)
+    require("canonical_integrand_nonnegative",(3*T+X).is_nonnegative)
+    require("missing_time_energy_detected",s.simplify((3*T+X)-X) != 0)
+    # If the independent H equation is omitted, a spurious adjustable F
+    # survives. This is an exact negative control for early ansatz reduction.
+    omitted_H = s.solve(equations[:3],(d,a,c),dict=True)[0]
+    uncontrolled = (a+c).subs(omitted_H).subs(shared).subs(canonical)+(3*T+X)/2
+    require("omitted_H_equation_does_not_close_trace",s.simplify(uncontrolled) != 0)
+
+    # Boundary tests are necessary; F_r -> 0 alone is deliberately rejected.
+    n0,a0,l1 = s.symbols("n0 a0 l1", positive=True)
+    h0,f0 = s.symbols("h0 f0", real=True)
+    centre_term = n0*(a0*r)**2*s.exp(2*h0)*(l1*r)*l1*f0/a0
+    zero("regular_centre_traction",s.limit(centre_term,r,0))
+    ctail = s.symbols("ctail", positive=True)
+    zero("vanishing_slope_counterexample",s.limit(ctail/r**3,r,s.oo))
+    require("vanishing_slope_not_zero_traction",s.limit(r**3*(ctail/r**3),r,s.oo) != 0)
+    amplitude,k = s.symbols("amplitude k", positive=True)
+    chi_tail = amplitude*s.exp(-k*r)/r
+    omega = s.symbols("omega", positive=True)
+    tail_T = omega**2*chi_tail**2/2
+    tail_X = s.diff(chi_tail,r)**2/2
+    zero("localized_scalar_tail_traction",
+         s.limit(r**3*(tail_X-tail_T)/(2*Q),r,s.oo))
+    # A flat-ball label configuration with F=-(br+2bt) satisfies the label
+    # equation and has nonzero boundary support. It is NOT a full solution.
+    radius = s.symbols("R", positive=True)
+    flat_current,flat_traction = -r**2,-r**3
+    zero("nonzero_boundary_label_equation",s.diff(flat_current,r)-r*(-2))
+    zero("nonzero_boundary_integrated_identity",
+         flat_traction.subs(r,radius)-s.integrate(-3*r**2,(r,0,radius)))
+    require("discarding_nonzero_boundary_detected",flat_traction.subs(r,radius) != 0)
+
+    # U(0)=U'(0)=0 kills every static first variation, including lapse/shift.
+    dh,b = s.symbols("DH b_rate", real=True, positive=True)
+    Ub = 2*P*b**2*(1-s.sqrt(1-dh**2/b**2))
+    zero("rate_term_static_value",Ub.subs(dh,0))
+    zero("rate_term_static_first_variation",s.diff(Ub,dh).subs(dh,0))
+    zero("rate_term_quadratic_coefficient",s.diff(Ub,dh,2).subs(dh,0)-2*P)
+    Hdot,Hprime,shift = s.symbols("Hdot Hprime shift", real=True)
+    lapse,radial,area = s.symbols("lapse radial area", positive=True)
+    rate_density = lapse*radial*area**2*Ub.subs(dh,(Hdot-shift*Hprime)/lapse)
+    static = {Hdot:0,shift:0}
+    rate_residuals = [s.simplify(s.diff(rate_density,v).subs(static))
+                      for v in (lapse,radial,area,Hdot,Hprime,shift)]
+    require("rate_term_lapse_shift_and_field_variations_vanish",
+            all(value == 0 for value in rate_residuals))
+
+    root = HERE.parents[3]
+    article = root/"RefG_ka.md"
+    require("article_frozen_dependency",
+            sha(article) == "2571f9fbde25cd9e5258e5bb2c78797380123bf32621e4eaf068ce97c1b4c927")
+    details["label_boundary_identity"] = "[C_ell] = integral NAS^2 (br Fr + bt Ft) dr"
+    details["common_scale_canonical_source"] = "Q C_ell' = -NAS^2 (3T+X)/2"
+    details["unrestricted_support"] = "Q(br Fr+bt Ft)=-(3T+X)/2+(3Rrho+Rr+2Rt)/4-3Jg/2"
+    details["boundary_domain"] = "regular centre and zero outer traction; asymptotic strain and localized tail controlled"
+    details["closure_flags"] = {
+        "exact_scoped_static_bridge_excluded":all(checks.values()),
+        "new_constitutive_law":False,
+        "full_dynamic_equivalence":False,
+        "healthy_general_medium_excluded":False,
+        "regular_object_constructed":False,
+        "equilibrium_stability_proved":False,
+        "horizon_or_global_PDE_result":False}
+    print(json.dumps({"claim":"W3_92_STATIC_LABEL_BALANCE_BRIDGE_V1",
+        "python":platform.python_version(),"sympy":s.__version__,
+        "checks_passed":sum(checks.values()),"checks_total":len(checks),
+        "failed_checks":[name for name,value in checks.items() if not value],
+        "checks":checks,"details":details,
+        "sha256":{"verifier":sha(Path(__file__)),"report":sha(REPORT),
+                  "article":sha(article)}},indent=2))
+    return 0 if all(checks.values()) else 1
+
+
+
+def independent_H_readout_checks():
+    """Probe action and necessary source mapping; no equilibrium reruns."""
+    pscale,P,Q = s.symbols("p P Q",positive=True)
+    V = s.symbols("V",real=True)
+    inverse_metric = s.diag(-pscale**-2,pscale**2,pscale**2,pscale**2)
+    volume = pscale**-2
+    dt,dx,dy,dz = s.symbols("dtpsi dxpsi dypsi dzpsi",real=True)
+    derivatives = s.Matrix([dt,dx,dy,dz])
+    canonical = volume*(-(derivatives.T*inverse_metric*derivatives)[0]/2-V)
+    zero("canonical_coordinate_action_matches_APR",
+         canonical-(pscale**-4*dt**2/2-(dx**2+dy**2+dz**2)/2-pscale**-2*V))
+    ex,ey,ez,bx,by,bz = s.symbols("Ex Ey Ez Bx By Bz",real=True)
+    em = s.Matrix([[0,ex,ey,ez],[-ex,0,bz,-by],[-ey,-bz,0,bx],[-ez,by,-bx,0]])
+    em_up = inverse_metric*em*inverse_metric
+    em_density = -volume*sum(em[i,j]*em_up[i,j] for i in range(4) for j in range(4))/4
+    zero("Maxwell_coordinate_action_matches_APR",
+         em_density-((ex**2+ey**2+ez**2)/pscale**2-pscale**2*(bx**2+by**2+bz**2))/2)
+    speed = s.symbols("coordinate_light_speed",positive=True)
+    zero("common_metric_null_speed",(-pscale**2+pscale**-2*speed**2).subs(speed,pscale**2))
+
+    r = s.symbols("r",positive=True)
+    u,sigma,ell = [s.Function(name)(r) for name in ("u","sigma","ell")]
+    p = s.exp(-u)
+    N,A,S,H = p,1/p,r/p,u+sigma
+    y = s.exp(-2*H)/N**2
+    br = s.exp(2*H)*s.diff(ell,r)**2/A**2
+    bt = s.exp(2*H)*ell**2/S**2
+    zero("independent_H_clock_invariant",y-s.exp(-2*sigma))
+    zero("independent_H_radial_invariant",br-s.exp(2*sigma)*s.diff(ell,r)**2)
+    zero("independent_H_angular_invariant",bt-s.exp(2*sigma)*ell**2/r**2)
+    zero("sigma_flux_coefficient",N*S**2/A-r**2)
+    zero("sigma_source_measure",N*A*S**2-r**2/p**2)
+    lapse_flux = S**2*s.diff(N,r)/A
+    H_flux = -N*S**2*s.diff(H,r)/A
+    zero("clock_H_flux_difference",lapse_flux-H_flux-r**2*s.diff(sigma,r))
+    mu,mh = s.symbols("m_u m_H",real=True)
+    tail_difference = (mh-mu)/r
+    zero("asymptotic_field_normalizations_match",s.limit(tail_difference,r,s.oo))
+    zero("asymptotic_flux_difference",s.limit(r**2*s.diff(tail_difference,r),r,s.oo)-(mu-mh))
+    require("normalization_alone_does_not_match_charges",mu-mh != 0)
+
+    # Established independent lapse equation of section 8 vs APR's
+    # stationary equation, alpha=1/(2P). No early action variation.
+    F,J,W = s.symbols("F J W",real=True)
+    article_lap = -(Q*(J+F)+W-V)/(P*pscale**2)
+    apr_lap = -(2*W-2*V)/(2*P*pscale**2)
+    zero("stationary_source_mismatch",article_lap-apr_lap+Q*(J+F)/(P*pscale**2))
+    zero("stationary_source_matches_if_J_plus_F_zero",(article_lap-apr_lap).subs(J,-F))
+    require("omitting_medium_active_source_detected",s.simplify(article_lap-apr_lap) != 0)
+
+    lap = lambda field:s.diff(field,r,2)+2*s.diff(field,r)/r
+    gradient_difference = P*p**2*(s.diff(H,r)**2-s.diff(u,r)**2)
+    Rrho = -2*P*p**2*lap(u)+gradient_difference
+    Rr,Rt = gradient_difference,-gradient_difference
+    Jgeom = -P*lap(H)*p**2
+    correction = (3*Rrho+Rr+2*Rt)/4-3*Jgeom/2
+    zero("sigma_compatibility_term",
+         correction-P*p**2*(3*lap(sigma)+2*s.diff(u,r)*s.diff(sigma,r)+s.diff(sigma,r)**2)/2)
+    zero("sigma_integrated_balance_density",
+         r**2*correction/p**2-P*(3*s.diff(r**2*s.diff(sigma,r),r)
+         +r**2*(s.diff(H,r)**2-s.diff(u,r)**2))/2)
+    zero("locking_H_to_u_removes_this_term",correction.subs(sigma,0).doit())
+
+    root=HERE.parents[3]
+    article=root/"RefG_ka.md"
+    apr=root/"RefG"/"work 3"/"Cosmology_and_LSS"/"Active_Participation_Resonance_Feedback"
+    require("unchanged_article_dependency",
+            sha(article)=="2571f9fbde25cd9e5258e5bb2c78797380123bf32621e4eaf068ce97c1b4c927")
+    output={"claim":"W3_92_COMMON_READOUT_INDEPENDENT_H_V1",
+        "python":platform.python_version(),"sympy":s.__version__,
+        "checks_passed":sum(checks.values()),"checks_total":len(checks),
+        "failed_checks":[name for name,value in checks.items() if not value],
+        "checks":checks,"details":details,
+        "source_condition":"J+F=0 is necessary to retain the APR stationary u equation",
+        "sigma_equation":"P(r^2 sigma')'=r^2 p^-2 (QF+W-V)",
+        "closure_flags":{"probe_action_mapping_verified":all(checks.values()),
+            "H_equals_u_assumed":False,"new_constitutive_law":False,
+            "full_effective_action_derived":False,"APR_restoring_Hessian_transferred":False,
+            "new_equilibrium_or_stability_proved":False},
+        "sha256":{"verifier":sha(Path(__file__)),"report":sha(REPORT),
+            "article":sha(article),"APR_source":sha(apr/"common_scale_finite_source_candidate.py"),
+            "APR_restoring_response":sha(apr/"profile_relaxed_response.py")}}
+    print(json.dumps(output,indent=2))
+    return 0 if all(checks.values()) else 1
+
+
+
+def joint_static_boundary_checks():
+    """Joint necessary equations; no rerun of APR profiles or older modes."""
+    r=s.symbols("r",positive=True)
+    P,Q,omega=s.symbols("P Q omega",positive=True)
+    u,H,ell,chi=[s.Function(name)(r) for name in ("u","H","ell","chi")]
+    p=s.exp(-u)
+    sigma=H-u
+    volume=r**2/p**2
+    lap=lambda field:s.diff(field,r,2)+2*s.diff(field,r)/r
+    V=s.Function("V")(chi)
+    T=omega**2*chi**2/(2*p**2)
+    X=p**2*s.diff(chi,r)**2/2
+    L=P*p**2*lap(sigma)
+    D=P*p**2*(s.diff(H,r)**2-s.diff(u,r)**2)
+    # These are necessary jets of ONE F, not independently fitted functions.
+    f=L-2*T+V
+    a=(X-T+L-D)/2
+    c=-T-X+L+D
+    d=(T-X+L+D-2*V)/2
+    rho,pr,pt=T+X+V,T+X-V,T-X-V
+    zero("joint_density_equation",rho+2*d-f-(4*T-2*V+D))
+    zero("joint_radial_equation",pr+f-2*a-D)
+    zero("joint_angular_equation",pt+f-c+D)
+    zero("joint_H_equation",d-a-c-(2*T-V-L))
+    zero("joint_APR_lapse_source",f+d-a-c)
+
+    y=s.exp(-2*sigma)
+    br=s.exp(2*sigma)*s.diff(ell,r)**2
+    bt=s.exp(2*sigma)*ell**2/r**2
+    chain_from_invariants=d*s.diff(y,r)/y+a*s.diff(br,r)/br+c*s.diff(bt,r)/bt
+    chain_expected=2*f*s.diff(sigma,r)+2*a*s.diff(ell,r,2)/s.diff(ell,r)+2*c*(s.diff(ell,r)/ell-1/r)
+    zero("single_F_chain_rule_in_invariants",chain_from_invariants-chain_expected)
+    chain_residual=s.diff(f,r)-chain_expected
+    traction_Q=volume*ell*a/s.diff(ell,r)
+    label_residual=s.diff(traction_Q,r)-volume*(a+c)
+    # On the retained APR equations these are the same constraint, not two
+    # independent equations. Keep H/ell free in this check.
+    apr_u=-(2*T-V)/(P*p**2)-2*s.diff(u,r)/r
+    apr_chi=-2*s.diff(chi,r)/r-omega**2*chi/p**4+s.diff(V,chi)/p**2
+    relation=chain_residual-2*s.diff(ell,r)*label_residual/(ell*volume)
+    zero("chain_and_label_agree_on_APR_equations",
+         relation.subs({s.diff(u,r,2):apr_u,s.diff(chi,r,2):apr_chi}))
+
+    z=r**2*s.diff(sigma,r)
+    delta=s.diff(H,r)**2-s.diff(u,r)**2
+    integrand=volume*(3*T+X)
+    zero("traction_includes_independent_H_terms",
+         traction_Q-ell/(2*s.diff(ell,r))*(volume*(X-T)+P*s.diff(z,r)-P*r**2*delta))
+    zero("joint_trace_with_all_boundaries",
+         2*volume*(a+c)+integrand-3*P*s.diff(z,r)-P*r**2*delta)
+    B=traction_Q-3*P*z/2
+    zero("joint_boundary_convergence_identity",
+         s.diff(B,r)-P*r**2*delta/2+integrand/2-label_residual)
+    zero("joint_outer_flux_identity",
+         r*s.diff(z,r)-2*traction_Q*r*s.diff(ell,r)/(P*ell)
+         +r**3*(X-T)/(P*p**2)-r**3*delta)
+    # Both centre terms are O(r^3), not silently discarded at finite r.
+    p0,l1=s.symbols("p0 l1",positive=True)
+    h0,h2,u0,u2,fr0=s.symbols("h0 h2 u0 u2 fr0",real=True)
+    centre_traction=r**2*s.exp(2*h0)*(l1*r)*l1*fr0
+    zero("regular_centre_label_boundary",s.limit(centre_traction,r,0))
+    zero("regular_centre_charge_difference",s.limit(r**2*s.diff((h0-u0)+(h2-u2)*r**2,r),r,0))
+    mu,mh=s.symbols("m_u m_H",real=True)
+    zero("finite_charge_difference_boundary",
+         r**2*s.diff((mh-mu)/r,r)-(mu-mh))
+    zero("H_energy_integration_by_parts_boundary",s.limit(r**2*(mh/r)*s.diff(mh/r,r),r,s.oo))
+
+    # Exterior inference counterexample, smoothly extendible inside r=1:
+    # finite equal derivative charges and finite gradient energy do NOT
+    # alone control the independent second derivative in C_ell.
+    eps=s.symbols("epsilon",positive=True)
+    sig_tail=eps*s.sin(r**2)/r**5
+    du=s.diff(mu/r,r)
+    dh=du+s.diff(sig_tail,r)
+    dtail=dh**2-du**2
+    ztail=r**2*s.diff(sig_tail,r)
+    traction_tail=P*r**3*(lap(sig_tail)-dtail)/2
+    plus={s.sin(r**2):1,s.cos(r**2):0}
+    minus={s.sin(r**2):-1,s.cos(r**2):0}
+    zero("oscillatory_traction_subsequence_one",
+         s.limit(traction_tail.subs(plus),r,s.oo)+2*P*eps)
+    zero("oscillatory_traction_subsequence_two",
+         s.limit(traction_tail.subs(minus),r,s.oo)-2*P*eps)
+    zero("oscillatory_charge_envelope_vanishes",s.limit(7*eps/r**2,r,s.oo))
+    zero("oscillatory_gradient_energy_bound",s.integrate(49*eps**2/r**6,(r,1,s.oo))-49*eps**2/5)
+    tail_label=s.diff(traction_tail,r)-P*(3*s.diff(ztail,r)+r**2*dtail)/2
+    tail_residual=s.limit((tail_label/r).subs({s.sin(r**2):0,s.cos(r**2):1}),r,s.oo)
+    zero("oscillatory_tail_full_label_residual",tail_residual+4*P*eps)
+    require("oscillatory_tail_rejected_as_joint_solution",tail_residual != 0)
+
+    # The all-zero slope limit must also be an actual single constitutive F.
+    ts,xs,ls,ds=s.symbols("T X Lsigma Cdelta",real=True)
+    solved=s.solve([(xs-ts+ls-ds)/2,-ts-xs+ls+ds],(ls,ds),dict=True)[0]
+    zero("zero_slopes_require_Lsigma_T",solved[ls]-ts)
+    zero("zero_slopes_require_Cdelta_X",solved[ds]-xs)
+    fv=s.Function("Fcurve")(r)
+    zero("zero_slopes_constitutive_integrating_factor",
+         s.diff(s.exp(-2*sigma)*fv,r).subs(s.diff(fv,r),2*fv*s.diff(sigma,r)))
+    constant=s.symbols("constant",real=True)
+    # Evaluate sigma -> 0 at infinity only; do not set H=u in the interior.
+    zero("silent_limit_fixes_constitutive_constant",(constant*s.exp(2*sigma)).subs(H,u)-constant)
+    up2,xpos=s.symbols("uprime_squared X_positive",nonnegative=True)
+    pp=s.symbols("p_positive",positive=True)
+    require("zero_H_zero_slopes_force_nonnegative_sum_zero",(P*pp**2*up2+xpos).is_nonnegative)
+
+    # Reuse, rather than re-solve, APR's virial and Gauss identities.
+    IT,IX,IV,Ug,Hg=s.symbols("IT IX IV Ug Hg",real=True)
+    apr_integrals=s.solve([IX+P*Ug-3*(IT-IV),2*IT-IV-P*mu],(IX,IV),dict=True)[0]
+    required_I=s.factor((3*IT+IX).subs(apr_integrals))
+    zero("retained_APR_integral_identity",required_I-P*(3*mu-Ug))
+    full_boundary_balance=3*P*(mu-mh)+P*(Hg-Ug)
+    zero("joint_H_norm_charge_condition",full_boundary_balance-required_I-P*(Hg-3*mh))
+
+    root=HERE.parents[3]
+    article=root/"RefG_ka.md"
+    apr=root/"RefG"/"work 3"/"Cosmology_and_LSS"/"Active_Participation_Resonance_Feedback"
+    require("article_dependency_unchanged",
+            sha(article)=="2571f9fbde25cd9e5258e5bb2c78797380123bf32621e4eaf068ce97c1b4c927")
+    output={"claim":"W3_92_JOINT_STATIC_BOUNDARY_COMPATIBILITY_V1",
+        "python":platform.python_version(),"sympy":s.__version__,
+        "checks_passed":sum(checks.values()),"checks_total":len(checks),
+        "failed_checks":[name for name,value in checks.items() if not value],
+        "checks":checks,"details":details,
+        "analytic_theorems_require_report_assumptions":[
+            "Full label and spatial equations imply outer C_ell=0 under the declared tails and finite derivative charges",
+            "Every nontrivial admissible embedding needs a positive material slope somewhere; zero-slope embedding fails the joint chain-rule, boundary and H conditions",
+            "Retained APR virial then requires integral r^2 Hprime^2 dr = 3 m_H"],
+        "closure_flags":{"joint_identity_checks_passed":all(checks.values()),
+            "zero_outer_traction_assumed_in_advance":False,
+            "old_APR_restoring_response_recomputed":False,
+            "arbitrary_F_solution_constructed":False,"full_constrained_health_proved":False,
+            "all_RefG_or_all_independent_H_models_excluded":False,
+            "new_equilibrium_or_horizon_proved":False},
+        "sha256":{"verifier":sha(Path(__file__)),"report":sha(REPORT),"article":sha(article),
+            "APR_source":sha(apr/"common_scale_finite_source_candidate.py")}}
+    print(json.dumps(output,indent=2))
+    return 0 if all(checks.values()) else 1
+
+
 def main():
     geometry_checks()
     central_lock_and_obstruction()
@@ -723,10 +1108,16 @@ def main():
 
 
 if __name__=="__main__":
+    if sys.argv[1:] == ["--joint-static-boundary-only"]:
+        raise SystemExit(joint_static_boundary_checks())
+    if sys.argv[1:] == ["--readout-H-bridge-only"]:
+        raise SystemExit(independent_H_readout_checks())
+    if sys.argv[1:] == ["--static-label-balance-only"]:
+        raise SystemExit(static_label_balance_checks())
     if sys.argv[1:] == ["--feedback-assumptions-only"]:
         raise SystemExit(feedback_assumption_checks())
     if sys.argv[1:] == ["--matter-source-bridge-only"]:
         raise SystemExit(matter_source_bridge_checks())
     if sys.argv[1:]:
-        raise SystemExit("Usage: verify_common_scale_centre_source.py [--feedback-assumptions-only | --matter-source-bridge-only]")
+        raise SystemExit("Usage: verify_common_scale_centre_source.py [--feedback-assumptions-only | --matter-source-bridge-only | --static-label-balance-only | --readout-H-bridge-only | --joint-static-boundary-only]")
     raise SystemExit(main())

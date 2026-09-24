@@ -804,3 +804,761 @@ file is generated. Verifier SHA256 at this stage:
 The separate centre/joining and feedback-audit regressions retain 87/87
 and 13/13 checks respectively. Legacy monograph-hash failures recorded
 in section 7 are unchanged; they have not been silently repaired.
+
+## 9. Static label balance and the common-scale oscillon bridge
+
+### Contract recorded before the new verification run (2026-09-24)
+
+CLAIM_ID: W3_92_STATIC_LABEL_BALANCE_BRIDGE_V1. TYPE: exact necessary
+equilibrium condition and conditional exclusion, not a new response law.
+The larger goal remains a regular self-consistent foundation--matter
+object. This step decides whether the stationary APR scalar candidate can
+be embedded in the article by allowing arbitrary material-label strain,
+while retaining its exact common clock/ruler/deficit relation. The earlier
+silent-label obstruction alone did not decide that question.
+
+MODEL / ASSUMPTIONS: the original article action, in this report's
+positive-TT convention, P,Q>0 and omega_H=1; arbitrary smooth algebraic
+F(y,b_r,b_t,b_t); independent N,A,S,H,ell varied before any restriction.
+Static diagonal metric, Phi=t, phi^A=ell(r)n^A and minimally coupled
+canonical complex matter chi(r) exp(-i Omega t). Only after variation set
+N=exp(-u), A=exp(u), S=r exp(u), H=u. No prescribed polynomial core,
+constitutive polynomial, scalar profile or potential is selected.
+
+BOUNDARIES / DOMAIN: regular centre, positive nonsingular metric and
+material strain for r>0, no directly label-coupled shell or matter source.
+The integrated exclusion requires zero material boundary traction. It
+applies to a finite exact silent match if such a match is otherwise
+admissible, or to isolated asymptotics with ell/r -> 1, ell' -> 1,
+p -> 1 and r^3(T+X) -> 0. Smooth canonical bound-state tails are not cut
+off at finite radius. Merely F_r -> 0 is not a substitute for zero
+boundary traction. Regularity and convergence are stated assumptions,
+not outcomes of an evolution calculation.
+
+METHOD / SUFFICIENT RESULT: derive the label-weighted radial identity
+from the independent action; combine the independent lapse, spatial and
+H equations to obtain its volume source; test centre/asymptotic terms.
+An exact sign-definite incompatibility, with its missing freedom named,
+finishes this bridge decision. A consistent nontrivial solution instead
+reopens construction. Reuse section 8 and Stage 9; do not rerun their
+ordinary-source equilibria, previous health surveys or collapse runs.
+The unrestricted-metric correction to the balance will identify the
+specific term lost by imposing the common-scale relation.
+
+FREEDOMS / VALIDITY: F and V remain arbitrary; no fitted functions or
+new source terms. A smooth rate-only addition U(D_H), U(0)=U'(0)=0, is
+checked only for whether it alters this static decision. No kinetic
+positivity premise is needed for the common-scale scalar exclusion.
+General constrained health, formation, horizons and other branches are
+outside this claim. Data, fitting and observational comparison are N/A.
+
+PASS / FALSIFIER: exact off-shell identities and boundary limits must
+have zero residual; omitted source terms, a lost tangential multiplicity
+and an unjustified zero asymptotic traction must be detected. A positive
+canonical volume integral with zero boundary is a failed embedding,
+even when the identity verifier passes. No floating-point precision or
+numerical evolution is used. Nonzero boundary traction is retained as a
+counterexample to an unrestricted no-go, not silently discarded.
+
+DEPENDENCIES / PROVENANCE: article equations (7), (11)--(15), Stage 9's
+independent static action, this report section 8 and its verifier.
+Article SHA256: 2571f9fbde25cd9e5258e5bb2c78797380123bf32621e4eaf068ce97c1b4c927.
+Pre-edit verifier SHA256:
+0a864e0c681d58ef84beb5f03d12f531aa393023ccff5c3956dc1f805f263c51.
+Pre-edit report SHA256:
+8d1bb86883989c425c601682d22f49f7c6aec9820999514e2d53cf924e4a65b9.
+Runtime output records current source/report hashes and software versions.
+Allowed edits: this existing report/verifier pair and intuitive/idea.txt.
+No official article, monograph or separate result files are changed.
+
+### Result: the isolated common-scale embedding is excluded
+
+The label-weighted equation supplies a stronger global test than the
+previous silent-label or local central-health tests. For the stated
+regular isolated class, the unchanged action cannot support nontrivial
+canonical stationary matter while imposing the exact common-scale metric
+AND H=u everywhere, even with arbitrary ell(r) and arbitrary smooth F.
+The conclusion does not use a material kinetic-energy sign assumption.
+It is a necessary-equation exclusion, not a constructed equilibrium or a
+claim against all RefG branches. The scalar candidate remains a distinct
+action with its previously established results.
+
+The targeted verifier passes 35/35 exact/dependency/negative-control
+checks. No old equilibrium, collapse or horizon calculation was rerun.
+The pre-existing static action is used as a dependency; its relevant
+variations are checked here because their signs and the two tangential
+multiplicities determine the new integral theorem.
+
+### A. The material boundary term cannot be omitted
+
+Use the definitions in section 8; F_t counts both angular eigenvalues.
+Define the weighted radial label current
+
+```text
+C_ell = NS^2 exp(2H) ell ell' F_r/A,
+E_ell = partial L/partial ell - (partial L/partial ell')'.
+```
+
+Direct variation gives the off-shell identity
+
+```text
+C_ell' - NAS^2 (b_r F_r+b_t F_t) = -ell E_ell/(2Q).
+```
+
+Thus every solution of the independent label equation must obey
+
+```text
+[C_ell]_0^R = integral_0^R NAS^2 (b_r F_r+b_t F_t) dr.
+```
+
+Minimal canonical matter has no direct label source. It still changes
+the metric and therefore the label equation through N,A,S; it has not
+been frozen or removed. The projected H operator also has no explicit
+label dependence. No independent field equation has been replaced by a
+chosen pressure profile.
+
+At a regular centre, S=O(r), ell=ell_1 r+O(r^3), with finite nonzero N,A
+and finite H,F_r, so C_ell=O(r^3). A smooth finite match to a silent
+exterior gives F_r=0 and C_ell=0 there, without a label-coupled shell.
+This boundary example does not license cutting off a canonical scalar
+tail. For isolated bound states the infinite-radius version below is the
+relevant one.
+
+For asymptotic ell/r -> 1, ell' -> 1, N,A -> 1 and H -> 0, the boundary
+term scales as r^3 F_r. Hence F_r -> 0 alone is insufficient: F_r=c/r^3
+has a finite nonzero weighted limit. This is a counterexample to an
+inference about the limit, not a proposed full solution. A second control
+uses flat geometry, ell=r and F=-(b_r+2b_t): the label equation alone is
+satisfied, and C_ell(R)=-R^3 equals its negative volume integral. Its
+nonzero boundary support is essential; this is not an Einstein solution.
+
+### B. What the full common-scale equations require of any F
+
+Only after independent variation set
+
+```text
+p=exp(-u), N=p, A=1/p, S=r/p, H=u,
+T=Omega^2 chi^2/(2N^2), X=chi'^2/(2A^2),
+rho_O=T+X+V, p_rO=T+X-V, p_tO=T-X-V.
+```
+
+For arbitrary u(r), the two geometric spatial pressures are exactly the
+projected-H pressures. The remaining density is sourced independently
+by the lapse and H equations. Equivalently, with f=QF, d=QyF_y,
+a=Qb_rF_r, c=Qb_tF_t and Delta u=u''+2u'/r, the four necessary equations
+are
+
+```text
+-2P p^2 Delta u = T+X+V+2d-f,
+0 = T+X-V+f-2a,
+0 = T-X-V+f-c,
+-P p^2 Delta u = d-a-c.
+```
+
+Their exact elimination yields
+
+```text
+QF=V-2T,
+Qb_rF_r=(X-T)/2,
+Qb_tF_t=-(T+X),
+Q(b_rF_r+b_tF_t)=-(3T+X)/2.
+```
+
+The scalar potential cancels; choosing another V or another algebraic F
+cannot alter this sign. No scalar field equation, central ansatz,
+specific oscillon profile or positive-energy assumption on F was used.
+An independent general-matter check gives
+Q(b_rF_r+b_tF_t)=-(3rho_O+p_rO+2p_tO)/4, which reduces to the same result.
+The canonical nonnegative source is essential to the exclusion; this
+last general-matter formula is not an unrestricted matter no-go.
+
+The material equation now reads
+
+```text
+Q C_ell' = -NAS^2(3T+X)/2.
+```
+
+It is nonpositive and strictly negative wherever the canonical time or
+spatial kinetic energy is nonzero. If both boundary terms vanish,
+
+```text
+integral_0^infinity NAS^2 (3T+X) dr = 0.
+```
+
+Continuity and the positive measure imply T=X=0. For Omega!=0 this gives
+chi=0; for Omega=0 it gives constant chi, which is zero under the
+localized-vacuum boundary condition. Medium-only configurations are not
+excluded by this argument.
+
+The asymptotic boundary condition is not an extra fitted source. On this
+branch the spatial equation itself fixes
+
+```text
+Q C_ell = NAS^2 (ell/ell') (X-T)/2.
+```
+
+For p -> 1, ell/r -> 1 and ell' -> 1, any localized tail satisfying
+r^3(T+X) -> 0 gives C_ell -> 0. The verifier checks a standard exponential
+bound-state tail directly, without any finite-radius truncation. The
+contract deliberately states this sufficient decay condition explicitly;
+no global solution or tail evolution is assumed proved by that control.
+
+### C. A rate limit cannot change this static balance
+
+An added smooth U(D_H) with U(0)=U'(0)=0 has zero value and zero first
+variation on the aligned static branch. This includes lapse, shift,
+clock and H variations: delta(sqrt(-g) U)=0 when both U and U' vanish.
+For the proposed rate term, in this report's normalization,
+
+```text
+U_b(D_H)=2P b^2[1-sqrt(1-D_H^2/b^2)],
+U_b(0)=U_b'(0)=0, U_b''(0)=2P.
+```
+
+The verifier additionally differentiates its spherical density before
+setting H_t and the radial shift to zero. All tested lapse/shift/field
+first variations vanish. This checks why changing b cannot supply the
+missing static support; it is not a health test of the new time-dependent
+action. A tilted clock with static H need not have D_H=0 and is outside
+this aligned-branch argument. The previously completed Stage 4 and later
+principal-response audits retain their own action and branch boundaries.
+
+### D. The support lost by imposing a common scale
+
+The same independent equations also identify the exact term needed when
+N,A,S,H are left free. Define
+
+```text
+R_rho = rho_geom-rho_H,
+R_r = p_r,geom-p_r,H, R_t = p_t,geom-p_t,H,
+J_g = -P (NS^2 H'/A)'/(NAS^2),
+C_geom = (3R_rho+R_r+2R_t)/4 - 3J_g/2.
+```
+
+J_g is the geometric side of the H equation; it is not an added matter
+source. Exact elimination of F's value and slopes gives
+
+```text
+Q(b_rF_r+b_tF_t) = C_geom-(3T+X)/2,
+Q C_ell' = NAS^2[C_geom-(3T+X)/2].
+```
+
+Therefore a regular isolated static candidate with zero boundary traction
+must satisfy
+
+```text
+integral NAS^2 C_geom dr = integral NAS^2 (3T+X)/2 dr.
+```
+
+For the locked common-scale configuration, R_rho=2J_g and R_r=R_t=0:
+C_geom vanishes identically. This is a compatibility condition among the independent field equations.
+It is not the restoring energy curvature K or K_A of the separate APR
+action, and no such identification has been derived. Independent metric
+and H profiles can make it nonzero. Finding one configuration that also
+satisfies all field equations, boundary conditions and health tests is
+still required; merely declaring the profiles independent is insufficient.
+
+There is a separate limitation even after releasing the common-scale
+lock. The general label identity implies that F_r,F_t<=0 everywhere,
+with either strictly negative on an open region and b_r,b_t>0, cannot
+coexist with zero boundary traction. The positive label-inertia branch
+of the original static-label action requires these signs in its regular
+accessible short-wave regime. Consequently, releasing N,A,S,H does not
+by itself certify a healthy global object. Degenerate constraints,
+genuinely moving labels, new derivative or direct source couplings, and
+nonzero boundary support change premises and require their own audit.
+No general finite-wavelength health theorem is asserted here.
+
+### Decision, reproduction and provenance
+
+The literal stationary common-scale embedding is now excluded for the
+specified original action and boundaries, including arbitrary radial
+labels and arbitrary algebraic F. A temporal rate term alone leaves that
+decision unchanged. Scanning F, V, b or old scalar equilibrium profiles
+within this same class would not address the obstruction.
+
+The next admissible construction must generate the displayed support
+from independent fields and resolve the separate material-source/health
+condition, or explicitly change the action or boundary premise. This
+stage neither selects an untested new law nor claims equilibrium
+stability, settling, singularity removal or a horizon result. A static
+solution, a stable equilibrium and dynamical relaxation remain distinct
+questions. The broader regular-object goal is unfinished.
+
+Reproduction from this directory:
+
+```text
+python -B verify_common_scale_centre_source.py --static-label-balance-only
+```
+
+Run on 2026-09-24 with Python 3.10.6 and SymPy 1.13.3: 35/35 checks,
+zero failed checks; stdout only. Verifier SHA256:
+9d70eed8c4f6f0ca17c111623393b3665b030768873675d828eb2b61b8a6ca08.
+The pre-result report (including the frozen contract) hashed at the run:
+771d15387fc5d1523a2c0424fe866d199a570b761bb8d82fac72ff0e1b08d239.
+The unchanged article hash matched the dependency above. Result prose
+was appended after this run; this report does not claim its own final
+hash equals that pre-result hash. Two independent analytical reviews
+confirmed the label multiplicities, signs and boundary scope; a further
+review confirmed the argument is absent from the earlier work. Official
+article/monograph text and previous numerical results are unchanged.
+
+## 10. Common observable scale with an independent H
+
+### Bounded continuation contract (2026-09-24)
+
+CLAIM_ID: W3_92_COMMON_READOUT_INDEPENDENT_H_V1. The user's corrected
+scope is retained: APR's equilibrium, energy--mass identity and local
+restoring response survive in their own action. Section 9 rejects a
+particular embedding; C_geom is not APR's restoring K or K_A.
+
+Question: can the same p describe matter and light while H is independently
+determined, and what additional condition retains the APR stationary
+source equation? Use the article's minimal matter coupling, original
+omega_H=1 medium and the independently varied equations of sections 8--9.
+Keep N=p=exp(-u), A=1/p, S=r/p and Phi=t, but set H=u+sigma with sigma
+undetermined. The stationary source test uses canonical chi exp(i Omega t)
+and no electromagnetic background. Maxwell is checked only as a minimally
+coupled probe sector; no electromagnetic interaction with chi is added.
+
+Method: compare coordinate action densities directly, substitute into
+the established invariant/source identities, and compare the stationary
+APR and article lapse sources with P=1/(2 alpha). The remaining field
+equations and boundary data are retained as conditions; solving them is
+not implied by this algebra. No F, sigma profile or new constitutive law
+will be fitted. This is a necessary mapping test, not a completed effective
+action reduction or a new equilibrium campaign. Existing static and
+collapse runs will not be repeated.
+
+Decision and stopping condition: an exact probe-sector agreement and an
+explicit independent-H/source condition determine the next reduction
+problem; a nonzero mismatch identifies the failed sector. Source omission
+and unequal asymptotic charges are negative controls. All equalities are
+symbolic, with no numerical tolerances or observational inputs. Satisfaction of the full constraints by a candidate, existence, the
+effective-energy Hessian, stability and horizons remain unproved. Allowed files: this report, its existing verifier and
+the working map. Sources are article (7), (11)--(15), section 8 of this
+report, APR's finite-source action and PROFILE_RELAXED_RESPONSE_V1.
+The verifier prints source hashes and the unchanged article dependency.
+
+### Result: the probe map does not require H=u
+
+The mapping check passes 19/19. These checks establish the following
+identities and necessary source condition; they do not solve for H or
+prove a full reduction. Sections 8--9 supply the already varied metric
+and medium equations. Their old numerical suites were not rerun.
+
+Write sigma=H-u while retaining the same metric p=exp(-u), Phi=t and
+arbitrary radial ell. Sigma is a change of variables among the existing
+fields, not a new physical field. The normalized invariants become
+
+```text
+y=exp(-2 sigma),
+b_r=exp(2 sigma) ell'^2,
+b_t=exp(2 sigma) ell^2/r^2.
+```
+
+Thus imposing y=1 throughout a matter interior would itself impose
+sigma=0 on this clock branch; it is not supplied by a common observable
+scale. The silent exterior alone does not prescribe all interior
+invariants.
+
+Direct evaluation of the minimally coupled canonical and Maxwell actions
+in Cartesian common-scale coordinates gives exactly
+
+```text
+L_psi = p^-4 |psi_t|^2/2 - |grad psi|^2/2 - p^-2 V,
+L_EM = p^-2 E^2/2 - p^2 B^2/2.
+```
+
+Neither density contains the independent H at fixed metric. They agree
+with the respective APR sectors for arbitrary sigma. Accordingly,
+dtau=p dt, dl=|dx|/p and coordinate radial light speed=p^2 still follow
+from that same metric. For corresponding identical local states, the
+clock/energy readouts scale by p and coordinate size by p. The local
+m_eff=p m_0 readout is not an expression for total ADM mass. Solving the
+full medium can change the physical state and metric indirectly; this
+probe-sector identity does not freeze that response or prove the whole
+foundation action equivalent to APR.
+
+### The equation that determines the difference
+
+Section 8, without dropping a constraint, specializes to
+
+```text
+P(r^2 sigma')' = r^2 p^-2 [QF+W-V],
+W=Omega^2 chi^2/p^2=2T,
+Q_N=-r^2 u', Q_H=-r^2 H', Q_N-Q_H=r^2 sigma'.
+```
+
+This is a rewriting of an existing source identity, not a new response
+law. With a regular centre and asymptotic u~m_u/r, H~m_H/r,
+
+```text
+P(m_u-m_H) = integral r^2 p^-2 [QF+W-V] dr.
+```
+
+Sigma tending to zero fixes the constant normalization; equal asymptotic
+charges additionally require r^2 sigma' -> 0. The check retains a
+counterexample with sigma=(m_H-m_u)/r. Thus a common exterior charge and
+common metric readout should not be imposed as H=u throughout the body.
+
+### A necessary condition for keeping the APR stationary source
+
+The independently varied article lapse equation and the APR stationary
+u equation, with alpha=1/(2P), are respectively
+
+```text
+Delta u = -p^-2 [Q(J+F)+W-V]/P,   J=yF_y-b_rF_r-b_tF_t,
+Delta u = -p^-2 [W-V]/P.
+```
+
+Their difference is exactly -Q p^-2(J+F)/P. Therefore preserving the APR
+stationary u-source requires J+F=0 on the candidate branch. It states
+that the algebraic medium adds no extra active lapse source there;
+its full stress tensor need not vanish. This condition is necessary for
+this one equation only. The independent H, label and spatial metric
+equations, constraints, constitutive integrability and boundary charges
+remain to be solved. It has not been imposed as a newly fitted law.
+
+The existing compatibility term can also be nonzero while keeping the
+same metric p for matter and light:
+
+```text
+C_geom = (P p^2/2)[3 Delta sigma+2u' sigma'+sigma'^2].
+```
+
+For zero label traction, its integrated necessary condition is
+
+```text
+P {3[r^2 sigma']_0^infinity
+   + integral r^2(H'^2-u'^2) dr}
+= integral r^2 p^-2(3T+X) dr.
+```
+
+Matched asymptotic charges remove the first boundary term. Neither this
+condition nor J+F=0 supplies a constitutive solution. In particular,
+these equations do not identify C_geom with a restoring coefficient.
+The separate label/health obstruction of section 9 remains in scope.
+
+### What is preserved and what the action reduction still requires
+
+APR's stationary source, energy--mass identity and local restoring
+response remain results of its unchanged action. PROFILE_RELAXED_RESPONSE_V1
+defines K_A through the second variation of its own fixed-charge energy,
+after the profile response. The present mapping does not compute that
+quantity for the article.
+
+The next reduction must determine sigma and the material profile from
+their own equations and boundary data, then satisfy the remaining
+independent metric equations. Importing APR's equilibria and K_A further
+requires agreement of the relevant reduced fixed-charge energy and its
+first/second constrained variations. Agreement of the probe densities
+and one stationary source equation is not sufficient for that inheritance.
+No old result is discarded, no new response F is selected, and no
+clock/ruler split is assumed in this continuation.
+
+Reproduction: python -B verify_common_scale_centre_source.py
+--readout-H-bridge-only (one command). Python 3.10.6, SymPy 1.13.3;
+19/19 passed, zero failed. Verifier SHA256 at this run:
+14f7c61c134b78f37aa2a0a7b751b238aedc96db681d4e196a1458f799330b1a.
+Pre-result report SHA256 at this run:
+a1b72b69b70bae7c391d3a0cbeeb56da56f52b540c3569c05dbe3d2a208af177.
+APR source SHA256:
+6b4a4a0f906725e7262a73496d02330fc4f040bb20ec419d51dbaccd241925b8.
+APR restoring-response SHA256:
+7d8059fb2123778f890c1e679f374820c9f9010e54ec4d34a1e5efc10458a7ba.
+The report text was completed after the run; the source actions and
+article hash were unchanged. The earlier 35-check mode was not rerun.
+
+## 11. Joint static equations, constitutive consistency and outer terms
+
+### Contract before verification (2026-09-24)
+
+CLAIM_ID: W3_92_JOINT_STATIC_BOUNDARY_COMPATIBILITY_V1. Goal: test the
+simultaneous necessary equations for embedding a retained APR stationary
+equilibrium with independent H, including its outer terms. The old APR
+balance and restoring response are dependencies, not targets of a rerun.
+
+MODEL / DOMAIN: original article action, omega_H=1, P,Q>0, static common
+metric N=p=exp(-u), A=1/p, S=r/p, aligned clock and positive nonsingular
+radial label strains. The retained canonical chi exp(i Omega t) and u
+satisfy their existing APR stationary equations. H=u+sigma is independent.
+F is a single C^2 constitutive function on the invariant curve; prescribing
+its value and derivatives independently is not a constitutive solution.
+No new F, matter interaction, derivative operator or boundary shell is
+introduced. J+F=0 is the necessary source condition from section 10.
+
+BOUNDARIES: smooth regular centre; p->1, H->0, ell/r->1, ell'->1;
+genuine finite derivative-charge limits -r^2u'->m_u, -r^2H'->m_H.
+Both integral r^2 p^-2(3T+X)dr<infinity and r^3(T+X)->0 are required;
+existing localized APR tails supply them. Equality m_u=m_H is an additional
+exterior-match condition, not needed to prove the label-traction limit.
+The zero-slope corollary additionally uses the silent constitutive limit
+F->0. No H'' falloff or zero outer C_ell is assumed in advance.
+
+METHOD / SUFFICIENT RESULT: eliminate the independent metric/H equations
+into pointwise data for F and its slopes; relate the label equation to
+the constitutive chain rule; retain all boundary terms; prove which limits
+follow from these simultaneous equations. Use the already derived APR
+virial identity only for a separate integral consistency corollary. Test
+the nonpositive-material-slope class, including its zero-slope boundary.
+Its interpretation as a physical kinetic-energy condition retains the
+regular accessible short-wave assumptions of earlier health analyses.
+Degenerate full constraints and new operators are not excluded here.
+
+PASS / FALSIFIER: exact residuals vanish and the deliberately incomplete
+boundary argument is rejected. The analytic limit proof must state its
+integrability premises. A nonzero constitutive chain residual or an
+uncontrolled outer term blocks admission of a candidate. No numerical
+equilibrium is solved; no tolerance, observation or fitted parameter is
+used. A verified incompatibility of one material-sign class is not a
+refutation of APR or an unrestricted no-go for arbitrary F.
+
+FILES / PROVENANCE / STOP: this report, its existing verifier and idea.txt.
+Sources: sections 8--10, the original covariant action and the unchanged
+APR finite-source/virial calculation. Runtime output records their hashes.
+Finish with the simultaneous boundary/source conditions and the precise
+class decision; do not repeat old 35/19-check or restoring-response runs.
+Full construction, full constrained stability and horizon claims remain
+false. Any next construction must address the identified label response
+or a declared changed premise, rather than repeat the H=u test.
+
+### Joint result and exact scope
+
+The missing outer-traction control follows from the simultaneous label
+and spatial equations under the declared finite-charge and localized-tail
+conditions. It is not inferred from matching charges alone. Combining
+that result with constitutive integrability also excludes the everywhere
+nonpositive material-slope class, including its all-zero-slope boundary,
+for a nontrivial retained APR source in this static original-action class.
+The regular short-wave interpretation of that sign class is the existing
+positive label-kinetic-energy requirement; no complete finite-wavelength
+constraint reduction or unrestricted arbitrary-F no-go is claimed.
+
+The new mode passes 29/29 checks. These check exact identities, boundary
+counterexamples and dependency provenance; the analytic limit/sign proofs
+below use their explicitly stated assumptions. They are not 29 solved
+interiors. No old APR equilibrium or restoring response was recomputed.
+
+### A. All local source components must come from one F
+
+Keep the section 10 notation, and define
+
+```text
+L_sigma=P p^2 Delta sigma, C_delta=P p^2(H'^2-u'^2),
+f=QF, a=Qb_rF_r, c=Qb_tF_t, d=QyF_y,
+T=Omega^2 chi^2/(2p^2), X=p^2 chi'^2/2.
+```
+
+Eliminating the independent lapse, two spatial and H equations, using the
+retained APR u equation, gives the necessary data
+
+```text
+f=L_sigma-2T+V,
+a=(X-T+L_sigma-C_delta)/2,
+c=-T-X+L_sigma+C_delta,
+d=(T-X+L_sigma+C_delta-2V)/2.
+```
+
+They obey f+d-a-c=0, namely Q(F+J)=0. Each of the four source equations
+is checked separately. These expressions are values and partial
+derivatives of a SINGLE constitutive function on its invariant curve.
+They cannot simply be assigned independently as radial source functions.
+
+The chain rule for y=exp(-2sigma), b_r=exp(2sigma)ell'^2 and
+b_t=exp(2sigma)ell^2/r^2 requires
+
+```text
+f'-2f sigma' = 2a ell''/ell' + 2c(ell'/ell-1/r).
+```
+
+With k=ell'/ell and v=r^2p^-2, the label equation is
+
+```text
+(v a/k)'=v(a+c), Q C_ell=v a/k.
+```
+
+On the retained APR scalar and u equations these two constraints are
+consistent: the chain-rule residual equals 2k/v times the label residual.
+The verifier checks this off the label equation, leaving H and ell free.
+Thus the same equation should not be counted twice to manufacture an
+extra obstruction. Conversely, integrating a curve of these values still
+requires a single-valued C^2 F: repeated invariant points must give the
+same value and compatible derivatives. No such universal F is constructed
+by this algebra.
+
+### B. Why the outer term must be checked jointly
+
+Set z=r^2 sigma' and delta=H'^2-u'^2. The exact spatial-source expression
+for the label boundary term is
+
+```text
+Q C_ell = (ell/ell')/2
+          [r^2 p^-2(X-T)+P z'-P r^2 delta].
+```
+
+Matter localization alone therefore does not control it. For example,
+on an exterior r>=1 take u=m/r and
+sigma=epsilon sin(r^2)/r^5, with a smooth extension inside. Both derivative
+charges agree, sigma tends to zero and its gradient energy is finite,
+yet r^3 Delta sigma oscillates. The inferred Q C_ell has subsequential
+limits -2P epsilon and +2P epsilon. This is an inference counterexample,
+not a solution: the full label residual divided by r has subsequential
+limit -4P epsilon and fails its equation. No oscillatory configuration
+is admitted by treating only its charges as a check.
+
+The simultaneous equations supply the missing control. Define
+
+```text
+B=Q C_ell-3Pz/2,
+B'=P r^2 delta/2-r^2 p^-2(3T+X)/2.
+```
+
+Finite derivative-charge limits imply H',u'=O(r^-2), so the first term
+is absolutely integrable at infinity. The separately stated positive
+canonical kinetic integral makes the second term integrable. Consequently
+B has a finite limit; z has a finite limit, so C_ell does too. The spatial
+identity then gives
+
+```text
+r z'=(2Q C_ell/P)(r ell'/ell)
+     -r^3 p^-2(X-T)/P+r^3 delta.
+```
+
+Under ell/r->1, ell'->1, p->1 and r^3(T+X)->0, its right side tends to
+2Q C_ell(infinity)/P. A nonzero limit would force z' eventually to have a
+fixed-sign nonzero multiple of 1/r and make z diverge logarithmically.
+This contradicts its finite charge limit. Therefore C_ell(infinity)=0.
+No independent H'' falloff, F_r falloff or zero-traction postulate was
+used. Equal charges were not needed for this conclusion.
+
+Both boundary terms must first be retained:
+
+```text
+2Q[C_ell]_0^R = -integral_0^R r^2p^-2(3T+X) dr
+                +3P[z]_0^R
+                +P integral_0^R r^2(H'^2-u'^2) dr.
+```
+
+At a regular centre C_ell,z=O(r^3). At infinity z=m_u-m_H in general;
+only an additional matched-charge condition makes this term vanish.
+The boundary ledger for the identities used here is:
+
+| Term | What controls it |
+| --- | --- |
+| C_ell | Zero at a regular centre; zero at infinity by the joint proof above |
+| z=r^2(H'-u') | Zero at the centre; m_u-m_H at infinity, not automatically zero |
+| r^2 H H', r^2 u u' | Zero at both ends from regularity, vanishing field constants and finite derivative charges |
+| Scalar/virial surface terms | Existing localized APR tail and regular centre; no finite-radius truncation |
+| exp(-2sigma)F | Silent F->0 and finite sigma->0, used only in the constitutive corollary below |
+
+The nonzero gravitational and H charges are retained. This ledger does
+not declare the total gravitational surface energy zero or complete a
+new Hamiltonian boundary-value reduction.
+
+### C. The zero-slope escape also has to satisfy integrability
+
+Positive strains and F_r,F_t<=0 make
+C_ell'=r^2p^-2(b_rF_r+b_tF_t)<=0. The regular centre and the now-derived
+zero outer limit force C_ell'=0 everywhere. Continuity and b_r,b_t>0
+then require F_r=F_t=0 along the entire solution curve.
+
+This degenerate case cannot be admitted without checking F itself.
+J+F=0 now implies yF_y=-F. Its chain rule gives
+
+```text
+F'=2sigma'F, (exp(-2sigma)F)'=0.
+```
+
+The silent asymptote fixes the constant to zero, so F=F_y=0 throughout.
+The H equation becomes Delta H=0. Regularity at the centre and H->0 at
+infinity imply H=0. Meanwhile a=c=0 in the local source data gives
+
+```text
+L_sigma=T, C_delta=X.
+```
+
+These coefficients are important: (3T+X)/2 is C_geom in this limit,
+not L_sigma. With H=0 the second equality is
+-Pp^2 u'^2=X>=0, forcing u'=X=0. Localized chi is then zero. The label
+profile itself need not be the identity if F has a silent manifold;
+the localized matter/metric source is what becomes trivial.
+
+Thus every nontrivial retained APR embedding in this declared class
+requires F_r>0 or F_t>0 somewhere. For static labels in the regular
+accessible short-wave regime, the material-velocity block is proportional
+to -Q diag(F_r,F_t/2,F_t/2). This necessary sign conflicts with positive
+label kinetic energy in that regime. The class of everywhere nonpositive
+slopes, including its identically zero limit, is therefore closed as an
+embedding route. A singular/degenerate complete constraint system or an
+amended derivative/source sector would change the physical-health premise
+and must be checked explicitly; they have not been silently ruled out.
+
+### D. Reused APR virial gives another simultaneous integral condition
+
+Let U_g=integral r^2u'^2 dr, H_g=integral r^2H'^2 dr and
+I=integral r^2p^-2(3T+X)dr. The EXISTING APR virial and Gauss identities,
+with the angular factor suppressed, imply
+
+```text
+integral r^2p^-2 X dr+P U_g=3 integral r^2p^-2(T-V) dr,
+integral r^2p^-2(2T-V) dr=P m_u,
+I=P(3m_u-U_g).
+```
+
+The joint label balance, now with justified zero traction, instead gives
+I=P[3(m_u-m_H)+H_g-U_g]. Compatibility therefore requires
+
+```text
+H_g=3m_H.
+```
+
+This is a new necessary consistency condition obtained by reusing the
+old identities, not a recomputation of APR stiffness or a separate
+impossibility theorem. No positive sign for the local H source is assumed,
+so no bound on H's central value is inferred from it. Equal exterior
+charges can be imposed afterwards if required by the target exterior.
+
+### Decision, validation and remaining construction
+
+The simultaneous check has established the needed outer-traction limit,
+all four necessary constitutive source data, their chain-rule/label
+compatibility, the H-gradient/charge sum rule and the exclusion of the
+nonpositive-material-slope class. It has not exhibited an admissible F
+or a regular interior. In particular, freeing H does not by itself repair
+the original static material sector's regular positive-energy branch.
+The next construction must change or resolve that specific source/
+constraint premise while preserving the desired operational map; it
+cannot consist only of assigning the four inferred source profiles.
+
+APR's equilibrium, energy--mass agreement and local restoring response
+remain unchanged. No old 35/19 mode, full equilibrium or restoring-response
+calculation was run in this step. Reproduction:
+
+```text
+python -B verify_common_scale_centre_source.py --joint-static-boundary-only
+```
+
+Final run: Python 3.10.6, SymPy 1.13.3, 29/29 passed. The first targeted
+run passed 28/29 because SymPy had expanded sigma=H-u before a boundary
+substitution; substituting the boundary equality H=u directly fixed the
+check. No equation or physical premise was changed. Only this new mode
+was rerun after the correction. Three independent analytical reviews
+confirmed the boundary and zero-slope arguments.
+
+Final-run verifier SHA256:
+976436dcc8e6ceadebef5ec82b43ea8ecec9b183b83b6096a8323eef15f8af85.
+Pre-result report SHA256:
+293b91afe59dc8c727716f0cf7e3533db324136edaa64f0426817255123e4823.
+APR source SHA256:
+6b4a4a0f906725e7262a73496d02330fc4f040bb20ec419d51dbaccd241925b8.
+The article hash is unchanged. This result text was appended after the
+verification run; the pre-result hash is not the final report hash.
+
+After the successful run, a comment clarified that the boundary-value
+substitution evaluates sigma->0 only at infinity, and the output wording
+was narrowed to the joint chain-rule/boundary/H exclusion of a nontrivial
+zero-slope embedding. No symbolic expression, test, equation or assertion
+changed. The resulting verifier SHA256 is
+15284b336a649393fdaeca52f15697832fed61121b16373360db74c51524d1f4.
+No additional run was needed for these wording-only changes.

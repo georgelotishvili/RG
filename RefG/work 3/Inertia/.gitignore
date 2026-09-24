@@ -1,0 +1,11 @@
+# Reviewed scientific export. Keep drafts, old trial models and caches local.
+*
+!.gitignore
+!README.md
+!requirements.txt
+!foundation_revision.md
+!verify_foundation_revision.py
+!foundation_revision_result.json
+!radial_stability_revision.md
+!radial_adm_hessian.py
+!radial_stability_result.json
