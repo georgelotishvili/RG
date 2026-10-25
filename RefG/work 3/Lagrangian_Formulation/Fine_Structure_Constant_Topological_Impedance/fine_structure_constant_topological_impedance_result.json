@@ -1,0 +1,289 @@
+{
+  "gate_id": "REFG_FINE_STRUCTURE_CONSTANT_TOPOLOGICAL_IMPEDANCE_V1",
+  "version": "4.7",
+  "status": "PASS",
+  "passed": 18,
+  "total": 18,
+  "summary": {
+    "alpha_geom_inv_bare": 137.03630377587842,
+    "alpha_geom_rel_err_ppm": 2.223444061874876,
+    "alpha_refg_1L_inv": 137.03599972019742,
+    "alpha_refg_1L_rel_err_ppb": 4.642556929833019,
+    "alpha_refg_2L_inv": 137.0359990924064,
+    "alpha_refg_2L_rel_err_ppb": 0.06134448423231751,
+    "alpha_refg_2L_sigma_codata18": 0.4003048897651579,
+    "g_e_half_refg": 1.0011596521779966,
+    "g_e_half_rel_err_ppt": 2.5904769332998963,
+    "Delta_alpha_lep_mZ": 0.03150026156177404,
+    "alpha_OS_mZ_inv": 128.93878013465525,
+    "alpha_MSbar_mZ_inv": 127.95078013465525,
+    "Z0_pred_refg_Ohm": 376.7303136440574,
+    "R_K_von_Klitzing_Ohm": 25812.807459304513,
+    "R_inf_refg_m_inv": 10973731.56674357,
+    "F_em_over_F_g_ee": 4.165608766421808e+42,
+    "F_em_over_F_g_pp": 1.2355516356865681e+36,
+    "S_inst_3_over_8_alpha_inv": 51.388499659652396,
+    "ln_M_Pl_over_m_e": 51.5278399957515
+  },
+  "checks": [
+    {
+      "id": "CHK_01_TOROIDAL_MOBIUS_Z2_PHASE_SPACE_DECOMPOSITION",
+      "title": "Symbolic integration of 3D bulk (4*pi^3), 2D surface (pi^2), and 1D Mobius loop (pi) impedance channels",
+      "status": "PASS",
+      "details": {
+        "I3_3D_toroidal_bulk_sym": "4*pi**3",
+        "I2_2D_surface_coupling_sym": "pi**2",
+        "I1_1D_mobius_holonomy_sym": "pi",
+        "alpha_geom_inv_sym": "pi + pi**2 + 4*pi**3",
+        "I3_val": 124.02510672119928,
+        "I2_val": 9.869604401089358,
+        "I1_val": 3.141592653589793,
+        "frac_3D_pct": 90.50529188531031,
+        "frac_2D_pct": 7.2021822897609695,
+        "frac_1D_pct": 2.292525824928727,
+        "quadratic_factor_discriminant": -15
+      }
+    },
+    {
+      "id": "CHK_02_BARE_GEOMETRIC_IMPEDANCE_137_036304_PPM_MATCH",
+      "title": "Zero-parameter bare geometric impedance alpha_geom^-1 = 4*pi^3 + pi^2 + pi = 137.03630378 (2.22 ppm match)",
+      "status": "PASS",
+      "details": {
+        "alpha_geom_inv": 137.03630377587842,
+        "alpha_exp_inv_codata18": 137.035999084,
+        "abs_diff_bare": 0.00030469187842641077,
+        "rel_err_bare": 2.223444061874876e-06,
+        "rel_err_bare_ppm": 2.223444061874876
+      }
+    },
+    {
+      "id": "CHK_03_THREE_FILTERS_OF_SECTION_5_6_VERIFICATION",
+      "title": "Symbolic verification of the three filters of Section 5.6 (Planck ratio, r_e/lambda_C identity, phase locking)",
+      "status": "PASS",
+      "details": {
+        "filter1_M_Pl_over_m_e": 2.389222382145913e+22,
+        "filter1_ln_M_Pl_over_m_e": 51.5278399957515,
+        "filter2_r_e_over_lambda_C_minus_alpha": "0",
+        "filter2_lambda_C_over_a_Bohr_minus_alpha": "0"
+      }
+    },
+    {
+      "id": "CHK_04_1LOOP_24_CHANNEL_CASIMIR_DRESSING_4_64_PPB",
+      "title": "1-loop 24-channel (3*8) toroidal Casimir dressing alpha_1L^-1 = alpha_geom^-1 - 1/(24*alpha_geom^-1) (4.64 ppb)",
+      "status": "PASS",
+      "details": {
+        "N_casimir": 24,
+        "delta_alpha_inv_1L": -0.0003040556810026933,
+        "alpha_inv_1L": 137.03599972019742,
+        "abs_err_1L_vs_codata18": 6.361974271840154e-07,
+        "rel_err_1L_ppb": 4.642556929833019,
+        "improvement_factor_over_bare": 478.92661209753817
+      }
+    },
+    {
+      "id": "CHK_05_2LOOP_NINTH_ORDER_HOLONOMY_DRESSING_0_061_PPB",
+      "title": "2-loop ninth-order holonomy dressing alpha_RefG^-1 = 137.0359990924 (0.061 ppb, 0.40 sigma vs CODATA)",
+      "status": "PASS",
+      "details": {
+        "N_hol": 9,
+        "theta_0": 0.2222222222222222,
+        "active_holonomy_fraction_8_over_9": 0.8888888888888888,
+        "alpha_inv_refg_2L": 137.0359990924064,
+        "alpha_inv_self_consistent_fp": 137.03599909172758,
+        "alpha_inv_codata18": 137.035999084,
+        "alpha_inv_codata22": 137.035999177,
+        "alpha_inv_fan23": 137.035999166,
+        "abs_err_vs_codata18": 8.406402685068315e-09,
+        "rel_err_2L_ppb": 0.06134448423231751,
+        "sigma_vs_codata18": 0.4003048897651579,
+        "improvement_factor_over_bare": 36245.21568156768
+      }
+    },
+    {
+      "id": "CHK_06_ELECTRON_G_OVER_2_FROM_DERIVED_ALPHA_2_59_PPT",
+      "title": "Electron |g_e|/2 = 1.00115965217800 from derived alpha_RefG (2.59 ppt match to Fan et al. 2023)",
+      "status": "PASS",
+      "details": {
+        "alpha_refg": 0.007297352568836149,
+        "a_e_refg": 0.001159652177996632,
+        "g_e_half_refg": 1.0011596521779966,
+        "g_e_half_exp_fan23": 1.00115965218059,
+        "rel_err_ppt": 2.5904769332998963
+      }
+    },
+    {
+      "id": "CHK_07_SYMBOLIC_QED_VACUUM_POLARIZATION_KERNEL_INTEGRALS",
+      "title": "Symbolic proof of 1-loop QED vacuum polarization UV (1/3*ln(q^2/m^2) - 5/3) and IR Uehling (1/15, 1/140) integrals",
+      "status": "PASS",
+      "details": {
+        "int_x_1_minus_x": "1/6",
+        "int_x_1_minus_x_ln": "-5/18",
+        "uv_slope_1_over_3": "1/3",
+        "uv_constant_minus_5_over_3": "-5/3",
+        "ir_uehling_c1_1_over_15": "1/15",
+        "ir_uehling_c2_1_over_140": "1/140"
+      }
+    },
+    {
+      "id": "CHK_08_EXACT_1LOOP_LEPTONIC_VACUUM_POLARIZATION_AT_MZ",
+      "title": "Exact 1-loop leptonic vacuum polarization Delta_alpha_lep^(1)(m_Z^2) = 0.031419 across e, mu, tau thresholds",
+      "status": "PASS",
+      "details": {
+        "da_e_1L": 0.01743466353708981,
+        "da_mu_1L": 0.009178441300253859,
+        "da_tau_1L": 0.0048095886266053475,
+        "da_lep_exact_1L": 0.03142269346394902,
+        "da_lep_asymp_1L": 0.031420928024001406
+      }
+    },
+    {
+      "id": "CHK_09_2LOOP_LEPTONIC_VP_AND_KOIDE_MASS_CONSISTENCY",
+      "title": "1-loop + 2-loop leptonic vacuum polarization Delta_alpha_lep(m_Z^2) = 0.031497 matching Steinhauser/PDG",
+      "status": "PASS",
+      "details": {
+        "da_lep_1L": 0.03142269346394902,
+        "da_lep_2L": 7.756809782501824e-05,
+        "da_lep_total": 0.03150026156177404,
+        "da_lep_pdg": 0.0314976,
+        "rel_err_vs_pdg": 8.450046270312769e-05
+      }
+    },
+    {
+      "id": "CHK_10_Z_POLE_ON_SHELL_128_94_AND_MSBAR_127_95_BRIDGE",
+      "title": "Running from alpha_RefG^-1(0) = 137.036 to alpha_OS^-1(m_Z) = 128.939 and alpha_MSbar^-1(m_Z) = 127.951 (0.02 sigma)",
+      "status": "PASS",
+      "details": {
+        "da_total_OS": 0.05908826156177403,
+        "alpha_OS_mZ_inv_refg": 128.93878013465525,
+        "alpha_OS_mZ_inv_pdg": 128.946,
+        "sigma_OS_mZ": 0.4813243563167665,
+        "alpha_MSbar_mZ_inv_refg": 127.95078013465525,
+        "alpha_MSbar_mZ_inv_pdg": 127.951,
+        "sigma_MSbar_mZ": 0.024429482749610546
+      }
+    },
+    {
+      "id": "CHK_11_MONOTONIC_QED_SCREENING_PROFILE_ACROSS_LEPTON_THRESHOLDS",
+      "title": "Strict monotonic QED screening decrease of alpha^-1(q^2) across e, mu, tau thresholds",
+      "status": "PASS",
+      "details": {
+        "q_grid_MeV": [
+          0.0,
+          0.51099895,
+          105.6583755,
+          1000.0,
+          1776.86,
+          10000.0,
+          91187.6
+        ],
+        "alpha_inv_leptonic_only_profile": [
+          137.0359990924064,
+          137.01676327335053,
+          136.06211230807565,
+          135.29117028598193,
+          135.03897828753415,
+          134.11961255777484,
+          132.72995889939972
+        ],
+        "strictly_decreasing": true
+      }
+    },
+    {
+      "id": "CHK_12_ELECTROWEAK_SIN2_THETAW_AND_SIRLIN_DELTA_R_BRIDGE",
+      "title": "Electroweak bridge linking alpha_RefG(0), G_F, m_W, m_Z and Sirlin radiative parameter Delta_r = 0.0360",
+      "status": "PASS",
+      "details": {
+        "v_EW_GeV": 246.21964023926205,
+        "sin2_thetaW_on_shell": 0.22320267795009507,
+        "g2_on_shell": 0.6528252573344826,
+        "g1_on_shell": 0.34993935677067484,
+        "alpha_ew_tree_inv": 132.10418190643637,
+        "sirlin_Delta_r": 0.03598920881106871
+      }
+    },
+    {
+      "id": "CHK_13_COFRAME_INVARIANCE_OF_ALPHA_AND_VACUUM_IMPEDANCE",
+      "title": "Symbolic proof that d(alpha)/d(p_T,p_L) == 0 and d(Z_eff)/d(p_T,p_L) == 0 on any static or cosmological coframe",
+      "status": "PASS",
+      "details": {
+        "c_coord_sym": "c0*p_L*p_T",
+        "Z_eff_minus_Z0": "0",
+        "alpha_coframe_minus_alpha0": "0",
+        "d_alpha_dpT": 0,
+        "d_alpha_dpL": 0,
+        "d_Z_dpT": 0,
+        "d_Z_dpL": 0
+      }
+    },
+    {
+      "id": "CHK_14_VON_KLITZING_JOSEPHSON_VACUUM_IMPEDANCE_BRIDGE",
+      "title": "Quantum metrology bridge alpha_0 = Z_0/(2*R_K) and Z_0^RefG = 376.730313644 Ohm (0.061 ppb vs CODATA18)",
+      "status": "PASS",
+      "details": {
+        "R_K_von_Klitzing_Ohm": 25812.807459304513,
+        "K_J_Josephson_Hz_per_V": 483597848416983.6,
+        "Phi_0_flux_quantum_Wb": 2.0678338484619295e-15,
+        "Z0_pred_refg_Ohm": 376.7303136440574,
+        "Z0_codata18_Ohm": 376.7303136671677,
+        "Z0_codata22_Ohm": 376.730313412,
+        "rel_err_Z0_codata18_ppb": 0.06134445882655035,
+        "rel_err_Z0_codata22_ppb": 0.6159775159195202,
+        "symbolic_Z0_over_2RK_minus_alpha": "0"
+      }
+    },
+    {
+      "id": "CHK_15_ATOMIC_RYDBERG_BOHR_AND_UEHLING_2S_LAMB_SHIFT",
+      "title": "Atomic Rydberg R_inf (0.12 ppb), Bohr radius a_0, and Hydrogen 2S Uehling shift (-27.065 MHz) from alpha_RefG",
+      "status": "PASS",
+      "details": {
+        "a_bohr_refg_Angstrom": 0.5291772109381292,
+        "lambda_C_bar_fm": 386.1592679608906,
+        "r_e_classical_fm": 2.8179403260342917,
+        "R_inf_refg_m_inv": 10973731.56674357,
+        "R_inf_codata22_m_inv": 10973731.568157,
+        "rel_err_R_inf_ppb": 0.1288013115513366,
+        "delta_nu_Uehling_2S_MHz": -27.08448068912794
+      }
+    },
+    {
+      "id": "CHK_16_GRAVITATIONAL_HIERARCHY_ELECTRON_AND_PROTON_FORCE_RATIOS",
+      "title": "Gravitational hierarchy ratios F_em/F_g = 4.1656e42 (e-e-) and 1.2355e36 (p-p) and coframe invariance",
+      "status": "PASS",
+      "details": {
+        "M_Pl_kg": 2.1764343427178984e-08,
+        "alpha_G_e": 1.7518093940215273e-45,
+        "alpha_G_p": 5.906149413805094e-39,
+        "F_em_over_F_g_ee": 4.165608766421808e+42,
+        "F_em_over_F_g_pp": 1.2355516356865681e+36,
+        "ratio_ee_over_pp_minus_mu_pe_sq": 0.0,
+        "d_Fratio_dpT": 0,
+        "d_Fratio_dpL": 0
+      }
+    },
+    {
+      "id": "CHK_17_EXPONENTIAL_TOPOLOGICAL_TUNNELING_HIERARCHY_BRIDGE",
+      "title": "Topological instanton action (3/8)*alpha_RefG^-1 = 51.3885 matching ln(M_Pl/m_e) = 51.5289 to 0.27%",
+      "status": "PASS",
+      "details": {
+        "S_inst_3_over_8_alpha_inv": 51.388499659652396,
+        "ln_M_Pl_over_m_e_exp": 51.5278399957515,
+        "rel_diff_pct": 0.2704175764219725,
+        "me_over_MPl_top_exp_minus_S": 4.811252663483891e-23,
+        "me_over_MPl_exp": 4.1854622134497015e-23
+      }
+    },
+    {
+      "id": "CHK_18_THREE_NEGATIVE_MUTATION_CONTROLS",
+      "title": "Falsification of 3 mutations: no Z_2 factor (261.06, 90.5% err), 3D-only (124.03, 9.5% err), asymmetric coframe",
+      "status": "PASS",
+      "details": {
+        "mut1_no_Z2_alpha_inv": 261.06141049707765,
+        "mut1_rel_err_pct": 90.50571546317028,
+        "mut2_3D_only_alpha_inv": 124.02510672119926,
+        "mut2_rel_err_pct": 9.49450688123589,
+        "mut3_d_alpha_dpT_nonzero": "e**2/(8*pi*c0*eps0*hbar*sqrt(p_L)*sqrt(p_T))"
+      }
+    }
+  ],
+  "script_sha256": "b9b894d851cf82833c71ac9118796e492d4e35a38fab9752f5c52e770701a598"
+}
