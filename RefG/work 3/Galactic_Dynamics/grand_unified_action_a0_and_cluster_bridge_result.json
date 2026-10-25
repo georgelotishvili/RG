@@ -1,0 +1,206 @@
+{
+  "claim_id": "REFG_GRAND_UNIFIED_ACTION_A0_AND_CLUSTER_BRIDGE_V1",
+  "model_version": "REFG_GRAND_UNIFIED_ACTION_V1",
+  "status": "PASS_GRAND_UNIFIED_ACTION_A0_AND_CLUSTER_BRIDGE",
+  "all_checks_passed": true,
+  "n_checks": 43,
+  "n_passed": 43,
+  "n_negative_controls": 3,
+  "n_negative_controls_rejected": 3,
+  "checks": {
+    "upstream_sha256_hashes_matched": true,
+    "clock_phase_invariant_scaling_identity": true,
+    "clock_phase_four_velocity_identity": true,
+    "common_scale_Y_hat_universal_silent_identity": true,
+    "common_scale_B_hat_universal_silent_identity": true,
+    "common_scale_G_rr_pure_quadratic_identity": true,
+    "common_scale_G_thth_pure_quadratic_identity": true,
+    "common_scale_sqrtg_R_exact_total_divergence_identity": true,
+    "common_scale_projected_gradient_all_orders_identity": true,
+    "common_scale_linear_G_rr_vanishes_for_any_H": true,
+    "common_scale_linear_G_thth_vanishes_for_any_H": true,
+    "strong_field_photon_sphere_k_essence_deviation_below_1e_45": true,
+    "cosmological_operational_scale_identity_A_eq_a_over_p": true,
+    "cosmological_pressure_standard_identity_p2_eq_P_ratio": true,
+    "cosmological_charge_conservation_eta_a3_eq_1": true,
+    "foundation_expansion_rate_2_5_H0": true,
+    "clock_drift_rate_3_5_H0": true,
+    "pressure_relaxation_rate_6_5_H0": true,
+    "derived_a0_formula_3_over_5pi_c0_H0": true,
+    "derived_a0_within_5pct_of_empirical_sparc_a0": true,
+    "F_RefG_derivative_equals_mu_RefG": true,
+    "F_RefG_at_zero_vanishes": true,
+    "mu_RefG_deep_IR_series_missing_x2_identity": true,
+    "F_RefG_deep_IR_series_exact_2_3_x3_minus_2_5_x5": true,
+    "mu_RefG_high_acc_dipole_screening_series": true,
+    "mu_RefG_lambda_parallel_identity": true,
+    "mu_RefG_ellipticity_ratio_exact_identity": true,
+    "saturn_screening_mu_RefG_below_1e_15_m_s2": true,
+    "saturn_screening_mu_2_below_1e_15_m_s2": true,
+    "sparc_database_loaded_163_galaxies_2788_points": true,
+    "sparc_mu_RefG_at_derived_a0_passes_0_15_dex_gate": true,
+    "sparc_mu_2_intrinsic_scatter_below_0_145_dex": true,
+    "lane_emden_n1_poisson_helmholtz_identity": true,
+    "lane_emden_n1_thomas_fermi_linear_self_consistency": true,
+    "lane_emden_n1_total_mass_identity": true,
+    "lane_emden_n1_total_mass_in_terms_of_R_C": true,
+    "lane_emden_n1_central_potential_depth_identity": true,
+    "all_163_sparc_galaxies_below_condensate_trapping_threshold": true,
+    "lane_emden_abel_projection_2d_mass_conservation": true,
+    "bullet_cluster_both_subclusters_above_trapping_threshold": true,
+    "bullet_cluster_lensing_peaks_co_centered_with_galaxies_within_15kpc": true,
+    "bullet_cluster_lensing_peaks_offset_from_xray_gas_gt_150kpc": true,
+    "bullet_cluster_convergence_amplitudes_match_observations": true
+  },
+  "symbolic_residuals": {
+    "clock_phase_invariant_scaling_identity": "0",
+    "clock_phase_four_velocity_identity": "0",
+    "common_scale_Y_hat_universal_silent_identity": "0",
+    "common_scale_B_hat_universal_silent_identity": "0",
+    "common_scale_G_rr_pure_quadratic_identity": "0",
+    "common_scale_G_thth_pure_quadratic_identity": "0",
+    "common_scale_sqrtg_R_exact_total_divergence_identity": "0",
+    "common_scale_projected_gradient_all_orders_identity": "0",
+    "common_scale_linear_G_rr_vanishes_for_any_H": "0",
+    "common_scale_linear_G_thth_vanishes_for_any_H": "0",
+    "cosmological_operational_scale_identity_A_eq_a_over_p": "0",
+    "cosmological_pressure_standard_identity_p2_eq_P_ratio": "0",
+    "cosmological_charge_conservation_eta_a3_eq_1": "0",
+    "foundation_expansion_rate_2_5_H0": "0",
+    "clock_drift_rate_3_5_H0": "0",
+    "pressure_relaxation_rate_6_5_H0": "0",
+    "derived_a0_formula_3_over_5pi_c0_H0": "0",
+    "F_RefG_derivative_equals_mu_RefG": "0",
+    "F_RefG_at_zero_vanishes": "0",
+    "mu_RefG_deep_IR_series_missing_x2_identity": "0",
+    "F_RefG_deep_IR_series_exact_2_3_x3_minus_2_5_x5": "0",
+    "mu_RefG_high_acc_dipole_screening_series": "0",
+    "mu_RefG_lambda_parallel_identity": "0",
+    "mu_RefG_ellipticity_ratio_exact_identity": "0",
+    "lane_emden_n1_poisson_helmholtz_identity": "0",
+    "lane_emden_n1_thomas_fermi_linear_self_consistency": "0",
+    "lane_emden_n1_total_mass_identity": "0",
+    "lane_emden_n1_total_mass_in_terms_of_R_C": "0",
+    "lane_emden_n1_central_potential_depth_identity": "0"
+  },
+  "negative_controls": {
+    "mutated_pressure_exponent_rejected": true,
+    "unscreened_mu1_at_saturn_rejected_by_dipole_gate": true,
+    "baryons_only_bullet_cluster_fails_stellar_peak_alignment": true
+  },
+  "numerical_summary": {
+    "cosmological_a0_derivation": {
+      "H0_planck_km_s_Mpc": 67.4,
+      "H0_planck_s_inv": 2.1842852410855023e-18,
+      "Gamma_a_over_H0": 0.4,
+      "Gamma_p_over_H0": 0.6,
+      "Gamma_P_over_H0": 1.2,
+      "formula": "a_0 = Gamma_P * c_0 / (2*pi) = (3 / (5*pi)) * c_0 * H_0",
+      "a0_RefG_m_s2": 1.2506374573735212e-10,
+      "a0_empirical_sparc_m_s2": 1.2e-10,
+      "relative_difference_pct": 4.219788114460102
+    },
+    "strong_field_and_solar_system_screening": {
+      "photon_sphere_r_2m_x_acc_1Msun": 7.690765448843182e+22,
+      "photon_sphere_k_essence_fractional_deviation_mu2": 8.45338932815546e-47,
+      "photon_sphere_k_essence_fractional_deviation_mu_RefG": 1.690677865631092e-46,
+      "saturn_9_54_AU_g_N_m_s2": 6.515941751649819e-05,
+      "saturn_delta_g_mu_RefG_m_s2": 2.4003977607606494e-16,
+      "saturn_delta_g_over_gN_mu_RefG": 3.68388462059667e-12,
+      "saturn_delta_g_mu_2_m_s2": 1.2001260836992802e-16,
+      "saturn_delta_g_over_gN_mu_2": 1.841830589408525e-12
+    },
+    "sparc_163_galaxies_2788_points_benchmark": {
+      "n_galaxies": 163,
+      "n_points": 2788,
+      "max_V_obs_kms": 383.0,
+      "p95_V_obs_kms": 290.8,
+      "benchmarks": {
+        "empirical_a0_1.20e-10": {
+          "a0_m_s2": 1.2e-10,
+          "mu_1": {
+            "rms_dex": 0.14146005121528937,
+            "mean_dex": -0.012054218263012074,
+            "intrinsic_std_dex": 0.14094552817276593
+          },
+          "mu_2": {
+            "rms_dex": 0.15451962429350413,
+            "mean_dex": 0.05513642738086656,
+            "intrinsic_std_dex": 0.1443478045121577
+          },
+          "mu_RefG": {
+            "rms_dex": 0.15056574995274918,
+            "mean_dex": 0.046440913296184126,
+            "intrinsic_std_dex": 0.14322460204535428
+          }
+        },
+        "derived_a0_RefG_1.2506e-10": {
+          "a0_m_s2": 1.2506374573735212e-10,
+          "mu_1": {
+            "rms_dex": 0.14215249091081686,
+            "mean_dex": -0.018368845372073967,
+            "intrinsic_std_dex": 0.1409606902361318
+          },
+          "mu_2": {
+            "rms_dex": 0.15240414938612545,
+            "mean_dex": 0.04843609056560391,
+            "intrinsic_std_dex": 0.14450249091565534
+          },
+          "mu_RefG": {
+            "rms_dex": 0.14877868433686145,
+            "mean_dex": 0.0398106100401028,
+            "intrinsic_std_dex": 0.14335345214274517
+          }
+        }
+      }
+    },
+    "condensate_trapping_and_bullet_cluster": {
+      "v_trap_threshold_kms": 500.0,
+      "delta_omega_C_over_mu_C0": 2.7816251401340463e-06,
+      "n_sparc_galaxies_above_threshold": 0,
+      "bullet_main_potential_velocity_kms": 1751.9656891389475,
+      "bullet_sub_potential_velocity_kms": 1404.7852917094704,
+      "lensing_peak_main_x_kpc": -347.0,
+      "lensing_peak_main_kappa": 0.4389335375073387,
+      "lensing_peak_sub_x_kpc": 354.0,
+      "lensing_peak_sub_kappa": 0.3158230918208753,
+      "offset_main_peak_from_xray_gas_kpc": 187.0,
+      "offset_sub_peak_from_xray_gas_kpc": 154.0,
+      "offset_main_peak_from_stars_kpc": 13.0,
+      "offset_sub_peak_from_stars_kpc": 6.0,
+      "baryons_only_main_peak_x_kpc": -167.0
+    }
+  },
+  "upstream_provenance": {
+    "RefG/work 3/Lagrangian_Formulation/Unified_Isolated_Cosmological_Action/unified_isolated_cosmological_action.md": {
+      "expected": "3531c976615505071c395e4a6c3455c79c0fc022e81e5de94f5c461d16f32dd0",
+      "actual": "3531c976615505071c395e4a6c3455c79c0fc022e81e5de94f5c461d16f32dd0",
+      "matched": true
+    },
+    "RefG/work 3/Inertia/unified_ambient_inertia_audit.md": {
+      "expected": "4c22475d3742ac3d5952c76c943b66e31531d99d42a68acf1364cfaab463397f",
+      "actual": "4c22475d3742ac3d5952c76c943b66e31531d99d42a68acf1364cfaab463397f",
+      "matched": true
+    },
+    "RefG/work 3/Strong_Field/W3-92_Covariant_Medium_Integration/action_derived_c2_interior_closure.md": {
+      "expected": "0e78918f8862d5ea9b595a62322b6c9a66586040dd36e19984b85f089b9a8e25",
+      "actual": "0e78918f8862d5ea9b595a62322b6c9a66586040dd36e19984b85f089b9a8e25",
+      "matched": true
+    },
+    "RefG/work 3/Galactic_Dynamics/covariant_galactic_bridge_audit.md": {
+      "expected": "bc66d82d80ce64fda6ca15dea39378267b9f7899631f641a206ec21dd991fd1b",
+      "actual": "bc66d82d80ce64fda6ca15dea39378267b9f7899631f641a206ec21dd991fd1b",
+      "matched": true
+    },
+    "RefG/work 3/Galactic_Dynamics/w3_10_galactic_action_and_btfr.py": {
+      "expected": "3b2a937e8a15146dd827b0903980947c54593297134be700d1b7c7a44cc40bc3",
+      "actual": "3b2a937e8a15146dd827b0903980947c54593297134be700d1b7c7a44cc40bc3",
+      "matched": true
+    },
+    "RefG/work 3/Galactic_Dynamics/w3_11_sparc_rar_validation.py": {
+      "expected": "8368471ac28bc11114f54fd956907ae6c2e732ae96badd2d155be4225e38937c",
+      "actual": "8368471ac28bc11114f54fd956907ae6c2e732ae96badd2d155be4225e38937c",
+      "matched": true
+    }
+  }
+}
