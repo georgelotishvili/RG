@@ -1,0 +1,268 @@
+{
+  "claim_id": "REFG_SPINOR_DIRAC_G2_AND_KOIDE_RADIATIVE_BRIDGE_V1",
+  "status": "PASS",
+  "total_checks": 41,
+  "passed_checks": 41,
+  "verifier_script": "RefG\\work 3\\Lagrangian_Formulation\\Spinor_Dirac_G2_and_Koide_Radiative_Bridge\\verify_spinor_dirac_g2_and_koide_radiative_bridge.py",
+  "verifier_sha256": "9c54d028413696fb3203405c8044b238102aab4b5614ad6f5221a01c0f466e38",
+  "part1_mobius_and_fermions": {
+    "clifford_dimension": 4,
+    "spin_casimir_factor": "3/4",
+    "mobius_2pi_trace": -4,
+    "mobius_4pi_trace": 4
+  },
+  "part2_dirac_g2_and_coframe_transposition": {
+    "g_tree_exact": 2,
+    "a_e_schwinger_1loop": 0.0011614097320976644,
+    "g_over_2_qed_4loop": 1.0011596521755728,
+    "g_over_2_penning_exp": 1.00115965218059,
+    "g_over_2_abs_error": 5.0173198928860074e-12,
+    "max_dirac_coframe_eigenvalue_error": 6.661338147750939e-16
+  },
+  "part3_koide_c3_and_radiative_bridge": {
+    "theta_0_tree": 0.2222222222222222,
+    "theta_exp_pole": 0.22222204709786825,
+    "delta_theta_exp": -1.7512435396271897e-07,
+    "rel_delta_theta_ppm": -0.7880595928322354,
+    "c2_holonomy_two_loop": 0.1460589407788722,
+    "c2_zero_param_4_over_27": 0.14814814814814814,
+    "m_mu_tree_MeV": 105.65941435323278,
+    "sigma_mu_tree": 451.67531859607624,
+    "m_mu_zero_param_MeV": 105.65836064048884,
+    "rel_err_mu_zero_param_ppm": 0.14063732380777574,
+    "m_tau_tree_MeV": 1776.984968413972,
+    "m_tau_pole_pred_MeV": 1776.9690270830165,
+    "sigma_tau_pole": 0.9085590251383262,
+    "K_exp": 0.6666605114773855,
+    "delta_K_exp": -6.155189281153994e-06
+  },
+  "part4_negative_controls": {
+    "controls_executed": 3,
+    "controls_rejected": 3
+  },
+  "checks": [
+    {
+      "name": "clifford_algebra_4d_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "spin_3_1_lorentz_lie_algebra_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "su2_spatial_spin_commutation_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "spin_half_casimir_3_4_hbar_sq_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "spin_reflection_involution_unit_axis",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "mobius_2pi_rotation_sign_reversal_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "mobius_4pi_rotation_double_cover_return_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "mobius_half_twist_holonomy_factor_minus_one",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "fermionic_exchange_antisymmetry_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "pauli_exclusion_identical_state_vanishes",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "clifford_grassmann_fermion_ladder_algebra_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "dirac_hamiltonian_fermionic_positivity_identity",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "dirac_gamma_pseudo_unitarity_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "dirac_product_eta_minus_i_sigma_identity",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "squared_dirac_pauli_spin_tensor_identity_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "magnetic_pauli_contraction_sigma_dot_B_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "gordon_decomposition_clifford_operator_identity_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "gordon_decomposition_onshell_spinor_sandwich_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "dirac_tree_level_gyromagnetic_factor_g_equals_2_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "schwinger_qed_g_over_2_matches_penning_trap",
+      "value": 1.0011596521755728,
+      "target": 1.00115965218059,
+      "abs_error": 5.0173198928860074e-12,
+      "pass": true
+    },
+    {
+      "name": "coframe_dirac_temporal_canonical_normalization_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "coframe_dirac_spatial_and_mass_clock_factorization_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "dirac_to_oscillon_frequency_ratio_coframe_invariance_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "larmor_spin_precession_coframe_clock_synchronization_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "numerical_dirac_spectrum_coframe_invariance_across_pT_pL",
+      "value": 6.661338147750939e-16,
+      "pass": true
+    },
+    {
+      "name": "koide_c3_linear_sum_3mu_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "koide_c3_quadratic_sum_theta_blindness_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "koide_ratio_K_equals_2_plus_AK_sq_over_6_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "koide_equipartition_AK_sqrt2_gives_K_2_over_3_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "c3_circulant_operator_eigenvalues_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "compton_self_similar_core_1loop_qed_mass_independence_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "compton_self_similar_core_preserves_koide_K_and_theta_at_1loop_exact",
+      "residual": "0",
+      "pass": true
+    },
+    {
+      "name": "tree_level_theta_2_over_9_reproduces_benchmark_discrepancies",
+      "m_mu_tree_MeV": 105.65941435323278,
+      "sigma_mu_tree": 451.67531859607624,
+      "m_tau_tree_MeV": 1776.984968413972,
+      "sigma_tau_tree": 1.041403449767131,
+      "pass": true
+    },
+    {
+      "name": "point_particle_1loop_qed_destroys_koide_by_over_1e5_sigma",
+      "m_mu_point_1loop_MeV": 103.69662734821203,
+      "sigma_mu_point_1loop": 852933.9790382489,
+      "pass": true
+    },
+    {
+      "name": "radiative_holonomy_shift_is_two_loop_qed_order",
+      "theta_0": 0.2222222222222222,
+      "theta_exp": 0.22222204709786825,
+      "delta_theta_rad": -1.7512435396271897e-07,
+      "rel_delta_theta": -7.880595928322354e-07,
+      "c2_two_loop_coeff": 0.1460589407788722,
+      "pass": true
+    },
+    {
+      "name": "radiative_pole_mass_bridge_closes_muon_and_tau_within_1sigma",
+      "m_mu_pred_MeV": 105.65837550000002,
+      "sigma_mu_pole": 6.178632484870436e-09,
+      "m_tau_pred_MeV": 1776.9690270830165,
+      "sigma_tau_pole": 0.9085590251383262,
+      "pass": true
+    },
+    {
+      "name": "empirical_koide_deviation_is_two_loop_qed_order",
+      "K_exp": 0.6666605114773855,
+      "delta_K_exp": -6.155189281153994e-06,
+      "delta_K_over_alpha_pi_sq": 1.1408025926920053,
+      "pass": true
+    },
+    {
+      "name": "parameter_free_4_over_27_two_loop_ansatz_reduces_muon_error_to_0_14_ppm",
+      "c2_zero_param_4_over_27": 0.14814814814814814,
+      "m_mu_zero_param_MeV": 105.65836064048884,
+      "rel_err_mu_zero_param": 1.4063732380777575e-07,
+      "sigma_mu_improvement_factor": 69.9116694359618,
+      "pass": true
+    },
+    {
+      "name": "negative_control_mutated_classical_g_equals_1_rejected",
+      "mutated_g": 1,
+      "pass": true
+    },
+    {
+      "name": "negative_control_bosonic_dirac_sea_unbounded_below_rejected",
+      "energy_at_nd_2": -2.0,
+      "pass": true
+    },
+    {
+      "name": "negative_control_fixed_cutoff_1loop_qed_scale_breaking_rejected",
+      "derivative_wrt_mk": "-3*alpha0/(2*pi*m_k)",
+      "pass": true
+    }
+  ]
+}

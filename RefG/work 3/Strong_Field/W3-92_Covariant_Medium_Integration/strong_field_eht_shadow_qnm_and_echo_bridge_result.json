@@ -1,0 +1,292 @@
+{
+  "claim_id": "REFG_STRONG_FIELD_EHT_SHADOW_QNM_AND_ECHO_BRIDGE_V1",
+  "model_version": "REFG_STRONG_FIELD_COVARIANT_MEDIUM_C2_INTERIOR_V1",
+  "status": "PASS",
+  "passed_checks": 18,
+  "total_checks": 18,
+  "upstream_provenance": {
+    "verify_action_derived_c2_interior_closure_py_sha256": "c102ecaa5b893a3d38af582a75dec6486be11887ad4fe112a1b46d823f5c436c",
+    "action_derived_c2_interior_closure_result_json_sha256": "8a71e25e25a4c081484affb8645bf22ee874c4b340a557142e98722e62b22e35"
+  },
+  "part1_photon_sphere_and_eht_shadow": {
+    "r_ph_over_m": 2.0,
+    "bc_over_m_refg": 5.43656365691809,
+    "bc_over_m_gr": 5.196152422706632,
+    "delta_sh_refg": 0.0462671635960652,
+    "delta_sh_percent": 4.62671635960652,
+    "sgra_star": {
+      "theta_g_uas": 5.028,
+      "d_sh_gr_uas": 52.25250876273789,
+      "d_sh_refg_uas": 54.67008413396831,
+      "d_sh_eht_uas": 48.7,
+      "d_sh_eht_sigma_uas": 7.0,
+      "z_score_direct_diameter": 0.8528691619954724,
+      "delta_1sigma_interval": [
+        -0.14,
+        0.05
+      ],
+      "z_score_delta_keck_vlti": 0.9585240399562801
+    },
+    "m87_star": {
+      "theta_g_uas": 3.8,
+      "d_sh_gr_uas": 39.4907584125704,
+      "d_sh_refg_uas": 41.31788379257748,
+      "d_sh_eht_uas": 42.0,
+      "d_sh_eht_sigma_uas": 3.0,
+      "z_score_direct_diameter": 0.22737206914083904,
+      "delta_1sigma_bound": 0.17,
+      "z_score_delta": 0.272159785859207
+    }
+  },
+  "part2_tortoise_c2_and_eikonal_qnm": {
+    "n_opt_center_over_exp_q_half": 1.0,
+    "n_opt_boundary_over_exp_q": 1.0,
+    "Omega_ph_m_over_c0_refg": 0.18393972058572117,
+    "lambda_L_m_over_c0_refg": 0.18393972058572117,
+    "Omega_ph_m_over_c0_gr": 0.19245008972987526,
+    "lambda_L_m_over_c0_gr": 0.19245008972987526,
+    "qnm_frequency_ratio_refg_to_gr": 0.955778824753476,
+    "qnm_frequency_shift_percent": -4.4221175246524025,
+    "qnm_quality_factor_ratio_refg_to_gr": 1.0,
+    "gw150914_eikonal_l2_n0_benchmark": {
+      "M_remnant_Msun": 62.0,
+      "f_20_eikonal_refg_Hz": 239.65938916585796,
+      "f_20_eikonal_gr_Hz": 250.74774933172776,
+      "tau_20_eikonal_refg_ms": 3.3204403892924685,
+      "tau_20_eikonal_gr_ms": 3.17360661294193,
+      "quality_factor_Q_20": 2.5
+    }
+  },
+  "part3_finite_tortoise_cavity_and_gw_echoes": {
+    "1.2": {
+      "q": 1.2,
+      "r_c_over_m": 1.6666666666666667,
+      "x_lr_inner": 0.9083493451830789,
+      "r_lr_inner_over_m": 1.5139155753051314,
+      "n_opt_center": 1.8221188003905089,
+      "n_opt_rc": 3.3201169227365472,
+      "L_star_core_over_m": 5.134692184392539,
+      "L_star_ext_over_m": 0.9969843900306075,
+      "L_star_ext_exact_ei_over_m": 0.9969843900306063,
+      "L_star_total_over_m": 6.131676574423146,
+      "I_echo_dimensionless": 12.263353148846292,
+      "I_cav_inner_to_outer_dimensionless": 3.066961126554572,
+      "effective_compactness_epsilon": 0.04661474893330732,
+      "echo_delay_10Msun_ms": 0.6040303491450636,
+      "echo_delay_30Msun_ms": 1.8120910474351906,
+      "echo_delay_gw150914_62Msun_ms": 3.744988164699394,
+      "inner_cavity_delay_gw150914_62Msun_ms": 0.936589934346019,
+      "echo_delay_sgra_star_s": 250.9142070348594
+    },
+    "1.5": {
+      "q": 1.5,
+      "r_c_over_m": 1.3333333333333333,
+      "x_lr_inner": 0.8705785931291431,
+      "r_lr_inner_over_m": 1.1607714575055241,
+      "n_opt_center": 2.117000016612675,
+      "n_opt_rc": 4.4816890703380645,
+      "L_star_core_over_m": 5.504342258805787,
+      "L_star_ext_over_m": 2.2733134953483924,
+      "L_star_ext_exact_ei_over_m": 2.2733134953483924,
+      "L_star_total_over_m": 7.777655754154179,
+      "I_echo_dimensionless": 15.555311508308359,
+      "I_cav_inner_to_outer_dimensionless": 6.252788961127316,
+      "effective_compactness_epsilon": 0.020469324546830238,
+      "echo_delay_10Msun_ms": 0.7661754601193774,
+      "echo_delay_30Msun_ms": 2.298526380358132,
+      "echo_delay_gw150914_62Msun_ms": 4.75028785274014,
+      "inner_cavity_delay_gw150914_62Msun_ms": 1.909479436135116,
+      "echo_delay_sgra_star_s": 318.26928613358933
+    },
+    "1.8": {
+      "q": 1.8,
+      "r_c_over_m": 1.1111111111111112,
+      "x_lr_inner": 0.8483040757011275,
+      "r_lr_inner_over_m": 0.9425600841123639,
+      "n_opt_center": 2.45960311115695,
+      "n_opt_rc": 6.0496474644129465,
+      "L_star_core_over_m": 6.171262554643183,
+      "L_star_ext_over_m": 3.4242326231677005,
+      "L_star_ext_exact_ei_over_m": 3.424232623167698,
+      "L_star_total_over_m": 9.595495177810884,
+      "I_echo_dimensionless": 19.190990355621768,
+      "I_cav_inner_to_outer_dimensionless": 9.185947799007998,
+      "effective_compactness_epsilon": 0.008248304714478629,
+      "echo_delay_10Msun_ms": 0.9452504926057933,
+      "echo_delay_30Msun_ms": 2.8357514778173796,
+      "echo_delay_gw150914_62Msun_ms": 5.860553054155918,
+      "inner_cavity_delay_gw150914_62Msun_ms": 2.805208768864965,
+      "echo_delay_sgra_star_s": 392.65705462844653
+    }
+  },
+  "part4_negative_controls": {
+    "schwarzschild_horizon_tortoise_limit": "oo",
+    "c0_only_core_c1_jump_at_q1p5": 6.722533605507097,
+    "c0_only_core_c2_jump_at_q1p5": 23.528867619274838,
+    "oversized_shadow_delta_mut": 0.3471506281091268
+  },
+  "checks": [
+    {
+      "name": "upstream_c2_interior_closure_artifacts_present",
+      "passed": true,
+      "value": {
+        "script": "verify_action_derived_c2_interior_closure.py",
+        "json": "action_derived_c2_interior_closure_result.json"
+      },
+      "expected": "both present",
+      "tolerance": 0
+    },
+    {
+      "name": "exterior_optical_potential_first_derivative_exact",
+      "passed": true,
+      "value": "0",
+      "expected": "0",
+      "tolerance": 0
+    },
+    {
+      "name": "outer_photon_sphere_radius_is_2m",
+      "passed": true,
+      "value": "2*m",
+      "expected": "2*m",
+      "tolerance": 0
+    },
+    {
+      "name": "outer_photon_sphere_second_derivative_negative_unstable",
+      "passed": true,
+      "value": "-exp(-2)/(8*m**4)",
+      "expected": "-exp(-2)/(8*m**4) < 0",
+      "tolerance": 0
+    },
+    {
+      "name": "critical_impact_parameter_bc_equals_2_e_m",
+      "passed": true,
+      "value": "2*E*m",
+      "expected": "2*E*m",
+      "tolerance": 0
+    },
+    {
+      "name": "eht_sgra_direct_shadow_diameter_within_1sigma",
+      "passed": true,
+      "value": 0.8528691619954724,
+      "expected": "< 1.0 sigma (48.7 +/- 7.0 uas)",
+      "tolerance": 1.0
+    },
+    {
+      "name": "eht_sgra_fractional_deviation_delta_within_1sigma_bound",
+      "passed": true,
+      "value": 0.0462671635960652,
+      "expected": "in [-0.14, +0.05] (+0.046297 <= +0.05)",
+      "tolerance": 0.05
+    },
+    {
+      "name": "eht_m87_shadow_diameter_within_1sigma",
+      "passed": true,
+      "value": {
+        "d_sh_refg_uas": 41.31788379257748,
+        "z_direct": 0.22737206914083904,
+        "z_delta": 0.272159785859207
+      },
+      "expected": "d_sh in 42.0 +/- 3.0 uas (z < 1.0) and |delta| <= 0.17",
+      "tolerance": 1.0
+    },
+    {
+      "name": "interior_optical_exponent_polynomial_identity",
+      "passed": true,
+      "value": "11*x**6/4 - 15*x**4/2 + 23*x**2/4 + 1",
+      "expected": "11*x**6/4 - 15*x**4/2 + 23*x**2/4 + 1",
+      "tolerance": 0
+    },
+    {
+      "name": "tortoise_optical_index_c2_junction_at_rc_exact",
+      "passed": true,
+      "value": {
+        "jump_C0": "0",
+        "jump_C1": "0",
+        "jump_C2": "0"
+      },
+      "expected": {
+        "jump_C0": "0",
+        "jump_C1": "0",
+        "jump_C2": "0"
+      },
+      "tolerance": 0
+    },
+    {
+      "name": "eikonal_qnm_angular_velocity_and_lyapunov_exponent_exact",
+      "passed": true,
+      "value": {
+        "Omega_ph_RefG": "c0*exp(-1)/(2*m)",
+        "lambda_L_RefG": "c0*exp(-1)/(2*m)",
+        "ratio_lambda_over_Omega": "1"
+      },
+      "expected": {
+        "Omega_ph_RefG": "c0/(2*E*m)",
+        "lambda_L_RefG": "c0/(2*E*m)",
+        "ratio_lambda_over_Omega": "1"
+      },
+      "tolerance": 0
+    },
+    {
+      "name": "eikonal_qnm_quality_factor_identical_to_gr",
+      "passed": true,
+      "value": {
+        "Q_RefG_over_Q_GR": "1",
+        "omega_RefG_over_omega_GR": 0.955778824753476
+      },
+      "expected": {
+        "Q_RefG_over_Q_GR": "1",
+        "omega_RefG_over_omega_GR": 0.955778824753476
+      },
+      "tolerance": 0
+    },
+    {
+      "name": "exterior_tortoise_exponential_integral_closed_form_match",
+      "passed": true,
+      "value": 2.6645352591003757e-15,
+      "expected": "< 1e-13",
+      "tolerance": 1e-13
+    },
+    {
+      "name": "finite_tortoise_depth_and_positive_echo_factor_at_q_1p5",
+      "passed": true,
+      "value": 15.555311508308359,
+      "expected": "finite in (10, 25) (~15.5553)",
+      "tolerance": 1e-12
+    },
+    {
+      "name": "strict_monotonicity_of_echo_factor_with_compactness_q",
+      "passed": true,
+      "value": [
+        12.263353148846292,
+        15.555311508308359,
+        19.190990355621768
+      ],
+      "expected": "I_echo(1.2) < I_echo(1.5) < I_echo(1.8)",
+      "tolerance": 0
+    },
+    {
+      "name": "negative_control_schwarzschild_horizon_divergent_tortoise_rejected",
+      "passed": true,
+      "value": "oo",
+      "expected": "oo (divergent tortoise integral -> no core reflection)",
+      "tolerance": 0
+    },
+    {
+      "name": "negative_control_c0_only_core_tortoise_c2_jump_rejected",
+      "passed": true,
+      "value": {
+        "jump_C1": 6.722533605507097,
+        "jump_C2": 23.528867619274838
+      },
+      "expected": "nonzero C^1 and C^2 jumps (> 1.0 and > 10.0) rejected",
+      "tolerance": 0
+    },
+    {
+      "name": "negative_control_oversized_shadow_violating_eht_1sigma_rejected",
+      "passed": true,
+      "value": 0.3471506281091268,
+      "expected": "delta_mut = +0.3472 > 0.17 (violates both Sgr A* and M87* 1-sigma bounds) -> rejected",
+      "tolerance": 0
+    }
+  ]
+}
