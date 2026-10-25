@@ -1,0 +1,142 @@
+{
+  "claim_id": "REFG_COVARIANT_GALACTIC_BRIDGE_AUDIT_V1",
+  "model_version": "REFG_COVARIANT_GALACTIC_BRIDGE_V1",
+  "status": "PASS_COVARIANT_GALACTIC_BRIDGE_AND_SCREENING_AUDIT",
+  "all_checks_passed": true,
+  "total_checks": 41,
+  "passed_checks": 41,
+  "failed_checks": [],
+  "negative_controls": {
+    "pure_quadratic_gradient_action_flat_rotation_rejected": true,
+    "non_elliptic_decreasing_flux_interpolator_rejected": true,
+    "time_only_metric_missing_factor_of_two_lensing_rejected": true,
+    "unscreened_mu1_outer_solar_system_ephemeris_tension_flagged": true
+  },
+  "symbolic_residuals": {
+    "common_scale_weak_field_Y_hat_equals_one": "0",
+    "canonical_quadratic_asymptotic_velocity_vanishes": "0",
+    "w3_10_constitutive_stationarity_polynomial": "0",
+    "w3_10_total_acceleration_formula": "0",
+    "w3_10_to_aqual_algebraic_identity": "0",
+    "mu1_nu1_reciprocity_identity": "0",
+    "mu2_nu2_reciprocity_identity": "0",
+    "covariant_k_essence_F1_derivative_matches_mu1": "0",
+    "covariant_k_essence_F1_vanishes_at_zero": "0",
+    "covariant_k_essence_F2_derivative_matches_mu2": "0",
+    "covariant_k_essence_F2_vanishes_at_zero": "0",
+    "F1_deep_IR_p3_aqual_series": "0",
+    "F2_deep_IR_p3_aqual_series": "0",
+    "F1_high_acceleration_quadratic_limit": "0",
+    "F2_high_acceleration_quadratic_limit": "0",
+    "exact_btfr_limit_mu1_family": "0",
+    "exact_btfr_limit_mu2_family": "0",
+    "ellipticity_radial_eigenvalue_mu1": "0",
+    "ellipticity_ratio_mu1": "0",
+    "ellipticity_radial_eigenvalue_mu2": "0",
+    "ellipticity_ratio_mu2": "0",
+    "common_scale_refractive_index_weak_field_series": "0",
+    "deep_IR_weak_lensing_deflection_angle": "0",
+    "deep_IR_lensing_matches_btfr_mass": "0",
+    "mu1_high_acceleration_residual_equals_a0": "0",
+    "mu2_high_acceleration_residual_scales_as_inv_y": "0"
+  },
+  "numerical_audit": {
+    "solar_system_transition_radius_AU": 7029.854694589191,
+    "earth_1AU": {
+      "r_AU": 1.0,
+      "g_N_m_s2": 0.005930262843244523,
+      "y_gN_over_a0": 49418857.027037695,
+      "delta_g_mu1_m_s2": 1.1999999757177722e-10,
+      "frac_delta_g_mu1": 2.0235190369087195e-08,
+      "delta_g_mu2_m_s2": 1.2141114467130066e-18,
+      "frac_delta_g_mu2": 2.0473147292215983e-16
+    },
+    "saturn_9.54AU": {
+      "r_AU": 9.54,
+      "g_N_m_s2": 6.515941751649819e-05,
+      "y_gN_over_a0": 542995.1459708182,
+      "delta_g_mu1_m_s2": 1.1999977900436328e-10,
+      "frac_delta_g_mu1": 1.8416336974464154e-06,
+      "delta_g_mu2_m_s2": 1.1049822534319706e-16,
+      "frac_delta_g_mu2": 1.6958135838955161e-12
+    },
+    "lensing_inner_GR_match_u_b_1e-3_rel_err": 8.100899031568054e-06,
+    "lensing_outer_plateau_match_u_b_1e3_rel_err": 0.0003183723861810428,
+    "max_rar_log10_diff_mu1_vs_mu2_dex": 0.10449287670783036,
+    "milky_way_6e10_Msun_Vf_km_s": 175.8183968789892,
+    "milky_way_6e10_Msun_asymptotic_lensing_arcsec": 0.4457508985595963
+  },
+  "checks": {
+    "common_scale_weak_field_Y_hat_equals_one": true,
+    "canonical_quadratic_asymptotic_velocity_vanishes": true,
+    "negative_control_pure_quadratic_gradient_rejected": true,
+    "w3_10_constitutive_stationarity_polynomial": true,
+    "w3_10_total_acceleration_formula": true,
+    "w3_10_to_aqual_algebraic_identity": true,
+    "mu1_nu1_reciprocity_identity": true,
+    "mu2_nu2_reciprocity_identity": true,
+    "covariant_k_essence_F1_derivative_matches_mu1": true,
+    "covariant_k_essence_F1_vanishes_at_zero": true,
+    "covariant_k_essence_F2_derivative_matches_mu2": true,
+    "covariant_k_essence_F2_vanishes_at_zero": true,
+    "F1_deep_IR_p3_aqual_series": true,
+    "F2_deep_IR_p3_aqual_series": true,
+    "F1_high_acceleration_quadratic_limit": true,
+    "F2_high_acceleration_quadratic_limit": true,
+    "exact_btfr_limit_mu1_family": true,
+    "exact_btfr_limit_mu2_family": true,
+    "ellipticity_radial_eigenvalue_mu1": true,
+    "ellipticity_ratio_mu1": true,
+    "ellipticity_radial_eigenvalue_mu2": true,
+    "ellipticity_ratio_mu2": true,
+    "negative_control_non_elliptic_interpolator_rejected": true,
+    "common_scale_refractive_index_weak_field_series": true,
+    "deep_IR_weak_lensing_deflection_angle": true,
+    "deep_IR_lensing_matches_btfr_mass": true,
+    "negative_control_time_only_metric_lensing_rejected": true,
+    "mu1_high_acceleration_residual_equals_a0": true,
+    "mu2_high_acceleration_residual_scales_as_inv_y": true,
+    "negative_control_mu1_outer_solar_system_flagged": true,
+    "upstream_sha256_w3_10_galactic_action_and_btfr.py": true,
+    "upstream_sha256_w3_11_sparc_rar_validation.py": true,
+    "upstream_sha256_w3_12_aqual_disk_solution.py": true,
+    "upstream_sha256_w3_13_refractive_lensing.py": true,
+    "lensing_inner_limit_matches_schwarzschild_4GM_c2b": true,
+    "lensing_outer_limit_matches_isothermal_plateau": true,
+    "earth_1AU_mu1_fractional_deviation_below_3e-8": true,
+    "saturn_mu2_anomalous_acceleration_below_1e-15_m_s2": true,
+    "saturn_mu2_fractional_deviation_below_1e-11": true,
+    "galactic_rar_mu1_mu2_difference_below_sparc_scatter": true,
+    "milky_way_btfr_flat_velocity_in_physical_range": true
+  },
+  "provenance": {
+    "python_version": "3.10.6",
+    "numpy_version": "1.24.3",
+    "scipy_version": "1.15.2",
+    "sympy_version": "1.13.3",
+    "verifier_sha256": "c57f3c4d85d5c59c8ef96c30ba2f55cd0ee301bfac362e960f041adae0eba7b5",
+    "report_sha256": "bc66d82d80ce64fda6ca15dea39378267b9f7899631f641a206ec21dd991fd1b",
+    "upstream_sha256": {
+      "RefG/work 3/Galactic_Dynamics/w3_10_galactic_action_and_btfr.py": {
+        "expected_sha256": "3b2a937e8a15146dd827b0903980947c54593297134be700d1b7c7a44cc40bc3",
+        "actual_sha256": "3b2a937e8a15146dd827b0903980947c54593297134be700d1b7c7a44cc40bc3",
+        "matched": true
+      },
+      "RefG/work 3/Galactic_Dynamics/w3_11_sparc_rar_validation.py": {
+        "expected_sha256": "8368471ac28bc11114f54fd956907ae6c2e732ae96badd2d155be4225e38937c",
+        "actual_sha256": "8368471ac28bc11114f54fd956907ae6c2e732ae96badd2d155be4225e38937c",
+        "matched": true
+      },
+      "RefG/work 3/Galactic_Dynamics/w3_12_aqual_disk_solution.py": {
+        "expected_sha256": "99087f21bef3675cec074a4584ed7bd064e9bf4be3e2df45d3356d12583118ac",
+        "actual_sha256": "99087f21bef3675cec074a4584ed7bd064e9bf4be3e2df45d3356d12583118ac",
+        "matched": true
+      },
+      "RefG/work 3/Galactic_Dynamics/w3_13_refractive_lensing.py": {
+        "expected_sha256": "b3ed8bea1d9dab33bd9e8bd5e10dd0255c1c017cf042c8fc7859668d3210463f",
+        "actual_sha256": "b3ed8bea1d9dab33bd9e8bd5e10dd0255c1c017cf042c8fc7859668d3210463f",
+        "matched": true
+      }
+    }
+  }
+}

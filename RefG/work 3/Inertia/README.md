@@ -36,6 +36,11 @@ Research supplement / კვლევითი დანართი — 2026-09
 | [radial_stability_revision.md](radial_stability_revision.md) | ფიქსირებული მუხტის რადიალური ADM ჰესიანის გამოყვანა და რიცხვითი მეთოდი |
 | [radial_adm_hessian.py](radial_adm_hessian.py) | სრული გამოკვლეული რადიალური ფორმა და დამოუკიდებელი ენერგეტიკული გადამოწმება |
 | [radial_stability_result.json](radial_stability_result.json) | ბადეები, რადიუსები, კრებადობა და რადიალური შედეგები |
+| [ერთიანი იზოლირებული და კოსმოლოგიური ქმედება](../Lagrangian_Formulation/Unified_Isolated_Cosmological_Action/unified_isolated_cosmological_action.md) | კოლექტიური კომპლექსური ველის $\Psi_C$ რეგულარული ლაგრანჟიანი და ზუსტი ვაკუუმური რედუქცია |
+| [ერთიანი ქმედების შემოწმება](../Lagrangian_Formulation/Unified_Isolated_Cosmological_Action/verify_unified_isolated_cosmological_action.py) | სიმბოლური ვარიაცია, ლეჟანდრის გარდაქმნა და ვაკუუმური რედუქციის შემოწმება |
+| [unified_ambient_inertia_audit.md](unified_ambient_inertia_audit.md) | გრავიტირებადი ჩაჭერილი ჯიბის რეჟიმი და ორმუხტიანი პირველი კანონი $dM_{\rm ADM}=\Omega\,dQ+\omega_C\,dQ_C$ |
+| [verify_unified_ambient_inertia.py](verify_unified_ambient_inertia.py) | ორმუხტიანი წონასწორობის, ინერციისა და სასაზღვრო კრებადობის 44 სიმბოლური და რიცხვითი შემოწმება |
+| [unified_ambient_inertia_result.json](unified_ambient_inertia_result.json) | ჩაჭერილი ჯიბის რიცხვითი შედეგები, ნაშთები და წყაროთა ჰეშები |
 
 ## გამეორება
 

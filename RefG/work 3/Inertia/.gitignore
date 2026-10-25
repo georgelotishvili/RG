@@ -9,3 +9,6 @@
 !radial_stability_revision.md
 !radial_adm_hessian.py
 !radial_stability_result.json
+!unified_ambient_inertia_audit.md
+!verify_unified_ambient_inertia.py
+!unified_ambient_inertia_result.json

@@ -1,0 +1,248 @@
+{
+  "claim_id": "REFG_UNIFIED_AMBIENT_INERTIA_AND_TWO_CHARGE_FIRST_LAW_V1",
+  "model_version": "REFG_UNIFIED_COVARIANT_V1",
+  "status": "PASS_UNIFIED_AMBIENT_INERTIA_AND_TWO_CHARGE_FIRST_LAW",
+  "all_checks_passed": true,
+  "total_checks": 44,
+  "passed_checks": 44,
+  "failed_checks": [],
+  "negative_controls": {
+    "grand_canonical_threshold_finite_mass_ansatz_rejected": true,
+    "wrong_collective_first_law_unredshifted_threshold_rejected": true,
+    "omitted_collective_pressure_in_clock_ruler_reconstruction_rejected": true,
+    "omitted_collective_term_in_joint_first_law_rejected": true
+  },
+  "symbolic_residuals": {
+    "grand_canonical_threshold_x_star_1_over_r_tail": "0",
+    "grand_canonical_threshold_mass_diverges_as_R_squared": "0",
+    "collective_pressure_is_quartic_envelope": "0",
+    "collective_density_is_quadratic_plus_quartic": "0",
+    "collective_enthalpy_is_xs_times_XC": "0",
+    "coupled_mass_constraint_integrating_factor_is_sigma": "0",
+    "oscillon_charge_functional_derivative_is_Omega": "0",
+    "collective_charge_functional_derivative_is_omega_C": "0",
+    "threshold_first_law_slope_is_redshifted_mass_gap": "0",
+    "coupled_clock_ruler_stress_identity": "0",
+    "coupled_boost_inertia_equals_ADM_mass": "0"
+  },
+  "isolated_baseline": {
+    "Q0": 190.401136223484,
+    "adm_mass": 176.7703548771642,
+    "omega": 0.7960088387752858,
+    "central_clock_N0": 0.9918254622199769,
+    "critical_collective_frequency_wC_crit": 0.9918254622199769
+  },
+  "subthreshold_checks": {
+    "below_threshold_wC_0.990": {
+      "omega": 0.7960088387752858,
+      "omega_C": 0.99,
+      "adm_mass": 176.7703548771642,
+      "komar_volume_mass": 176.77035487003704,
+      "komar_surface_mass": 176.7703548771642,
+      "komar_relative_error": 4.0318859362287185e-11,
+      "charge_Q": 190.401136223484,
+      "charge_QC": 0.0,
+      "r_trap": 0.0,
+      "central_clock": 0.9918254622199769,
+      "central_x_star": 0.0,
+      "outer_x_star": 0.0,
+      "minimum_F": 0.9938340740814083,
+      "pressure_reconstruction_max_error": 7.973246775056647e-09,
+      "omitted_collective_pressure_reconstruction_error": 7.973246775056647e-09,
+      "max_boundary_residual": 5.082197683525802e-21,
+      "max_BVP_residual": 2.992151823790634e-08,
+      "absolute_outer_field": 4.63267580737484e-17
+    },
+    "at_threshold_wC_crit": {
+      "omega": 0.7960088387752858,
+      "omega_C": 0.9918254622199769,
+      "adm_mass": 176.7703548771642,
+      "komar_volume_mass": 176.77035487003704,
+      "komar_surface_mass": 176.7703548771642,
+      "komar_relative_error": 4.0318859362287185e-11,
+      "charge_Q": 190.401136223484,
+      "charge_QC": 0.0,
+      "r_trap": 0.0,
+      "central_clock": 0.9918254622199769,
+      "central_x_star": 2.2204460492503132e-17,
+      "outer_x_star": 0.0,
+      "minimum_F": 0.9938340740814083,
+      "pressure_reconstruction_max_error": 7.973246775056647e-09,
+      "omitted_collective_pressure_reconstruction_error": 7.973246775056647e-09,
+      "max_boundary_residual": 5.082197683525802e-21,
+      "max_BVP_residual": 2.992151823790634e-08,
+      "absolute_outer_field": 4.63267580737484e-17
+    }
+  },
+  "threshold_convergence_scan": [
+    {
+      "delta_omega_C": 0.002,
+      "omega_C": 0.9938254622199769,
+      "r_trap": 1.990127344687078,
+      "charge_QC": 0.005009057795101541,
+      "adm_mass": 176.77533023135462,
+      "secant_dM_over_QC": 0.993271468193526,
+      "relative_diff_from_wC_crit": 0.0014579238269529782,
+      "max_BVP_residual": 2.9921509145037895e-08
+    },
+    {
+      "delta_omega_C": 0.001,
+      "omega_C": 0.9928254622199769,
+      "r_trap": 1.3574945803267984,
+      "charge_QC": 0.0008290281924078055,
+      "adm_mass": 176.77117772232376,
+      "secant_dM_over_QC": 0.9925418304017702,
+      "relative_diff_from_wC_crit": 0.0007222724250190993,
+      "max_BVP_residual": 2.9921519091084434e-08
+    },
+    {
+      "delta_omega_C": 0.0004,
+      "omega_C": 0.9922254622199769,
+      "r_trap": 0.8469611700844287,
+      "charge_QC": 8.163301322118518e-05,
+      "adm_mass": 176.77043586374214,
+      "secant_dM_over_QC": 0.9920812025889524,
+      "relative_diff_from_wC_crit": 0.00025784815848850506,
+      "max_BVP_residual": 2.9921519472772535e-08
+    },
+    {
+      "delta_omega_C": 0.0002,
+      "omega_C": 0.9920254622199769,
+      "r_trap": 0.5967464183429152,
+      "charge_QC": 1.4321640870994682e-05,
+      "adm_mass": 176.77036908468423,
+      "secant_dM_over_QC": 0.9920315802102282,
+      "relative_diff_from_wC_crit": 0.00020781679650561102,
+      "max_BVP_residual": 2.992151820768763e-08
+    },
+    {
+      "delta_omega_C": 0.0001,
+      "omega_C": 0.9919254622199769,
+      "r_trap": 0.42126916968838607,
+      "charge_QC": 2.5227472572427603e-06,
+      "adm_mass": 176.77035737965227,
+      "secant_dM_over_QC": 0.9919693902624439,
+      "relative_diff_from_wC_crit": 0.0001451142846693454,
+      "max_BVP_residual": 2.992151790382887e-08
+    }
+  ],
+  "trapped_pocket_witness": {
+    "omega": 0.7960087567953444,
+    "omega_C": 0.9935,
+    "adm_mass": 176.77346721817838,
+    "komar_volume_mass": 176.77346721445247,
+    "komar_surface_mass": 176.77346721817838,
+    "komar_relative_error": 2.1077362077903672e-11,
+    "charge_Q": 190.401136223484,
+    "charge_QC": 0.003134179650995761,
+    "r_trap": 1.7957232541219352,
+    "central_clock": 0.9918251985863159,
+    "central_x_star": 0.00033800622437343277,
+    "outer_x_star": 0.0,
+    "minimum_F": 0.993833938140548,
+    "pressure_reconstruction_max_error": 7.975223142910742e-09,
+    "omitted_collective_pressure_reconstruction_error": 7.829310157657365e-09,
+    "max_boundary_residual": 1.3552527156068805e-20,
+    "max_BVP_residual": 2.997144787467559e-08,
+    "absolute_outer_field": 4.6326475369953867e-17
+  },
+  "two_charge_first_law_tests": {
+    "dM_dQC_at_fixed_Q": 0.9934989522558696,
+    "omega_C_target": 0.9935,
+    "relative_error_dM_dQC": 1.0545990241084269e-06,
+    "d_legendre_dQ_at_fixed_wC": 0.7960087942505609,
+    "omega_target": 0.7960087567953444,
+    "relative_error_dM_dQ": 4.705377443237069e-08,
+    "joint_step_dM": 0.003518725244958887,
+    "joint_step_rhs": 0.0035187260078090926,
+    "relative_error_joint": 2.1679727379986247e-07,
+    "residual_collective_slope": 0.9934984453713646,
+    "relative_error_residual_collective_slope": 1.5647998343748526e-06
+  },
+  "checks": {
+    "grand_canonical_threshold_x_star_1_over_r_tail": true,
+    "grand_canonical_threshold_mass_diverges_as_R_squared": true,
+    "grand_canonical_threshold_limit_is_infinite": true,
+    "collective_pressure_is_quartic_envelope": true,
+    "collective_density_is_quadratic_plus_quartic": true,
+    "collective_enthalpy_is_xs_times_XC": true,
+    "subthreshold_central_driving_nonpositive": true,
+    "coupled_mass_constraint_integrating_factor_is_sigma": true,
+    "oscillon_charge_functional_derivative_is_Omega": true,
+    "collective_charge_functional_derivative_is_omega_C": true,
+    "threshold_first_law_slope_is_redshifted_mass_gap": true,
+    "coupled_clock_ruler_stress_identity": true,
+    "coupled_boost_inertia_equals_ADM_mass": true,
+    "upstream_sha256_foundation_revision.md": true,
+    "upstream_sha256_verify_foundation_revision.py": true,
+    "upstream_sha256_oscillon_inertia.md": true,
+    "upstream_sha256_verify_oscillon_inertia.py": true,
+    "upstream_sha256_unified_isolated_cosmological_action.md": true,
+    "upstream_sha256_verify_unified_isolated_cosmological_action.py": true,
+    "coupled_zero_wC_matches_isolated_V2_mass": true,
+    "coupled_zero_wC_matches_isolated_V2_omega": true,
+    "subthreshold_below_QC_is_zero": true,
+    "subthreshold_at_crit_QC_is_zero": true,
+    "subthreshold_below_matches_isolated_mass": true,
+    "subthreshold_at_crit_matches_isolated_mass": true,
+    "subthreshold_at_crit_matches_isolated_omega": true,
+    "threshold_scan_BVP_residuals": true,
+    "threshold_scan_monotonic_convergence_to_wC_crit": true,
+    "threshold_limit_slope_matches_redshifted_gap": true,
+    "negative_control_unredshifted_threshold_rejected": true,
+    "witness_BVP_residual": true,
+    "witness_boundary_residual": true,
+    "witness_compact_trapping": true,
+    "witness_localized_oscillon_tail": true,
+    "witness_positive_metric": true,
+    "witness_clock_ruler_stress_reconstruction": true,
+    "witness_komar_mass_balance": true,
+    "negative_control_omitted_collective_pressure_rejected": true,
+    "partial_first_law_dM_dQC_at_fixed_Q": true,
+    "partial_first_law_dM_dQ_legendre": true,
+    "joint_two_charge_first_law_total_balance": true,
+    "joint_two_charge_first_law_collective_residual_slope": true,
+    "negative_control_omitted_collective_first_law_term_rejected": true,
+    "negative_control_grand_canonical_threshold_rejected": true
+  },
+  "provenance": {
+    "python_version": "3.10.6",
+    "numpy_version": "1.24.3",
+    "scipy_version": "1.15.2",
+    "sympy_version": "1.13.3",
+    "verifier_sha256": "f281c842943899281e538490538d8c61ff9d4b8f8933958f239c8cc3ccd9530e",
+    "report_sha256": "4c22475d3742ac3d5952c76c943b66e31531d99d42a68acf1364cfaab463397f",
+    "upstream_sha256": {
+      "RefG/work 3/Inertia/foundation_revision.md": {
+        "expected_sha256": "588ca272af1c7842c33836e3d73df3ed4d087c0ffe218863c6e5045b565f2425",
+        "actual_sha256": "588ca272af1c7842c33836e3d73df3ed4d087c0ffe218863c6e5045b565f2425",
+        "matched": true
+      },
+      "RefG/work 3/Inertia/verify_foundation_revision.py": {
+        "expected_sha256": "12e4cd5234569b0a564ea68b3542b5139675d70870859c57618dc746d7638baa",
+        "actual_sha256": "12e4cd5234569b0a564ea68b3542b5139675d70870859c57618dc746d7638baa",
+        "matched": true
+      },
+      "RefG/work 3/Lagrangian_Formulation/Oscillon_Inertia/oscillon_inertia.md": {
+        "expected_sha256": "6a8c95f557d4ffac01a404eef3eef54b81c2fe3fd5aca97556cf39d9bda8ea55",
+        "actual_sha256": "6a8c95f557d4ffac01a404eef3eef54b81c2fe3fd5aca97556cf39d9bda8ea55",
+        "matched": true
+      },
+      "RefG/work 3/Lagrangian_Formulation/Oscillon_Inertia/verify_oscillon_inertia.py": {
+        "expected_sha256": "32cf32e9cfd590f93928eff16cbfe5494836df8b9d72bfd88b3cf3ba7da22076",
+        "actual_sha256": "32cf32e9cfd590f93928eff16cbfe5494836df8b9d72bfd88b3cf3ba7da22076",
+        "matched": true
+      },
+      "RefG/work 3/Lagrangian_Formulation/Unified_Isolated_Cosmological_Action/unified_isolated_cosmological_action.md": {
+        "expected_sha256": "3531c976615505071c395e4a6c3455c79c0fc022e81e5de94f5c461d16f32dd0",
+        "actual_sha256": "3531c976615505071c395e4a6c3455c79c0fc022e81e5de94f5c461d16f32dd0",
+        "matched": true
+      },
+      "RefG/work 3/Lagrangian_Formulation/Unified_Isolated_Cosmological_Action/verify_unified_isolated_cosmological_action.py": {
+        "expected_sha256": "6bfe75edffaa3f59649d539ffec79fe76af27a511839570b1e4daf0ca32cfde9",
+        "actual_sha256": "6bfe75edffaa3f59649d539ffec79fe76af27a511839570b1e4daf0ca32cfde9",
+        "matched": true
+      }
+    }
+  }
+}
