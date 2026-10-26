@@ -1,0 +1,135 @@
+{
+  "model_version": "REFG_ROTATING_HORIZONLESS_KERR_AND_COLLAPSE_ARREST_V1",
+  "total_checks": 18,
+  "passed_checks": 18,
+  "all_passed": true,
+  "checks": {
+    "sym_exterior_frame_dragging_first_derivative_exact": true,
+    "sym_exterior_gravitomagnetic_conservation_ode_zero": true,
+    "sym_lense_thirring_asymptotic_2J_over_r3_exact": true,
+    "sym_interior_frame_dragging_c2_matching_and_regular_center": true,
+    "num_central_frame_dragging_finite_and_monotonic": true,
+    "sym_no_closed_timelike_curves_g_phiphi_strictly_positive": true,
+    "sym_static_isco_exact_golden_ratio_3_plus_sqrt5": true,
+    "num_static_isco_and_radiative_efficiency_physical": true,
+    "sym_photon_ring_derivative_exponential_cancellation_exact": true,
+    "num_zero_spin_limit_reproduces_2m_and_2em": true,
+    "num_spinning_eht_m87_and_sgra_within_1sigma": true,
+    "num_spin_reduces_sgra_shadow_diameter_toward_eht_center": true,
+    "num_spinning_isco_prograde_shrinks_and_efficiency_increases": true,
+    "sym_collapse_arrest_equilibrium_and_positive_stiffness_at_rc": true,
+    "num_dynamical_collapse_bounces_without_singularity_and_settles_to_rc": true,
+    "negative_control_classical_kerr_ring_singularity_and_ctc_rejected": true,
+    "negative_control_constant_interior_frame_dragging_c1_jump_rejected": true,
+    "negative_control_unregulated_dust_collapse_singular_rejected": true
+  },
+  "benchmarks": {
+    "q_benchmark": 1.5,
+    "omega_0_over_a_star_c0_inv_rc": 0.6121710625885453,
+    "omega_rc_over_a_star_c0_inv_rc": 0.2150473156446846,
+    "r_isco_static_over_m": 5.23606797749979,
+    "R_areal_isco_static_over_m": 6.337940264856347,
+    "E_isco_static": 0.9452131977533481,
+    "eta_acc_static": 0.05478680224665189,
+    "spin_table": [
+      {
+        "a_star": 0.0,
+        "inc_deg": 90.0,
+        "r_ph_pro_m": 2.000000000322585,
+        "r_ph_retro_m": 1.9999999999537341,
+        "b_pro_m": 5.43656365691809,
+        "b_retro_m": 5.436563656918091,
+        "b_avg_m": 5.436563656918091,
+        "asymmetry": 8.16856451749542e-17
+      },
+      {
+        "a_star": 0.5,
+        "inc_deg": 90.0,
+        "r_ph_pro_m": 1.07767577715727,
+        "r_ph_retro_m": 2.811399417933765,
+        "b_pro_m": 3.896814217371218,
+        "b_retro_m": 6.588926132303483,
+        "b_avg_m": 5.24287017483735,
+        "asymmetry": 0.2567402801477706
+      },
+      {
+        "a_star": 0.7,
+        "inc_deg": 90.0,
+        "r_ph_pro_m": 0.9671922438596356,
+        "r_ph_retro_m": 3.0620610720826416,
+        "b_pro_m": 3.4572229463390767,
+        "b_retro_m": 6.973396834018635,
+        "b_avg_m": 5.2153098901788555,
+        "asymmetry": 0.3371011465973476
+      },
+      {
+        "a_star": 0.9,
+        "inc_deg": 90.0,
+        "r_ph_pro_m": 0.9229330008463323,
+        "r_ph_retro_m": 3.2864352354718473,
+        "b_pro_m": 3.196946762426556,
+        "b_retro_m": 7.331511280420966,
+        "b_avg_m": 5.264229021423761,
+        "asymmetry": 0.3927037084792502
+      },
+      {
+        "a_star": 0.9,
+        "inc_deg": 17.0,
+        "r_ph_pro_m": 1.4319154166996473,
+        "r_ph_retro_m": 2.4680734702171767,
+        "b_pro_m": 4.63955718614959,
+        "b_retro_m": 6.086324870432632,
+        "b_avg_m": 5.362941028291111,
+        "asymmetry": 0.13488566037281705
+      },
+      {
+        "a_star": 0.7,
+        "inc_deg": 30.0,
+        "r_ph_pro_m": 1.2652391348323295,
+        "r_ph_retro_m": 2.600973460799434,
+        "b_pro_m": 4.352247843754524,
+        "b_retro_m": 6.277820105573189,
+        "b_avg_m": 5.315033974663857,
+        "asymmetry": 0.1811439278655265
+      }
+    ],
+    "isco_table": [
+      {
+        "a_star": 0.0,
+        "r_isco_pro_m": 5.236067978087729,
+        "r_isco_retro_m": 5.236067977639866,
+        "eta_acc_pro": 0.05478680224665189,
+        "eta_acc_retro": 0.05478680224665189
+      },
+      {
+        "a_star": 0.5,
+        "r_isco_pro_m": 3.813557501736783,
+        "r_isco_retro_m": 6.670098445065334,
+        "eta_acc_pro": 0.08042815929179292,
+        "eta_acc_retro": 0.04262963736992509
+      },
+      {
+        "a_star": 0.7,
+        "r_isco_pro_m": 3.376465192664711,
+        "r_isco_retro_m": 7.201916398056784,
+        "eta_acc_pro": 0.09785501772522442,
+        "eta_acc_retro": 0.0394538872207979
+      },
+      {
+        "a_star": 0.9,
+        "r_isco_pro_m": 3.0615819813262686,
+        "r_isco_retro_m": 7.708956211822469,
+        "eta_acc_pro": 0.11990179635190534,
+        "eta_acc_retro": 0.0368449156866385
+      }
+    ],
+    "d_sh_m87_rot_uas": 40.75835181501244,
+    "tension_m87_rot_sigma": 0.413882728329187,
+    "d_sh_sgra_rot_uas": 53.44798164921974,
+    "tension_sgra_rot_sigma": 0.678283092745677,
+    "collapse_y_turn_conservative": 0.7302690693655814,
+    "collapse_y_min_dynamical": 0.8126322899504581,
+    "collapse_y_final_dynamical": 1.000097914255114,
+    "omega_bounce_dimless": 1.9364916731037085
+  }
+}
