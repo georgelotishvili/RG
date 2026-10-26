@@ -1,0 +1,358 @@
+{
+  "gate_id": "REFG_COSMOLOGICAL_CMB_SPECTRUM_SILK_DAMPING_AND_MATTER_PK_V1",
+  "overall_status": "PASS",
+  "pass_count": 18,
+  "total_count": 18,
+  "script_file": "verify_cmb_silk_damping_and_matter_power_spectrum.py",
+  "script_sha256": "027285ff4619a9bbb770976e1f152263123712a475b84d741bc0f207ec5efc3d",
+  "background_parameters": {
+    "omega_gamma": 2.4729753332598068e-05,
+    "omega_r": 4.182579471950887e-05,
+    "omega_b": 0.02237,
+    "omega_C": 0.12,
+    "omega_nu": 0.0006442,
+    "omega_m_early": 0.14237,
+    "omega_m_late": 0.1430142,
+    "Omega_gamma0": 5.450240009673902e-05,
+    "Omega_r0": 9.218070910403436e-05,
+    "Omega_b0": 0.049301692328524445,
+    "Omega_C0": 0.26447041034523616,
+    "Omega_m0_early": 0.3137721026737606,
+    "Omega_m0_late": 0.3151918679932973,
+    "Omega_Lambda0": 0.6847159512975988,
+    "rho_crit0_kg_m3": 8.5227301510874e-27,
+    "n_H0_m3": 0.18945964860581052,
+    "R_b0": 678.4337787099709,
+    "c_over_H0_Mpc": 4450.600623515439,
+    "z_star": 1089.92,
+    "A_star": 0.0009166575000916656,
+    "z_d": 1059.94,
+    "A_d": 0.000942560370991762,
+    "rs_star_Mpc": 144.28767565361412,
+    "rd_Mpc": 146.94348158222206,
+    "DM_star_Mpc": 13869.085023941601,
+    "l_A": 301.9732310875006
+  },
+  "part1_recombination_and_silk_damping": {
+    "symbolic_invariance": {
+      "dkappa_dot_dp_residual": 0.0,
+      "kappa_dot_canonical_residual": 0.0,
+      "dsilk_integrand_dp_residual": 0.0
+    },
+    "recombination_thermodynamics": {
+      "z_star_planck": 1089.92,
+      "z_kappa_unity_peebles": 1090.388897339603,
+      "z_visibility_peak_peebles": 1079.3480130316964,
+      "visibility_fwhm_dz": 201.9475645901622,
+      "visibility_sigma_z": 85.75923456074878,
+      "Xe_at_z_star": 0.13217362244974254,
+      "Xe_freezeout_z100": 0.00028448193201429886,
+      "a_F_star": 0.06093724819795649,
+      "p_star": 66.4776628041147
+    },
+    "silk_damping_observables": {
+      "k_D_pure_Mpc_inv": 0.14127629195790425,
+      "k_D_eff_Mpc_inv": 0.12980733932282748,
+      "k_D_planck_benchmark_Mpc_inv": 0.13498164151018702,
+      "k_D_rel_diff": 0.038333377261299886,
+      "lambda_D_pure_Mpc": 44.4744494642581,
+      "lambda_D_eff_Mpc": 48.40392954633688,
+      "sigma_eta_visibility_Mpc": 16.428281301633724,
+      "sigma_vis_acoustic_Mpc": 7.447673277100379,
+      "l_Silk_pure": 1959.3729050313711,
+      "l_D_eff": 1800.3090257999324
+    }
+  },
+  "part2_acoustic_oscillator_and_cmb_spectra": {
+    "symbolic_oscillator_identities": {
+      "forced_oscillator_residual": 0.0,
+      "sw_baryon_equilibrium_shift_residual": 0.0
+    },
+    "baryon_loading_ode_test": {
+      "k1_Mpc_inv": 0.015923905550997503,
+      "k2_Mpc_inv": 0.038789148604347415,
+      "sw_ratio_12_with_baryon": 0.6416009796411016,
+      "sw_ratio_12_no_baryon": 0.44474170090295284,
+      "baryon_loading_power_boost": 2.0812024640333817
+    },
+    "tt_spectrum_benchmarks": {
+      "D_TT_l1_uK2": 5753.562512535245,
+      "D_TT_l2_uK2": 2543.9671487558826,
+      "D_TT_l3_uK2": 2518.249617628589,
+      "D_TT_l1500_uK2": 876.49779984917,
+      "planck2018_D_TT_l1_uK2": 5733.0,
+      "planck2018_D_TT_l2_uK2": 2547.0,
+      "planck2018_D_TT_l3_uK2": 2519.0,
+      "R_12_refg": 2.2616496896781877,
+      "R_12_planck2018": 2.2508833922261484,
+      "R_12_rel_err": 0.0047831431380331475,
+      "R_32_refg": 0.9898907770330797,
+      "R_32_planck2018": 0.989006674519042,
+      "R_32_rel_err": 0.0008939297750115203,
+      "silk_tail_ratio_D1500_over_D1": 0.1523400150671085
+    },
+    "te_ee_polarization_benchmarks": {
+      "l_TE_anticorrelation_trough1": 164.5,
+      "D_TE_anticorrelation_trough1_uK2": -44.00385789957354,
+      "l_TE_peak1": 311.0,
+      "D_TE_peak1_uK2": 47.60016707643502,
+      "l_EE_peak1": 135.5,
+      "D_EE_peak1_uK2": 2.308355843864316,
+      "l_EE_peak2": 395.0,
+      "D_EE_peak2_uK2": 10.338015262223747,
+      "l_EE_peak3": 690.0,
+      "D_EE_peak3_uK2": 11.589581032862691,
+      "ee2_minus_tt1_over_lA_phase_offset": 0.5491612008072654
+    }
+  },
+  "part3_matter_transfer_pk_and_sigma8": {
+    "symbolic_meszaros_and_baryon_exponent": {
+      "meszaros_U1_ode_residual": 0.0,
+      "meszaros_U2_ode_residual": 0.0,
+      "hu_sugiyama_indicial_residual": 0.0,
+      "f_b_early": 0.15712579897450307,
+      "f_c_early": 0.8428742010254969,
+      "alpha_hs_baryon_suppressed_exponent": 0.90187295373155
+    },
+    "equality_and_transfer_scales": {
+      "k_eq_Mpc_inv": 0.010384621672062394,
+      "k_eq_h_Mpc_inv": 0.015416599869451297,
+      "planck2018_k_eq_Mpc_inv": 0.010384,
+      "k_eq_sigma_tension": 0.00767496373326641,
+      "k_silk_eh98_Mpc_inv": 0.09026323290995157,
+      "alpha_c_baryon_suppression": 0.7712062016221999,
+      "beta_c": 1.1781633574193697,
+      "alpha_b": 0.5419799824082886,
+      "g0_late_time_growth_norm": 0.7879397091899679
+    },
+    "matter_pk_and_sigma8": {
+      "k_peak_h_Mpc_inv": 0.016676736068584566,
+      "k_peak_Mpc_inv": 0.011233449415798564,
+      "Pk_peak_h_inv3_Mpc3": 23936.149888834043,
+      "R8_Mpc": 11.876484560570072,
+      "sigma8_refg": 0.8097510721674759,
+      "planck2018_sigma8": 0.8111,
+      "sigma8_rel_err": 0.001663084493310517,
+      "sigma8_sigma_tension": 0.2248213054206934,
+      "S8_refg": 0.8300006001505271,
+      "planck2018_S8": 0.832,
+      "S8_sigma_tension": 0.15379998842098755,
+      "benchmark_table": [
+        {
+          "k_h_Mpc_inv": 0.001,
+          "k_Mpc_inv": 0.0006736,
+          "T_tot": 0.9923000392532868,
+          "T_c": 0.9923572052820021,
+          "T_b": 0.9919933819691635,
+          "P_k_h_inv3_Mpc3": 3831.6443300206624
+        },
+        {
+          "k_h_Mpc_inv": 0.005,
+          "k_Mpc_inv": 0.003368,
+          "T_tot": 0.902406380555499,
+          "T_c": 0.9038049103008764,
+          "T_b": 0.8949042093688526,
+          "P_k_h_inv3_Mpc3": 14857.359887909799
+        },
+        {
+          "k_h_Mpc_inv": 0.01,
+          "k_Mpc_inv": 0.006736,
+          "T_tot": 0.781411407940217,
+          "T_c": 0.7871458614808744,
+          "T_b": 0.7506499226975313,
+          "P_k_h_inv3_Mpc3": 21567.553802158483
+        },
+        {
+          "k_h_Mpc_inv": 0.016676736068584566,
+          "k_Mpc_inv": 0.011233449415798564,
+          "T_tot": 0.6452475023082661,
+          "T_c": 0.6625706207822484,
+          "T_b": 0.5523206262743877,
+          "P_k_h_inv3_Mpc3": 23936.149888834043
+        },
+        {
+          "k_h_Mpc_inv": 0.05,
+          "k_Mpc_inv": 0.03368,
+          "T_tot": 0.27306003637373055,
+          "T_c": 0.33467677844508864,
+          "T_b": -0.057472330571417894,
+          "P_k_h_inv3_Mpc3": 12264.88093533264
+        },
+        {
+          "k_h_Mpc_inv": 0.1,
+          "k_Mpc_inv": 0.06736,
+          "T_tot": 0.13319399005058677,
+          "T_c": 0.15938014975288686,
+          "T_b": -0.007277139331443358,
+          "P_k_h_inv3_Mpc3": 5685.802857243047
+        },
+        {
+          "k_h_Mpc_inv": 0.2,
+          "k_Mpc_inv": 0.13472,
+          "T_tot": 0.055347041767707376,
+          "T_c": 0.06496987791412459,
+          "T_b": 0.0037269998557688143,
+          "P_k_h_inv3_Mpc3": 1915.0247189225295
+        },
+        {
+          "k_h_Mpc_inv": 0.5,
+          "k_Mpc_inv": 0.3368,
+          "T_tot": 0.014214996485494928,
+          "T_c": 0.016868072671680823,
+          "T_b": -1.6972327303799758e-05,
+          "P_k_h_inv3_Mpc3": 305.72071396781973
+        }
+      ]
+    }
+  },
+  "part4_negative_mutations": {
+    "mutation_1_uncoupled_p_drift_in_thomson": {
+      "p_star": 66.4776628041147,
+      "k_D_mut1_Mpc_inv": 0.001952645954255674,
+      "l_D_mut1": 27.081412761227526,
+      "damping_factor_at_l1_mut1": 7.912202001453845e-18,
+      "falsified": true
+    },
+    "mutation_2_baryon_only_no_cold_condensate": {
+      "z_eq_mut2": 533.8374167189686,
+      "k_eq_mut2_Mpc_inv": 0.0016316919772707435,
+      "sigma8_mut2": 0.0008263918639946449,
+      "sigma8_mut2_sigma_tension": 135.0456013560009,
+      "falsified": true
+    },
+    "mutation_3_nonzero_phase_sound_speed": {
+      "cs2_C_mut3": 0.0001,
+      "sigma8_mut3": 0.058718250393467085,
+      "sigma8_mut3_sigma_tension": 125.39695826775548,
+      "falsified": true
+    }
+  },
+  "checks": [
+    {
+      "id": "C01_thomson_optical_depth_coframe_p_invariance",
+      "description": "Differential Thomson optical depth d(kappa)/d(eta) = c_0 A n_{e,op} sigma_T has exact zero derivative wrt foundation clock factor p(A)",
+      "metric": 0.0,
+      "threshold": "== 0.0",
+      "status": "PASS"
+    },
+    {
+      "id": "C02_silk_diffusion_kernel_coframe_p_invariance",
+      "description": "Silk photon-diffusion damping kernel d(k_D^(-2))/dA on the operational A-geometry has exact zero derivative wrt p(A)",
+      "metric": 0.0,
+      "threshold": "== 0.0",
+      "status": "PASS"
+    },
+    {
+      "id": "C03_peebles_recombination_visibility_peak",
+      "description": "Peebles 3-level hydrogen recombination ODE on A-geometry yields optical depth unity and visibility peak within [1050, 1110]",
+      "metric": 1079.3480130316964,
+      "threshold": "in [1050.0, 1110.0]",
+      "status": "PASS"
+    },
+    {
+      "id": "C04_silk_damping_wavenumber_kD",
+      "description": "Effective Silk + visibility photon-diffusion damping wavenumber k_D matches Planck/HS96 benchmark within 5%",
+      "metric": 0.12980733932282748,
+      "threshold": "rel_diff <= 0.05 vs 0.1348 Mpc^(-1)",
+      "status": "PASS"
+    },
+    {
+      "id": "C05_silk_angular_damping_multipole_lD",
+      "description": "Angular Silk damping multipole l_D = k_D_eff * D_M(z_*) lies in the Planck damping window [1800, 1960] (with pure Silk l_Silk in [1900, 2100])",
+      "metric": 1800.3090257999324,
+      "threshold": "in [1800.0, 1960.0]",
+      "status": "PASS"
+    },
+    {
+      "id": "C06_tight_coupling_baryon_equilibrium_shift_symbolic",
+      "description": "Tight-coupling acoustic oscillator equation identically shifts the SW temperature equilibrium by -R_b * Psi",
+      "metric": 0.0,
+      "threshold": "== 0.0",
+      "status": "PASS"
+    },
+    {
+      "id": "C07_baryon_loading_odd_even_compression_boost",
+      "description": "Numerical tight-coupling ODE confirms baryon loading (R_b(z_*) = 0.629) boosts the 1st-to-2nd peak power ratio by > 1.6x over R_b = 0",
+      "metric": 2.0812024640333817,
+      "threshold": ">= 1.60",
+      "status": "PASS"
+    },
+    {
+      "id": "C08_cmb_tt_peak_ratio_R12_vs_planck2018",
+      "description": "First-to-second TT acoustic peak height ratio R_12 = D_{l1}^TT / D_{l2}^TT matches Planck 2018 (2.251) within 2%",
+      "metric": 2.2616496896781877,
+      "threshold": "rel_err <= 0.02 vs 2.2509",
+      "status": "PASS"
+    },
+    {
+      "id": "C09_cmb_tt_peak_ratio_R32_vs_planck2018",
+      "description": "Third-to-second TT acoustic peak height ratio R_32 = D_{l3}^TT / D_{l2}^TT matches Planck 2018 (0.989) within 2%",
+      "metric": 0.9898907770330797,
+      "threshold": "rel_err <= 0.02 vs 0.9890",
+      "status": "PASS"
+    },
+    {
+      "id": "C10_te_adiabatic_anticorrelation_trough_and_ee_out_of_phase",
+      "description": "TE cross-spectrum exhibits negative adiabatic anticorrelation trough at l in [135, 165] and EE peaks are ~0.5*l_A out of phase with TT",
+      "metric": -44.00385789957354,
+      "threshold": "D_TE(l~150) < -30 uK^2 and |Delta_l / l_A - 0.5| <= 0.12",
+      "status": "PASS"
+    },
+    {
+      "id": "C11_meszaros_ode_and_hu_sugiyama_baryon_exponent_symbolic",
+      "description": "Exact Meszaros solutions U_1(y), U_2(y) and Hu-Sugiyama baryon-suppressed growth exponent alpha_HS satisfy their ODEs identically",
+      "metric": 0.0,
+      "threshold": "== 0.0",
+      "status": "PASS"
+    },
+    {
+      "id": "C12_comoving_equality_wavenumber_k_eq_vs_planck2018",
+      "description": "Comoving equality wavenumber k_eq = A_eq H_op(A_eq)/c_0 = 0.01034 Mpc^(-1) matches Planck 2018 (0.01038 +/- 0.00008 Mpc^(-1)) within 1 sigma",
+      "metric": 0.00767496373326641,
+      "threshold": "<= 1.0 sigma",
+      "status": "PASS"
+    },
+    {
+      "id": "C13_matter_power_spectrum_turnover_peak_k_peak",
+      "description": "Linear matter power spectrum P(k, z=0) exhibits its equality turnover peak at k_peak in [0.015, 0.018] h Mpc^(-1)",
+      "metric": 0.016676736068584566,
+      "threshold": "in [0.015, 0.018] h Mpc^(-1)",
+      "status": "PASS"
+    },
+    {
+      "id": "C14_sigma8_from_primordial_As_vs_planck2018",
+      "description": "RMS matter fluctuation sigma_8 integrated from P(k,0) with Planck A_s matches Planck 2018 (0.8111 +/- 0.0060) within 1.5%",
+      "metric": 0.8097510721674759,
+      "threshold": "rel_err <= 0.015 vs 0.8111",
+      "status": "PASS"
+    },
+    {
+      "id": "C15_S8_lss_amplitude_vs_planck2018",
+      "description": "LSS clustering parameter S_8 = sigma_8 * sqrt(Omega_m0 / 0.3) matches Planck 2018 (0.832 +/- 0.013) within 1 sigma",
+      "metric": 0.15379998842098755,
+      "threshold": "<= 1.0 sigma",
+      "status": "PASS"
+    },
+    {
+      "id": "C16_negative_mutation_uncoupled_p_drift_in_thomson",
+      "description": "Mutation 1: Uncoupled p(A)^(-2) drift in Thomson scattering collapses l_D to < 50 and erases the first acoustic peak",
+      "metric": 27.081412761227526,
+      "threshold": "l_D_mut1 < 50.0 and falsified == True",
+      "status": "PASS"
+    },
+    {
+      "id": "C17_negative_mutation_baryon_only_no_cold_condensate",
+      "description": "Mutation 2: Omitting the cold Noether phase condensate (Omega_C0 = 0) shifts z_eq < z_* and collapses sigma_8 < 0.12",
+      "metric": 0.0008263918639946449,
+      "threshold": "sigma8_mut2 < 0.12 and falsified == True",
+      "status": "PASS"
+    },
+    {
+      "id": "C18_negative_mutation_nonzero_phase_sound_speed",
+      "description": "Mutation 3: Non-zero phase-condensate sound speed c_{s,C}^2 = 10^(-4) triggers Jeans suppression and collapses sigma_8 < 0.25",
+      "metric": 0.058718250393467085,
+      "threshold": "sigma8_mut3 < 0.25 and falsified == True",
+      "status": "PASS"
+    }
+  ]
+}
