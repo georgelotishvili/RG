@@ -1,0 +1,164 @@
+{
+  "claim_id": "REFG_CORE_EOS_AND_COMPACTNESS_FIXATION_V1",
+  "total_checks": 18,
+  "passed_checks": 18,
+  "all_passed": true,
+  "summary": {
+    "q_star_exact": "3/2",
+    "r_c_over_m": 1.3333333333333333,
+    "R_ar_rc_over_m": 2.8226666888168994,
+    "n_min_core_density_exponent": 3,
+    "rho0_star_at_3_over_2": 0.6636399332333182,
+    "f_core_matter_fraction": 0.05862638855717003,
+    "a2_MeV": 32.56444444444444,
+    "a3_MeV": 18.801090766010613,
+    "c3_dimensionless": 0.0984,
+    "E_PNM_n0_MeV": 18.878028968748367,
+    "P_n0_MeV_fm3": 3.6073590164117264,
+    "M_TOV_max_Msun": 2.1856227140788276,
+    "R_at_M_max_km": 10.954695944807057,
+    "R_1p4_Msun_km": 12.565212708055595,
+    "R_2p08_Msun_km": 11.838752208762774,
+    "k2_1p4_Msun": 0.10599383149324886,
+    "Lambda_1p4_Msun": 586.8714833695276,
+    "r_touch_at_M_max_fm": 0.5004181758458783,
+    "L_Y_nucleon_fm": 0.5150272006315294,
+    "I_echo_at_3_over_2": 15.555311508308359,
+    "dt_echo_GW150914_ms": 4.750431501555525
+  },
+  "checks": {
+    "C01_symbolic_universal_boundary_eos_and_sound_speed_law": {
+      "pass": true,
+      "w_bar_at_1_symbolic": "-q/(3*q - 6)",
+      "cs2_over_c02_at_1_symbolic": "-q/(3*q - 6)",
+      "residual_w_bar": 0,
+      "residual_cs2": 0,
+      "derivative_wrt_exponent_n": 0
+    },
+    "C02_exact_causal_stiff_saturation_compactness_q_3_over_2": {
+      "pass": true,
+      "q_star_exact": "3/2",
+      "q_star_float": 1.5,
+      "r_c_over_m_exact": "4/3",
+      "r_c_over_m_float": 1.3333333333333333,
+      "R_ar_rc_over_m": 2.8226666888168994,
+      "stiff_saturation_residual": 0
+    },
+    "C03_global_core_subluminality_at_q_3_over_2": {
+      "pass": true,
+      "w_bar_at_0": 0.0,
+      "w_bar_at_1": 1.0,
+      "volume_averaged_w_bar_core": 0.021536447153436295,
+      "max_w_bar_on_core": 1.0230081335064378,
+      "min_w_bar_on_core": -0.034367485208581856
+    },
+    "C04_symbolic_minimal_even_core_density_exponent_n_min_3": {
+      "pass": true,
+      "n1_a_mat_prime_at_1": "-P*rho_0/(r_c**2*(q - 2))",
+      "n2_slope_defect_at_1": "4*P*rho_0/(r_c**2*(q - 2))",
+      "n3_a_mat_prime_at_1": 0,
+      "n3_slope_defect_at_1": 0,
+      "n_min_selected": 3
+    },
+    "C05_oscillon_shell_condensate_field_reconstruction_and_core_mass_fraction": {
+      "pass": true,
+      "rho0_star_at_q_3_over_2": 0.6636399332333182,
+      "f_core_matter_over_M_ADM": 0.05862638855717003,
+      "psi_tilde_sq_at_origin": 0.14807808458324356
+    },
+    "C06_symbolic_thermodynamic_consistency_and_causal_bound_of_y_junction_eos": {
+      "pass": true,
+      "thermodynamic_identity_residual": 0,
+      "dg_dz_factored": "-6*z*(z - 1)/(z + 1)**4",
+      "g_max_at_z_1": "1/4",
+      "asymptotic_P_over_eps_limit": 1,
+      "asymptotic_cs2_over_c02_limit": 1
+    },
+    "C07_parameter_free_hadron_closure_coefficients_and_nuclear_saturation": {
+      "pass": true,
+      "a2_MeV": 32.56444444444444,
+      "a3_MeV": 18.801090766010613,
+      "c3_dimensionless": 0.0984,
+      "c3_analytical_causal_floor": 0.07072908096246278,
+      "E_PNM_at_n0_MeV": 18.878028968748367,
+      "P_at_n0_MeV_fm3": 3.6073590164117264
+    },
+    "C08_strict_monotonicity_and_subluminal_sound_speed_across_all_densities": {
+      "pass": true,
+      "min_dP_step": 6.436435614841955e-11,
+      "cs2_over_c02_at_n0": 0.06661164930210806,
+      "max_cs2_over_c02_on_grid": 0.9731895767586314
+    },
+    "C09_maximum_neutron_star_mass_psr_j0740_and_gw170817_window": {
+      "pass": true,
+      "M_TOV_max_Msun": 2.1856227140788276,
+      "R_at_M_max_km": 10.954695944807057,
+      "u_c_at_M_max": 6.234344599917667,
+      "cs2_c_at_M_max": 0.7996345887836755,
+      "surface_compactness_2m_over_R_max": 0.5892345774223665,
+      "psr_j0740_mass_Msun": 2.08,
+      "psr_j0740_sigma_Msun": 0.07
+    },
+    "C10_nicer_radius_benchmarks_at_1_4_and_2_08_solar_masses": {
+      "pass": true,
+      "R_1p4_RefG_km": 12.565212708055595,
+      "R_1p4_NICER_km": 12.45,
+      "R_1p4_tension_sigma": 0.17725032008553235,
+      "R_2p08_RefG_km": 11.838752208762774,
+      "R_2p08_NICER_km": 12.39,
+      "R_2p08_tension_sigma": 0.5624977461604356
+    },
+    "C11_gw170817_quadrupole_love_number_and_tidal_deformability": {
+      "pass": true,
+      "k2_at_1p4_Msun": 0.10599383149324886,
+      "Lambda_at_1p4_Msun": 586.8714833695276,
+      "gw170817_upper_bound_90pct": 720.0
+    },
+    "C12_y_junction_percolation_threshold_at_tov_instability_point": {
+      "pass": true,
+      "n_b_max_fm3": 0.9974951359868267,
+      "inter_baryon_spacing_d_min_fm": 1.0008363516917567,
+      "half_spacing_r_touch_fm": 0.5004181758458783,
+      "nucleon_Y_junction_scale_L_Y_N_fm": 0.5150272006315294,
+      "relative_difference": 0.02836554024280154
+    },
+    "C13_post_tov_collapse_to_q_3_over_2_horizonless_core_observables": {
+      "pass": true,
+      "q_star": 1.5,
+      "U_eff_double_prime_at_1": 3.75,
+      "omega_bounce_dimless": 1.9364916731037085,
+      "I_echo_at_q_star": 15.555311508308359,
+      "dt_echo_GW150914_62Msun_ms": 4.750431501555525
+    },
+    "C14_compact_object_two_branch_gap_and_echo_transition": {
+      "pass": true,
+      "baryon_star_max_compactness_2m_over_R": 0.5892345774223665,
+      "horizonless_core_compactness_q_star": 1.5,
+      "remnant_2p20_Msun_r_c_km": 4.331564427031422,
+      "remnant_2p20_Msun_R_ar_rc_km": 9.169921963984391,
+      "remnant_2p20_Msun_R_ar_ph_km": 10.712313609382079,
+      "remnant_2p20_Msun_dt_echo_ms": 0.16856369844229283
+    },
+    "C15_universal_asymptotic_matching_of_high_density_eos_to_core_boundary": {
+      "pass": true,
+      "w_EOS_at_u_1e4": 0.9988970150260802,
+      "w_bar_m_at_core_boundary_q_3_over_2": 1.0,
+      "difference": 0.0011029849739198072
+    },
+    "C16_negative_control_free_fermi_gas_without_y_junction_repulsion_rejected": {
+      "pass": true,
+      "M_max_free_fermi_gas_Msun": 0.7100043674709738,
+      "tension_vs_PSR_J0740_sigma": 19.57136617898609
+    },
+    "C17_negative_control_unsuppressed_bare_cubic_eos_acausal_rejected": {
+      "pass": true,
+      "max_cs2_over_c02_when_c3_is_0": 1.6084250196362788
+    },
+    "C18_negative_control_overcompact_core_q_1_8_acausal_boundary_rejected": {
+      "pass": true,
+      "q_mutated": 1.8,
+      "w_bar_at_1_mutated": 3.000000000000001
+    }
+  },
+  "script_sha256": "6827c7fbdcc7fe519db3a330b5396f8a0927913b9ca7a6f2235958a07a651ebc"
+}
