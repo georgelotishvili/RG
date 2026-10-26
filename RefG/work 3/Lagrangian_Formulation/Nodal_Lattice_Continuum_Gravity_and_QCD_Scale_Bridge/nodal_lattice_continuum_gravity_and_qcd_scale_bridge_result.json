@@ -1,0 +1,287 @@
+{
+  "gate_id": "REFG_NODAL_LATTICE_CONTINUUM_GRAVITY_AND_QCD_SCALE_BRIDGE_V1",
+  "version": "1.0.0",
+  "total_checks": 18,
+  "passed_checks": 18,
+  "failed_checks": 0,
+  "overall_status": "PASS",
+  "summary": {
+    "nodal_lattice_continuum": {
+      "N_Casimir": 24,
+      "l_star_over_l_Pl_exact": "2*sqrt(pi)",
+      "l_star_over_l_Pl_numeric": 3.544907701811032,
+      "l_star_m": 5.72947479759059e-35,
+      "E_star_cutoff_GeV": 3.444067103288101e+18,
+      "odd_LIV_coefficients": [
+        0,
+        0
+      ],
+      "delta_c_over_c_100TeV": 1.0538208913032882e-28,
+      "R2_suppression_1Msun": 8.46860194021216e-76
+    },
+    "instanton_planck_gravity": {
+      "S_inst_formula": "(3/8)*alpha^-1 + 7/(16*pi) + 1/(9*pi^2*alpha^-1)",
+      "S_inst_2L": 51.5278423877911,
+      "ln_MPl_over_me_CODATA": 51.52783983828388,
+      "M_Pl_RefG_kg": 2.176439548841261e-08,
+      "M_Pl_RefG_GeV": 1.2208930490140885e+19,
+      "G_RefG_SI": 6.674268065607112e-11,
+      "G_CODATA_SI": 6.6743e-11,
+      "G_rel_err_ppm": -4.784680473969399,
+      "G_sigma": -0.2128959525827597
+    },
+    "qcd_scales_and_string_tension": {
+      "alpha_s_mZ_rational": "17/144",
+      "alpha_s_mZ_RefG": 0.11805555555555555,
+      "alpha_s_mZ_sigma": 0.061728395061731875,
+      "Lambda_MSbar_5_RG_MeV": 209.33766600958126,
+      "Lambda_QCD5_Koide_holonomy_MeV": 209.23759716111113,
+      "Lambda_MSbar_5_sigma": -0.04730957074419605,
+      "alpha_s_mb": 0.22532933893682378,
+      "alpha_s_mtau": 0.3252696620164666,
+      "Lambda_3_MeV": 369.4785352118637,
+      "sqrt_sigma_str_MeV": 424.28734979891976,
+      "sigma_str_GeV2": 0.18001975519939092,
+      "Regge_slope_GeV_inv2": 0.8840970976525016
+    },
+    "micro_macro_spectral_bridge": {
+      "ln_lambda_e_over_l_Pl": 51.527840010554755,
+      "ln_r_d_over_lambda_e": 85.3561961979426,
+      "ln_r_d_over_l_Pl": 136.88403620849735,
+      "alpha_RefG_inv": 137.03599909240637,
+      "rel_err_total_pct": 0.11101578249603682
+    }
+  },
+  "checks": [
+    {
+      "id": "CHK_01",
+      "description": "3D nodal graph Laplacian continuum expansion: omega^2 = c_0^2 k^2 [1 - (l_*^2/12)(sum k_a^4 / k^2) + ...], exact odd-order LIV cancellation (c_1 = c_3 = 0)",
+      "status": "PASS",
+      "details": {
+        "disp_series_1d": "c_0**2*k1**6*l_star**4/360 - c_0**2*k1**4*l_star**2/12 + c_0**2*k1**2",
+        "odd_l_star_coeff_1": "0",
+        "odd_l_star_coeff_3": "0",
+        "v_phase_expansion": "c_0*k1**4*l_star**4/1920 - c_0*k1**2*l_star**2/24 + c_0",
+        "v_group_expansion": "c_0*k1**4*l_star**4/384 - c_0*k1**2*l_star**2/8 + c_0"
+      }
+    },
+    {
+      "id": "CHK_02",
+      "description": "Sakharov / Seeley-DeWitt heat-kernel induction across N_Casimir = 24 channels fixes l_* = 2*sqrt(pi)*l_Pl = 5.7295e-35 m (l_*^2 = 4*pi*l_Pl^2 = A_Pl)",
+      "status": "PASS",
+      "details": {
+        "N_Casimir": 24,
+        "induced_inv_16piG": "hbar/(4*c_0*l_star**2)",
+        "l_star_over_l_Pl_symbolic": "2*sqrt(pi)",
+        "l_star_over_l_Pl_numeric": 3.544907701811032,
+        "l_star_m": 5.72947479759059e-35,
+        "E_star_cutoff_GeV": 3.444067103288101e+18
+      }
+    },
+    {
+      "id": "CHK_03",
+      "description": "Continuum discretization error & LIV suppression: |Delta c/c|(100 TeV) = 1.05e-28 << 10^-17, E_LIV,2 = 9.74e18 GeV >> 1.3e11 GeV, R^2 suppression (l_*/r_c)^2 = 8.46e-76",
+      "status": "PASS",
+      "details": {
+        "delta_c_over_c_optical_1eV": 1.0538208913032885e-56,
+        "delta_c_over_c_100TeV": 1.0538208913032882e-28,
+        "E_LIV2_effective_GeV": 9.741292814386104e+18,
+        "Fermi_LHAASO_bound_GeV": 130000000000.0,
+        "R2_suppression_at_1Msun_core": 8.46860194021216e-76
+      }
+    },
+    {
+      "id": "CHK_04",
+      "description": "2-loop topological instanton action: S_inst = (3/8)alpha^-1 + 7/(16*pi) + 1/(9*pi^2*alpha^-1) = 51.527842 vs ln(M_Pl/m_e)_exp = 51.527840 (2.5 ppm)",
+      "status": "PASS",
+      "details": {
+        "S_inst_symbolic": "3*alpha_inv/8 + 7/(16*pi) + 1/(9*pi**2*alpha_inv)",
+        "S0_tree": 51.38849965965239,
+        "dS1_transverse_su3_det": 0.13926057520540844,
+        "dS2_holonomy_2loop": 8.215293330332588e-05,
+        "S_inst_1L": 51.527760234857794,
+        "S_inst_2L": 51.5278423877911,
+        "ln_MPl_over_me_CODATA": 51.52783983828388,
+        "abs_diff": 2.5495072151215936e-06
+      }
+    },
+    {
+      "id": "CHK_05",
+      "description": "First-principles prediction of Newton's constant G_RefG = 6.674268e-11 m^3 kg^-1 s^-2 (-0.21 sigma, 4.78 ppm vs CODATA) and M_Pl = 2.176440e-8 kg",
+      "status": "PASS",
+      "details": {
+        "M_Pl_RefG_kg": 2.176439548841261e-08,
+        "M_Pl_CODATA_kg": 2.176434e-08,
+        "M_Pl_sigma": 0.23120171920261554,
+        "M_Pl_RefG_GeV": 1.2208930490140885e+19,
+        "G_RefG_1L_SI": 6.675364777101182e-11,
+        "G_RefG_2L_SI": 6.674268065607112e-11,
+        "G_CODATA_SI": 6.6743e-11,
+        "G_rel_err_ppm": -4.784680473969399,
+        "G_sigma": -0.2128959525827597
+      }
+    },
+    {
+      "id": "CHK_06",
+      "description": "Tri-axial su(3)_c strong coupling at Z^0 pole: alpha_s(m_Z) = theta_d*(1 + 1/16) = 17/144 = 0.118056 (+0.062 sigma vs PDG 0.1180 +/- 0.0009)",
+      "status": "PASS",
+      "details": {
+        "alpha_s_mZ_rational": "17/144",
+        "alpha_s_mZ_RefG": 0.11805555555555555,
+        "alpha_s_mZ_PDG": 0.118,
+        "sigma": 0.061728395061731875,
+        "rel_err_pct": 0.04708097928437177
+      }
+    },
+    {
+      "id": "CHK_07",
+      "description": "QCD dimensional transmutation scale: 2-loop RG Lambda_MSbar^(5) = 209.34 MeV (-0.047 sigma vs PDG 210 +/- 14 MeV) matches K_0*mu_l^2 = 209.24 MeV to 0.048%",
+      "status": "PASS",
+      "details": {
+        "Lambda_MSbar_5_RG_MeV": 209.33766600958126,
+        "Lambda_MSbar_5_PDG_MeV": 210.0,
+        "sigma_vs_PDG": -0.04730957074419605,
+        "mu_l_sq_MeV": 313.8563957416667,
+        "Lambda_QCD5_Koide_holonomy_MeV": 209.23759716111113,
+        "UV_IR_rel_diff_pct": 0.04780260063927047
+      }
+    },
+    {
+      "id": "CHK_08",
+      "description": "2-loop QCD threshold running: alpha_s(m_b) = 0.2253 (+0.11 sigma), alpha_s(m_tau) = 0.3253 (+0.88 sigma), Lambda^(3) = 369.5 MeV (~ M_q = 337.4 MeV)",
+      "status": "PASS",
+      "details": {
+        "alpha_s_mb_RefG": 0.22532933893682378,
+        "alpha_s_mb_PDG": 0.225,
+        "sigma_mb": 0.10977964560792326,
+        "alpha_s_mtau_RefG": 0.3252696620164666,
+        "alpha_s_mtau_PDG": 0.312,
+        "sigma_mtau": 0.8846441344311081,
+        "alpha_s_mc_RefG": 0.4028553608407858,
+        "Lambda_4_MeV": 324.1775967591715,
+        "Lambda_3_MeV": 369.4785352118637
+      }
+    },
+    {
+      "id": "CHK_09",
+      "description": "Cornell flux-tube string tension: sqrt(sigma_str) = C_2(3)*(1 + 1/72)*mu_l^2 = (73/54)*mu_l^2 = 424.29 MeV -> sigma_str = 0.18002 GeV^2 (0.011% match, alpha' = 0.884 GeV^-2)",
+      "status": "PASS",
+      "details": {
+        "factor_rational": "73/54",
+        "sqrt_sigma_str_MeV": 424.28734979891976,
+        "sigma_str_RefG_GeV2": 0.18001975519939092,
+        "sigma_str_canonical_GeV2": 0.18,
+        "rel_err_ppm": 109.75110772739235,
+        "sigma_str_MeV_per_fm": 912.2916432130785,
+        "Regge_slope_alpha_prime_GeV_inv2": 0.8840970976525016
+      }
+    },
+    {
+      "id": "CHK_10",
+      "description": "Centerless periodic 3D graph T^3_N = (Z/NZ)^3: uniform degree z=6, [T_m, Delta_graph] = 0, and vertex-independent heat kernel spread 0.00e+00",
+      "status": "PASS",
+      "details": {
+        "N_grid": 4,
+        "n_vertices": 64,
+        "uniform_degree": 6.0,
+        "commutator_max_norm": 0.0,
+        "heat_kernel_diagonal_spread": 3.885780586188048e-16
+      }
+    },
+    {
+      "id": "CHK_11",
+      "description": "Unified radial Helmholtz eigenmode j_0(kr) = sin(kr)/(kr): exact solution of (nabla^2 + k^2)j_0 = 0 for both Q_C cluster cores (M_C = (4/pi)rho_0 R_C^3) and BAO ruler r_d",
+      "status": "PASS",
+      "details": {
+        "helmholtz_residual": "0",
+        "enclosed_mass_integral": "4*pi**2/k**3",
+        "M_C_over_rho0_RC3": "4/pi"
+      }
+    },
+    {
+      "id": "CHK_12",
+      "description": "Micro-macro 137-e-fold impedance partition: ln(lambda_e/l_Pl) = 51.53 ~ (3/8)alpha^-1 (0.27%), ln(r_d/lambda_e) = 85.36 ~ (5/8)alpha^-1 (0.34%), ln(r_d/l_Pl) = 136.88 ~ alpha^-1 (0.111%)",
+      "status": "PASS",
+      "details": {
+        "ln_lambda_e_over_l_Pl": 51.527840010554755,
+        "pred_3_8_alpha_inv": 51.38849965965239,
+        "rel_err_UV_pct": 0.27041760507295415,
+        "ln_r_d_over_lambda_e": 85.3561961979426,
+        "pred_5_8_alpha_inv": 85.64749943275399,
+        "rel_err_IR_pct": 0.34127954124836685,
+        "ln_r_d_over_l_Pl": 136.88403620849735,
+        "pred_alpha_inv": 137.03599909240637,
+        "rel_err_total_pct": 0.11101578249603682,
+        "ln_r_d_over_L_Y": 91.8316903881721,
+        "pred_2_3_alpha_inv": 91.3573327282709,
+        "rel_err_LY_pct": 0.5165511577714557
+      }
+    },
+    {
+      "id": "CHK_13",
+      "description": "End-to-end nucleon center-of-gravity mass from derived sigma_str: M_0 = 2*sigma_str^RefG*L_Y^* = 1085.57 MeV (0.010% vs experimental 1085.46 MeV)",
+      "status": "PASS",
+      "details": {
+        "M0_from_sigma_RefG_MeV": 1085.5741425082572,
+        "M0_exp_MeV": 1085.4594,
+        "rel_err_pct": 0.010570870569384968
+      }
+    },
+    {
+      "id": "CHK_14",
+      "description": "Proton gravitational coupling alpha_{G,p} = G_RefG m_p^2 / (hbar c_0) = 5.90612e-39 (4.8 ppm vs CODATA 5.90615e-39)",
+      "status": "PASS",
+      "details": {
+        "ln_MPl_over_mp_RefG": 44.012414664607505,
+        "ln_MPl_over_mp_CODATA": 44.0124121672406,
+        "alpha_G_p_RefG": 5.90612115829126e-39,
+        "alpha_G_p_CODATA": 5.906150657867983e-39
+      }
+    },
+    {
+      "id": "CHK_15",
+      "description": "Grand Unified Action deformation scale M_* c_0^2 = (hbar^3 c_0^3 a_0^2 / (16*pi*G_RefG))^(1/4) = 0.6874 meV (same sub-meV order as primary neutrino mass m_1 = 0.3608 meV)",
+      "status": "PASS",
+      "details": {
+        "a0_RefG_m_s2": 1.2498952392979285e-10,
+        "G_RefG_SI": 6.674268065607112e-11,
+        "M_star_meV": 0.6874334895535279
+      }
+    },
+    {
+      "id": "CHK_16",
+      "description": "Continuum coframe TEGR uniqueness: Lorentz orientation gauge invariance uniquely fixes (c_1, c_2, c_3) = (1/4, 1/2, -1), reducing torsion scalar T to Einstein-Hilbert R",
+      "status": "PASS",
+      "details": {
+        "c1": "1/4",
+        "c2": "1/2",
+        "c3": "-1"
+      }
+    },
+    {
+      "id": "CHK_17",
+      "description": "Exact coframe clock-ruler invariance of dimensionless QCD and Planck ratios: d(Lambda_QCD/m_p)/dp_{T,L} = d(m_e/M_Pl)/dp_{T,L} = 0",
+      "status": "PASS",
+      "details": {
+        "d_Lambda_over_mp_dpT": "0",
+        "d_Lambda_over_mp_dpL": "0",
+        "d_me_over_MPl_dpT": "0"
+      }
+    },
+    {
+      "id": "CHK_18",
+      "description": "Master closure check: all 17 symbolic/numerical nodal-lattice, continuum-gravity, instanton-G, QCD-scale, and micro-macro spectral gates pass",
+      "status": "PASS",
+      "details": {
+        "total_checks_before_master": 17,
+        "l_star_over_l_Pl": 3.544907701811032,
+        "G_RefG_SI": 6.674268065607112e-11,
+        "alpha_s_mZ_RefG": 0.11805555555555555,
+        "Lambda_MSbar_5_MeV": 209.33766600958126,
+        "sigma_str_GeV2": 0.18001975519939092,
+        "ln_r_d_over_l_Pl": 136.88403620849735
+      }
+    }
+  ],
+  "script_sha256": "83544e8714c52900b00a40b6ea15b018d08cdfc96e070bcf314474babd535eb4"
+}
