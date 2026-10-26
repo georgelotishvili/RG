@@ -1,0 +1,160 @@
+{
+  "deliverable_id": "REFG_QUARK_MASS_HIERARCHY_CKM_AND_NEUTRINO_PMNS_BRIDGE_V1",
+  "script_name": "verify_quark_mass_hierarchy_ckm_and_neutrino_pmns_bridge.py",
+  "script_sha256": "f7a843f9f6509154644b62233a910c55ba011be84aa869ff9a0d257464e5468d",
+  "status": "PASS",
+  "passed_checks": 18,
+  "total_checks": 18,
+  "checks": {
+    "part1_c3_circulant_eigenvalues_and_koide_identity_ok": true,
+    "part1_harmonic_holonomy_sequence_ok": true,
+    "part1_quark_modulation_amplitudes_and_koide_ratios_ok": true,
+    "part1_down_quark_family_masses_ok": true,
+    "part1_up_quark_family_masses_and_ew_anchor_ok": true,
+    "part1_isospin_splitting_and_hydrogen_stability_ok": true,
+    "part2_ckm_cabibbo_and_gst_consistency_ok": true,
+    "part2_ckm_vcb_and_vub_holonomy_scaling_ok": true,
+    "part2_ckm_unitarity_and_full_matrix_ok": true,
+    "part2_ckm_jarlskog_and_unitarity_triangle_ok": true,
+    "part3_pmns_tribimaximal_and_reactor_angle_ok": true,
+    "part3_pmns_solar_and_atmospheric_angles_ok": true,
+    "part3_pmns_unitarity_and_cp_phase_ok": true,
+    "part3_neutrino_holonomy_scale_and_seesaw_bridge_ok": true,
+    "part3_neutrino_masses_and_oscillation_splittings_ok": true,
+    "part3_cosmological_and_beta_decay_bounds_ok": true,
+    "part4_coframe_invariance_of_yukawa_and_mixing_ok": true,
+    "part4_negative_mutation_controls_ok": true
+  },
+  "key_results": {
+    "holonomy_angles_rad": {
+      "theta_0_lepton": 0.2222222222222222,
+      "theta_d_down": 0.1111111111111111,
+      "theta_u_up": 0.07407407407407407,
+      "theta_nu_neutrino": 0.4778487705151988,
+      "theta_nu_bare_brannen_berry": 0.4840216100213716
+    },
+    "modulation_amplitudes_and_koide": {
+      "A_l_sq": 2.0,
+      "K_l": 0.6666666666666666,
+      "A_d_sq_exact": "43/18",
+      "A_d_sq": 2.388888888888889,
+      "K_d_exact": "79/108",
+      "K_d": 0.7314814814814815,
+      "K_d_exp": 0.7314276514329373,
+      "A_u_sq_exact": "167/54",
+      "A_u_sq": 3.0925925925925926,
+      "K_u_exact": "275/324",
+      "K_u": 0.8487654320987654,
+      "K_u_exp": 0.8489807776610611,
+      "K_cbt_pred": 0.6695494974691725,
+      "K_cbt_exp": 0.6694449102003218
+    },
+    "quark_masses": {
+      "mu_l_sq_GeV": 0.3138563964614676,
+      "mu_d_sq_GeV": 0.6499135915530918,
+      "mu_u_sq_GeV": 22.77026270885876,
+      "m_u_MeV": 2.4690675204518846,
+      "m_u_pdg_MeV": 2.16,
+      "m_u_sigma": 0.6307500417385395,
+      "m_d_MeV": 4.5361409902561265,
+      "m_d_pdg_MeV": 4.67,
+      "m_d_sigma": -0.2788729369664027,
+      "m_s_MeV": 94.03720400237633,
+      "m_s_pdg_MeV": 93.39999999999999,
+      "m_s_sigma": 0.07409348864841135,
+      "m_c_GeV": 1.2664118828468278,
+      "m_c_pdg_GeV": 1.27,
+      "m_c_sigma": -0.17940585765860995,
+      "m_b_GeV": 4.1800244660652215,
+      "m_b_pdg_GeV": 4.18,
+      "m_b_sigma": 0.0008155355073924397,
+      "m_t_GeV": 172.67062585341492,
+      "m_t_pdg_GeV": 172.69,
+      "m_t_sigma": -0.06458048861693064,
+      "m_d_minus_m_u_MeV": 2.067073469804242,
+      "m_u_over_m_d": 0.5443101362491981,
+      "m_s_over_m_d": 20.730661636041138
+    },
+    "ckm_matrix": {
+      "theta_12_rad_exact": "55/243",
+      "s12_Vus": 0.22440989917473644,
+      "s12_GST": 0.2240254074054394,
+      "s23_Vcb_exact": "2/(27*sqrt(3))",
+      "s23_Vcb": 0.042766686606638946,
+      "s13_Vub_exact": "8/2187",
+      "s13_Vub": 0.003657978966620942,
+      "delta_cp_ckm_rad": 1.1583086623077088,
+      "delta_cp_ckm_deg": 66.36619772367581,
+      "J_cp_ckm": 3.1312692805098535e-05,
+      "J_cp_ckm_sigma": 0.08668677315272001,
+      "alpha_deg": 91.86324348091227,
+      "beta_deg": 21.806240160706604,
+      "gamma_deg": 66.33051635838113,
+      "sin_2beta": 0.6897772684447152,
+      "unitarity_frobenius_error": 2.2606766140615504e-16,
+      "V_ckm_abs": [
+        [
+          0.9744883222477445,
+          0.22440839777658897,
+          0.0036579789666209422
+        ],
+        [
+          0.22426574253234732,
+          0.9735891904270845,
+          0.04276640047922531
+        ],
+        [
+          0.008796961361226931,
+          0.04201141857732019,
+          0.9990784024189144
+        ]
+      ]
+    },
+    "pmns_and_neutrinos": {
+      "sin_theta_13_exact": "4/27",
+      "sin_sq_theta_13_exact": "16/729",
+      "sin_sq_theta_13": 0.02194787379972565,
+      "theta_13_deg": 8.519624254143045,
+      "sin_theta_12_exact": "5/9",
+      "sin_sq_theta_12_exact": "25/81",
+      "sin_sq_theta_12": 0.30864197530864196,
+      "theta_12_deg": 33.74898859588859,
+      "sin_sq_theta_23_exact": "89/162",
+      "sin_sq_theta_23": 0.5493827160493827,
+      "theta_23_deg": 47.83404150419788,
+      "delta_cp_pmns_deg": 192.73239544735162,
+      "J_cp_pmns": -0.007339826433482402,
+      "unitarity_frobenius_error": 3.4364018437516706e-16,
+      "U_pmns_abs": [
+        [
+          0.8223041931153,
+          0.5494250997044728,
+          0.14814814814814814
+        ],
+        [
+          0.2845879452802711,
+          0.6178064161785415,
+          0.7330245108656193
+        ],
+        [
+          0.4927732900494395,
+          0.5625364805444683,
+          0.6638728738775928
+        ]
+      ],
+      "mu_nu_bare_sq_meV": 10.001459490917075,
+      "mu_nu_sq_meV": 9.878365777475288,
+      "M_R_seesaw_GeV": 603015183167591.2,
+      "m_1_meV": 0.3608426429150598,
+      "m_2_meV": 8.641868868962066,
+      "m_3_meV": 50.26748315297462,
+      "sum_m_nu_eV": 0.05927019466485175,
+      "Delta_m21_sq_eV2": 7.455169013538978e-05,
+      "Delta_m31_sq_eV2": 0.0025266896551216413,
+      "Delta_m32_sq_eV2": 0.0024521379649862516,
+      "ratio_Dm21_Dm31": 0.02950567751139214,
+      "m_beta_KATRIN_meV": 8.836879439775597,
+      "m_betabeta_0nu2beta_meV": 3.8779026929441676
+    }
+  }
+}
