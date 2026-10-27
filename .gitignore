@@ -40,6 +40,7 @@ Intuitive_Article - ძველი.md
 Intuitive_Article დედანი.md
 Intuitive_Theory_Old.md
 სხვა სტატიები/
+სტატიები/
 figures/
 !intuitive/figures/
 intuitive/figures/*
@@ -79,7 +80,18 @@ dist/
 venv/
 env/
 
-# OS/editor noise
+# OS/editor and LaTeX build noise
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
 .DS_Store
 .DS_Store?
 ._*

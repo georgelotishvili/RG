@@ -15,7 +15,8 @@ Verifies:
      Phi = t and phi^A = x^A, Y_hat == 1 and B_hat^{AB} == delta^{AB} hold
      identically for EVERY function H(x), G^r_r = -e^{-2H}(H')^2 and
      G^theta_theta = +e^{-2H}(H')^2 contain zero second derivatives H''(r), and
-     sqrt(-g)*R == 2*nabla^2 H is an exact spatial divergence;
+     sqrt(-g)*(R/2 + gamma^{mu nu} d_mu H d_nu H) == -nabla^2 H is an exact
+     spatial divergence;
    - Exact five-branch reductions: isolated vacuum (x=0, H=0), homogeneous FLRW
      (H=0, x>0), strong-field compact object (Z_H >> a0^2, fractional k-essence
      deviation < 10^-45 at r = 2m), Solar System, and galactic halo.
@@ -234,9 +235,10 @@ def run_verification() -> dict[str, Any]:
     check_zero("common_scale_B_hat_universal_silent_identity", B_hat_common - 1)
 
     # 1C. Common-Scale Einstein Tensor & Exact Ricci Divergence Identity for ANY H(r):
+    # In signature (-+++) for ds^2 = -e^{lB} dt^2 + e^{lA}(dr^2 + r^2 dOmega^2):
     lA = 2 * H
     lB = -2 * H
-    G_tt = -sp.exp(-lA) * (
+    G_tt = sp.exp(-lA) * (
         sp.diff(lA, r, 2) + 2 * sp.diff(lA, r) / r + sp.diff(lA, r) ** 2 / 4
     )
     G_rr = sp.exp(-lA) * (
@@ -252,6 +254,7 @@ def run_verification() -> dict[str, Any]:
     )
     R_scalar = -(G_tt + G_rr + 2 * G_thth)
     sqrtg_radial = r**2 * sp.exp((3 * lA + lB) / 2)  # r^2 * exp(2H)
+    proj_grad_H = sp.exp(-lA) * sp.diff(H, r) ** 2
 
     # Check that G^r_r and G^theta_theta have ZERO second derivatives H''(r) for any H(r)
     check_zero(
@@ -262,10 +265,11 @@ def run_verification() -> dict[str, Any]:
         "common_scale_G_thth_pure_quadratic_identity",
         G_thth - sp.exp(-2 * H) * sp.diff(H, r) ** 2,
     )
-    # Check that sqrt(-g) * R == 2 * d/dr(r^2 H'(r)) (pure total divergence!)
+    # Check that sqrt(-g) * (R/2 + gamma^{mu nu} d_mu H d_nu H) == -d/dr(r^2 H'(r))
+    # and sqrt(-g) * (G^t_t - gamma^{mu nu} d_mu H d_nu H) == 2 * d/dr(r^2 H'(r)) (pure total divergence!)
     check_zero(
         "common_scale_sqrtg_R_exact_total_divergence_identity",
-        sqrtg_radial * R_scalar - 2 * sp.diff(r**2 * sp.diff(H, r), r),
+        sqrtg_radial * (R_scalar / 2 + proj_grad_H) + sp.diff(r**2 * sp.diff(H, r), r),
     )
     # Check that sqrt(-g) * gamma^{mu nu} d_mu H d_nu H == r^2 (H'(r))^2 to all orders in H(r)
     sqrtg_Z_H_over_c4 = sp.simplify(sqrtg_radial * sp.exp(-2 * H) * sp.diff(H, r) ** 2)
